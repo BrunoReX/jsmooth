@@ -22,9 +22,8 @@
 #include "JavasoftRuntimeList.h"
 
 #include <iostream>
-#include <vector>
-#include <string>
 
+#include "common.h"
 #include "resource.h"
 #include "ResourceManager.h"
 
@@ -92,7 +91,6 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     MSG messages;            /* Here messages to the application are saved */
     WNDCLASSEX wincl;        /* Data structure for the windowclass */
 
-    jlist = new JavasoftRuntimeList();
 //    jlist->run();
     
     /* The Window structure */
@@ -133,32 +131,26 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
            NULL                 /* No Window Creation data */
            );
 
+
+   EnumResourceTypes(NULL, rsctypecallback, 0);
+
+    jlist = new JavasoftRuntimeList();
+    const JavasoftVM& bestVm = jlist->findVersionOrHigher(Version(std::string("1.4")));
+    DEBUG(std::string("Found BESTVM: ") + bestVm.Path + " / " + bestVm.VmVersion.Value);
+     if (bestVm.Path != "")
+       {
+        ResourceManager resman("JAVA", 102, 103);
+        resman.saveTemp(std::string("temp.jar"));
+        jlist->run(bestVm, std::string("temp.jar"), resman.getMainName());
+    }
+    else
+    {
     /* Make the window visible on the screen */
     ShowWindow (hwnd, nFunsterStil);
     UpdateWindow(hwnd);
 
-     HRSRC res = FindResource(NULL, "#153", "MIN2");
-    if (res != NULL)
-    {
-        LOG.push_back(std::string("OK !!! well done ! "));
     }
-    else
-    {
-            LOG.push_back("Can't find Resource");
-
-    }
-
-    EnumResourceNames(NULL, "MINE", lpEnumFunc, 0);
-
-    EnumResourceTypes(NULL, rsctypecallback, 0);
-
-
-    ResourceManager manager("JAVA", 102, 103);
-    LOG.push_back(manager.getMainName());
-    manager.saveTemp(std::string("POUET"));
     
-    SaveJarResource();
-
     /* Run the message loop. It will run until GetMessage() returns 0 */
     while (GetMessage (&messages, NULL, 0, 0))
     {
@@ -208,28 +200,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 			RECT rt;
 			GetClientRect(hwnd, &rt);
 			DrawText(hdc, mesg, 10, &rt, DT_CENTER);
-			
-			for (int i=0; i<jlist->getCount(); i++)
-			{
-			   JavasoftVM vm = jlist->getAt(i);
-			   std::string str = vm.Version + ": " + vm.Path;
-
-			   std::string::size_type length = str.length();
-			   char *p = new char [length + 1];
-			   str.copy(p, length);
-			   p[length] = '\0';
-			   rt.top += 20;
-			   DrawText(hdc, p, length, &rt, DT_CENTER);
-			   delete p;
-			}
-			{
-                  char buffer[255];
-                  jlist->copyString(jlist->Message, buffer, 254);
-                  rt.top += 40;
-                  DrawText(hdc, buffer, jlist->Message.size(), &rt, DT_CENTER);
-                  
-            }	
-            
+			          
             for (int i=0; i<LOG.size(); i++)
             {
                        std::string val = LOG[i];
@@ -250,11 +221,3 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     return 0;
 }
 
-void SaveJarResource()
-{
-    HRSRC resmain = FindResource(NULL, "#102", "JAVA");
-    if (resmain != NULL)
-    {
-        LOG.push_back("Found resource resmain!");
-    }
-}

@@ -20,6 +20,16 @@
 
 #include "JavasoftRuntimeList.h"
 
+bool operator<(const JavasoftVM& jvm1, const JavasoftVM& jvm2)
+{
+     return jvm1.VmVersion < jvm2.VmVersion;
+}
+
+bool operator<(JavasoftVM& jvm1, JavasoftVM& jvm2)
+{
+     return jvm1.VmVersion < jvm2.VmVersion;
+}
+
 JavasoftRuntimeList::JavasoftRuntimeList()
 {
     HKEY hKey;
@@ -63,8 +73,13 @@ JavasoftRuntimeList::JavasoftRuntimeList()
 				{
 				    JavasoftVM vm;
 				    vm.Path = s;
-				    vm.Version = versionname;
+				    vm.VmVersion = Version(versionname);
 				    m_jvms.push_back(vm);
+				    
+				    DEBUG(std::string("Found new VM: ") + vm.Path + " : " + vm.VmVersion.Value);
+				    char buffer[244];
+				    sprintf(buffer, "V(%d)(%d)(%d)", vm.VmVersion.getMajor(), vm.VmVersion.getMinor(), vm.VmVersion.getSubMinor());
+				    DEBUG(std::string("ANALYZED AS ") + buffer);
                 }
 				    
 			}
@@ -74,29 +89,50 @@ JavasoftRuntimeList::JavasoftRuntimeList()
 
 }
 
+const JavasoftVM& JavasoftRuntimeList::findVersionOrHigher(Version v)
+{
+   std::sort(m_jvms.begin(),m_jvms.end());  
+   return *m_jvms.begin();
+   
+    for (int i=0; i<m_jvms.size(); i++)
+    {
+        const JavasoftVM& vm = m_jvms[i];
+        if (v < vm.VmVersion)
+        {
+                return vm;
+        }
+    }
+    return INVALID;
+}
+
+void JavasoftRuntimeList::run(const JavasoftVM& vm, std::string jarpath, std::string classname)
+{
+    if ((vm.VmVersion.getMajor() == 1) && (vm.VmVersion.getMinor() >= 2))
+    {
+        DEBUG(std::string("Found 1.2 VM!"));
+        runVM12(vm, jarpath, classname);
+    }
+}
 
 typedef jint (JNICALL *CreateJavaVM_t)(JavaVM **pvm, JNIEnv **env, void *args);
 typedef jint (JNICALL *GetDefaultJavaVMInitArgs_t)(void *args);
 
-void JavasoftRuntimeList::run()
+void JavasoftRuntimeList::runVM12(const JavasoftVM& vm, const std::string& jarpath, const std::string& classname)
 {
-    char buffer[512];
-    std::string pathToVm = (*m_jvms.begin()).Path;
-    copyString(pathToVm, buffer, sizeof(buffer)-1);
-    HINSTANCE vmlib = LoadLibrary(buffer);
+//    char buffer[512];
+    HINSTANCE vmlib = LoadLibrary(vm.Path.c_str());
     if (vmlib != 0)
     {
-        this->Message = "LOADED!";
+        DEBUG("VM LOADED!");
         CreateJavaVM_t CreateJavaVM = (CreateJavaVM_t)GetProcAddress(vmlib, "JNI_CreateJavaVM");
         GetDefaultJavaVMInitArgs_t GetDefaultJavaVMInitArgs = (GetDefaultJavaVMInitArgs_t)GetProcAddress(vmlib, "JNI_GetDefaultJavaVMInitArgs");
         
         if ((CreateJavaVM != NULL) && (GetDefaultJavaVMInitArgs != NULL))
         {
-                this->Message = "CREATEJAVAVM FN LOADED";
+                DEBUG("CREATEJAVAVM FN LOADED");
                 JavaVM *vm = new JavaVM();
                 JNIEnv *env = new JNIEnv();
-//                JavaVMInitArgs vm_args;
-//                JDK1_1InitArgs vm_args;
+
                 jint res;
                 jclass cls;
                 jmethodID mid;
@@ -105,12 +141,14 @@ void JavasoftRuntimeList::run()
                 char classpath[2048];
                 
                 JavaVMInitArgs vm_args;
-     JavaVMOption options[1];
-     options[0].optionString =  "-Djava.class.path=gen-application.jar" ;
-     vm_args.version = 0x00010002;
-     vm_args.options = options;
-     vm_args.nOptions = 1;
-     vm_args.ignoreUnrecognized = JNI_TRUE;
+                JavaVMOption options[1];
+                std::string cpoption = "-Djava.class.path=";
+                cpoption += jarpath;
+                options[0].optionString =  (char*)cpoption.c_str();
+                vm_args.version = 0x00010002;
+                vm_args.options = options;
+                vm_args.nOptions = 1;
+                vm_args.ignoreUnrecognized = JNI_TRUE;
                 
                 GetDefaultJavaVMInitArgs(&vm_args);
 
@@ -123,26 +161,25 @@ void JavasoftRuntimeList::run()
 
               res = CreateJavaVM( &vm, &env, &vm_args);
                 if (res < 0)
-                                this->Message = "Can't create VM";
+                                DEBUG("Can't create VM");
                 else
-                            this->Message = "VM Created !!";
+                            DEBUG("VM Created !!");
 
-                cls = (env)->FindClass("net.charabia.generation.application.Application");
+                cls = (env)->FindClass(classname.c_str());
                 if (cls == 0)
-                                this->Message = "Can't Find CLASS";
+                                DEBUG("Can't Find CLASS");
                 else
-                            this->Message = "CLASS FOUND";
-                            
-                            
+                            DEBUG("CLASS FOUND");
+
                 mid = (env)->GetStaticMethodID(cls, "main", "([Ljava/lang/String;)V");
                 args = (env)->NewObjectArray(0, (env)->FindClass("java/lang/String"), jstr);
                 env->CallStaticVoidMethod(cls, mid, args);
+                DEBUG("VM CALLED !!");
         }
     }
     else
     {
-        this->Message = "CAN'T LOAD ";
-        this->Message += buffer;
+        DEBUG("CAN'T LOAD DLL");
     }
     
 }

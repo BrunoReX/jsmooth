@@ -21,15 +21,27 @@
 #include <windows.h>
 #include <string>
 #include <vector>
-
 #include <jni.h>
 
+#include "common.h"
+#include "Version.h"
+#include <functional>
+
+//
+// This class manages a list of all the Sun's VMs registered in the Windows' 
+// Registry.
+//
+//
 class JavasoftVM
 {
     public:
     std::string Path;
-    std::string Version;
+    Version VmVersion;    
+    friend bool operator < (JavasoftVM&  v1, JavasoftVM& v2);
 };
+
+bool operator<(const JavasoftVM& jvm1, const JavasoftVM& jvm2);
+bool operator<(JavasoftVM& jvm1, JavasoftVM& jvm2);
 
 class JavasoftRuntimeList
 {
@@ -38,6 +50,7 @@ private:
 
 public:
     std::string Message;
+    JavasoftVM INVALID;
     
   JavasoftRuntimeList();
   
@@ -51,7 +64,11 @@ public:
     return m_jvms.at(i);
   }
 
-  void run();
+  const JavasoftVM& findVersionOrHigher(Version v);
+
+  void run(const JavasoftVM& vm, std::string jarpath, std::string classname);
+
+  void runVM12(const JavasoftVM& vm, const std::string& jarpath, const std::string& classname);
 //  void run2();
 
   void copyString(const std::string& str, char* buffer, int max)
