@@ -19,23 +19,26 @@
 */
 
 /*
- * Sample.java
+ * SampleApplication.java
  *
- * Created on 3 août 2003, 14:26
+ * Created on 3 août 2003, 22:26
  */
-import javax.swing.*;
+import java.awt.*;
+
 /**
  *
  * @author  Rodrigo
  */
-public class Sample extends javax.swing.JDialog
+public class SampleApplication extends javax.swing.JFrame
 {
 	
-	/** Creates new form Sample */
-	public Sample(java.awt.Frame parent, boolean modal)
+	/** Creates new form SampleApplication */
+	public SampleApplication()
 	{
-		super(parent, modal);
 		initComponents();
+		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+		this.setLocation((d.width-getWidth())/2, (d.height-getHeight())/2);
+
 	}
 	
 	/** This method is called from within the constructor to
@@ -46,13 +49,12 @@ public class Sample extends javax.swing.JDialog
 	private void initComponents()//GEN-BEGIN:initComponents
 	{
 		jPanel1 = new javax.swing.JPanel();
-		jButton1 = new javax.swing.JButton();
-		jPanel2 = new javax.swing.JPanel();
 		jLabel1 = new javax.swing.JLabel();
+		jPanel2 = new javax.swing.JPanel();
+		jButton1 = new javax.swing.JButton();
 		
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("JSmooth Sample");
-		setModal(true);
 		addWindowListener(new java.awt.event.WindowAdapter()
 		{
 			public void windowClosed(java.awt.event.WindowEvent evt)
@@ -61,9 +63,15 @@ public class Sample extends javax.swing.JDialog
 			}
 			public void windowClosing(java.awt.event.WindowEvent evt)
 			{
-				closeDialog(evt);
+				exitForm(evt);
 			}
 		});
+		
+		jPanel1.setLayout(new java.awt.BorderLayout());
+		
+		jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gnome-application-x-gzip.png")));
+		jLabel1.setText("Sample Application for JSmooth");
+		jPanel1.add(jLabel1, java.awt.BorderLayout.CENTER);
 		
 		jButton1.setText("Exit");
 		jButton1.addActionListener(new java.awt.event.ActionListener()
@@ -74,49 +82,39 @@ public class Sample extends javax.swing.JDialog
 			}
 		});
 		
-		jPanel1.add(jButton1);
+		jPanel2.add(jButton1);
 		
-		getContentPane().add(jPanel1, java.awt.BorderLayout.SOUTH);
+		jPanel1.add(jPanel2, java.awt.BorderLayout.SOUTH);
 		
-		jPanel2.setLayout(new java.awt.BorderLayout());
-		
-		jPanel2.setBorder(new javax.swing.border.EtchedBorder());
-		jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gnome-application-x-gzip.png")));
-		jLabel1.setText("Sample Application for JSmooth");
-		jLabel1.setAlignmentX(0.5F);
-		jLabel1.setFocusable(false);
-		jPanel2.add(jLabel1, java.awt.BorderLayout.CENTER);
-		
-		getContentPane().add(jPanel2, java.awt.BorderLayout.CENTER);
+		getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 		
 		pack();
 	}//GEN-END:initComponents
-
-	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
-	{//GEN-HEADEREND:event_jButton1ActionPerformed
-		// Add your handling code here:
-		System.exit(0);
-	}//GEN-LAST:event_jButton1ActionPerformed
 
 	private void formWindowClosed(java.awt.event.WindowEvent evt)//GEN-FIRST:event_formWindowClosed
 	{//GEN-HEADEREND:event_formWindowClosed
 		// Add your handling code here:
 		System.exit(0);
 	}//GEN-LAST:event_formWindowClosed
+
+	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
+	{//GEN-HEADEREND:event_jButton1ActionPerformed
+		// Add your handling code here:
+		System.exit(0);
+	}//GEN-LAST:event_jButton1ActionPerformed
 	
-	/** Closes the dialog */
-	private void closeDialog(java.awt.event.WindowEvent evt)//GEN-FIRST:event_closeDialog
+	/** Exit the Application */
+	private void exitForm(java.awt.event.WindowEvent evt)//GEN-FIRST:event_exitForm
 	{
-		setVisible(false);
-		dispose();
-	}//GEN-LAST:event_closeDialog
+		System.exit(0);
+	}//GEN-LAST:event_exitForm
 	
 	/**
 	 * @param args the command line arguments
 	 */
 	public static void main(String args[])
 	{
-		new Sample(new javax.swing.JFrame(), true).show();
+		new SampleApplication().show();
 	}
 	
 	
