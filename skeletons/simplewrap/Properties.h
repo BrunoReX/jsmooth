@@ -39,6 +39,10 @@ class Properties
         string getNextToken(const char* data, int datalen, int& cursor, char stopchar);
         
         string get(const string& key) const;
+        
+    private:
+    
+        std::string unescape(const string& val);
 };
 
 #endif

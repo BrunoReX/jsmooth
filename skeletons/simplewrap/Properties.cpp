@@ -38,7 +38,7 @@ void Properties::setData(const char* data, int datalen)
     {
         string key = getNextToken(data, datalen, cursor, '=');
         string value = getNextToken(data, datalen, cursor, '\n');
-        m_data[key] = value;
+        m_data[key] = unescape(value);
         
         DEBUG("PROP <" + key + "> == <" + value + ">");
     }
@@ -66,4 +66,45 @@ string Properties::get(const string& key) const
     if (i == m_data.end())
         return "";
     return i->second;
+}
+
+string Properties::unescape(const string& val)
+{
+    string result;
+    for (string::const_iterator i=val.begin(); i != val.end(); i++)
+    {
+        switch (*i)
+        {
+                case '\\':
+                {
+                                i++;
+                                if (i != val.end())
+                                {
+                                      switch(*i)
+                                      {
+                                         case 'n':
+                                             result += '\n';
+                                             break;
+                                         case 't':
+                                             result += '\t';
+                                             break;
+                                         case 'r':
+                                             result += '\r';
+                                             break;
+                                         case '\\':
+                                             result += '\\';
+                                             break;
+                                      }
+                                }
+                }
+                 break;
+                 
+                default:
+                {
+                                result  += *i;
+                                break;
+                }
+        }
+    }
+    return result;
 }
