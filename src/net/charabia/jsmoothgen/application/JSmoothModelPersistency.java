@@ -88,29 +88,4 @@ public class JSmoothModelPersistency
 		return f;
 	}
 
-	public String makeProperties(JSmoothModelBean obj)
-	{
-		StringBuffer out = new StringBuffer();
-		out.append("arguments=");
-		out.append(obj.getArguments());
-		out.append("\n");
-		
-		out.append("mainclassname=");
-		out.append(obj.getMainClassName());
-		out.append("\n");
-		
-		return out.toString();
-	}
-	
-	public String makePathConc(String[] elements)
-	{
-		StringBuffer buf = new StringBuffer();
-		for (int i=0; i<elements.length; i++)
-		{
-			buf.append(elements[i]);
-			if ((i+1)<elements.length)
-				buf.append(";");
-		}
-		return buf.toString();
-	}
 }
