@@ -5,7 +5,6 @@ package net.charabia.jsmoothgen.application.swtgui;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Observable;
 
 import net.charabia.jsmoothgen.application.ExeCompiler;
 import net.charabia.jsmoothgen.application.JSmoothModelBean;
@@ -15,7 +14,7 @@ import net.charabia.jsmoothgen.skeleton.SkeletonBean;
 import net.charabia.jsmoothgen.skeleton.SkeletonList;
 import net.charabia.jsmoothgen.skeleton.SkeletonProperty;
 
-public class JSmoothApplication extends Observable {
+public class JSmoothApplication {
 
     private boolean dirty = false;
 
@@ -125,9 +124,6 @@ public class JSmoothApplication extends Observable {
             dirty = false;
             projFile = null;
             modelBean = null;
-
-            setChanged();
-            notifyObservers(UpdateMessage.MSGUPD_NULL_PROJECT);
             return;
         }
     }
@@ -160,9 +156,6 @@ public class JSmoothApplication extends Observable {
 
         // Set the dirty flag
         dirty = true;
-
-        setChanged();
-        notifyObservers(UpdateMessage.MSGUPD_NEW_PROJECT);
     }
 
     public boolean saveProject() {
@@ -178,9 +171,7 @@ public class JSmoothApplication extends Observable {
 
         // Reset the dirty flag
         dirty = false;
-
-        setChanged();
-        notifyObservers(UpdateMessage.MSGUPD_SAVED_PROJECT);
+        
         return true;
     }
 

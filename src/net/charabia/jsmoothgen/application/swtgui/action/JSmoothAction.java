@@ -3,15 +3,13 @@
  */
 package net.charabia.jsmoothgen.application.swtgui.action;
 
-import java.util.Observer;
-
 import net.charabia.jsmoothgen.application.swtgui.JSmoothApplication;
 import net.charabia.jsmoothgen.application.swtgui.JSmoothWindow;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 
-public abstract class JSmoothAction extends Action implements Observer {
+public abstract class JSmoothAction extends Action {
 
     public static final String ACTION_SHOWPAGE_JAVA_APP = "Action.ShowPage.Java_Application";
 
@@ -27,25 +25,25 @@ public abstract class JSmoothAction extends Action implements Observer {
 
     public static final String ACTION_SAVE_PROJECT = "Action.Save_Project";
 
-    private JSmoothWindow jsWnd;
+    private JSmoothWindow jsmoothWnd;
 
-    private JSmoothApplication jsApp;
+    private JSmoothApplication jsmoothApp;
 
-    public JSmoothAction(JSmoothWindow jsWnd, JSmoothApplication jsApp) {
-        this.jsWnd = jsWnd;
-        (this.jsApp = jsApp).addObserver(this);
+    public JSmoothAction(JSmoothWindow jsmoothWnd, JSmoothApplication jsmoothApp) {
+        this.jsmoothWnd = jsmoothWnd;
+        this.jsmoothApp = jsmoothApp;
     }
 
     protected JSmoothApplication getApplication() {
-        return jsApp;
+        return jsmoothApp;
     }
 
     protected JSmoothWindow getWindow() {
-        return jsWnd;
+        return jsmoothWnd;
     }
 
     protected ImageDescriptor getDescriptor(String key) {
-        return jsWnd.getResources().getDescriptor(key);
+        return jsmoothWnd.getResources().getDescriptor(key);
     }
 
 }

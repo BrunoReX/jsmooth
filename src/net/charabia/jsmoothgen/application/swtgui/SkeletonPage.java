@@ -28,12 +28,11 @@ public final class SkeletonPage extends JSmoothPage {
 
     private JSmoothApplication jsApp;
 
-    private SkeletonModel skelMdl;
+    private SkeletonModel skeletonMdl;
 
-    public SkeletonPage(JSmoothWindow jsWnd, JSmoothApplication jsApp) {
-        super(jsWnd, jsApp);
-        (this.jsApp = jsApp).addObserver(this);
-        (this.skelMdl) = jsApp.getSkeletonModel();
+    public SkeletonPage(JSmoothWindow jsmoothWnd, JSmoothApplication jsmoothApp) {
+        super(jsmoothWnd, jsmoothApp);
+        (this.skeletonMdl) = jsmoothApp.getSkeletonModel();
     }
 
     private int getItemIndex(String[] array, String str) {
@@ -68,8 +67,7 @@ public final class SkeletonPage extends JSmoothPage {
         btnProps.setText("Properties...");
         btnProps.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                (new SkeletonPropertiesDialog(SkeletonPage.this, jsApp
-                        .getSkeletonModel())).open();
+                (new SkeletonPropertiesDialog(SkeletonPage.this, getApplication().getSkeletonModel())).open();
             }
         });
 
@@ -86,7 +84,7 @@ public final class SkeletonPage extends JSmoothPage {
     }
 
     public void update(Observable o, Object arg) {
-        String[] skelNames = skelMdl.getSkeletonNames();
+        String[] skelNames = skeletonMdl.getSkeletonNames();
 
         cmboSkelSelec.setItems(skelNames);
         getJSmoothWindow().getShell().layout();

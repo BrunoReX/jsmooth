@@ -30,9 +30,9 @@ public class SkeletonModel extends Observable {
     // Cached list of skeleton names
     private List skelNames;
 
-    public SkeletonModel(JSmoothApplication jsthModel) {
+    public SkeletonModel(JSmoothApplication jsmoothApp) {
         this.skeletonList = new SkeletonList(new File("skeletons"));
-        this.jsmoothApp = jsthModel;
+        this.jsmoothApp = jsmoothApp;
     }
 
     private List getSkeletonList(boolean flush) {

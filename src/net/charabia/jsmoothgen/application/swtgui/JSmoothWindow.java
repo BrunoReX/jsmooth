@@ -3,20 +3,18 @@
  */
 package net.charabia.jsmoothgen.application.swtgui;
 
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.List;
 
 import net.charabia.jsmoothgen.application.swtgui.action.CompileAction;
 import net.charabia.jsmoothgen.application.swtgui.action.JSmoothAction;
 import net.charabia.jsmoothgen.application.swtgui.action.NewProjectAction;
 import net.charabia.jsmoothgen.application.swtgui.action.SaveProjectAction;
-import net.charabia.jsmoothgen.application.swtgui.action.ShowPageAction;
 import net.charabia.jsmoothgen.application.swtgui.resources.JSmoothResources;
 
+import org.eclipse.core.internal.runtime.Assert;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -38,7 +36,7 @@ import org.eclipse.swt.widgets.ToolBar;
 /**
  * @author Dumon
  */
-public final class JSmoothWindow implements Observer {
+public final class JSmoothWindow {
 
     /**
      * Special layout for the JSmooth window.
@@ -138,7 +136,22 @@ public final class JSmoothWindow implements Observer {
 
     }
 
-    private JSmoothResources jsRes;
+    class ShowPageAction extends Action {
+
+        private JSmoothPage jsPage;
+
+        public void setPage(JSmoothPage jsPage) {
+            this.jsPage = jsPage;
+        }
+
+        public void run() {
+            Assert.isNotNull(jsPage);
+            showPage(jsPage);
+        }
+
+    }
+    
+    private JSmoothResources resources;
 
     private Shell shell;
 
@@ -159,15 +172,15 @@ public final class JSmoothWindow implements Observer {
     public static final String ID_MENU_ACTION = "Menu.Action";
     
     // JSmooth Pages
-    public static final String PAGE_SKELETON = "Page.Skeleton";
+    public static final String ID_PAGE_SKELETON = "Page.Skeleton";
 
     public static final String ID_PAGE_EXE = "Page.Executable";
 
-    public static final String PAGE_WELCOME = "Page.Welcome";
+    public static final String ID_PAGE_WELCOME = "Page.Welcome";
 
-    public static final String PAGE_JAVA_APP = "Page.JavaApplication";
+    public static final String ID_PAGE_JAVA_APP = "Page.JavaApplication";
     
-    private Map pages = new HashMap();
+    private List pages = new ArrayList();
     
     // MVC Model
     private JSmoothApplication jsmoothApp;
@@ -179,20 +192,27 @@ public final class JSmoothWindow implements Observer {
 
     private ToolBarManager switcher;
 
-    public JSmoothWindow(JSmoothApplication jsthApp) {
-        (this.jsmoothApp = jsthApp).addObserver(this);
-
-        jsRes = new JSmoothResources(display = Display.getDefault());
-
+    public JSmoothWindow(JSmoothApplication jsmoothApp) {
+        resources = new JSmoothResources(display = Display.getDefault());
+        this.jsmoothApp = jsmoothApp;
         addPages();
     }
 
     private void addPages() {
-        putPage(PAGE_WELCOME, new WelcomePage(this, jsmoothApp));
-
-        JSmoothPage skelPage = new SkeletonPage(this, jsmoothApp);
-        jsmoothApp.addObserver(skelPage);
-        putPage(PAGE_SKELETON, skelPage);
+        JSmoothPage skeletonPage = new SkeletonPage(this, jsmoothApp);
+        skeletonPage.addPageModifyListener(new PageModifyListener() {
+            /* (non-Javadoc)
+             * @see net.charabia.jsmoothgen.application.swtgui.PageModifyListener#pageModified()
+             */
+            public void pageModified() {
+                IMenuManager actionMenu = menu.findMenuUsingPath(ID_MENU_ACTION);
+                ActionContributionItem saveAction = (ActionContributionItem) actionMenu.find(JSmoothAction.ACTION_SAVE_PROJECT);
+                saveAction.getAction().setEnabled(true);
+            }
+        });
+        skeletonPage.setImageDescriptor(resources.getDescriptor(JSmoothResources.IMG_ECLIPSE_32));
+        skeletonPage.setToolTip("Skeleton Page");
+        pages.add(skeletonPage);
 
         JSmoothPage javaAppPage = new JavaAppPage(this, jsmoothApp);
         javaAppPage.addPageModifyListener(new PageModifyListener() {
@@ -200,14 +220,15 @@ public final class JSmoothWindow implements Observer {
              * @see net.charabia.jsmoothgen.application.swtgui.PageModifyListener#pageModified()
              */
             public void pageModified() {
-                // FIXME Get the "Save" action and enable it
                 IMenuManager actionMenu = menu.findMenuUsingPath(ID_MENU_ACTION);
                 ActionContributionItem saveAction = (ActionContributionItem) actionMenu.find(JSmoothAction.ACTION_SAVE_PROJECT);
                 saveAction.getAction().setEnabled(true);
             }
         });
-        jsmoothApp.addObserver(javaAppPage);
-        putPage(PAGE_JAVA_APP, javaAppPage);
+        javaAppPage.setImageDescriptor(resources.getDescriptor(JSmoothResources.IMG_ECLIPSE_32));
+        javaAppPage.setToolTip("Java Application");
+        pages.add(javaAppPage);
+        
         
         ExecutablePage exePage = new ExecutablePage(this, jsmoothApp);
         exePage.addPageModifyListener(new PageModifyListener() {
@@ -215,14 +236,14 @@ public final class JSmoothWindow implements Observer {
              * @see net.charabia.jsmoothgen.application.swtgui.PageModifyListener#pageModified()
              */
             public void pageModified() {
-                // FIXME Get the "Save" action and enable it
                 IMenuManager actionMenu = menu.findMenuUsingPath(ID_MENU_ACTION);
                 ActionContributionItem saveAction = (ActionContributionItem) actionMenu.find(JSmoothAction.ACTION_SAVE_PROJECT);
                 saveAction.getAction().setEnabled(true);
             }
         });
-        putPage(ID_PAGE_EXE, exePage);
-        // TODO ...more to come
+        exePage.setImageDescriptor(resources.getDescriptor(JSmoothResources.IMG_ECLIPSE_32));
+        exePage.setToolTip("Windows Executable");
+        pages.add(exePage);
     }
 
     /**
@@ -233,25 +254,17 @@ public final class JSmoothWindow implements Observer {
      */
     private void createSwitcherManager(Shell shell) {
         switcher = new ToolBarManager(SWT.FLAT | SWT.NO_FOCUS | SWT.VERTICAL);
-
-        // TODO Add actions
-        ShowPageAction actnSkel = new ShowPageAction(this, jsmoothApp);
-        actnSkel.setPage(getPage(PAGE_SKELETON));
-        actnSkel.setId(JSmoothAction.ACTION_SHOWPAGE_SKELETON);
-        actnSkel.setToolTipText("Skeleton Page");
-        switcher.add(actnSkel);
-
-        ShowPageAction actnJavaApp = new ShowPageAction(this, jsmoothApp);
-        actnJavaApp.setPage(getPage(PAGE_JAVA_APP));
-        actnJavaApp.setId(JSmoothAction.ACTION_SHOWPAGE_JAVA_APP);
-        actnJavaApp.setToolTipText("Java Application");
-        switcher.add(actnJavaApp);
         
-        ShowPageAction showExeAction = new ShowPageAction(this, jsmoothApp);
-        showExeAction.setPage(getPage(ID_PAGE_EXE));
-        showExeAction.setId(JSmoothAction.ID_ACTION_SHOWPAGE_EXE);
-        showExeAction.setToolTipText("Executable Page");
-        switcher.add(showExeAction);
+        Iterator it = getPages().iterator();
+        while (it.hasNext()) {
+            JSmoothPage page = (JSmoothPage) it.next();
+            ShowPageAction action = new ShowPageAction();
+            action.setPage(page);
+            action.setImageDescriptor(page.getImageDescriptor());
+            action.setToolTipText(page.getToolTip());
+            action.setId(page.getId());
+            switcher.add(action);
+        }
         
         switcherControl = switcher.createControl(shell);
     }
@@ -281,16 +294,12 @@ public final class JSmoothWindow implements Observer {
         }
     }
 
-    private Collection getPages() {
-        return pages.values();
+    private List getPages() {
+        return pages;
     }
 
-    private JSmoothPage getPage(String id) {
-        return (JSmoothPage) pages.get(id);
-    }
-
-    private void putPage(String id, JSmoothPage page) {
-        pages.put(id, page);
+    private JSmoothPage getPage(Class clazz) {
+        throw new UnsupportedOperationException("Not implemented");
     }
 
     public void showPage(JSmoothPage jsthPage) {
@@ -373,29 +382,12 @@ public final class JSmoothWindow implements Observer {
         display.update();
     }
 
-    public void update(Observable o, Object arg) {
-        // JSmoothWindow's title
-        shell.setText(jsmoothApp.getProjectName());
-
-        // Show and update the skeleton page
-        if (!jsmoothApp.hasProjectFile()) {
-            showPage(getPage(PAGE_WELCOME));
-        }
-
-//        if (!arg.equals(UpdateMessage.MSGUPD_NULL_PROJECT)) {
-//            IContributionItem citm = switcherMng
-//                    .find(JSmoothAction.ACTION_SHOWPAGE_SKELETON);
-//            ActionContributionItem acitm = (ActionContributionItem) citm;
-//            ((JSmoothAction) acitm.getAction()).run();
-//        }
-    }
-
     public Shell getShell() {
         return shell;
     }
 
     public JSmoothResources getResources() {
-        return jsRes;
+        return resources;
     }
 
 }
