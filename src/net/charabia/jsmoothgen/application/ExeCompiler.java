@@ -189,6 +189,8 @@ public class ExeCompiler
 	try {
 	    Class c = Class.forName("com.sun.jimi.core.Jimi");
 	    orgimage = com.sun.jimi.core.Jimi.getImage(path);
+	    com.sun.jimi.core.util.ColorReducer reducer = new com.sun.jimi.core.util.ColorReducer(256);
+	    orgimage = reducer.getColorReducedImage(orgimage);
 	} catch (Exception exc)
 	    {
 		javax.swing.ImageIcon icon = new javax.swing.ImageIcon(path, "default icon");
