@@ -37,8 +37,8 @@ JavasoftRuntimeList::JavasoftRuntimeList()
 	LONG val = RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("SOFTWARE\\JavaSoft\\Java Runtime Environment"), 0,
              KEY_READ, &hKey);
 
-	unsigned long buffersize = 255;
-	char buffer[255];
+	unsigned long buffersize = 1024;
+	char buffer[1024];
 
 	for (int i=0; RegEnumKey(hKey ,i, buffer, buffersize) == ERROR_SUCCESS; i++)
 	{
@@ -49,21 +49,34 @@ JavasoftRuntimeList::JavasoftRuntimeList()
 		{
 		    std::string versionname(buffer);
 		
+  		    // DEBUG(std::string("FOUND KEY FOR ") + versionname);
+  		    
 			HKEY runtimelib;
 			unsigned long datatype;
 			unsigned char *b = (unsigned char*)buffer;
+			buffersize = 1024;
 			int foundlib = RegQueryValueEx(version, TEXT("RuntimeLib"), 
 								NULL, 
 								&datatype, 
 								b, 
 								&buffersize);
 								
-								
+			if (foundlib != ERROR_SUCCESS)
+            {
+                        char buf[255];
+                        sprintf(buf, "ERROR : %d", foundlib);
+               //         DEBUG(buf);
+//                        sprintf(buf, "SIZE : %ld", buffersize);
+//                        DEBUG(buf);
+            }					
 			if (foundlib == ERROR_SUCCESS)
 			{
 				char *rt = buffer;
 				std::string s(buffer);
 				bool found = false;
+				
+				// DEBUG(std::string("FOUND RUNTIME AT ") + s);
+				
 				for (std::vector<JavasoftVM>::iterator i=m_jvms.begin(); i != m_jvms.end(); i++)
 				{
 				    if ((*i).Path == s)
@@ -76,13 +89,13 @@ JavasoftRuntimeList::JavasoftRuntimeList()
 				    vm.VmVersion = Version(versionname);
 				    m_jvms.push_back(vm);
 				    
-				    DEBUG(std::string("Found new VM: ") + vm.Path + " : " + vm.VmVersion.Value);
 				    char buffer[244];
 				    sprintf(buffer, "V(%d)(%d)(%d)", vm.VmVersion.getMajor(), vm.VmVersion.getMinor(), vm.VmVersion.getSubMinor());
-				    DEBUG(std::string("ANALYZED AS ") + buffer);
+				    DEBUG(std::string("Found new VM: ") + vm.Path + " : " + vm.VmVersion.Value + " :: " + buffer);
+				   
                 }
 				    
-			}
+			} 
 		}
 
 	}
@@ -144,6 +157,8 @@ void JavasoftRuntimeList::runVM12(const JavasoftVM& vm, const std::string& jarpa
                 JavaVMOption options[1];
                 std::string cpoption = "-Djava.class.path=";
                 cpoption += jarpath;
+//                cpoption += "grostest.jar";
+                DEBUG("Classpath: " + cpoption);
                 options[0].optionString =  (char*)cpoption.c_str();
                 vm_args.version = 0x00010002;
                 vm_args.options = options;
@@ -164,17 +179,43 @@ void JavasoftRuntimeList::runVM12(const JavasoftVM& vm, const std::string& jarpa
                                 DEBUG("Can't create VM");
                 else
                             DEBUG("VM Created !!");
-
+                
+                jclass clstest = env->FindClass("java/lang/System");
+                if (clstest != 0)
+                {
+                                DEBUG("FOUND java.lang.system !");
+                }
+                else
+                {
+                                DEBUG("java.lang.system NOT FOUND");
+                }                
+                
                 cls = (env)->FindClass(classname.c_str());
                 if (cls == 0)
-                                DEBUG("Can't Find CLASS");
+                {
+                                char tmpbuf[255];
+                                sprintf(tmpbuf, "Cant find <%s> at all!", classname.c_str());
+                                DEBUG(tmpbuf);
+                                DEBUG(std::string("Can't Find CLASS <") + classname + std::string(">"));
+                                return;
+                }
                 else
                             DEBUG("CLASS FOUND");
 
+                char strbuf[255];
+                sprintf(strbuf, "");
+                jstr = (env)->NewStringUTF(strbuf);
                 mid = (env)->GetStaticMethodID(cls, "main", "([Ljava/lang/String;)V");
                 args = (env)->NewObjectArray(0, (env)->FindClass("java/lang/String"), jstr);
-                env->CallStaticVoidMethod(cls, mid, args);
-                DEBUG("VM CALLED !!");
+                if ((mid != 0) && (args != 0))
+                {
+                                env->CallStaticVoidMethod(cls, mid, args);
+                                DEBUG("VM CALLED !!");
+                }
+                else
+                {
+                                DEBUG("Can't find method !");
+                }
         }
     }
     else

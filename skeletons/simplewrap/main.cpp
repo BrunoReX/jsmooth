@@ -137,13 +137,16 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     jlist = new JavasoftRuntimeList();
     const JavasoftVM& bestVm = jlist->findVersionOrHigher(Version(std::string("1.4")));
     DEBUG(std::string("Found BESTVM: ") + bestVm.Path + " / " + bestVm.VmVersion.Value);
-     if (bestVm.Path != "")
+//     if (bestVm.Path != "")
        {
         ResourceManager resman("JAVA", 102, 103);
         resman.saveTemp(std::string("temp.jar"));
+        DEBUG(std::string("Main class: ") + resman.getMainName());
         jlist->run(bestVm, std::string("temp.jar"), resman.getMainName());
+//        jlist->run(bestVm, std::string("temp.jar"), std::string("SampleApplication"));
+//        jlist->run(bestVm, std::string("temp.jar"), std::string("net.charabia.generation.application.Application"));
     }
-    else
+//    else
     {
     /* Make the window visible on the screen */
     ShowWindow (hwnd, nFunsterStil);
