@@ -52,8 +52,9 @@
   </path>
 
   <path id="jsmooth.class.path">
-    <pathelement path="lib/jox116.jar"/>
-    <pathelement path="lib/dtdparser113.jar"/>
+      <fileset dir="lib">
+        <include name="**/*.jar"/>
+      </fileset>
   </path>
 
   <target name="init">
