@@ -47,6 +47,31 @@ public class JSmoothModelBean
 	private String m_noJvmMessage;
 	private String m_noJvmURL;
 
+	private JSmoothModelBean.Property[] m_skelproperties;
+
+	static public class Property
+	{
+		public String Key;
+		public String Value;
+		
+		public void setKey(String key)
+		{
+			this.Key = key;
+		}
+		public String getKey()
+		{
+			return this.Key;
+		}
+		public void setValue(String val)
+		{
+			this.Value = val;
+		}
+		public String getValue()
+		{
+			return this.Value;
+		}	
+	}
+	
 	transient Vector m_listeners = new Vector();
 
 	public static interface Listener
@@ -201,6 +226,16 @@ public class JSmoothModelBean
 		return m_basedir;
 	}
 
+	public void setSkeletonProperties(JSmoothModelBean.Property[] props)
+	{
+		m_skelproperties = props;
+	}
+	
+	public JSmoothModelBean.Property[] getSkeletonProperties()
+	{
+		return m_skelproperties;
+	}	
+	
 	public void setNoJvmMessage(String msg)
 	{
 		m_noJvmMessage = msg;
