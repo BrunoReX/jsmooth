@@ -166,7 +166,7 @@ public class IcoCodec
 	    for (int i=0; i<dir.idCount; i++)
 		{
 		    in.reset();
-		    in.skip(entry.dwImageOffset);
+		    in.skip(entries[i].dwImageOffset);
 
 		    IconHeader header = new IconHeader(in);
 		    System.out.println("Header: " + header);
@@ -184,7 +184,7 @@ public class IcoCodec
 			{
 			case 4:
 			case 8:
-			    loadPalettedImage(in, entry, header, image);
+			    loadPalettedImage(in, entries[i], header, image);
 			    break;
 			    
 			default:

@@ -234,7 +234,12 @@ public class ResIcon
 
 	this.ColorsUsed = 0;
 	this.ColorsImportant = 0;
-		
+
+	//
+	// We calculate the rowsize in bytes. It seems that it must be
+	// aligned on a double word, although none of the
+	// documentation I have on the icon format states so.
+	//
 	int rowsize = width / 8;
 	if ((rowsize%4)>0)
 	    {
@@ -265,7 +270,7 @@ public class ResIcon
 		if (  (((pixelbuffer[i]>>24)& 0xFF) == 0))
 		    {
 			BitmapAND[ bal ] |= 1 << (7-(i%8));
-			BitmapXOR[bxl] = 0x00; // (short)getBrightest(); FF
+			BitmapXOR[bxl] = 0xFF; // (short)getBrightest(); FF
 
 			// 				int pixel = pixelbuffer[i] & 0x00FFFFFF;
 			// 				pixel = 0x000000;

@@ -114,7 +114,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
         jMenu2 = new javax.swing.JMenu();
         m_menuAbout = new javax.swing.JMenuItem();
 
-        setTitle("JSmooth");
+        setTitle("JSmooth " + VERSION);
         addWindowListener(new java.awt.event.WindowAdapter()
         {
             public void windowClosing(java.awt.event.WindowEvent evt)
@@ -362,7 +362,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
     {//GEN-HEADEREND:event_buttonNewActionPerformed
 	// Add your handling code here:
 	JSmoothModelBean model = new JSmoothModelBean();
-	setTitle("JSmooth: New project");
+	setTitle("JSmooth " + VERSION + ": New project");
 	m_wizard.setModel(null, model);
 	m_projectFile = null;
     }//GEN-LAST:event_buttonNewActionPerformed
@@ -545,7 +545,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 	
     public boolean openDirect(File path)
     {
-	this.setTitle("JSmooth: " + path.toString());
+	this.setTitle("JSmooth " + VERSION + ": " + path.toString());
 	m_projectFile = path;
 	try
 	    {
@@ -584,7 +584,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		    {
 			return;
 		    }
-		this.setTitle("JSmooth: " + m_projectFile.toString());
+		this.setTitle("JSmooth " +VERSION + ": " + m_projectFile.toString());
 	    }
 	try
 	    {

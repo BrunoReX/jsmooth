@@ -184,7 +184,7 @@ public class ExeCompiler
 	    }
     }
 	
-    public Image loadImage(String path)
+    public Image[] loadImages(String path)
     {
 	File f = new File(path);
 
@@ -194,10 +194,10 @@ public class ExeCompiler
 		// Try to load with our ico codec...
 		//
 		try {
-		    java.awt.Image img = net.charabia.util.codec.IcoCodec.loadImage(f);
-		    if (img != null)
+		    java.awt.Image[] images = net.charabia.util.codec.IcoCodec.loadImages(f);
+		    if ((images != null) && (images.length>0))
 			{
-			    return img;
+			    return images;
 			}
 		} catch (java.io.IOException exc)
 		    {
@@ -208,9 +208,10 @@ public class ExeCompiler
 	// 
 	// defaults to the standard java loading process
 	//
-
 	javax.swing.ImageIcon icon = new javax.swing.ImageIcon(path, "default icon");
-	return icon.getImage();
+	java.awt.Image[] imgs = new java.awt.Image[1];
+	imgs[0] = icon.getImage();
+	return imgs;
     }
 
     public void checkImageLoaded(Image img)
@@ -265,7 +266,6 @@ public class ExeCompiler
 
     public BufferedImage getQuantizedImage(Image img)
     {
-
 	int width = img.getWidth(null);
 	int height = img.getHeight(null);
 	int[][] data = new int[width][height];
@@ -425,35 +425,77 @@ public class ExeCompiler
 	return result;
     }
 
+    public Image checkImageSize(Image img, int width, int height)
+    {
+	int w = img.getWidth(null);
+	int h = img.getHeight(null);
+	if ((w == width) && (h == height))
+	    return img;
+	return null;
+    }
+
     public Image getScaledImage(String path, int width, int height)
     {
-	Image orgimage = loadImage(path);
-	if (orgimage == null)
-	    return null;
+	Image[] orgimages = loadImages(path);
 	
-	checkImageLoaded(orgimage);
+	if ((orgimages == null) || (orgimages.length == 0))
+	    return null;
 
-	int w = orgimage.getWidth(null);
-	int h = orgimage.getHeight(null);
+	for (int i=0; i<orgimages.length; i++)
+	    checkImageLoaded(orgimages[i]);
 
-	if ( (w==16 && h==16) || (w==32 && h==32) || (w==64 && h==64))
+	System.out.println("Loaded " + orgimages.length + " images");
+	for (int i=0; (i<orgimages.length); i++)
 	    {
-		return getQuantizedImage(orgimage);
+		int w = orgimages[i].getWidth(null);
+		int h = orgimages[i].getHeight(null);
+		System.out.println("Size of " + i + " = " + w + "," + h);
+	    }	
+
+	//
+	// We prefer 32x32 pictures, then 64x64, then 16x16...
+	//
+	Image selected = null;
+	for (int i=0; (i<orgimages.length) && (selected==null); i++)
+	    selected = checkImageSize(orgimages[i], 32, 32);
+	for (int i=0; (i<orgimages.length) && (selected==null); i++)
+	    selected = checkImageSize(orgimages[i], 64, 64);
+	for (int i=0; (i<orgimages.length) && (selected==null); i++)
+	    selected = checkImageSize(orgimages[i], 16, 16);
+
+	if (selected != null)
+	    {
+		return getQuantizedImage(selected);
 	    }
 
-	//	orgimage = getQuantizedImage(orgimage);
+	//
+	// If there is no 32x32, 64x64, nor 16x16, then we scale the
+	// biggest image to be 32x32... This should happen mainly when
+	// loading an image from a png of gif file, and in most case
+	// there is only one image on the array.
+	//
+	int maxsize = 0;
+	Image biggest = null;
+	for (int i=0; (i<orgimages.length) && (selected==null); i++)
+	    {
+		int size = orgimages[i].getWidth(null) * orgimages[i].getHeight(null);
+		if (size>maxsize)
+		    {
+			maxsize = size;
+			biggest = orgimages[i];
+		    }
+	    }
 
-	Hashtable set = calculateColorCount(orgimage);
-	System.out.println("COLORS TOTAL 3: " + set.size());
-
-// 	if ( (w==16 && h==16) || (w==32 && h==32) || (w==64 && h==64))
-// 	    {
-// 		return orgimage;
-// 	    }
-
-	orgimage = orgimage.getScaledInstance(32, 32, Image.SCALE_AREA_AVERAGING);
-	checkImageLoaded(orgimage);
-	return getQuantizedImage(orgimage);
+	if (biggest != null)
+	    {
+		Image result = biggest.getScaledInstance(32, 32, Image.SCALE_AREA_AVERAGING);
+		checkImageLoaded(result);
+		return getQuantizedImage(result);
+	    }
+	//
+	// Here, we have failed and return null
+	//
+	return null;
     }
 
 //     public int colorCount(BufferedImage img)

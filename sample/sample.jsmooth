@@ -6,9 +6,8 @@
 <JVMSearchPath>jdkpath</JVMSearchPath>
 <JVMSearchPath>exepath</JVMSearchPath>
 <JVMSearchPath>jview</JVMSearchPath>
-<arguments></arguments>
 <executableName>Sample.exe</executableName>
-<iconLocation>.</iconLocation>
+<iconLocation>test\bighorn.ico</iconLocation>
 <initialMemoryHeap>50331648</initialMemoryHeap>
 <jarLocation>sample.jar</jarLocation>
 <javaProperties>

@@ -56,16 +56,15 @@
 
    </para>
   </sect3>
-
   </sect2>
 
   <sect2><title>Rationale</title>
    <para>
 
-   The deployment of desktop Java application is a problem since
-   version 1 of Java. One must either bundle a JRE with his
-   application, or let the users manage alone the issue of installing
-   a JVM and configuring the application.
+   The deployment of desktop Java applications is a problem since
+   version 1 of Java. Java developers must either bundle a JRE with
+   their application, or let the users manage themselves the issue of
+   installing a JVM and configuring the application.
 
    </para>
 
@@ -195,6 +194,100 @@
 
     </para>
  </sect2>
+
+
+ <sect2><title>Creating your first exe</title>
+   <para>
+
+     JSmooth creates a binary exe that contains a java application in
+     a jar, but it also allows you to specify additional jar files or
+     directories for the classpath, to specify the java properties,
+     the minimum jvm version needed by your application, and so on.
+
+   </para>
+
+
+   <sect3><title>How to start?</title>
+   <para>
+
+     The minimum data you need to start the creation of the binary
+     executable for your application is to have a jar file that
+     contains the entry point of the program. It is not necessary to
+     have a manifest that specifies the entry point, although JSmooth
+     can use it if available.
+   
+   </para>
+
+   <para>
+
+     Once you have it, click on the <function>Windows
+     Executable</function> panel, and type the name of the executable
+     in the <label>Executable Name</label> field. Do not forget to add
+     the <label>.exe</label> suffix, for your executable
+     name. Something like <function>my-app.exe</function> would be
+     fine.
+
+   </para>
+
+   <para>
+
+     Next, click on the <label>Java Application</label>. Specify the
+     jar to embed in the binay executable using the <label>...</label>
+     on the right of the <label>Jar Location</label>. If your Jar
+     contains a manifest with a <function>main-class</function> entry,
+     the main class of your application should appear in the
+     <label>Main Class</label> field. Otherwise, just type it. For
+     obvious reasons, you really need specify a valid java class name
+     with its fully-qualified name, and using dots as separator. For
+     instance, "my.packacke.MyClass".
+
+   </para>
+
+   </sect3>
+ </sect2>
+
+ <sect2><title>That's it!</title>
+
+ <para>
+
+   Now that you have specified all the mandatory information for the
+   creation of your executable, you are nearly done. Click on the save
+   button (or in the <guimenu>File+Save</guimenu> menu) and select a
+   filename for the project. This is an important step, because all
+   the path stored in the file, and displayed in the GUI are relative
+   to this file. 
+ </para>
+
+ <para>
+
+   Once your project is saved, it is just a matter of clicking on the
+   <guimenu>Project+Create Exe</guimenu>. And that's it. You can use
+   the <guimenu>Project+Run Exe</guimenu> to run the program, or
+   double-click the file name that was specified in <label>Windows
+   Executable</label> panel, which can be found in the same directory
+   than the project file.
+
+ </para>
+
+ <para>
+  Of course, you can modify the location of the every file in the
+  project, but you must always keep this simple rule in mind:
+
+ <itemizedlist>
+
+   <listitem><para>All the files saved and displayed in the Graphical
+   User Interface are relative to the project file. </para>
+
+   </listitem>
+
+ </itemizedlist>
+ </para>
+
+ </sect2>
+
+</sect1>
+
+<sect1><title>JSmoothGen structure</title>
 
  <sect2><title>Skeleton Selection</title>
 
@@ -329,22 +422,41 @@
 
 	 <listitem>
 	   <para>
+
 	    The executable icon field specify the icon image that is
 	    associated to the executable, under Windows. The default
-	    configuration of JSmoothGen support GIF, PNG, and JPG
-	    images. 
+	    configuration of JSmoothGen support Windows Icon files
+	    (.ICO) as well as the standard types supported by the JVM
+	    (GIF, PNG, and JPG files).
 	   </para>
 
 	   <para>
-	    If you want JSmoothGen to recognize additional image
-	    types, you need to download the Sun's JIMI package.  It
-	    can be downloaded on <ulink
-	    url="http://www.javasoft.com"><citetitle>Sun's JavaSoft
-	    website</citetitle></ulink>, then extract the <filename>JimiProClasses.zip</filename> file,
-	    and copy it in the lib/ directory where JSmooth is
-	    installed (probably on <filename>c:\program files\jsmooth\</filename>).
+	   
+	    The current implementation only sets up a single icon
+	    image in the executable. Here is a brief description on
+	    how JSmoothGen creates the executable icon:
 
+	    <itemizedlist>
 
+	     <listitem><para>If the user selects a standard Windows icon (.ICO), it
+	    chooses
+
+            	    <footnote><para>The Windows ICO file format can store
+	            several images in a single file. A single file often
+	            stores icons at several resolutions.
+		    </para></footnote>
+
+	    first 32x32 icons, then 64x64, then 16x16.
+	        </para></listitem>
+
+	     <listitem><para>
+	      If the user selects any other recognized image file, the
+	      image is scaled to be 32x32, and quantized to fit in 256
+	      colors. The color reduction is rough and it is always
+	      better to use an image processing software for the job.
+             </para></listitem>
+
+	    </itemizedlist>
            </para>
 
 	 </listitem>

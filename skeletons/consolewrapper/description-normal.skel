@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <jsmoothskeleton>
-<description>This skeleton wraps a console application. 
-- Output/Error and Input are available
+<description>This skeleton wraps console applications. 
+- Standard Input/Output and Error streams are available
 - If no Java VM is found, it displays a default message.
 
-Although it is designed for console application (i.e. launched from the command.com shell prompt), it can launch standard GUI application. In such a case, any output of the java application (from System.out or System.err) is displayed on the a DOS Console.
+Although it is designed for console application (i.e. launched from the command.com shell prompt), it can launch standard GUI application. In such a case, any output of the java application (from System.out or System.err) is displayed in the a DOS Console.
 </description>
 <executableName>consolewrapper.exe</executableName>
 <resourceCategory>JAVA</resourceCategory>

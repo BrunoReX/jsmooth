@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <jsmoothskeleton>
-<description>This skeleton wraps GUI application. 
+<description>This skeleton wraps GUI applications. 
 - No console I/O is displayed
 - If no Java VM is found, it is able to display a configurable URL (typically to a java download page).
 </description>

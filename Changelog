@@ -1,8 +1,15 @@
 0.9.5
 	- Fixed bug that prevented the wrappers to launch the bundled jvm
-	- Added ICO loader code, so that JIMI is not required anymore
+	- Added home-made ICO loader code, so that JIMI is not required
+	anymore (thus removing a dependency to a closed-source Sun
+	package).
+	- Added color reduction for icons using true-color images.
 	- Fixed transparency issue with icon resource set up in the
-	executable
+	executable.
+	- Set the system look-and-feel as default
+	- Fixed a few typos in the skeleton descriptors
+	- Added version in the title bar of the application window
+	- Improved the documentation (at least, tried to)
 	
 0.9.4
 	- ! Added Ant Task support 

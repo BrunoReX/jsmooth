@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <jsmoothskeleton>
 <debug>true</debug>
-<description>This skeleton wraps a console application, and display all the JSmooth debug information.
-- Output/Error and Input are available
+<description>This skeleton wraps console applications, and display all the JSmooth debug information.
+
+- Standard Input/Output and Error streams are available
 - If no Java VM is found, it displays a default message.
 
 This wrapper is NOT designed for production. Use it only if you want to verify the behaviour of the wrapper and check how the JVM is selected and launched.</description>
