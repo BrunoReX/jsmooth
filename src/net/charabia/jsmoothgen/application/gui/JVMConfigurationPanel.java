@@ -141,9 +141,9 @@ public class JVMConfigurationPanel extends javax.swing.JPanel implements ModelUp
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(5, 1, 1, 5);
         gridBagConstraints.weightx = 0.8;
         gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 1, 1, 5);
         m_propeditor.getContentPane().add(jPanel2, gridBagConstraints);
 
         jPanel4.setLayout(new java.awt.GridBagLayout());

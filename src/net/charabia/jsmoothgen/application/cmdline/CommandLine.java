@@ -18,17 +18,13 @@
  
  */
 
-package net.charabia.jsmoothgen.application;
+package net.charabia.jsmoothgen.application.cmdline;
 
+import net.charabia.jsmoothgen.application.*;
 import net.charabia.jsmoothgen.skeleton.*;
 import net.charabia.jsmoothgen.pe.*;
 
 import java.io.*;
-import java.nio.*;
-import java.nio.channels.*;
-import java.util.*;
-import java.awt.*;
-import java.lang.reflect.*;
 
 public class CommandLine
 {
@@ -62,10 +58,14 @@ public class CommandLine
 	    JSmoothModelBean model = JSmoothModelPersistency.load(prj);
 	    File basedir = prj.getParentFile();
 	    SkeletonList skelList = new SkeletonList(new File("skeletons"));
+
+	    //	    File out = new File(exedir, model.getExecutableName());
+	    
+	    
 	} catch (Exception exc)
 	    {
 		exc.printStackTrace();
 	    }
-	
     }
+
 }
