@@ -26,12 +26,30 @@ JavaMachineManager::JavaMachineManager(const ResourceManager& resman): m_resman(
     m_javahomeVm = JVMEnvVarLookup::lookupJVM("JAVA_HOME");
     m_jrepathVm = JVMEnvVarLookup::lookupJVM("JRE_PATH");
     m_jdkpathVm = JVMEnvVarLookup::lookupJVM("JDK_PATH");
+    if (resman.getProperty("localvmdir").length() > 0)
+    {
+        m_localVMenabled = true;
+        m_localVM.JavaHome = resman.getProperty("localvmdir");
+    } else
+    {
+        m_localVMenabled = false;
+    }
 }
 
 bool JavaMachineManager::run()
 {
     string vmorder = m_resman.getProperty(ResourceManager::KEY_JVMSEARCH);
-//    if (vmorder == "")
+
+    if (m_localVMenabled)
+    {
+        if (m_localVM.run(m_resman))
+                return true;
+        
+        if (m_localVM.runProc(m_resman))
+                return true;
+    }
+
+    if (vmorder == "")
     {
         vmorder = "jdkpath,jrepath,javahome,registry,jview,exepath";
     }

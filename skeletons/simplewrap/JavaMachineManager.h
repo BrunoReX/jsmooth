@@ -37,6 +37,10 @@ class JavaMachineManager
     vector<SunJVMLauncher> m_javahomeVm;
     vector<SunJVMLauncher> m_jrepathVm;
     vector<SunJVMLauncher> m_jdkpathVm;
+    
+    bool                   m_localVMenabled;
+    SunJVMLauncher         m_localVM;
+    
     MSJViewLauncher        m_jviewVm;
     
     const ResourceManager& m_resman;
@@ -45,7 +49,6 @@ class JavaMachineManager
         JavaMachineManager(const ResourceManager& resman) ;
 
         bool run();
-
 };
 
 #endif
