@@ -54,10 +54,15 @@ public class SkeletonList
 	public void addSkeletonDirectory(File dir, File desc)
 	{
 		try {
+			System.out.println("loading skel " + dir.toString());
 			SkeletonBean skel = SkeletonPersistency.load(desc);
 			m_skelsToDirs.put(skel, dir);
 			m_nameToSkel.put(skel.getShortName(), skel);
 
+			System.out.println("loaded skel " + skel.toString());
+			System.out.println("loaded properties: "+ skel.getSkeletonProperties());
+			
+			
 		} catch (IOException iox)
 		{
 			iox.printStackTrace();

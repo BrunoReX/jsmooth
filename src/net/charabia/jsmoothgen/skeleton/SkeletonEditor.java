@@ -28,16 +28,21 @@
 package net.charabia.jsmoothgen.skeleton;
 
 import javax.swing.*;
+import javax.swing.table.*;
+import java.util.*;
 import java.io.*;
-
+import java.awt.*;
 
 public class SkeletonEditor extends javax.swing.JFrame
 {
+	private SkeletonPropertyTableModel m_model = new SkeletonPropertyTableModel();
 	
 	/** Creates new form SkeletonEditor */
 	public SkeletonEditor()
 	{
 		initComponents();
+		setSkeleton(new SkeletonBean());
+//		m_propTable.setModel(m_model);
 	}
 	
 	/** This method is called from within the constructor to
@@ -50,6 +55,11 @@ public class SkeletonEditor extends javax.swing.JFrame
 		java.awt.GridBagConstraints gridBagConstraints;
 		
 		m_fileChooser = new javax.swing.JFileChooser();
+		m_popupMenu = new javax.swing.JPopupMenu();
+		m_menuAddItem = new javax.swing.JMenuItem();
+		m_menuRemoveItem = new javax.swing.JMenuItem();
+		jSeparator3 = new javax.swing.JSeparator();
+		m_menuItemUp = new javax.swing.JMenuItem();
 		jPanel1 = new javax.swing.JPanel();
 		jLabel5 = new javax.swing.JLabel();
 		m_exeName = new javax.swing.JTextField();
@@ -64,6 +74,8 @@ public class SkeletonEditor extends javax.swing.JFrame
 		m_jarId = new javax.swing.JTextField();
 		jLabel4 = new javax.swing.JLabel();
 		m_propsId = new javax.swing.JTextField();
+		m_tablescrollpane = new javax.swing.JScrollPane();
+		m_propTable = new javax.swing.JTable();
 		jMenuBar1 = new javax.swing.JMenuBar();
 		jMenu1 = new javax.swing.JMenu();
 		m_menuNew = new javax.swing.JMenuItem();
@@ -90,6 +102,41 @@ public class SkeletonEditor extends javax.swing.JFrame
 			}
 		});
 		m_fileChooser.setFileSelectionMode(javax.swing.JFileChooser.FILES_AND_DIRECTORIES);
+		m_menuAddItem.setText("Add item");
+		m_menuAddItem.addActionListener(new java.awt.event.ActionListener()
+		{
+			public void actionPerformed(java.awt.event.ActionEvent evt)
+			{
+				menuAddItemActionPerformed(evt);
+			}
+		});
+		
+		m_popupMenu.add(m_menuAddItem);
+		
+		m_menuRemoveItem.setText("RemoveItems");
+		m_menuRemoveItem.addActionListener(new java.awt.event.ActionListener()
+		{
+			public void actionPerformed(java.awt.event.ActionEvent evt)
+			{
+				menuRemoveItemActionPerformed(evt);
+			}
+		});
+		
+		m_popupMenu.add(m_menuRemoveItem);
+		
+		m_popupMenu.add(jSeparator3);
+		
+		m_menuItemUp.setText("Item Up");
+		m_menuItemUp.addActionListener(new java.awt.event.ActionListener()
+		{
+			public void actionPerformed(java.awt.event.ActionEvent evt)
+			{
+				menuItemUpActionPerformed(evt);
+			}
+		});
+		
+		m_popupMenu.add(m_menuItemUp);
+		
 		
 		getContentPane().setLayout(new java.awt.GridBagLayout());
 		
@@ -183,10 +230,68 @@ public class SkeletonEditor extends javax.swing.JFrame
 		gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
 		jPanel1.add(jLabel4, gridBagConstraints);
 		
+		m_propsId.addActionListener(new java.awt.event.ActionListener()
+		{
+			public void actionPerformed(java.awt.event.ActionEvent evt)
+			{
+				m_propsIdActionPerformed(evt);
+			}
+		});
+		
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		jPanel1.add(m_propsId, gridBagConstraints);
+		
+		m_tablescrollpane.addMouseListener(new java.awt.event.MouseAdapter()
+		{
+			public void mousePressed(java.awt.event.MouseEvent evt)
+			{
+				tablescrollpaneMousePressed(evt);
+			}
+			public void mouseReleased(java.awt.event.MouseEvent evt)
+			{
+				tablescrollpaneMouseReleased(evt);
+			}
+		});
+		
+		m_propTable.setModel(new javax.swing.table.DefaultTableModel(
+		new Object [][]
+		{
+			{null, null, null, null, null},
+			{null, null, null, null, null},
+			{null, null, null, null, null},
+			{null, null, null, null, null}
+		},
+		new String []
+		{
+			"Id", "Label", "Description", "Type", "Value"
+		}
+		));
+		m_propTable.addMouseListener(new java.awt.event.MouseAdapter()
+		{
+			public void mouseClicked(java.awt.event.MouseEvent evt)
+			{
+				propTableMouseClicked(evt);
+			}
+			public void mousePressed(java.awt.event.MouseEvent evt)
+			{
+				propTableMousePressed(evt);
+			}
+			public void mouseReleased(java.awt.event.MouseEvent evt)
+			{
+				propTableMouseReleased(evt);
+			}
+		});
+		
+		m_tablescrollpane.setViewportView(m_propTable);
+		
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.weightx = 1.0;
+		gridBagConstraints.weighty = 1.0;
+		jPanel1.add(m_tablescrollpane, gridBagConstraints);
 		
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 1;
@@ -244,8 +349,97 @@ public class SkeletonEditor extends javax.swing.JFrame
 		setJMenuBar(jMenuBar1);
 		
 		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds((screenSize.width-400)/2, (screenSize.height-300)/2, 400, 300);
+		setBounds((screenSize.width-400)/2, (screenSize.height-254)/2, 400, 254);
 	}//GEN-END:initComponents
+
+	private void menuItemUpActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_menuItemUpActionPerformed
+	{//GEN-HEADEREND:event_menuItemUpActionPerformed
+		// Add your handling code here:
+		int selr = m_propTable.getSelectedRow();
+		if (selr > 0)
+		{
+			m_model.swapItems(selr, selr-1);
+		}
+	}//GEN-LAST:event_menuItemUpActionPerformed
+
+	private void menuRemoveItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_menuRemoveItemActionPerformed
+	{//GEN-HEADEREND:event_menuRemoveItemActionPerformed
+		int selr = m_propTable.getSelectedRow();
+		if (selr != -1)
+		{
+			m_model.removeRow(selr);
+		}
+	}//GEN-LAST:event_menuRemoveItemActionPerformed
+
+	private void menuAddItemActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_menuAddItemActionPerformed
+	{//GEN-HEADEREND:event_menuAddItemActionPerformed
+		SkeletonProperty prop = new SkeletonProperty();
+		int selr = m_propTable.getSelectedRow();
+		if (selr >= 0)
+			m_model.add(prop, selr);
+		else
+			m_model.add(prop);
+	}//GEN-LAST:event_menuAddItemActionPerformed
+
+	private void tablescrollpaneMouseReleased(java.awt.event.MouseEvent evt)//GEN-FIRST:event_tablescrollpaneMouseReleased
+	{//GEN-HEADEREND:event_tablescrollpaneMouseReleased
+		// Add your handling code here:
+		System.out.println("MOUSE");
+		if (evt.isPopupTrigger())
+		{
+			System.out.println("trigger !");
+			showPopupMenu(evt, m_tablescrollpane);
+		}		
+	}//GEN-LAST:event_tablescrollpaneMouseReleased
+
+	private void tablescrollpaneMousePressed(java.awt.event.MouseEvent evt)//GEN-FIRST:event_tablescrollpaneMousePressed
+	{//GEN-HEADEREND:event_tablescrollpaneMousePressed
+		// Add your handling code here:
+		System.out.println("MOUSE");
+		if (evt.isPopupTrigger())
+		{
+			System.out.println("trigger !");
+			showPopupMenu(evt, m_tablescrollpane);
+		}		
+	}//GEN-LAST:event_tablescrollpaneMousePressed
+
+	private void propTableMouseReleased(java.awt.event.MouseEvent evt)//GEN-FIRST:event_propTableMouseReleased
+	{//GEN-HEADEREND:event_propTableMouseReleased
+		// Add your handling code here:
+		System.out.println("MOUSE");
+		if (evt.isPopupTrigger())
+		{
+			System.out.println("trigger !");
+			showPopupMenu(evt, m_propTable);
+		}		
+	}//GEN-LAST:event_propTableMouseReleased
+
+	private void propTableMousePressed(java.awt.event.MouseEvent evt)//GEN-FIRST:event_propTableMousePressed
+	{//GEN-HEADEREND:event_propTableMousePressed
+		// Add your handling code here:
+		System.out.println("MOUSE");
+		if (evt.isPopupTrigger())
+		{
+			System.out.println("trigger !");
+			showPopupMenu(evt, m_propTable);
+		}		
+	}//GEN-LAST:event_propTableMousePressed
+
+	private void propTableMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_propTableMouseClicked
+	{//GEN-HEADEREND:event_propTableMouseClicked
+		// Add your handling code here:
+		System.out.println("MOUSE");
+		if (evt.isPopupTrigger())
+		{
+			System.out.println("trigger !");
+			showPopupMenu(evt, m_propTable);
+		}
+	}//GEN-LAST:event_propTableMouseClicked
+
+	private void m_propsIdActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_m_propsIdActionPerformed
+	{//GEN-HEADEREND:event_m_propsIdActionPerformed
+		// Add your handling code here:
+	}//GEN-LAST:event_m_propsIdActionPerformed
 
 	private void menuSaveActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_menuSaveActionPerformed
 	{//GEN-HEADEREND:event_menuSaveActionPerformed
@@ -306,6 +500,17 @@ public class SkeletonEditor extends javax.swing.JFrame
 		m_jarId.setText(new Integer(skel.getResourceJarId()).toString());
 		m_propsId.setText(new Integer(skel.getResourcePropsId()).toString());
 		m_exeName.setText(skel.getExecutableName());
+		
+		m_model = new SkeletonPropertyTableModel(skel.getSkeletonProperties());
+
+		TableColumn type = m_propTable.getColumnModel().getColumn(3);
+		JComboBox typeCombo = new JComboBox();
+		typeCombo.addItem(SkeletonProperty.TYPE_STRING);
+		typeCombo.addItem(SkeletonProperty.TYPE_TEXTAREA);
+		typeCombo.addItem(SkeletonProperty.TYPE_BOOLEAN);
+		type.setCellEditor(new DefaultCellEditor(typeCombo));
+		
+		m_propTable.setModel(m_model);
 	}
 	
 	public SkeletonBean getSkeleton()
@@ -317,9 +522,20 @@ public class SkeletonEditor extends javax.swing.JFrame
 		skel.setResourceCategory(m_categoryName.getText());
 		skel.setResourceJarId(Integer.parseInt(m_jarId.getText()));
 		skel.setResourcePropsId(Integer.parseInt(m_propsId.getText()));
-		
+		skel.setSkeletonProperties(m_model.getProperties());
 		return skel;
 	}
+
+	public void showPopupMenu(java.awt.event.MouseEvent evt, JComponent comp)
+	{
+		int r = m_propTable.rowAtPoint(new Point(evt.getX(), evt.getY()));
+		if (r != -1)
+		{
+			m_propTable.setRowSelectionInterval(r,r);
+		}
+		m_popupMenu.show(comp, evt.getX(), evt.getY());
+	}
+	
 
 	/**
 	 * @param args the command line arguments
@@ -342,18 +558,27 @@ public class SkeletonEditor extends javax.swing.JFrame
 	private javax.swing.JScrollPane jScrollPane1;
 	private javax.swing.JSeparator jSeparator1;
 	private javax.swing.JSeparator jSeparator2;
+	private javax.swing.JSeparator jSeparator3;
 	private javax.swing.JTextField m_categoryName;
 	private javax.swing.JEditorPane m_description;
 	private javax.swing.JTextField m_exeName;
 	private javax.swing.JFileChooser m_fileChooser;
 	private javax.swing.JTextField m_jarId;
 	private javax.swing.JLabel m_labelName;
+	private javax.swing.JMenuItem m_menuAddItem;
 	private javax.swing.JMenuItem m_menuExit;
+	private javax.swing.JMenuItem m_menuItemUp;
 	private javax.swing.JMenuItem m_menuLoad;
 	private javax.swing.JMenuItem m_menuNew;
+	private javax.swing.JMenuItem m_menuRemoveItem;
 	private javax.swing.JMenuItem m_menuSave;
 	private javax.swing.JTextField m_name;
+	private javax.swing.JPopupMenu m_popupMenu;
+	private javax.swing.JTable m_propTable;
 	private javax.swing.JTextField m_propsId;
+	private javax.swing.JScrollPane m_tablescrollpane;
 	// End of variables declaration//GEN-END:variables
+
+	
 	
 }

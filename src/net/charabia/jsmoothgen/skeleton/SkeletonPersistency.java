@@ -36,13 +36,6 @@ import java.beans.XMLDecoder;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import com.skaringa.javaxml.DeserializerException;
-import com.skaringa.javaxml.NoImplementationException;
-import com.skaringa.javaxml.ObjectTransformer;
-import com.skaringa.javaxml.ObjectTransformerFactory;
-import com.skaringa.javaxml.SerializerException;
-
-
 public class SkeletonPersistency
 {
 	public static SkeletonBean load(File fin) throws IOException

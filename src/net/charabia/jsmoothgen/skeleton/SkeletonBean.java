@@ -34,6 +34,7 @@ public class SkeletonBean
 	private String m_resourceCategory;
 	private int m_resourceJarId;
 	private int m_resourcePropsId;
+	private SkeletonProperty[] m_skelproperties ;
 	
 	/** Creates a new instance of SkeletonBean */
 	public SkeletonBean()
@@ -97,9 +98,21 @@ public class SkeletonBean
 		return m_resourcePropsId;
 	}	
 
+	public void setSkeletonProperties(SkeletonProperty[] props)
+	{
+		m_skelproperties = props;
+	}
+	
+	public SkeletonProperty[] getSkeletonProperties()
+	{
+		return m_skelproperties;
+	}
+	
 	public String toString()
 	{
 		return m_shortName;
 	}
+
+	
 	
 }
