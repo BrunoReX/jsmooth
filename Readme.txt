@@ -13,28 +13,44 @@ to download a Java VM.
  JSmooth is currently in beta phase. The proof-of-concept stage is now
  complete, and the application is still under development.
 
-2. Installation
+2. Compiling the project
 
- The JSmooth software is distributed with a nice installer, so that
- installation shouldn't be an issue.
+ -- PREREQUISITE --
+ 
+ 2.1 The JIMI package
 
- However, JSmooth requires Java 1.4 or higher. If you are not sure it
- is installed, just run the JSmoothGen.exe program, and it will
- automatically try to locate it.
-
- In case of problem, you can use the run.bat script in the bin/
- directory.
-
-3. Additional software
-
- If you want to be able to use .ico files for your icons (instead of
- the default .GIF, .PNG, and .JPG), you need to install Sun's JIMI
- package. This package is not free software, this is why you need to
- download it separately.
+ To compile the project, you need to install Sun's JIMI package. This
+ package is not provided due to the non-free license used by Sun to
+ distribute it. JIMI adds the possibility to load additional image
+ file formats (the .ico for instance) and to reduce the 16 and 32-bit
+ images to 256 colours.
 
  Download it on http://www.javasoft.com website, then extract the
- JimiProClasses.zip file, and copy it in the lib/ directory where
- JSmooth is installed (probably on c:\program files\jsmooth).
+ JimiProClasses.zip file from the archive downloaded, and copy it in
+ the lib/ directory.
+
+ 2.2 The GCC compiler for Windows
+
+ You need the MINGW GCC compiler to compile the wrappers. The easiest
+ way is probably to download and install the last version of DEV-C++,
+ which is a free Windows IDE for GCC/MINGW.
+
+ Download DEV-C++ it at http://www.bloodshed.net/
+
+ Alternatively, you can also just download and install the MINGW
+ package instead of DEV-C++: http://www.mingw.org/
+
+ In both case, you need to setup your %PATH% environment variable to
+ add the directory where the make.exe/strip.exe executable are
+ installed.
+ 
+ -- BUILDING --
+
+ 2.3
+
+ To build the project, run the following command: ant jar
+ To run the program: ant run
+ To build a distribution: ant dist
 
 4. License
 
