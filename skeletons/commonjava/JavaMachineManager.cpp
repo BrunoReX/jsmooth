@@ -90,11 +90,11 @@ bool JavaMachineManager::run(bool dontUseConsole)
         } else if (*i == "jview")
         {
                 DEBUG("trying JVIEW");
-                if (m_jviewVm.runProc(m_resman))
+                if (m_jviewVm.runProc(m_resman, dontUseConsole))
                 {
                     return true;
                 }
-                
+
         } else if (*i == "javahome")
         {
                 DEBUG("trying JAVAHOME");

@@ -20,7 +20,7 @@
 
 #include "MSJViewLauncher.h"
 
-bool MSJViewLauncher::runProc(ResourceManager& resource)
+bool MSJViewLauncher::runProc(ResourceManager& resource, bool noConsole)
 {
       DEBUG("Running JVIEW new process");
       
@@ -38,18 +38,45 @@ bool MSJViewLauncher::runProc(ResourceManager& resource)
     if (max.isValid() && (max < VmVersion))
         return false;
 
+      string javaproperties = "";
+      const vector<JavaProperty>& jprops = resource.getJavaProperties();
+      for (vector<JavaProperty>::const_iterator i=jprops.begin(); i != jprops.end(); i++)
+      {
+            JavaProperty jp = *i;
+            javaproperties += " \"/d:" + jp.getName() + "=" + jp.getValue() + "\"";
+      }
     
       string classpath = resource.saveJarInTempFile();
 
       string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));
-      string arguments = "/cp:p \"" + classpath + "\" " + classname;
-      
+      string arguments = javaproperties + " /cp:p \"" + classpath + "\" " + classname;
+
+      DEBUG("CLASSNAME = <" + classname + ">");
       STARTUPINFO info;
       GetStartupInfo(&info);
+      int creationFlags = 0;
+      int inheritsHandle;
+      if (noConsole == false)
+      {
+            info.dwFlags = STARTF_USESHOWWINDOW|STARTF_USESTDHANDLES;
+            info.hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+            info.hStdError = GetStdHandle(STD_ERROR_HANDLE);
+            info.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
+            creationFlags = NORMAL_PRIORITY_CLASS;
+            inheritsHandle = TRUE;
+      }
+      else
+      {
+            info.dwFlags = STARTF_USESHOWWINDOW;
+//            info.wShowWindow = SW_HIDE;
+            creationFlags = NORMAL_PRIORITY_CLASS | DETACHED_PROCESS;
+            inheritsHandle = FALSE;
+      }
+
       PROCESS_INFORMATION procinfo;
       string exeline = "jview.exe " + arguments;
       DEBUG("EXELINE: " + exeline);
-      int res = CreateProcess(NULL, (char*)exeline.c_str(), NULL, NULL, TRUE, DETACHED_PROCESS, NULL, NULL, &info, &procinfo);
+      int res = CreateProcess(NULL, (char*)exeline.c_str(), NULL, NULL, inheritsHandle, creationFlags, NULL, NULL, &info, &procinfo);
 
       DEBUG("JVIEW result = " + StringUtils::toString(res));
 
