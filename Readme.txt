@@ -10,14 +10,24 @@ to download a Java VM.
 
 1. Status of the project
 
- JSmooth is currently in beta phase. The proof-of-concept stage is now
- complete, and the application is still under development.
+ JSmooth is currently in beta phase. It is provided in the hope it can
+ be useful to the java community, but always keep in mind that it's
+ still beta.
 
-2. Compiling the project
+2 Using the software
+
+ Double-clik on the JSmoothGen.exe icon.
+
+3. Compiling the project
 
  -- PREREQUISITE --
  
- 2.2 MINGW for Windows (required)
+ 3.1 Get the source
+
+ You can get the source code at sourceforge's:
+ http://sourceforge.net/project/jsmooth
+
+ 3.2 MINGW for Windows (required)
 
  You need the MINGW GCC compiler to compile the Windows wrappers. Just
  install the last version (3.1.0 or above) from the following website:
@@ -32,12 +42,12 @@ to download a Java VM.
  Once installed, you still need to setup your %PATH% environment variable to add the bin/
  directory where MINGW is installed.
  
-2.3 DOCUMENTATION STUFF (optional)
+ 3.3 DOCUMENTATION STUFF (optional)
 
-If you want to build the whole distribution package (including the
-documentation, you need to install the docbook compilation chain).
+ If you want to build the whole distribution package (including the
+ documentation, you need to install the docbook compilation chain).
 
-Install:
+ Install:
 	- http://xml.apache.org/xalan-j/ and put the xalan jars into
 	the lib folder of ANT. This is required to make ANT able to
 	process XSLT.
@@ -49,7 +59,7 @@ Install:
 
 	- FOP, available at http://xml.apache.org/fop/
 
-Configure:
+ Configure:
 
 	- Open the build.xml ant script at the root of the project, and
          change the properties located at the top of the file. They are
@@ -58,11 +68,11 @@ Configure:
 
  -- BUILDING --
 
- 2.3
+  3.3 Building the project
 
- To build the project, run the following command: ant jar
- To run the program: ant run
- To build a distribution: ant dist
+  To build the project, run the following command: ant jar
+  To run the program: ant run
+  To build a distribution: ant dist
 
 4. License
 
