@@ -48,8 +48,9 @@ public class PropertiesBuilder
 	    }
 	addPair("classpath", makePathConc(relcp), out);
 
-	// addPair("nojvmmessage", obj.getNoJvmMessage(), out);
-	// addPair("nojvmurl", obj.getNoJvmURL(), out);
+	//
+	// Adds all the skeleton-specific properties
+	//
 	if (obj.getSkeletonProperties() != null)
 	    {
 		for (int i=0; i<obj.getSkeletonProperties().length; i++)
@@ -64,6 +65,22 @@ public class PropertiesBuilder
 			    }
 		    }
 	    }
+
+
+	//
+	// Adds all the java properties. Those properties are
+	// typically passed as -Dname=value arguments for the sun's
+	// JVM.
+	//
+
+	JavaPropertyPair[] javapairs = obj.getJavaProperties();
+	addPair("javapropertiescount", new Integer(javapairs.length).toString(), out);
+	for (int i=0; i<javapairs.length; i++)
+	    {
+		addPair("javaproperty_name_" + i, javapairs[i].getName(), out);
+		addPair("javaproperty_value_" + i, javapairs[i].getValue(), out);
+	    }
+
 	return out.toString();
     }
 	

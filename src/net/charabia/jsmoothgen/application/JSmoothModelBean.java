@@ -49,7 +49,8 @@ public class JSmoothModelBean
     private String m_noJvmURL;
 
     private String m_bundledJVM = null;
-	
+
+    private JavaPropertyPair[] m_javaprops = new JavaPropertyPair[0];
     private JSmoothModelBean.Property[] m_skelproperties;
 
     static public class Property
@@ -270,6 +271,16 @@ public class JSmoothModelBean
     {
 	m_bundledJVM = path;
 	fireChanged();
+    }
+
+    public void setJavaProperties(JavaPropertyPair[] pairs)
+    {
+	m_javaprops = pairs;
+    }
+
+    public JavaPropertyPair[] getJavaProperties()
+    {
+	return m_javaprops;
     }
 	
     public String[] normalizePaths(java.io.File filebase)
