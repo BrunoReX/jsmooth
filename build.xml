@@ -217,6 +217,7 @@
     </copy>
     <copy todir="${dist}" file="${tmp}/docs/readme.txt"/>
     <copy todir="${dist}" file="${tmp}/docs/license.txt"/>
+    <copy todir="${dist}" file="Changelog"/>
 
     <!-- Compile the wrappers -->
     <ant antfile="build.xml" dir="skeletons/simplewrap/samplejar/" target="dist"/>
