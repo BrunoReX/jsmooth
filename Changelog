@@ -1,5 +1,8 @@
 0.9.4
-	- Added Ant Task support 
+	- ! Added Ant Task support 
+	- ! Added Command Line compiler
+	- ! distribution build now fully automatic
+	- Added small set of testing suit
 	- Changed default xml encoding of the project, due a flaw in the
 	Sun's XMLDecoder classes which prevented it to work with ant (this
 	is a classloader issue).
@@ -9,7 +12,6 @@
 	directory than the executable built.
 	- Fixed a bug corrupting the value part when edition java
 	properties
-	- Added small set of testing suit
 	
 0.9.3
 	- Added Java Properties management in JSmoothGen
