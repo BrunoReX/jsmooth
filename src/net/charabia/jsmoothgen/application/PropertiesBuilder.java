@@ -22,8 +22,22 @@ public class PropertiesBuilder
 		addPair("jvmsearch", makePathConc(obj.getJVMSearchPath()), out);
 		addPair("minversion", obj.getMinimumVersion(), out);
 		addPair("maxversion", obj.getMaximumVersion(), out);
-		addPair("nojvmmessage", obj.getNoJvmMessage(), out);
-		addPair("nojvmurl", obj.getNoJvmURL(), out);
+		// addPair("nojvmmessage", obj.getNoJvmMessage(), out);
+		// addPair("nojvmurl", obj.getNoJvmURL(), out);
+		if (obj.getSkeletonProperties() != null)
+		{
+			for (int i=0; i<obj.getSkeletonProperties().length; i++)
+			{
+				JSmoothModelBean.Property prop = obj.getSkeletonProperties()[i];
+				if (prop.getKey() != null)
+				{
+					String val = prop.getValue();
+					if (val == null)
+						val = "";
+					addPair("skel_" + prop.getKey(), val, out);
+				}
+			}
+		}
 		return out.toString();
 	}
 	
