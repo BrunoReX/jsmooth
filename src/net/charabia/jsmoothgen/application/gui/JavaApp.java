@@ -32,7 +32,34 @@ public class JavaApp extends javax.swing.JPanel implements ModelUpdater
 	private JFileChooser m_jarLocFileChooser;
 	private EditableListFileEditor m_fileeditor;
 	private File m_basedir;
-        
+        private JarClassChooser m_classchooser = null;
+
+    public class FileSelectedHandler implements FileSelectionTextField.FileSelected
+    {
+	public void fileSelected(String filename)
+	{
+	    if (m_basedir == null)
+		return;
+	    try {
+		File f = new File(filename);
+		if (f.isAbsolute() == false)
+		    {
+			f = new File(m_basedir, filename);
+		    }
+
+		System.out.println("Selected: " + f.toString());
+		JarFile jarf = new JarFile(f);
+		Manifest manifest = jarf.getManifest();
+		Attributes attrs = manifest.getMainAttributes();
+		String mainclass = attrs.getValue("Main-Class");
+		System.out.println("mainclass: " + mainclass);
+		m_mainClassName.setText(mainclass);
+	    } catch (Exception exc)
+		{
+		    // NOTHING
+		}
+	}
+    }
         
 	/** Creates new form BeanForm */
 	public JavaApp()
@@ -40,11 +67,15 @@ public class JavaApp extends javax.swing.JPanel implements ModelUpdater
 		initComponents();
 		m_jarLocFileChooser = new JFileChooser();
 		m_jarLocFileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+		m_jarLocFileChooser.setMultiSelectionEnabled(true);
 		m_jarLocFileChooser.addChoosableFileFilter(new ClassPathFileFilter());
 		m_fileeditor = new EditableListFileEditor();
 		m_fileeditor.setFileChooser(m_jarLocFileChooser);
 		m_classPathList.setEditor(m_fileeditor);
+		m_jarLocation.addListener(new FileSelectedHandler());
 	}    
+
+    
     
 	/** This method is called from within the constructor to
 	 * initialize the form.
@@ -143,15 +174,18 @@ public class JavaApp extends javax.swing.JPanel implements ModelUpdater
                 jar = new File(m_basedir, jar.toString());
             }
             JarFile jf = new JarFile(jar);
-            JarClassChooser jcc = new JarClassChooser(JOptionPane.getFrameForComponent(this), true);
-            jcc.setLocationRelativeTo(this);
-            jcc.setJar(jf);
-            System.out.println("Classname to set: " + m_mainClassName.getText());
-            jcc.setClassName((m_mainClassName.getText()!=null)?m_mainClassName.getText():"");
-            jcc.show();
-            if (jcc.validated())
+            if (m_classchooser == null)
             {
-                String classname = jcc.getClassName();
+                m_classchooser = new JarClassChooser(JOptionPane.getFrameForComponent(this), true);
+                m_classchooser.setLocationRelativeTo(this);
+            }
+            m_classchooser.setJar(jf);
+            System.out.println("Classname to set: " + m_mainClassName.getText());
+            m_classchooser.setClassName((m_mainClassName.getText()!=null)?m_mainClassName.getText():"");
+            m_classchooser.show();
+            if (m_classchooser.validated())
+            {
+                String classname = m_classchooser.getClassName();
                 m_mainClassName.setText(classname);
             }
         } catch (IOException iox)
