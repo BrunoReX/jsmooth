@@ -254,6 +254,7 @@
     <!-- Builds the jsmooth executable -->
     <jsmoothgen project="jsprj/jsmoothgen.jsmooth" skeletonroot="${dist}/skeletons"/>
     <jsmoothgen project="jsprj/jsmoothcmd.jsmooth" skeletonroot="${dist}/skeletons"/>
+    <ant antfile="build.xml" dir="sample" target="dist"/>
     <jsmoothgen project="jsprj/prooftest.jsmooth" skeletonroot="${dist}/skeletons"/>
 
     <copy todir="${dist}" file="jsmoothgen.exe"/>
