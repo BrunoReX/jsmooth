@@ -295,6 +295,8 @@
 
    <target name="compileskels" depends="">
      <!-- clean -->
+     <ant dir="skeletons/simplewrap/samplejar" /> 
+     <ant dir="skeletons/consolewrapper/samplejar" /> 
 
     <antcall target="compileskel">
       <param name="skelname" value="commonjava"/>

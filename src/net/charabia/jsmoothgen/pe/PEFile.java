@@ -424,7 +424,6 @@ public class PEFile
 		outputcount = out.write(buf);
 	    }
 
-
 	fos.flush();
 	fos.close();
     }
