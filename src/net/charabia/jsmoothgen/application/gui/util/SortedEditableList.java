@@ -258,11 +258,16 @@ public class SortedEditableList extends javax.swing.JPanel
 	private void buttonRemoveActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonRemoveActionPerformed
 	{//GEN-HEADEREND:event_buttonRemoveActionPerformed
 		// Add your handling code here:
-		Object o = m_itemList.getSelectedValue();
-		if (o != null)
+
+	    Object[] items = m_itemList.getSelectedValues();
+	    for (int i=0; i<items.length; i++)
 		{
-			if (m_editor.removeItem(this, o))
+		    Object o = items[i];
+		    if (o != null)
+			{
+			    if (m_editor.removeItem(this, o))
 				m_model.removeElement(o);
+			}
 		}
 	}//GEN-LAST:event_buttonRemoveActionPerformed
 
@@ -272,7 +277,21 @@ public class SortedEditableList extends javax.swing.JPanel
 		Object item = m_editor.createNewItem(this);
 		if (item != null)
 		{
-			m_model.addElement(item);
+		    System.out.println("IsArray: " + item.getClass() + " == " + item.getClass().isArray());
+		    if (item.getClass().isArray())
+			{
+			    for (int i=0; i<java.lang.reflect.Array.getLength(item); i++)
+				{
+				    Object o = java.lang.reflect.Array.get(item, i);
+				    if (m_model.contains(o) == false)
+					m_model.addElement(o);
+				}
+			}
+		    else
+			{
+			    if (m_model.contains(item) == false)
+				m_model.addElement(item);
+			}
 		}
 	}//GEN-LAST:event_buttonAddActionPerformed
 	

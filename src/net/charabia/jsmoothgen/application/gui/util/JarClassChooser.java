@@ -24,12 +24,30 @@ package net.charabia.jsmoothgen.application.gui.util;
 import java.util.jar.*;
 import java.util.*;
 import javax.swing.tree.*;
+import javax.swing.event.*;
 
 public class JarClassChooser extends javax.swing.JDialog
 {
     JarEntryTreeNode m_root;
     
     private boolean m_valid = false;
+    
+    public class ClassTreeListener implements TreeSelectionListener
+    {
+        public void valueChanged(TreeSelectionEvent e)
+        {
+            TreePath tp = e.getPath();
+            JarEntryTreeNode last = (JarEntryTreeNode)tp.getLastPathComponent();
+            if (last.getChildCount()>0)
+            {
+                m_buttonSelect.setEnabled(false);
+            }
+            else
+            {
+                m_buttonSelect.setEnabled(true);
+            }
+        }
+    }
     
     public class JarEntryTreeNode extends javax.swing.tree.DefaultMutableTreeNode
     {
@@ -41,7 +59,7 @@ public class JarClassChooser extends javax.swing.JDialog
             javax.swing.ImageIcon leaf = new javax.swing.ImageIcon(getClass().getResource("/icons/stock_form-autopilots-16.png"));
             renderer.setLeafIcon(leaf);
             m_tree.setCellRenderer(renderer);
-            
+            m_tree.addTreeSelectionListener(new ClassTreeListener());
             m_tree.setEditable(false);
         }
 
@@ -182,12 +200,16 @@ public class JarClassChooser extends javax.swing.JDialog
         jPanel1.setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBorder(new javax.swing.border.EmptyBorder(new java.awt.Insets(10, 10, 10, 10)));
+        jPanel1.setFocusable(false);
         jLabel1.setText("Select a class...");
+        jLabel1.setFocusable(false);
         jPanel1.add(jLabel1, java.awt.BorderLayout.NORTH);
 
         jPanel3.setLayout(new java.awt.BorderLayout());
 
-        jPanel3.setBorder(new javax.swing.border.EmptyBorder(new java.awt.Insets(10, 10, 10, 10)));
+        jPanel3.setBorder(new javax.swing.border.EmptyBorder(new java.awt.Insets(1, 1, 1, 1)));
+        jPanel3.setFocusable(false);
+        jScrollPane1.setFocusable(false);
         jScrollPane1.setViewportView(m_tree);
 
         jPanel3.add(jScrollPane1, java.awt.BorderLayout.CENTER);
@@ -196,6 +218,7 @@ public class JarClassChooser extends javax.swing.JDialog
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
+        jPanel2.setFocusable(false);
         m_buttonSelect.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_calc-accept-16.png")));
         m_buttonSelect.setText("Select");
         m_buttonSelect.addActionListener(new java.awt.event.ActionListener()

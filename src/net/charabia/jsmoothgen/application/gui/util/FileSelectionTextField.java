@@ -27,13 +27,38 @@ public class FileSelectionTextField extends javax.swing.JPanel
 {
 	
 	private File m_basedir =  null;
+    private java.util.Vector m_listeners = new java.util.Vector();
 	
+    public interface FileSelected
+    {
+	public void fileSelected(String filename);
+    }
+
 	/** Creates new form BeanForm */
 	public FileSelectionTextField()
 	{
 		initComponents();
 	}
+
+    public void addListener(FileSelected fs)
+    {
+	m_listeners.add(fs);
+    }
+
+    public void removeListener(FileSelected fs)
+    {
+	m_listeners.remove(fs);
+    }
 	
+    public void notifyListeners(String filename)
+    {
+	for (int i=0; i<m_listeners.size(); i++)
+	    {
+		FileSelected fs = (FileSelected)m_listeners.get(i);
+		fs.fileSelected(filename);
+	    }
+    }
+
 	/** This method is called from within the constructor to
 	 * initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is
@@ -85,10 +110,12 @@ public class FileSelectionTextField extends javax.swing.JPanel
 			{
 				File rel = net.charabia.jsmoothgen.application.JSmoothModelPersistency.makePathRelativeIfPossible(m_basedir, f);
 				m_filename.setText(rel.toString());
+				notifyListeners(rel.toString());
 			}
 			else
 			{
 				m_filename.setText(f.getAbsolutePath());
+				notifyListeners(f.getAbsolutePath());
 			}
 		}
 	}//GEN-LAST:event_buttonFileSelectionActionPerformed

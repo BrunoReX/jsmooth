@@ -53,12 +53,17 @@ public class EditableListFileEditor implements SortedEditableList.Editor
 	{
 		if (m_fileChooser.showOpenDialog(selist) == JFileChooser.APPROVE_OPTION)
 		{
-			File f = m_fileChooser.getSelectedFile();
-			if (m_rootDir != null)
-			{
-				f = net.charabia.jsmoothgen.application.JSmoothModelPersistency.makePathRelativeIfPossible(m_rootDir, f);
-			}
-			return f;
+			File[] files = m_fileChooser.getSelectedFiles();
+			for (int i=0; i<files.length; i++)
+			    {
+				File f = files[i];
+				if (m_rootDir != null)
+				    {
+					f = net.charabia.jsmoothgen.application.JSmoothModelPersistency.makePathRelativeIfPossible(m_rootDir, f);
+					files[i] = f;
+				    }
+			    }
+			return files;
 		}
 		return null;
 	}
