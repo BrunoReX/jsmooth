@@ -119,8 +119,10 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
         m_currentDirectory = new net.charabia.jsmoothgen.application.gui.util.FileSelectionTextField();
         jLabel2 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        m_iconDisplay = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
         m_buttonIconChooser = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        m_iconDisplay = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
 
         setLayout(new java.awt.GridBagLayout());
@@ -130,8 +132,8 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         add(jLabel4, gridBagConstraints);
 
         jLabel1.setText("Executable Name");
@@ -164,10 +166,7 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
 
         jPanel2.setLayout(new java.awt.BorderLayout());
 
-        m_iconDisplay.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        m_iconDisplay.setIcon(new javax.swing.ImageIcon(""));
-        m_iconDisplay.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0)));
-        jPanel2.add(m_iconDisplay, java.awt.BorderLayout.CENTER);
+        jPanel3.setLayout(new java.awt.GridBagLayout());
 
         m_buttonIconChooser.setText("...");
         m_buttonIconChooser.addActionListener(new java.awt.event.ActionListener()
@@ -178,14 +177,24 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
             }
         });
 
-        jPanel2.add(m_buttonIconChooser, java.awt.BorderLayout.EAST);
+        jPanel3.add(m_buttonIconChooser, new java.awt.GridBagConstraints());
+
+        jPanel2.add(jPanel3, java.awt.BorderLayout.EAST);
+
+        jScrollPane1.setMinimumSize(new java.awt.Dimension(64, 64));
+        m_iconDisplay.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        m_iconDisplay.setIcon(new javax.swing.ImageIcon(""));
+        m_iconDisplay.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0)));
+        jScrollPane1.setViewportView(m_iconDisplay);
+
+        jPanel2.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(10, 5, 5, 5);
         gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 5, 5, 5);
         add(jPanel2, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -253,6 +262,8 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton m_buttonIconChooser;
     private net.charabia.jsmoothgen.application.gui.util.FileSelectionTextField m_currentDirectory;
     private net.charabia.jsmoothgen.application.gui.util.FileSelectionTextField m_executableNameField;

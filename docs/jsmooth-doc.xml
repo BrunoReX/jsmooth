@@ -1,12 +1,11 @@
 <?xml version="1.0"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
-   "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"
+ "file:///c:/programs/docbook-dtd/docbookx.dtd"
  >
-
 
 <article>
 <articleinfo>
- "file:///c:/programs/docbook-dtd/docbookx.dtd"
+   "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"
 
   <author>
     <firstname>Rodrigo</firstname>
@@ -22,7 +21,7 @@
   </revision>
 </revhistory>
 
-  <title>JSmooth User Manuel</title>
+  <title>JSmooth User Manual</title>
 </articleinfo>
 
 <sect1>
@@ -39,6 +38,24 @@
    explains how to download a Java VM.
 
    </para>
+   
+   <sect3><title>Web Site</title>
+   <para>
+    <itemizedlist>
+
+     <listitem><para> The JSmooth web page is located at <ulink
+     url="http://jsmooth.sourceforge.net/">http://jsmooth.sourceforge.net/</ulink>
+       </para></listitem>
+
+     <listitem><para> The JSmooth Project web page is hoster at <ulink
+     url="http://sourceforge.net/projects/jsmooth">http://sourceforge.net/projects/jsmooth</ulink>.
+       </para></listitem>
+
+   </itemizedlist>
+
+   </para>
+  </sect3>
+
   </sect2>
 
   <sect2><title>Rationale</title>
@@ -139,6 +156,18 @@
      displayed to the users and they may be redirected to a web site.
     </para>
 
+    <para>
+
+     JSmooth knows all the JVM version currently available. It knows
+     how to pass the parameters, how to set up the memory
+     configuration, how to manage the version constraints, and so on
+     for every JVM version. This is the main difference between a
+     simple .bat with "java -Xmx64m -jar myjar" which works only on
+     the developer's computer, and an smart wrapper which adapts
+     itself to the end-user's configuration.
+
+    </para>
+
   </sect2>
 
 </sect1>
@@ -156,7 +185,7 @@
     <para>
       <mediaobject>
         <imageobject>
-            <imagedata fileref="images/jsg-application.png" format="PNG"/>
+            <imagedata fileref="images/jsg-application.png" width="5in" format="PNG"/>
         </imageobject>
         <caption>
             <para>The JSmoothGen Application</para>
@@ -186,11 +215,10 @@
        <listitem><para>
 
            The Console Wrapper is a skeleton designed for console
-           application (ie. which are run in the windows
-           console). This skeleton takes care of passing the
-           parameters to java application, it ensures the i/o are
-           routed to the current console, and so on.
-	   </para>
+           applications (ie. which are run in the windows
+           console). This skeleton takes care of passing the command
+           line arguments to java application, it ensures the i/o are
+           routed to the current console, and so on.  </para>
        
 	<para>
 	  If no JVM is found, the application displays a text message
@@ -205,9 +233,9 @@
 	<para>
 	  If no JVM is found, the skeleton displays a Windows
 	  OK/Cancel alert. If the user selects the OK button, the
-	  default web browser is launched on default web page. Both
+	  default web browser is launched on a default web page. Both
 	  the message of the alert and the URL of the web page are
-	  configurable in the Skeleton Properties panel.
+	  configurable in the <guilabel>Skeleton Properties panel</guilabel>.
 	</para>
 
         </listitem>
@@ -225,7 +253,6 @@
         </caption>
       </mediaobject>
     </para>
-
 
  </sect2>
 
@@ -247,16 +274,19 @@
 
         <listitem><para>The current directory can be modified to suit
         your needs. For instance, if you want your executable to be in
-        a bin\ sub-directory, but still want it to access the
-        resources as if it were in the base directory, it may be
-        convenient to modified the current directory to be "..".
+        a <filename class="directory">bin\</filename> sub-directory,
+        but still want it to access the resources as if it were in the
+        base directory, it may be convenient to modifiy the current
+        directory to be <filename class="directory">..</filename>.
 
 	 </para><para> 
 
             When this parameter is specified, the wrapper simply
             changes the current directory with the value "as is". For
-            instance, to change the current directory to a "res"
-            subdirectory, write "res" in the Current Directory field.
+            instance, to change the current directory to a <filename
+            class="directory">res</filename> subdirectory, write
+            <filename class="directory">res</filename> in the Current
+            Directory field.
  
         </para>
 
@@ -276,7 +306,7 @@
 	    console application to find resources which are found in
 	    the file system (i.e not in the jar of the
 	    application). Lots of application work this way, but Java
-	    applications do not have access to the information they
+	    applications, unfortunately, do not have access to the information they
 	    need: the location of the binary executable they are
 	    launched from. A work-around is to use an environment
 	    variable specific to your application. This is was ANT does, for instance. 
@@ -284,13 +314,13 @@
 
 	  <para>
 	    You can do something equivalent with JSmooth without using
-	  an environment variable (which may be hard to set under
-	  windows). Define a Java Property, and set "$EXECUTABLEPATH"
-	  as value. The effect of this is to pass to your application
-	  a java property which indicates where the executable is
-	  located. Just use System.getProperty() call to retrieve the
-	  value.
-	  </para>
+	  an environment variable (which may be complicated to set
+	  under windows). Instead, define a Java Property, and set
+	  <systemitem>${EXECUTABLEPATH}</systemitem> as value. The effect of
+	  this is to pass to your application a java property which
+	  indicates where the executable is located. Just use
+	  <methodname>System.getProperty()</methodname> call to
+	  retrieve the value.  </para>
 
         </warning>
 
@@ -309,9 +339,9 @@
 	    types, you need to download the Sun's JIMI package.  It
 	    can be downloaded on <ulink
 	    url="http://www.javasoft.com"><citetitle>Sun's JavaSoft
-	    website</citetitle></ulink>, then extract the JimiProClasses.zip file,
+	    website</citetitle></ulink>, then extract the <filename>JimiProClasses.zip</filename> file,
 	    and copy it in the lib/ directory where JSmooth is
-	    installed (probably on c:\program files\jsmooth).
+	    installed (probably on <filename>c:\program files\jsmooth\</filename>).
 
 
            </para>

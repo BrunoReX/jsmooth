@@ -7,7 +7,7 @@ Top=0
 [Editor_1]
 Open=1
 Top=1
-CursorCol=3
+CursorCol=1
 CursorRow=30
 TopLine=19
 LeftChar=1
@@ -133,8 +133,8 @@ LeftChar=1
 Open=1
 Top=0
 CursorCol=1
-CursorRow=113
-TopLine=113
+CursorRow=512
+TopLine=498
 LeftChar=1
 [Editor_21]
 Open=1

@@ -27,93 +27,95 @@
    <string></string> 
   </void> 
   <void property="classPath"> 
-   <array class="java.lang.String" length="1"> 
-    <void index="0"> 
-     <string>lib\JimiProClasses.zip</string> 
-    </void> 
-   </array> 
+   <array class="java.lang.String" length="0"/> 
   </void> 
   <void property="executableName"> 
-   <string>JSmoothGen.exe</string> 
+   <string>proof-test.exe</string> 
   </void> 
   <void property="iconLocation"> 
-   <string>src\icons\gnome-application-x-jar-bm.gif</string> 
+   <string>src\icons\stock_web-support.png</string> 
+  </void> 
+  <void property="initialMemoryHeap"> 
+   <int>50331648</int> 
   </void> 
   <void property="jarLocation"> 
-   <string>jsmoothgen.jar</string> 
+   <string>sample\sample.jar</string> 
   </void> 
   <void property="javaProperties"> 
    <array class="net.charabia.jsmoothgen.application.JavaPropertyPair" length="6"> 
     <void index="0"> 
      <object class="net.charabia.jsmoothgen.application.JavaPropertyPair"> 
       <void property="name"> 
-       <string>MyProperty</string> 
+       <string>nom1</string> 
       </void> 
       <void property="value"> 
-       <string>MyValue</string> 
+       <string>valeur1</string> 
       </void> 
      </object> 
     </void> 
     <void index="1"> 
      <object class="net.charabia.jsmoothgen.application.JavaPropertyPair"> 
       <void property="name"> 
-       <string>HOSTNAME</string> 
+       <string>MONPATH</string> 
       </void> 
       <void property="value"> 
-       <string>${COMPUTERNAME}</string> 
+       <string>%PATH%</string> 
       </void> 
      </object> 
     </void> 
     <void index="2"> 
      <object class="net.charabia.jsmoothgen.application.JavaPropertyPair"> 
       <void property="name"> 
-       <string>exepath</string> 
-      </void> 
-      <void property="value"> 
-       <string>${EXECUTABLEPATH}</string> 
-      </void> 
-     </object> 
-    </void> 
-    <void index="3"> 
-     <object class="net.charabia.jsmoothgen.application.JavaPropertyPair"> 
-      <void property="name"> 
-       <string>exename</string> 
-      </void> 
-      <void property="value"> 
-       <string>${EXECUTABLENAME}</string> 
-      </void> 
-     </object> 
-    </void> 
-    <void index="4"> 
-     <object class="net.charabia.jsmoothgen.application.JavaPropertyPair"> 
-      <void property="name"> 
-       <string>PATHEXT</string> 
-      </void> 
-      <void property="value"> 
-       <string>%PATHEXT%</string> 
-      </void> 
-     </object> 
-    </void> 
-    <void index="5"> 
-     <object class="net.charabia.jsmoothgen.application.JavaPropertyPair"> 
-      <void property="name"> 
-       <string>JAVAHOME</string> 
+       <string>MONHOME</string> 
       </void> 
       <void property="value"> 
        <string>%JAVA_HOME%</string> 
       </void> 
      </object> 
     </void> 
+    <void index="3"> 
+     <object class="net.charabia.jsmoothgen.application.JavaPropertyPair"> 
+      <void property="name"> 
+       <string>COMPUTERNAME</string> 
+      </void> 
+      <void property="value"> 
+       <string>${COMPUTERNAME}</string> 
+      </void> 
+     </object> 
+    </void> 
+    <void index="4"> 
+     <object class="net.charabia.jsmoothgen.application.JavaPropertyPair"> 
+      <void property="name"> 
+       <string>EXEPATH</string> 
+      </void> 
+      <void property="value"> 
+       <string>${EXECUTABLEPATH}</string> 
+      </void> 
+     </object> 
+    </void> 
+    <void index="5"> 
+     <object class="net.charabia.jsmoothgen.application.JavaPropertyPair"> 
+      <void property="name"> 
+       <string>EXENAME</string> 
+      </void> 
+      <void property="value"> 
+       <string>${EXECUTABLENAME}</string> 
+      </void> 
+     </object> 
+    </void> 
    </array> 
   </void> 
   <void property="mainClassName"> 
-   <string>net.charabia.jsmoothgen.application.gui.MainFrame</string> 
+   <string>JSmoothPropertiesDisplayer</string> 
+  </void> 
+  <void property="maximumMemoryHeap"> 
+   <int>67108864</int> 
   </void> 
   <void property="minimumVersion"> 
-   <string>1.4.0</string> 
+   <string>1.1</string> 
   </void> 
   <void property="skeletonName"> 
-   <string>Windowed Wrapper</string> 
+   <string>Console Wrapper</string> 
   </void> 
   <void property="skeletonProperties"> 
    <array class="net.charabia.jsmoothgen.application.JSmoothModelBean$Property" length="2"> 
@@ -123,18 +125,18 @@
        <string>Message</string> 
       </void> 
       <void property="value"> 
-       <string>This program needs Java 1.4 or higher to run.
-Do you wish to download it at http://www.java.com?</string> 
+       <string>Java has not been found on your computer.
+Do you want to download it?</string> 
       </void> 
      </object> 
     </void> 
     <void index="1"> 
      <object class="net.charabia.jsmoothgen.application.JSmoothModelBean$Property"> 
       <void property="key"> 
-       <string>URL</string> 
+       <string>PressKey</string> 
       </void> 
       <void property="value"> 
-       <string>http://www.java.com</string> 
+       <string>0</string> 
       </void> 
      </object> 
     </void> 

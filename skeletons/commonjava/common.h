@@ -27,7 +27,7 @@
 
 #include "DebugConsole.h"
 
-//#define DEBUGMODE
+#define DEBUGMODE
 //#undef DEBUGMODE
 
 extern std::vector< std::string > LOG;

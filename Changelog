@@ -15,6 +15,8 @@
 	- Added Class Chooser Dialog in Java Application panel
 	- Added splash screen (displays name and version).
 	- Added maximum memory and initial memory setting support
+	- Written first draft of the user manual
+	- Fixed issue with parameter string ending with a backslash. 
 	
 0.9.2 (5 Sept 2003)
 	- Fixed a bug that prevented jsmoothgen to compile if the JIMI API
