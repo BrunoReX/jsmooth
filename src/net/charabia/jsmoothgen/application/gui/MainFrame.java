@@ -35,13 +35,22 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 	private File m_projectFile = null;
 	
 	final static public String VERSION = "0.9";
-	
+	private RecentFileMenu m_recentMenuManager;
 	/** Creates new form MainFrame */
 	public MainFrame()
 	{
 		m_skelList = new SkeletonList(new File("F:/Documents and Settings/Rodrigo/Mes documents/projects/jsmooth/skeletons"));
 		
 		initComponents();
+		m_recentMenuManager = new RecentFileMenu(m_recentMenu, 5, 
+				MainFrame.class, 
+				new RecentFileMenu.Action() {
+			public void action(String path)
+			{
+				openDirect(new File(path));
+			}
+		});
+		
 		m_wizard = new StaticWizard();
 		m_wizard.setMainController(this);
 		m_centralPane.add(m_wizard);
@@ -56,7 +65,6 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 	 */
 	private void initComponents()//GEN-BEGIN:initComponents
 	{
-		java.awt.GridBagConstraints gridBagConstraints;
 		javax.swing.JMenu jMenu1;
 		
 		m_projectFileChooser = new javax.swing.JFileChooser();
@@ -84,6 +92,8 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		m_menuSave = new javax.swing.JMenuItem();
 		m_menuSaveAs = new javax.swing.JMenuItem();
 		jSeparator3 = new javax.swing.JSeparator();
+		m_recentMenu = new javax.swing.JMenu();
+		jSeparator9 = new javax.swing.JSeparator();
 		m_menuExit = new javax.swing.JMenuItem();
 		m_menuProject = new javax.swing.JMenu();
 		m_menuCompile = new javax.swing.JMenuItem();
@@ -253,6 +263,11 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		
 		jMenu1.add(jSeparator3);
 		
+		m_recentMenu.setText("Recent Files");
+		jMenu1.add(m_recentMenu);
+		
+		jMenu1.add(jSeparator9);
+		
 		m_menuExit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_exit-16.png")));
 		m_menuExit.setText("Exit");
 		jMenu1.add(m_menuExit);
@@ -311,6 +326,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 	{//GEN-HEADEREND:event_buttonNewActionPerformed
 		// Add your handling code here:
 		JSmoothModelBean model = new JSmoothModelBean();
+		setTitle("JSmooth: New project");
 		m_wizard.setModel(model);
 		m_projectFile = null;
 	}//GEN-LAST:event_buttonNewActionPerformed
@@ -441,13 +457,19 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		{
 			File f = new File(model.getBaseDir(), model.getExecutableName());
 			String[] cmd = new String[]{
-				f.getAbsolutePath()
+				"\"" + f.getAbsolutePath() + "\""
 			};
+			
+			String[] envs = new String[] {
+				"launcher=jsmooth"
+			};
+			
 			System.out.println("RUNNING " + cmd[0] + " @ " + model.getBaseDir());
-			Runtime.getRuntime().exec(cmd,
-					new String[0],
-					new File(model.getBaseDir()));
-
+			Process p = Runtime.getRuntime().exec(cmd, null, new File(model.getBaseDir()));
+			// Process p = Runtime.getRuntime().exec(cmd);
+			
+			p.waitFor();
+			System.out.println("Process returned : " + p.exitValue());
 		} catch (Exception exc)
 		{
 			//exc.printStackTrace();
@@ -486,17 +508,24 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 	{
 		if (m_projectFileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
 		{
-			m_projectFile = m_projectFileChooser.getSelectedFile();
-			this.setTitle("JSmooth: " + m_projectFile.toString());
-			
-			try
-			{
-				JSmoothModelBean model = JSmoothModelPersistency.load(m_projectFile);
-				m_wizard.setModel(model);
-			} catch (IOException iox)
-			{
-				iox.printStackTrace();
-			}
+			if (openDirect(m_projectFileChooser.getSelectedFile()))
+				m_recentMenuManager.add(m_projectFileChooser.getSelectedFile().getAbsolutePath());
+		}
+	}
+	
+	public boolean openDirect(File path)
+	{
+		this.setTitle("JSmooth: " + path.toString());
+		m_projectFile = path;
+		try
+		{
+			JSmoothModelBean model = JSmoothModelPersistency.load(m_projectFile);
+			m_wizard.setModel(model);
+			return true;
+		} catch (IOException iox)
+		{
+			iox.printStackTrace();
+			return false;
 		}
 	}
 	
@@ -555,6 +584,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 	/** Exit the Application */
 	private void exitForm(java.awt.event.WindowEvent evt)//GEN-FIRST:event_exitForm
 	{
+		m_recentMenuManager.savePrefs();
 		System.exit(0);
 	}//GEN-LAST:event_exitForm
 	
@@ -587,6 +617,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 	private javax.swing.JSeparator jSeparator6;
 	private javax.swing.JSeparator jSeparator7;
 	private javax.swing.JSeparator jSeparator8;
+	private javax.swing.JSeparator jSeparator9;
 	private javax.swing.JTextField jTextField1;
 	private javax.swing.JToolBar jToolBar1;
 	private javax.swing.JButton m_buttonCompile;
@@ -606,6 +637,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 	private javax.swing.JMenuItem m_menuSave;
 	private javax.swing.JMenuItem m_menuSaveAs;
 	private javax.swing.JFileChooser m_projectFileChooser;
+	private javax.swing.JMenu m_recentMenu;
 	// End of variables declaration//GEN-END:variables
 	
 }

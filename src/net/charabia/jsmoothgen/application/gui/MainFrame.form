@@ -72,6 +72,13 @@
             </MenuItem>
             <MenuItem class="javax.swing.JSeparator" name="jSeparator3">
             </MenuItem>
+            <Menu class="javax.swing.JMenu" name="m_recentMenu">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Recent Files"/>
+              </Properties>
+            </Menu>
+            <MenuItem class="javax.swing.JSeparator" name="jSeparator9">
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="m_menuExit">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.openide.explorer.propertysheet.editors.IconEditor">
