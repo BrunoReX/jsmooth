@@ -28,6 +28,7 @@ import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
 import java.awt.*;
+import java.lang.reflect.*;
 
 public class ExeCompiler
 {
@@ -188,9 +189,19 @@ public class ExeCompiler
 	Image orgimage = null;
 	try {
 	    Class c = Class.forName("com.sun.jimi.core.Jimi");
-	    orgimage = com.sun.jimi.core.Jimi.getImage(path);
-	    com.sun.jimi.core.util.ColorReducer reducer = new com.sun.jimi.core.util.ColorReducer(256);
-	    orgimage = reducer.getColorReducedImage(orgimage);
+	    Method m = c.getDeclaredMethod("getImage", new Class[] { String.class });
+	    orgimage = (java.awt.Image) m.invoke(null, new Object[] { path });
+	    //	    orgimage = com.sun.jimi.core.Jimi.getImage(path);
+
+	    Class reducerclazz = Class.forName("com.sun.jimi.core.util.ColorReducer");
+	    Constructor redconstr = reducerclazz.getDeclaredConstructor(new Class[] { int.class });
+	    Object colorreducer = redconstr.newInstance(new Object[] { new Integer(256) });
+	    Method redmeth = reducerclazz.getDeclaredMethod("getColorReducedImage", new Class[]{java.awt.Image.class});
+	   
+	    orgimage = (java.awt.Image) redmeth.invoke(colorreducer, new Object[]{ orgimage });
+
+	    //	    com.sun.jimi.core.util.ColorReducer reducer = new com.sun.jimi.core.util.ColorReducer(256);
+	    //	    orgimage = reducer.getColorReducedImage(orgimage);
 	} catch (Exception exc)
 	    {
 		javax.swing.ImageIcon icon = new javax.swing.ImageIcon(path, "default icon");

@@ -24,6 +24,7 @@ import net.charabia.jsmoothgen.application.*;
 import net.charabia.jsmoothgen.application.gui.util.*;
 import javax.swing.*;
 import java.io.File;
+import java.lang.reflect.*;
 
 public class Executable extends javax.swing.JPanel implements ModelUpdater
 {
@@ -82,8 +83,13 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
 		    iconpath = new java.io.File(m_basedir, model.getIconLocation()).getAbsolutePath();
 
 		try {
+		    //		    Class c = Class.forName("com.sun.jimi.core.Jimi");
+		    //		    java.awt.Image img = com.sun.jimi.core.Jimi.getImage(iconpath);
+
 		    Class c = Class.forName("com.sun.jimi.core.Jimi");
-		    java.awt.Image img = com.sun.jimi.core.Jimi.getImage(iconpath);
+		    Method m = c.getDeclaredMethod("getImage", new Class[] { String.class });
+		    java.awt.Image img = (java.awt.Image) m.invoke(null, new Object[] { iconpath });
+
 		    if (img != null)
 			{
 			    ImageIcon icon = new ImageIcon(img);
@@ -186,7 +192,10 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
  		ImageIcon icon = null;
 		try {
 		    Class c = Class.forName("com.sun.jimi.core.Jimi");
-		    java.awt.Image img = com.sun.jimi.core.Jimi.getImage(iconpath);
+
+		    Method m = c.getDeclaredMethod("getImage", new Class[] { String.class });
+		    java.awt.Image img = (java.awt.Image) m.invoke(null, new Object[] { iconpath });
+
 		    if (img != null)
 			{
 			    icon = new ImageIcon(img);
