@@ -3,8 +3,6 @@
 	account (not only the installed JRE)
 	- Fixed bug #858829 (Windowed Wrapper blocks Explorer)
 	- Fixed issue with main class selector
-	- test
-	- test 2
 	
 0.9.5
 	- ! Made the jar embedding optional. Now, one can choose to
