@@ -114,7 +114,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
         jMenu2 = new javax.swing.JMenu();
         m_menuAbout = new javax.swing.JMenuItem();
 
-        setTitle("JSmooth");
+        setTitle("JSmooth " + VERSION);
         addWindowListener(new java.awt.event.WindowAdapter()
         {
             public void windowClosing(java.awt.event.WindowEvent evt)
@@ -450,7 +450,12 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 
 	try
 	    {
-		File out = new File(exedir, model.getExecutableName());
+		File out = null;
+		if (new File(model.getExecutableName()).isAbsolute() == false)
+		    out = new File(exedir, model.getExecutableName());
+		else
+		    out = new File(model.getExecutableName());
+
 		System.out.println("out = "+ out.getAbsolutePath());
 		ExeCompiler compiler = new ExeCompiler();
 		ExeCompiler.CompilerRunner runner = compiler.getRunnable(skelroot, skel, basedir, model, out);
