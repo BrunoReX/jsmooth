@@ -22,9 +22,16 @@
 
 vector<SunJVMLauncher> JVMRegistryLookup::lookupJVM()
 {
-    return JVMRegistryLookup::lookup(HKEY_LOCAL_MACHINE, "SOFTWARE\\JavaSoft\\Java Runtime Environment");
-}
+  vector<SunJVMLauncher> res = JVMRegistryLookup::lookup(HKEY_LOCAL_MACHINE, "SOFTWARE\\JavaSoft\\Java Runtime Environment");
+  vector<SunJVMLauncher> res2 = JVMRegistryLookup::lookup(HKEY_LOCAL_MACHINE, "SOFTWARE\\JavaSoft\\Java Development Kit");
 
+  for (vector<SunJVMLauncher>::iterator i = res2.begin(); i != res2.end(); i++)
+    {
+      res.insert(res.end(), *i);
+    }
+
+  return res;
+}
 
 vector<SunJVMLauncher> JVMRegistryLookup::lookup(HKEY key, const string& path)
 {
