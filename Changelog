@@ -10,6 +10,10 @@
 	debug log)
 	- adds sorting of the registry JVMs from highest version number to
 	lower (thus, most recent JVMs are tried first).
+	- Applied patch #883175 (make jsmooth ant task more verbose).
+	- Implemented feature #895967 (Command Line pass-through).
+	- fixed bug #880441 (Jvm search from PATH environment variable)
+	- fixed bug #880439 (Jvm search from environment variables)
 	
 0.9.5
 	- ! Made the jar embedding optional. Now, one can choose to
