@@ -49,7 +49,7 @@ bool JavaMachineManager::run()
                 return true;
     }
 
-   // if (vmorder == "")
+    if (vmorder == "")
     {
         vmorder = "registry;jdkpath;jrepath;javahome;jview;exepath";
     }

@@ -28,11 +28,8 @@ extern "C" {
   }
   void JNICALL myexit(jint code)
   {
-       DEBUG("EXIT CALLED FROM JVM DLL");
-//        delete globalResMan;
-//        globalResMan = 0;
-        
-    	exit(code); 
+       DEBUG("EXIT CALLED FROM JVM DLL");        
+       exit(code); 
   }
 }
 
@@ -76,11 +73,26 @@ bool SunJVMLauncher::runProc(ResourceManager& resource)
     Version min(resource.getProperty(ResourceManager:: KEY_MINVERSION));
     
     DEBUG("RUN PROC... " + min.toString() + " <= " + VmVersion.toString() + "<= " + max.toString());
-    
-    if ( VmVersion.isValid() && ((VmVersion < min) || (max < VmVersion)))
+    Version curver;
+    Version vjava = guessVersionByProcess(JavaHome + "\\bin\\java.exe");
+    DEBUG("JAVA VERSION = " + vjava.toString());
+    if (vjava.isValid())
+        curver = vjava;
+    else
     {
-        return false;
+        Version vjre = guessVersionByProcess(JavaHome + "\\bin\\jre.exe");
+        DEBUG("JRE VERSION = " + vjre.toString());    
+        curver = vjre;
     }
+    
+    if (curver.isValid() == false)
+        return false;
+    
+    if (min.isValid() && (curver < min))
+        return false;
+
+    if (max.isValid() && (max < curver))
+        return false;
 
     DEBUG("RUN PROC... version OK");
     
@@ -132,14 +144,9 @@ bool SunJVMLauncher::runVM12DLL(ResourceManager& resource)
                 JavaVMOption options[4];
                 std::string cpoption = "-Djava.class.path=";
                 cpoption += jarpath;
-//                cpoption += "grostest.jar";
+
                 DEBUG("Classpath: " + cpoption);
                 options[0].optionString =  (char*)cpoption.c_str();
-   //             options[1].optionString = "exit";
-   //             options[1].extraInfo = (void*)myexit;
-                
-       //        options[1].optionString = "vprintf";
-       //        options[1].extraInfo = (void*)myvprintf;
                 vm_args.version = 0x00010002;
                 vm_args.options = options;
                 vm_args.nOptions = 1;
@@ -150,14 +157,7 @@ bool SunJVMLauncher::runVM12DLL(ResourceManager& resource)
                 
                 GetDefaultJavaVMInitArgs(&vm_args);
 
-//                std::string classpathstr = vm_args.classpath;
-//                classpathstr += ";gen-application.jar";
- //               copyString(classpathstr, classpath, 2047);
-//                vm_args.classpath = classpath;                
-//                this->Message = classpathstr;
-//                 res = JNI_CreateJavaVM(&vm,(void**)&env,&vm_args);
-
-              res = CreateJavaVM( &vm, &env, &vm_args);
+                res = CreateJavaVM( &vm, &env, &vm_args);
                 if (res != 0)
                 {
                                 DEBUG("Can't create VM");
@@ -235,6 +235,7 @@ bool SunJVMLauncher::runVM11DLL(ResourceManager& resource)
 
     std::string jarpath = resource.saveJarInTempFile();
     std::string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));
+    std::string extracp = resource.getProperty(string(ResourceManager::KEY_CLASSPATH));
 
     std::string args = resource.getProperty(ResourceManager::KEY_ARGUMENTS);
     vector<string> pargs = StringUtils::split(args, " \t\n\r", "\"\'");
@@ -280,9 +281,11 @@ bool SunJVMLauncher::runVM11DLL(ResourceManager& resource)
 
         std::string classpath = vm_args.classpath;
         classpath += ";" + jarpath;
+        classpath += ";" + extracp;
         DEBUG("CLASSPATH = " + classpath);
-     vm_args.classpath = (char*)classpath.c_str();
-     /* Create the Java VM */
+        vm_args.classpath = (char*)classpath.c_str();
+
+      /* Create the Java VM */
 
         res = CreateJavaVM( &javavm, &env, &vm_args);
 
@@ -431,8 +434,71 @@ bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, Reso
    return false;
 }
 
-Version SunJVMLauncher::guessVersionByProcess()
+Version SunJVMLauncher::guessVersionByProcess(const string& exepath)
 {
+    Version result;
 
+    string tmpfilename = FileUtils::createTempFileName(".tmp");
+    SECURITY_ATTRIBUTES secattrs;
+    secattrs.nLength = sizeof(SECURITY_ATTRIBUTES);
+    secattrs.lpSecurityDescriptor = NULL;
+    secattrs.bInheritHandle = TRUE;
+    
+    HANDLE tmph = CreateFile(tmpfilename.c_str(), GENERIC_WRITE,
+                            FILE_SHARE_WRITE, &secattrs,
+                            CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+                            
+    if (tmph == NULL)
+    {
+        DEBUG("TEMPH == NULL");
+    }
+    
+    DEBUG("REDIRECTED TMP TO " + tmpfilename);
+    STARTUPINFO info;
+    GetStartupInfo(&info);
+    info.hStdOutput = tmph;
+    info.hStdError = tmph;
+    info.wShowWindow = TRUE;
+    info.dwFlags = STARTF_USESTDHANDLES;
+    PROCESS_INFORMATION procinfo;
+    
+    string exeline = exepath + " -version";
+
+    int res = CreateProcess(NULL, (char*)exeline.c_str(), NULL, NULL, 
+                        TRUE, NORMAL_PRIORITY_CLASS, NULL, NULL, &info, &procinfo);
+    
+      if (res != 0)
+      {
+            WaitForSingleObject(procinfo.hProcess, INFINITE);
+            CloseHandle(tmph);
+            
+            tmph = CreateFile(tmpfilename.c_str(), GENERIC_READ,
+                            FILE_SHARE_READ, NULL,
+                            OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+            
+            if (tmph != NULL)
+            {
+                        char buffer[128];
+                        DWORD hasread;
+                        buffer[127] = 0;
+                        if (ReadFile(tmph, buffer, 127, &hasread, NULL))
+                        {
+                            DEBUG(string("DATA READ: ") + buffer);
+                            vector<string> split = StringUtils::split(buffer, " \t\n\r", "\"");
+                            for (vector<string>::iterator i=split.begin(); i != split.end(); i++)
+                            {
+                                Version v(*i);
+                                if (v.isValid())
+                                {
+                                   result = v;
+                                   break;
+                                }
+                            }
+                        }
+                CloseHandle(tmph);
+            }
+      }
+    DeleteFile(tmpfilename.c_str());
+    return result;
 }
 

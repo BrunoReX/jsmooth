@@ -23,6 +23,21 @@
 bool MSJViewLauncher::runProc(ResourceManager& resource)
 {
       DEBUG("Running JVIEW new process");
+      
+      //
+      // JView is java 1.1 only !
+      //
+      Version VmVersion("1.1.99");
+
+    Version max(resource.getProperty(ResourceManager:: KEY_MAXVERSION));
+    Version min(resource.getProperty(ResourceManager:: KEY_MINVERSION));
+    
+    if (min.isValid() && (VmVersion < min))
+        return false;
+
+    if (max.isValid() && (max < VmVersion))
+        return false;
+
     
       string classpath = resource.saveJarInTempFile();
 

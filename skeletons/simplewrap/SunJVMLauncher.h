@@ -45,7 +45,7 @@ class SunJVMLauncher
 
        std::string toString() const;
 
-       Version guessVersionByProcess();
+       Version guessVersionByProcess(const string& exepath);
 
      private:
      
