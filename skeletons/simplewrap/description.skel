@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<net.charabia.jsmoothgen.skeleton.SkeletonBean id="i13948523" xsi:type="net.charabia.jsmoothgen.skeleton.SkeletonBean" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<m_shortName xsi:type="xsd:string">Windowed Wrapper</m_shortName>
+<m_description xsi:type="xsd:string">Wraps java applications with GUI.&#13;
+- it doesn't show any command window&#13;
+- it doesn't work as NT services&#13;
+&#13;
+If no Java VM is found, it displays an HTML page that request the user to download the JVM.</m_description>
+<m_resourceCategory xsi:type="xsd:string">JAVA</m_resourceCategory>
+<m_resourceJarId xsi:type="xsd:int">101</m_resourceJarId>
+<m_resourcePropsId xsi:type="xsd:int">102</m_resourcePropsId>
+</net.charabia.jsmoothgen.skeleton.SkeletonBean>
