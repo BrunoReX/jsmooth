@@ -51,13 +51,16 @@ public class JarClassChooser extends javax.swing.JDialog
     
     public class JarEntryTreeNode extends javax.swing.tree.DefaultMutableTreeNode
     {
-        
         public JarEntryTreeNode(String value)
         {
             super(value);
             DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
-            javax.swing.ImageIcon leaf = new javax.swing.ImageIcon(getClass().getResource("/icons/stock_form-autopilots-16.png"));
-            renderer.setLeafIcon(leaf);
+	    java.net.URL imgurl = getClass().getResource("/icons/stock_form-autopilots-16.png");
+	    if (imgurl != null)
+		{
+		    javax.swing.ImageIcon leaf = new javax.swing.ImageIcon(imgurl);
+		    renderer.setLeafIcon(leaf);
+		}
             m_tree.setCellRenderer(renderer);
             m_tree.addTreeSelectionListener(new ClassTreeListener());
             m_tree.setEditable(false);
