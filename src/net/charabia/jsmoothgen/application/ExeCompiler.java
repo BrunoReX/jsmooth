@@ -157,6 +157,7 @@ public class ExeCompiler
 	    String props = PropertiesBuilder.makeProperties(basedir, data);
 	    ByteBuffer propdata = convert(props);
 	    resb = resdir.replaceResource(skel.getResourceCategory(), skel.getResourcePropsId(), 1033, propdata);
+
 	    if (data.getIconLocation() != null)
 		{
 		    fireStepChange(80, "Loading icon...");
@@ -294,23 +295,6 @@ public class ExeCompiler
 		data[i%width][i/width] = pixelbuffer[i];
 	    }
 	
-	//	System.out.println("BEFORE...");
-// 	for (int y=0; y<height; y++)
-// 	    {
-// 		for (int x=0; x<width; x++)
-// 		    {
-// 			//			int rgb = ((BufferedImage)img).getRGB(x, y);
-// 			int rgb = data[x][y];
-// 			if (((rgb>>24)&0xFF)>0)
-// 			    {
-// 				//				System.out.print(".");
-// 			    }
-// 			else
-// 			    System.out.print("*");
-// 		    }
-// 		//		System.out.println("");
-// 	    }
-
 	int[][] savedata = new int[width][height];	
 
 	for(int y=0;y<height;y++)
@@ -328,15 +312,9 @@ public class ExeCompiler
 		cmap[(i*4)+2] = (byte) (palette[i] & 0xFF);
 		cmap[(i*4)+3] = (byte) 0xFF;
 	    }
-	// 	System.out.println("Quantized image to " + palette.length + " colors");
 
 	IndexColorModel colmodel = new IndexColorModel(8, palette.length, cmap, 0, true, 0);
-// 	System.out.println("INDEX0 = " + colmodel.getRGB(0));
-	//	BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED);
 	BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-
-	//	result.setRGB(0,0, width, height, pixelbuffer, 0, width);
-
 	//
 	// The normal manner of quantizing would be to run
 	// result.setRGB(0,0, width, height, pixelbuffer, 0, width);
@@ -368,68 +346,6 @@ public class ExeCompiler
 		//		System.out.println("");
 	    }
 
-	//	System.out.println("COLORS TOTAL: " + set.size());
-
-	Hashtable set2 = calculateColorCount(result);
-	//	System.out.println("COLORS TOTAL 2: " + set2.size());
-
-// 	System.out.println("INDEX0+ = " + colmodel.getRGB(0));
-// 	System.out.println("AFTER...");
-//  	WritableRaster raster = result.getRaster();
-// 	for (int y=0; y<result.getHeight(); y++)
-// 	    {
-// 		for (int x=0; x<result.getWidth(); x++)
-// 		    {
-// 			if (((savedata[x][y]>>24)&0xFF) == 0)
-// 			    {
-// 				System.out.print(".");
-// 				//				result.setRGB(x,y,0x00FFFFFF);
-// 				raster.setSample(x,y,0,0);
-// 			    }
-// 			else
-// 			    {
-// 				System.out.print("*");
-// 			    }
-// 		    }
-// 		System.out.println("");
-// 	    }
-
-// 	System.out.println("SAMPLES...");
-// 	raster = result.getRaster();
-// 	for (int y=0; y<result.getHeight(); y++)
-// 	    {
-// 		for (int x=0; x<result.getWidth(); x++)
-// 		    {
-// 			int pix = raster.getSample(x,y,0);
-// 			if (pix == 0)
-// 			    {
-// 				System.out.print(".");
-// 			    }
-// 			else
-// 			    {
-// 				System.out.print("*");
-// 			    }
-// 		    }
-// 		System.out.println("");
-// 	    }
-
-//	System.out.println("FINAL...");
-// 	for (int y=0; y<result.getHeight(); y++)
-// 	    {
-// 		for (int x=0; x<result.getWidth(); x++)
-// 		    {
-// 			int rgb = result.getRGB(x,y);
-// 			if (((rgb>>24)&0xFF) == 0)		       
-// 			    {
-// 				System.out.print(".");
-// 			    }
-// 			else
-// 			    {
-// 				System.out.print("*");
-// 			    }
-// 		    }
-// 		System.out.println("");
-// 	    }
 
 	return result;
     }
