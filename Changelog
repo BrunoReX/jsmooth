@@ -5,7 +5,9 @@
 	- ! Added home-made ICO loader code, so that JIMI is not required
 	anymore (thus removing a dependency to a closed-source Sun
 	package).
-	- Fixed bug that prevented the wrappers to launch the bundled jvm
+	- Fixed bugs 811957 and 811959  that prevented the wrappers to
+	launch a bundled jvm
+	- Fixed bug 846974: Build exe over to partitions
 	- Added color reduction for icons using true-color images.
 	- Fixed transparency issue with icon resource set up in the
 	executable.
