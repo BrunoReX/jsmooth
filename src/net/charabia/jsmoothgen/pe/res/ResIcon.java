@@ -219,22 +219,24 @@ public class ResIcon
 			bal = ((width * height)/8) - ((line+1)*(width/8)) + (col/8);
 
 			 // if ((pixelbuffer[i] & 0xFF000000) != 0x00000000)
-			if (((pixelbuffer[i]>>24)& 0xFF) == 0x00)
+			if ( false && (((pixelbuffer[i]>>24)& 0xFF) != 0xff))
 			{
 				BitmapAND[ bal ] |= 1 << (7-(i%8));
-				
-				int pixel = pixelbuffer[i] & 0x00FFFFFF;
-				pixel = 0xFFFFFF;
-				Integer icol = (Integer)colors.get(new Integer(pixel));
-				if (icol != null)
-				{
-					int palindex = icol.intValue();
-					BitmapXOR[bxl] = (short)palindex;
-				}
-				else
-				{
-					System.out.println("Can't find TRANSP BLACK COL " + icol );
-				}
+				BitmapXOR[bxl] = 0xFF; // (short)getBrightest();
+
+// 				int pixel = pixelbuffer[i] & 0x00FFFFFF;
+// 				pixel = 0x000000;
+// 				Integer icol = (Integer)colors.get(new Integer(pixel));
+// 				if (icol != null)
+// 				{
+// 					int palindex = icol.intValue();
+// 					BitmapXOR[bxl] = (short)palindex;
+// 				}
+// 				else
+// 				{
+// 				    BitmapXOR[bxl] = 0; // (short)getBrightest();
+// 				    System.out.println("Can't find TRANSP BLACK COL " + icol );
+// 				}
 			}
 			else
 			{
@@ -249,6 +251,22 @@ public class ResIcon
 			}
 		}
 	}
+
+    private int getBrightest()
+    {
+	int result = 0;
+	int averesult = 0;
+	for (int i=0; i<Palette.length; i++)
+	    {
+		int ave1 = (Palette[0].Red + Palette[0].Green + Palette[0].Blue)/3;
+		if (ave1 > averesult)
+		    {
+			averesult = ave1;
+			result = i;
+		    }
+	    }
+	return result;
+    }
 	
 	private Hashtable calculateColorCount(int[] pixels)
 	{
@@ -270,9 +288,9 @@ public class ResIcon
 		return result;
 	}
 	
-	/** Creates and returns a ByteBuffer containing a image under the .ico format
-	 * expected by Windows.
-	 * @return
+	/** Creates and returns a ByteBuffer containing an image under
+	 * the .ico format expected by Windows.
+	 * @return a ByteBuffer with the .ico data
 	 */	
 	public ByteBuffer getData()
 	{
