@@ -20,7 +20,7 @@
 
 #include "ResourceManager.h"
 
-ResourceManager::ResourceManager(std::string category, int propsId, int jarId)
+ResourceManager::ResourceManager(std::string category, int propsId, int jarId, const string& commanddir, const string& commandname)
 {
     m_resourceCategory = category;
     m_resourcePropsId = propsId;
@@ -28,6 +28,7 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId)
 
     //
     // Load the Properties
+    //
     std::string propsidstr = this->idToResourceName(propsId);
     HRSRC resprop = FindResource(NULL, propsidstr.c_str(), category.c_str());
     if (resprop != NULL)
@@ -45,6 +46,10 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId)
         m_lastError = "Can't find resource 'main name'";
         return;
     }
+    
+    //
+    // loads the jar information
+    // 
     std::string jaridstr = this->idToResourceName(jarId);
     HRSRC resjar = FindResource(NULL, jaridstr.c_str(), category.c_str());
     if (resjar != NULL)
@@ -57,7 +62,29 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId)
         m_lastError = "Can't find JAR resource!";
         return;
     }
+
+
+    //
+    // Extract the java properties from the Property
+    //
+    std::string jpropcountstr = m_props.get("javapropertiescount");
+    DEBUG("JAVA PROPERTIES COUNT = " + jpropcountstr);
     
+    int jpropcount = StringUtils::parseInt(jpropcountstr);
+    for (int i=0; i<jpropcount; i++)
+    {
+        string namekey = string("javaproperty_name_") + StringUtils::toString(i);
+        string valuekey = string("javaproperty_value_") + StringUtils::toString(i);
+    
+        DEBUG("JPROP: " + namekey + "=" + valuekey);
+        string name = m_props.get(namekey);
+        string value = m_props.get(valuekey);
+
+        DEBUG("JPROP: " + name + "=" + value);
+        
+        JavaProperty jprop(name, StringUtils::StringUtils::replaceEnvironmentVariable(value));
+        m_javaProperties.push_back(jprop);
+    }
 }
 
 ResourceManager::~ResourceManager()
@@ -135,3 +162,7 @@ std::string ResourceManager::saveJarInTempFile()
     return tempfilename;
 }
 
+const vector<JavaProperty>& ResourceManager::getJavaProperties()
+{
+    return m_javaProperties;
+}

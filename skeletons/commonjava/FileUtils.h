@@ -36,6 +36,7 @@ public:
     static string createTempFileName(const string& suffix);
     static bool fileExists(const string& filename);    
     static vector<string> recursiveSearch(const string& path, const string& pattern);
+    static std::string FileUtils::extractFileName(const std::string& filename);
 };
 
 #endif

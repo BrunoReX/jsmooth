@@ -5,8 +5,8 @@ CPP  = g++.exe
 CC   = gcc.exe
 WINDRES = windres.exe
 RES  = 
-OBJ  = DebugConsole.o FileUtils.o JavaMachineManager.o JVMEnvVarLookup.o JVMRegistryLookup.o MSJViewLauncher.o Properties.o ResourceManager.o StringUtils.o SunJVMLauncher.o Version.o global.o $(RES)
-LINKOBJ  = DebugConsole.o FileUtils.o JavaMachineManager.o JVMEnvVarLookup.o JVMRegistryLookup.o MSJViewLauncher.o Properties.o ResourceManager.o StringUtils.o SunJVMLauncher.o Version.o global.o $(RES)
+OBJ  = DebugConsole.o FileUtils.o JavaMachineManager.o JVMEnvVarLookup.o JVMRegistryLookup.o MSJViewLauncher.o Properties.o ResourceManager.o StringUtils.o SunJVMLauncher.o Version.o global.o JavaProperty.o $(RES)
+LINKOBJ  = DebugConsole.o FileUtils.o JavaMachineManager.o JVMEnvVarLookup.o JVMRegistryLookup.o MSJViewLauncher.o Properties.o ResourceManager.o StringUtils.o SunJVMLauncher.o Version.o global.o JavaProperty.o $(RES)
 LIBS =  -L"C:/Programs/Dev-Cpp-4.9.8.0/lib" 
 INCS =  -I"C:/Programs/Dev-Cpp-4.9.8.0/include"  -I"C:/Program Files/j2sdk_nb/j2sdk1.4.2/include"  -I"C:/Program Files/j2sdk_nb/j2sdk1.4.2/include/win32" 
 CXXINCS =  -I"C:/Programs/Dev-Cpp-4.9.8.0/include/c++"  -I"C:/Programs/Dev-Cpp-4.9.8.0/include/c++/mingw32"  -I"C:/Programs/Dev-Cpp-4.9.8.0/include/c++/backward"  -I"C:/Programs/Dev-Cpp-4.9.8.0/include"  -I"C:/Program Files/j2sdk_nb/j2sdk1.4.2/include"  -I"C:/Program Files/j2sdk_nb/j2sdk1.4.2/include/win32" 
@@ -61,3 +61,6 @@ Version.o: Version.cpp
 
 global.o: global.cpp
 	$(CPP) -c global.cpp -o global.o $(CXXFLAGS)
+
+JavaProperty.o: JavaProperty.cpp
+	$(CPP) -c JavaProperty.cpp -o JavaProperty.o $(CXXFLAGS)

@@ -36,7 +36,7 @@ JavaMachineManager::JavaMachineManager(ResourceManager& resman): m_resman(resman
     }
 }
 
-bool JavaMachineManager::run(bool noConsole)
+bool JavaMachineManager::run(bool dontUseConsole)
 {
     string vmorder = m_resman.getProperty(ResourceManager::KEY_JVMSEARCH);
 
@@ -45,7 +45,7 @@ bool JavaMachineManager::run(bool noConsole)
         if (m_localVM.run(m_resman))
                 return true;
         
-        if (m_localVM.runProc(m_resman, noConsole))
+        if (m_localVM.runProc(m_resman, dontUseConsole))
                 return true;
     }
 
@@ -67,19 +67,21 @@ bool JavaMachineManager::run(bool noConsole)
             {
                 DEBUG("trying registry: " + m_registryVms[i].toString());
 
-                if (noConsole)
+                if (dontUseConsole)
                 {
-                     if (m_registryVms[i].runProc(m_resman, noConsole))
+                     DEBUG("DONT USE CONSOLE == TRUE");
+                     if (m_registryVms[i].runProc(m_resman, dontUseConsole))
                      {
                         return true;
                      }                
                 }
                 else
                 {
+                     DEBUG("DONT USE CONSOLE == FALSE");
                      if (m_registryVms[i].run(m_resman))
                      {
                         return true;
-                     } else if (m_registryVms[i].runProc(m_resman, noConsole))
+                     } else if (m_registryVms[i].runProc(m_resman, dontUseConsole))
                      {
                         return true;
                      }
@@ -100,7 +102,7 @@ bool JavaMachineManager::run(bool noConsole)
                 {
                 DEBUG("JAVAHOME exists..." + m_javahomeVm[0].toString());
                                 
-                    if (m_javahomeVm[0].runProc(m_resman, noConsole))
+                    if (m_javahomeVm[0].runProc(m_resman, dontUseConsole))
                     {
                         return true;
                     }
@@ -109,7 +111,7 @@ bool JavaMachineManager::run(bool noConsole)
             for (int i=0; i<m_registryVms.size(); i++)
             {
                 DEBUG("trying registry PROC: " + m_registryVms[i].toString());
-                if (m_registryVms[i].runProc(m_resman, noConsole))
+                if (m_registryVms[i].runProc(m_resman, dontUseConsole))
                 {
                         return true;
                 }
@@ -119,7 +121,7 @@ bool JavaMachineManager::run(bool noConsole)
                 DEBUG("trying JREPATH");
                 if (m_jrepathVm.size()>0)
                 {
-                    if (m_jrepathVm[0].runProc(m_resman, noConsole))
+                    if (m_jrepathVm[0].runProc(m_resman, dontUseConsole))
                     {
                         return true;
                     }
@@ -129,7 +131,7 @@ bool JavaMachineManager::run(bool noConsole)
                 DEBUG("trying JDKPATH");
                 if (m_jdkpathVm.size()>0)
                 {
-                    if (m_jdkpathVm[0].runProc(m_resman, noConsole))
+                    if (m_jdkpathVm[0].runProc(m_resman, dontUseConsole))
                     {
                         return true;
                     }

@@ -179,3 +179,32 @@ string StringUtils::trim(string& str)
     result = str.substr(start, end-start+1);    
     return result;
 }
+
+string StringUtils::replaceEnvironmentVariable(const string& str)
+{
+    string result = str;
+    int start = 0;
+
+    while ( (start=result.find('%', start)) != str.npos)
+    {
+        start++;
+        int end = result.find('%', start);
+        if (end != str.npos)
+        {
+                int replacelen = end - start;
+                string envname = result.substr(start, replacelen);
+                
+                char buffer[512];
+                buffer[0]=0;
+                
+                GetEnvironmentVariable(envname.c_str(), buffer, 512);
+                result.replace(start-1, replacelen+2, buffer);
+                start+= strlen(buffer);                
+        }
+        else
+                start = end;
+    }
+    
+    return result;
+}
+

@@ -52,7 +52,7 @@ vector<string> FileUtils::recursiveSearch(const string& path, const string& patt
     WIN32_FIND_DATA data;
     string file = path + ((path[path.length()-1]=='\\')?"":"\\") + pattern;
     
-    DEBUG("looking for " + file);
+    DEBUG("scanning " + file);
     
     HANDLE handle = FindFirstFile(file.c_str(), &data);
     if (handle != INVALID_HANDLE_VALUE)
@@ -61,22 +61,22 @@ vector<string> FileUtils::recursiveSearch(const string& path, const string& patt
         result.push_back(path + ((path[path.length()-1]=='\\')?"":"\\") + data.cFileName);
         for ( ; FindNextFile(handle, &data) == TRUE ; )
         {
+              DEBUG(string("ADDED ") + data.cFileName);
               result.push_back(path + ((path[path.length()-1]=='\\')?"":"\\") + data.cFileName);
         }    
     
         FindClose(handle);
     }
 
-    DEBUG("rec search in " + path);
     handle = FindFirstFile((path + ((path[path.length()-1]=='\\')?"":"\\") + "*").c_str(), &data);
     if (handle == INVALID_HANDLE_VALUE)
         return result;
 
     do {
-        DEBUG(string("REC DIR FOUND ") + data.cFileName );
         string foundpath(data.cFileName);
-        if ((foundpath != ".") && (foundpath != ".."))
+        if ((foundpath != ".") && (foundpath != "..") && ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0))
         {
+            DEBUG(string("REC DIR FOUND ") + data.cFileName  + " (attr: " + StringUtils::toString(data.dwFileAttributes) + ") / " + StringUtils::toString(FILE_ATTRIBUTE_DIRECTORY));
             string npath = path + ((path[path.length()-1]=='\\')?"":"\\") + data.cFileName;
             vector<string> tres = FileUtils::recursiveSearch(npath, pattern);
             result.insert(result.end(), tres.begin(), tres.end());
@@ -86,3 +86,14 @@ vector<string> FileUtils::recursiveSearch(const string& path, const string& patt
     
     return result;
 }
+
+std::string FileUtils::extractFileName(const std::string& filename)
+{
+    int start = filename.rfind("\\", filename.length()-1);
+    if (start != filename.npos)
+    {
+        return filename.substr(start+1);
+    }
+    return filename;
+}
+

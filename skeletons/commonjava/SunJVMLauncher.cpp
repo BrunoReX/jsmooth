@@ -111,9 +111,11 @@ bool SunJVMLauncher::runProc(ResourceManager& resource, bool noConsole)
     
     if (Version("1.2") <= VmVersion)
     {
+        DEBUG("RUNVM12PROC");
         return runVM12proc(resource, noConsole);
     } else if (Version("1.1") <= VmVersion)
     {
+        DEBUG("RUNVM11PROC");
         return runVM11proc(resource, noConsole);
     }
     
@@ -258,11 +260,11 @@ bool SunJVMLauncher::runVM11DLL(ResourceManager& resource)
     if (FileUtils::fileExists(jvmdll) == false)
     {
         jvmdll = JavaHome +  "\\bin\\javai.dll";
-          if (FileUtils::fileExists(jvmdll) == false)
-          {
-                    DEBUG("JVM1.1: CAN'T FIND DLL !!!");
-                    return false;
-          }
+        if (FileUtils::fileExists(jvmdll) == false)
+        {
+             DEBUG("JVM1.1: CAN'T FIND DLL !!!");
+             return false;
+        }
     }
 
     HINSTANCE vmlib = LoadLibrary(jvmdll.c_str());
@@ -384,7 +386,7 @@ bool SunJVMLauncher::runVM11proc(ResourceManager& resource, bool noConsole)
         jrepath = "\\bin\\jrew.exe";
     }
 
-    if (runExe(JavaHome + jrepath, false, resource, noConsole))
+    if (runExe(JavaHome + jrepath, true, resource, noConsole))
         return true;
 
     if (runExe(JavaHome + javapath, true, resource, noConsole))
@@ -423,21 +425,37 @@ bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, Reso
       if (forceFullClasspath && (JavaHome != ""))
       {
             vector<string> cpzips = FileUtils::recursiveSearch(JavaHome, "*.zip");
+            for (vector<string>::iterator i=cpzips.begin(); i!=cpzips.end(); i++)
+                        DEBUG("ZIP FILE: " + *i);
             vector<string> cpjars = FileUtils::recursiveSearch(JavaHome, "*.jar");
+            for (vector<string>::iterator i=cpjars.begin(); i!=cpjars.end(); i++)
+                        DEBUG("JAR FILE: " + *i);
             vector<string> fullcp;
             fullcp.insert(fullcp.end(), cpzips.begin(), cpzips.end());
+            fullcp.insert(fullcp.end(), cpjars.begin(), cpjars.end());
+            for (vector<string>::iterator i=fullcp.begin(); i!=fullcp.end(); i++)
+                        DEBUG("FULL CP FILE: " + *i);
             string lcp = StringUtils::join(fullcp, ";");
             
             classpath += string(";") + lcp;
       }
       
-      string addcp = resource. getProperty("classpath");
+      string addcp = resource.getProperty("classpath");
       classpath += ";" + addcp;
       
-      string addargs = resource.getProperty("arguments");
+      string addargs = resource.getProperty(ResourceManager::KEY_ARGUMENTS);
+
+      string javaproperties = "";
+      const vector<JavaProperty>& jprops = resource.getJavaProperties();
+      for (vector<JavaProperty>::const_iterator i=jprops.begin(); i != jprops.end(); i++)
+      {
+            JavaProperty jp = *i;
+            javaproperties += " \"-D" + jp.getName() + "=" + jp.getValue() + "\"";
+      }
       
       string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));
-      string arguments = "-classpath \"" + classpath + "\" " + classname + " " + addargs;
+
+      string arguments = javaproperties + " -classpath \"" + classpath + "\" " + classname + " " + addargs;
 
       DEBUG("CLASSNAME = <" + classname + ">");
       STARTUPINFO info;
@@ -456,16 +474,18 @@ bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, Reso
       else
       {
             info.dwFlags = STARTF_USESHOWWINDOW;
-            info.wShowWindow = SW_HIDE;
+//            info.wShowWindow = SW_HIDE;
             creationFlags = NORMAL_PRIORITY_CLASS | DETACHED_PROCESS;
             inheritsHandle = FALSE;
       }
+
       PROCESS_INFORMATION procinfo;
       string exeline = exepath + " " + arguments;
 
       int res = CreateProcess(NULL, (char*)exeline.c_str(), NULL, NULL, inheritsHandle, creationFlags, NULL, NULL, &info, &procinfo);
 
       DEBUG("COMMAND LINE: " +exeline);
+      DEBUG("RESULT: " + StringUtils::toString(res));
       if (res != 0)
       {
             WaitForSingleObject(procinfo.hProcess, INFINITE);

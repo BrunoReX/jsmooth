@@ -28,6 +28,7 @@
 #include "common.h"
 #include "Properties.h"
 #include "FileUtils.h"
+#include "JavaProperty.h"
 
 class ResourceManager
 {
@@ -43,6 +44,7 @@ private:
     int m_jarSize;
     
     std::vector<std::string> m_deleteOnFinalize;
+    std::vector<JavaProperty> m_javaProperties;
     
 public:
 
@@ -57,7 +59,7 @@ public:
     static char * const KEY_BUNDLEDVM     = "bundledvm";
     static char * const KEY_CURRENTDIR    = "currentdir";
  
-    ResourceManager(std::string category, int propsId, int jarId);
+    ResourceManager(std::string category, int propsId, int jarId, const string& commanddir, const string& commandname);
     ~ResourceManager();
     
     std::string saveJarInTempFile();
@@ -77,6 +79,9 @@ public:
         result += buffer;
         return result;
     }
+    
+    const vector<JavaProperty>& getJavaProperties();
+    
 private:
     void saveTemp(std::string tempname);
     

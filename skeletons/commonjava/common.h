@@ -28,7 +28,7 @@
 #include "DebugConsole.h"
 
 #define DEBUGMODE
-#undef DEBUGMODE
+// #undef DEBUGMODE
 
 extern std::vector< std::string > LOG;
 extern DebugConsole DEBUGCONSOLE;
@@ -41,7 +41,7 @@ extern ResourceManager* globalResMan;
 #    define DEBUG(x) DEBUGCONSOLE.writeline(x)
 #    define DEBUGWAITKEY() DEBUGCONSOLE.waitKey()
 #else
-#    define DEBUG(x) 
+#    define DEBUG(x)
 #    define DEBUGWAITKEY()
 #endif
 

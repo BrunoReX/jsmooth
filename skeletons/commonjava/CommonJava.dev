@@ -1,7 +1,7 @@
 [Project]
 FileName=CommonJava.dev
 Name=CommonJava
-UnitCount=24
+UnitCount=26
 Type=2
 Ver=1
 ObjFiles=
@@ -277,6 +277,26 @@ AutoIncBuildNr=0
 
 [Unit24]
 FileName=global.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit25]
+FileName=JavaProperty.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit26]
+FileName=JavaProperty.cpp
 CompileCpp=1
 Folder=
 Compile=1

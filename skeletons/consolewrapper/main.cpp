@@ -20,6 +20,8 @@
 
 #include <iostream>
 #include <stdlib.h>
+#include <windows.h>
+
 #include "resource.h"
 
 #include "common.h"
@@ -30,13 +32,10 @@
 using namespace std;
 
 int main(int argc, char *argv[])
-{
-    ResourceManager* globalResMan = new ResourceManager("JAVA", PROPID, JARID);
-    DEBUG(string("Main class: ") + globalResMan->getMainName());
-
+{    
+    ResourceManager* globalResMan = new ResourceManager("JAVA", PROPID, JARID, "", "");
     char curdir[256];
     GetCurrentDirectory(256, curdir);
-    DEBUG(string("Currentdir: ") + curdir);
 
     string newcurdir = globalResMan->getProperty(ResourceManager::KEY_CURRENTDIR);
     SetCurrentDirectory(newcurdir.c_str());
@@ -55,7 +54,7 @@ int main(int argc, char *argv[])
         std::string errmsg = globalResMan->getProperty("skel_Message");
         cerr << errmsg.c_str();
         cerr << "\r\n";
-    }  
+    }
 
   int waitkey = atoi(globalResMan->getProperty("skel_KeyPress").c_str());
   if (waitkey != 0)
@@ -66,3 +65,4 @@ int main(int argc, char *argv[])
   delete globalResMan;  
   return 0;
 }
+

@@ -36,6 +36,8 @@ public:
     static string toString(int val);
     static string toString(const vector<string>& seq);
     static void copyTo(const string& from, char* to, int length);
+
+    static string StringUtils::replaceEnvironmentVariable(const string& str);
     
     static string join(const vector<string>& seq, const string& separator);
     static string trim(string& str);

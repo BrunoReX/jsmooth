@@ -118,7 +118,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
             ShellExecute(hwnd, "open", url.c_str(), NULL, "", 0);
         }
     }
-    
+
     DEBUG("NORMAL EXIT");
     DEBUGWAITKEY();
 
