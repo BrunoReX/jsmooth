@@ -24,6 +24,7 @@
 #include <windows.h>
 #include <string>
 #include <vector>
+#include "common.h"
 
 class ResourceManager
 {

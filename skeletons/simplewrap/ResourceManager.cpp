@@ -79,6 +79,7 @@ void ResourceManager::saveTemp(std::string tempname)
         WriteFile(temp, m_jarHandler, m_jarSize, &reallyWritten, NULL);
         CloseHandle(temp);
     }
+    
 }
 
 std::string ResourceManager::getMainName()
