@@ -17,6 +17,34 @@
     <javac deprecation="yes" destdir="${classes}" srcdir="${src}" target="1.1" classpath="lib/JimiProClasses.zip"/>
   </target>
 
+  <target depends="init" name="doc">
+    <!-- Compile the java code from ${src} into ${classes} -->
+
+    <xslt basedir="docs" destdir="docs"
+       in="docs/jsmooth-doc.xml"
+       out="docs/jsmooth-doc.html"
+       style="c:/Programs/docbook-xsl-1.62.0/html/chunk.xsl" >
+ 
+          <param name="admon.graphics" expression="1"/>
+          <param name="section.autolabel" expression="1"/>
+         <param name="section.label.includes.component.label" expression="1"/>
+         <param name="chunk.section.depth" expression="2"/>
+  
+    </xslt>
+
+    <xslt basedir="docs" destdir="docs"
+       in="docs/jsmooth-doc.xml"
+       out="docs/jsmooth-doc.fo"
+       style="c:/Programs/docbook-xsl-1.62.0/fo/docbook.xsl" >
+ 
+          <param name="admon.graphics" expression="1"/>
+          <param name="section.autolabel" expression="1"/>
+         <param name="section.label.includes.component.label" expression="1"/>
+
+    </xslt>
+
+  </target>
+
   <target depends="compile" name="dist">
     <!-- Compile the java code from ${src} into ${classes} -->
     <copy todir="classes/icons">
