@@ -141,8 +141,6 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     JavaMachineManager man(*globalResMan);
     std::string preferDLLstr = globalResMan->getProperty("skel_SingleProcess");
 
-    MessageBox(hwnd, preferDLLstr.c_str(), "preferDLL", MB_OKCANCEL|MB_ICONQUESTION|MB_APPLMODAL);
-
     bool preferDLL = false;
     if (StringUtils::parseInt(preferDLLstr) > 0)
         preferDLL = true;
@@ -158,8 +156,8 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 
     //    MessageBox(hwnd, "Launched java", "DEBUG", MB_OKCANCEL|MB_ICONQUESTION|MB_APPLMODAL);
 
-    //    DEBUG("NORMAL EXIT");
-    //    DEBUGWAITKEY();
+    DEBUG("NORMAL EXIT");
+    DEBUGWAITKEY();
 
     /* Make the window visible on the screen */
 
