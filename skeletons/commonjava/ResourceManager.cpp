@@ -1,4 +1,4 @@
-/*
+    /*
   JSmooth: a VM wrapper toolkit for Windows
   Copyright (C) 2003 Rodrigo Reyes <reyes@charabia.net>
 
@@ -67,7 +67,6 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId)
   // Extract the java properties from the Property
   //
   std::string jpropcountstr = m_props.get("javapropertiescount");
-  DEBUG("JAVA PROPERTIES COUNT = " + jpropcountstr);
     
   string exepath = FileUtils::getExecutablePath();
   string exename = FileUtils::getExecutableFileName();
@@ -79,7 +78,6 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId)
       string namekey = string("javaproperty_name_") + StringUtils::toString(i);
       string valuekey = string("javaproperty_value_") + StringUtils::toString(i);
     
-      DEBUG("JPROP: " + namekey + "=" + valuekey);
       string name = m_props.get(namekey);
       string value = m_props.get(valuekey);
 
@@ -93,6 +91,12 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId)
       JavaProperty jprop(name, value);
       m_javaProperties.push_back(jprop);
     }
+
+    std::string curdirmodifier = m_props.get(ResourceManager::KEY_CURRENTDIR);
+    if (curdirmodifier.length()>0)
+        m_currentDirectory = FileUtils::concFile(FileUtils::getExecutablePath(), curdirmodifier);
+    else
+        m_currentDirectory = FileUtils::getExecutablePath();    
 }
 
 ResourceManager::~ResourceManager()
@@ -199,4 +203,9 @@ std::string ResourceManager::getNormalizedClassPath() const
 {
   vector<string> cps = getNormalizedClassPathVector();
   return StringUtils::join(cps, ";");
+}
+
+std::string ResourceManager::getCurrentDirectory() const
+{
+    return m_currentDirectory;
 }

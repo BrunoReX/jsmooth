@@ -37,6 +37,19 @@ int main(int argc, char *argv[])
     char curdir[256];
     GetCurrentDirectory(256, curdir);
 
+    {
+        char tmp[256];
+        char *fn;
+        GetFullPathName("..\\test", 256, tmp, &fn);
+        cerr << "fullpathname " << tmp << "\n";
+        cerr << "filename " << fn << "\n";
+        
+        std::string exepath = FileUtils::getExecutablePath();
+        std::string p = FileUtils::concFile(exepath, "..\\test");
+        
+        cerr << "test : " << p << "\n";
+    }
+
     string newcurdir = globalResMan->getProperty(ResourceManager::KEY_CURRENTDIR);
     SetCurrentDirectory(newcurdir.c_str());
 

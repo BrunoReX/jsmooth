@@ -52,7 +52,8 @@ class ResourceManager
   std::string m_mainName;
   std::string m_resourceCategory;
   Properties m_props;
-    
+  std::string m_currentDirectory;
+
   int m_resourcePropsId;
   int m_resourceJarId;
   std::string m_lastError;    
@@ -151,6 +152,8 @@ class ResourceManager
    */ 
   const vector<JavaProperty>& getJavaProperties();
     
+  std::string getCurrentDirectory() const;
+  
  private:
   void saveTemp(std::string tempname);
 

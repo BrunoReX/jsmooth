@@ -26,10 +26,14 @@ JavaMachineManager::JavaMachineManager(ResourceManager& resman): m_resman(resman
     m_javahomeVm = JVMEnvVarLookup::lookupJVM("JAVA_HOME");
     m_jrepathVm = JVMEnvVarLookup::lookupJVM("JRE_PATH");
     m_jdkpathVm = JVMEnvVarLookup::lookupJVM("JDK_PATH");
-    if (resman.getProperty("localvmdir").length() > 0)
+    if (resman.getProperty("bundledvm").length() > 0)
     {
+        string bjvm = resman.getProperty("bundledvm");
+        DEBUG("Found bundled vm <" + bjvm + ">");
         m_localVMenabled = true;
-        m_localVM.JavaHome = resman.getProperty("localvmdir");
+        m_localVM.JavaHome = FileUtils::concFile(resman.getCurrentDirectory(), bjvm);
+        DEBUG("Curdir is " + resman.getCurrentDirectory());
+        DEBUG("Stored as " + m_localVM.JavaHome);
     } else
     {
         m_localVMenabled = false;
@@ -42,11 +46,12 @@ bool JavaMachineManager::run(bool dontUseConsole, bool preferSingleProcess)
 
   if (m_localVMenabled)
     {
-      if (m_localVM.run(m_resman, "bundled"))
-	return true;
+        DEBUG("Trying bundled VM " + m_localVM.JavaHome);        
+        if (m_localVM.runProc(m_resman, dontUseConsole, "bundled"))
+	        return true;
         
-      if (m_localVM.runProc(m_resman, dontUseConsole, "bundled"))
-	return true;
+        if (m_localVM.run(m_resman, "bundled"))
+        	return true;
     }
 
   if (vmorder == "")

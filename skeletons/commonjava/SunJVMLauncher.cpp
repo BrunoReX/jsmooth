@@ -81,14 +81,14 @@ bool SunJVMLauncher::runProc(ResourceManager& resource, bool noConsole, const st
         jrepath = "\\bin\\jrew.exe";
     }
 
-    DEBUG("RUN PROC AS " + VmVersion.toString() + " ... " + min.toString() + " <= " + VmVersion.toString() + "<= " + max.toString());
+    DEBUG("RUN PROC " + origin +" ... " + min.toString() + " <= " + VmVersion.toString() + "<= " + max.toString());
     Version curver = VmVersion;
-
-
+    
     if (curver.isValid() == false)
     {
+        DEBUG(origin + ": check version for " + JavaHome + javapath);
         Version vjava = guessVersionByProcess(JavaHome + javapath);
-        DEBUG("JAVA VERSION = " + vjava.toString());
+        DEBUG("Java Version detected: " + vjava.toString());
         if (vjava.isValid())
 	  {
                 curver = vjava;
@@ -96,8 +96,9 @@ bool SunJVMLauncher::runProc(ResourceManager& resource, bool noConsole, const st
 	  }
         else
         {
+             DEBUG(origin + ": check version for " + JavaHome + jrepath);
              Version vjre = guessVersionByProcess(JavaHome + jrepath);
-             DEBUG("JRE VERSION = " + vjre.toString());    
+             DEBUG("JRE Version detected: " + vjre.toString());    
              curver = vjre;
              VmVersion = vjre;
         }
