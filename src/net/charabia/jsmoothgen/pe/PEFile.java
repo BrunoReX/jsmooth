@@ -116,7 +116,7 @@ public class PEFile
 
 	//(no)PEFile pe = new PEFile(new File("F:/Program Files/LAN Search PRO/lansearch.exe"));
 		
-	PEFile pe = new PEFile(new File("c:/projects/jwrap/JWrap.exe"));
+	PEFile pe = new PEFile(new File("F:/Documents and Settings/Rodrigo/Mes documents/projects/jsmooth/skeletons/simplewrap/JWrap.exe"));
 	//PEFile pe = new PEFile(new File("c:/projects/jwrap/Copie.exe"));
 	// PEFile pe = new PEFile(new File("c:/projects/jwrap/test.exe"));
 	// PEFile pe = new PEFile(new File("F:/Program Files/bQuery/bQuery.exe"));
@@ -125,12 +125,34 @@ public class PEFile
 	pe.open();
 
 	System.out.println("===============\nADDING A RES");
-	ByteBuffer data = ByteBuffer.allocate(0x666);
+	File fout = new File("F:/Documents and Settings/Rodrigo/Mes documents/projects/jsmooth/skeletons/simplewrap/gen-application.jar");
+	FileInputStream fis = new FileInputStream(fout);
+	
+	ByteBuffer data = ByteBuffer.allocate((int)fout.length());
+	data.order(ByteOrder.LITTLE_ENDIAN);
+	FileChannel fischan = fis.getChannel();
+	fischan.read(data);
+	data.position(0);
+	fis.close();
+	
 	PEResourceDirectory resdir = pe.getResourceDirectory();
-	resdir.addNewResource("POUET", "A666", "#1033", data);
+	boolean resb = resdir.replaceResource("JAVA", 103, 1033, data);
+	
+//	String mainclassname = "net.charabia.generation.application.Application";
+	String mainclassname = "net/charabia/generation/application/Application";
+	ByteBuffer bcn = ByteBuffer.allocate(mainclassname.length()+1);
+	for (int i=0; i<mainclassname.length(); i++)
+	{
+		bcn.put( (byte) mainclassname.charAt(i));
+	}
+	bcn.put((byte)0);
+	bcn.position(0);
+	resb = resdir.replaceResource("JAVA", 102, 1033, bcn);
+	
+	//resdir.addNewResource("POUET", "A666", "#1033", data);
 	resdir.dump(System.out);
 	System.out.println("New size = " + resdir.size());
-	File out = new File("c:/projects/jwrap/COPIE.exe");
+	File out = new File("F:/Documents and Settings/Rodrigo/Mes documents/projects/jsmooth/skeletons/simplewrap/COPIE.exe");
 	pe.dumpTo(out);
     }
 
