@@ -1,7 +1,27 @@
 <project name="jsmoothgen" default="jar" basedir=".">
 
+  <!-- set here the properties specific to your computer -->
+  <!-- see the README.txt file for additional information -->
 
-  <!-- set global properties for this build -->
+
+  <property name="JDKDIR" value="F:\Program Files\j2sdk_nb\j2sdk1.4.2"/>
+  <property name="RM" value="CMD /C DEL"/>
+
+  <!-- Values below should be standard, but check it anyway -->
+  <!-- Also make sure that the bin folder of MINGW is in your PATH -->
+  <property name="mingw-make" value="mingw32-make.exe"/>
+  <property name="mingw-strip" value="strip.exe"/>
+
+  <!-- What's below is  optional (needed only if you build a dist) -->
+  <property name="FOP" value="F:/Programs/documents/fop-0.20.5\fop.bat"/>
+  <property name="DOCBOOKBASE" value="F:\programs\documents\docbook-xsl-1.62.4"/>
+
+
+ <!-- set here the properties specific the release --> 
+
+  <property name="VERSION" value="0.9.4"/>
+
+  <!-- You should need to modify the properties below -->
 
   <property environment="env"/>
   <property name="src" value="src"/>
@@ -13,11 +33,6 @@
   <property name="jsmoothjar" value="jsmoothgen.jar"/>
   <property name="jsmoothjar-ant" value="jsmoothgen-ant.jar"/>
   <property name="ant.jar" value="${env.ANT_HOME}/lib/ant.jar"/>
-
-  <property name="FOP" value="C:\Programs\fop-0.20.5\fop.bat"/>
-  <property name="DOCBOOKBASE" value="c:/Programs/docbook-xsl-1.62.0"/>
-
-  <property name="VERSION" value="0.9.4"/>
 
   <property name="distbase" value="dist"/>
   <property name="dist" value="${distbase}/jsmooth-${VERSION}"/>
@@ -39,7 +54,6 @@
   </path>
 
   <path id="jsmooth.class.path">
-    <pathelement path="lib/JimiProClasses.zip"/>
     <pathelement path="lib/jox116.jar"/>
     <pathelement path="lib/dtdparser113.jar"/>
   </path>
@@ -59,7 +73,7 @@
     </javac>
   </target>
 
-  <target depends="init" name="docs">
+  <target name="docs" depends="init">
     <!-- Compile the java code from ${src} into ${classes} -->
 
     <xslt basedir="${docs}" destdir="${docs}"
@@ -267,12 +281,14 @@
   </target>
 
    <target name="compileskel" depends="">
-     <exec executable="make.exe" dir="skeletons/${skelname}">
+     <exec executable="${mingw-make}" dir="skeletons/${skelname}">
        <arg value="-f"/>
        <arg value="Makefile.win"/>
        <arg value="clean"/>
        <arg value="all"/>
-       <arg value="CUSTOMFLAGS=${skelflags}"/>
+       <arg value='CUSTOMFLAGS=${skelflags}'/>
+       <arg value='"JDK=${JDKDIR}"'/>
+       <arg value='"RM=${RM}"'/>
      </exec>
    </target>
 
