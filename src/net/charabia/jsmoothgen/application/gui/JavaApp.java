@@ -1,24 +1,46 @@
 /*
- * JavaApp.java
- *
- * Created on 7 août 2003, 15:12
- */
+  JSmooth: a VM wrapper toolkit for Windows
+  Copyright (C) 2003 Rodrigo Reyes <reyes@charabia.net>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+*/
 
 package net.charabia.jsmoothgen.application.gui;
 
-/**
- *
- * @author  Rodrigo
- */
-public class JavaApp extends javax.swing.JPanel
+import net.charabia.jsmoothgen.application.*;
+import net.charabia.jsmoothgen.application.gui.util.*;
+import javax.swing.*;
+import java.io.*;
+
+public class JavaApp extends javax.swing.JPanel implements ModelUpdater
 {
+	private JSmoothModelBean m_model;
 	
 	/** Creates new form BeanForm */
 	public JavaApp()
 	{
 		initComponents();
+		JFileChooser fc = new JFileChooser();
+		fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+		fc.addChoosableFileFilter(new ClassPathFileFilter());
+		EditableListFileEditor elle = new EditableListFileEditor();
+		elle.setFileChooser(fc);
+		m_classPathList.setEditor(elle);
 	}
-	
+		
 	/** This method is called from within the constructor to
 	 * initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is
@@ -29,21 +51,13 @@ public class JavaApp extends javax.swing.JPanel
 		java.awt.GridBagConstraints gridBagConstraints;
 		
 		jLabel1 = new javax.swing.JLabel();
-		jTextField1 = new javax.swing.JTextField();
-		jButton1 = new javax.swing.JButton();
+		m_jarLocation = new net.charabia.jsmoothgen.application.gui.util.FileSelectionTextField();
 		jLabel2 = new javax.swing.JLabel();
-		jTextField2 = new javax.swing.JTextField();
+		m_mainClassName = new javax.swing.JTextField();
 		jLabel3 = new javax.swing.JLabel();
-		jTextField3 = new javax.swing.JTextField();
+		m_arguments = new javax.swing.JTextField();
 		classpathPanel = new javax.swing.JPanel();
-		jLabel4 = new javax.swing.JLabel();
-		jScrollPane1 = new javax.swing.JScrollPane();
-		jList1 = new javax.swing.JList();
-		jButton3 = new javax.swing.JButton();
-		jButton4 = new javax.swing.JButton();
-		jSeparator1 = new javax.swing.JSeparator();
-		jButton5 = new javax.swing.JButton();
-		jButton6 = new javax.swing.JButton();
+		m_classPathList = new net.charabia.jsmoothgen.application.gui.util.SortedEditableList();
 		
 		setLayout(new java.awt.GridBagLayout());
 		
@@ -53,20 +67,13 @@ public class JavaApp extends javax.swing.JPanel
 		gridBagConstraints.gridy = 1;
 		add(jLabel1, gridBagConstraints);
 		
-		jTextField1.setText("jTextField1");
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 2;
 		gridBagConstraints.gridy = 1;
-		gridBagConstraints.gridwidth = 3;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints.weightx = 0.8;
-		add(jTextField1, gridBagConstraints);
-		
-		jButton1.setText("...");
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridy = 1;
 		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-		add(jButton1, gridBagConstraints);
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.weightx = 0.5;
+		add(m_jarLocation, gridBagConstraints);
 		
 		jLabel2.setText("Main Class");
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -74,12 +81,11 @@ public class JavaApp extends javax.swing.JPanel
 		gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
 		add(jLabel2, gridBagConstraints);
 		
-		jTextField2.setText("jTextField2");
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
-		add(jTextField2, gridBagConstraints);
+		add(m_mainClassName, gridBagConstraints);
 		
 		jLabel3.setText("Arguments");
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -87,62 +93,16 @@ public class JavaApp extends javax.swing.JPanel
 		gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
 		add(jLabel3, gridBagConstraints);
 		
-		jTextField3.setText("jTextField3");
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
-		add(jTextField3, gridBagConstraints);
+		add(m_arguments, gridBagConstraints);
 		
-		classpathPanel.setLayout(new java.awt.GridBagLayout());
+		classpathPanel.setLayout(new java.awt.BorderLayout());
 		
-		classpathPanel.setBorder(new javax.swing.border.EtchedBorder());
-		jLabel4.setText("Classpath");
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridx = 1;
-		gridBagConstraints.gridy = 1;
-		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints.insets = new java.awt.Insets(3, 3, 2, 2);
-		classpathPanel.add(jLabel4, gridBagConstraints);
-		
-		jScrollPane1.setViewportView(jList1);
-		
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridx = 1;
-		gridBagConstraints.gridwidth = 4;
-		gridBagConstraints.gridheight = 8;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-		classpathPanel.add(jScrollPane1, gridBagConstraints);
-		
-		jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_insert-element.png")));
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-		classpathPanel.add(jButton3, gridBagConstraints);
-		
-		jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_remove-element.png")));
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-		classpathPanel.add(jButton4, gridBagConstraints);
-		
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-		classpathPanel.add(jSeparator1, gridBagConstraints);
-		
-		jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_up.png")));
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridy = 6;
-		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-		classpathPanel.add(jButton5, gridBagConstraints);
-		
-		jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_down.png")));
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridy = 7;
-		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-		gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
-		classpathPanel.add(jButton6, gridBagConstraints);
+		classpathPanel.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.TitledBorder("ClassPath"), new javax.swing.border.EmptyBorder(new java.awt.Insets(5, 5, 5, 5))));
+		classpathPanel.add(m_classPathList, java.awt.BorderLayout.CENTER);
 		
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
@@ -152,25 +112,53 @@ public class JavaApp extends javax.swing.JPanel
 		add(classpathPanel, gridBagConstraints);
 		
 	}//GEN-END:initComponents
+
+	public void updateModel()
+	{
+		m_model.setJarLocation(m_jarLocation.getFile().toString());
+		m_model.setMainClassName(m_mainClassName.getText());
+		m_model.setArguments(m_arguments.getText());
+		Object[] flist = m_classPathList.getData();
+		String[] data = new String[flist.length];
+		for (int i=0; i<data.length; i++)
+		{
+			data[i] = flist[i].toString();
+		}
+		m_model.setClassPath(data);
+	}	
 	
+	public void setModel(JSmoothModelBean model)
+	{
+		m_model = model;
+		if (m_model.getJarLocation() != null)
+			m_jarLocation.setFile(new File(m_model.getJarLocation()));
+		if (m_model.getMainClassName() != null)
+			m_mainClassName.setText(m_model.getMainClassName());
+		if (m_model.getArguments() != null)
+			m_arguments.setText(m_model.getArguments());
+		if (m_model.getClassPath() != null)
+		{
+			String[] classpathstr = m_model.getClassPath();
+			File[] flist = new File[classpathstr.length];
+			for (int i=0; i<classpathstr.length; i++)
+			{
+				File f = new File(classpathstr[i]);
+				flist[i] = f;
+			}
+			m_classPathList.setData(flist);
+		}
+	}
 	
+
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private javax.swing.JPanel classpathPanel;
-	private javax.swing.JButton jButton1;
-	private javax.swing.JButton jButton3;
-	private javax.swing.JButton jButton4;
-	private javax.swing.JButton jButton5;
-	private javax.swing.JButton jButton6;
 	private javax.swing.JLabel jLabel1;
 	private javax.swing.JLabel jLabel2;
 	private javax.swing.JLabel jLabel3;
-	private javax.swing.JLabel jLabel4;
-	private javax.swing.JList jList1;
-	private javax.swing.JScrollPane jScrollPane1;
-	private javax.swing.JSeparator jSeparator1;
-	private javax.swing.JTextField jTextField1;
-	private javax.swing.JTextField jTextField2;
-	private javax.swing.JTextField jTextField3;
+	private javax.swing.JTextField m_arguments;
+	private net.charabia.jsmoothgen.application.gui.util.SortedEditableList m_classPathList;
+	private net.charabia.jsmoothgen.application.gui.util.FileSelectionTextField m_jarLocation;
+	private javax.swing.JTextField m_mainClassName;
 	// End of variables declaration//GEN-END:variables
 	
 }

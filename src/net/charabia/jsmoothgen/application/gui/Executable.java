@@ -1,24 +1,42 @@
 /*
- * Executable.java
- *
- * Created on 7 août 2003, 15:03
- */
+  JSmooth: a VM wrapper toolkit for Windows
+  Copyright (C) 2003 Rodrigo Reyes <reyes@charabia.net>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+*/
 
 package net.charabia.jsmoothgen.application.gui;
 
-/**
- *
- * @author  Rodrigo
- */
-public class Executable extends javax.swing.JPanel
+import net.charabia.jsmoothgen.application.*;
+
+public class Executable extends javax.swing.JPanel implements ModelUpdater
 {
-	
+	private JSmoothModelBean m_model;
+
 	/** Creates new form BeanForm */
 	public Executable()
 	{
 		initComponents();
 	}
 	
+	public void setModel(JSmoothModelBean model)
+	{
+		m_model = model;
+		m_executableNameField.setText(m_model.getExecutableName());
+	}
 	/** This method is called from within the constructor to
 	 * initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is
@@ -88,4 +106,11 @@ public class Executable extends javax.swing.JPanel
 	{
 		return m_executableNameField.getText();
 	}
+	
+	public void updateModel()
+	{
+		m_model.setExecutableName(m_executableNameField.getText());
+	}
+	
+	
 }
