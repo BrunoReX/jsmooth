@@ -1,10 +1,9 @@
 <?xml version="1.0"?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
- "file:///c:/programs/docbook-dtd/docbookx.dtd"
- >
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+                    "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
 
-<article>
-<articleinfo>
+<book>
+<bookinfo>
    "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"
 
   <author>
@@ -23,7 +22,7 @@
 
   <title>JSmooth @{VERSION}@ User Manual</title>
   <subtitle>@{RELEASEINFO}@</subtitle>
-</articleinfo>
+</bookinfo>
 
 <sect1>
 <title>Introduction</title>
@@ -31,7 +30,7 @@
   <sect2><title>What is JSmooth?</title>
    <para>
 
-   JSmooth is a Java Executable Wrapper that makes a standard Windows
+   JSmooth is a Java Executable Wrapper that builds a standard Windows
    executable binary (.exe) from a jar file. It makes java deployment
    much smoother and user-friendly, as it is able to find a Java VM by
    itself. When no VM is available, it provides feed-back to the
@@ -1103,4 +1102,4 @@ terms of the GNU General Public License.
 
 </sect1>
 
-</article>
+</book>
