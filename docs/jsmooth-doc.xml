@@ -1,0 +1,677 @@
+<?xml version="1.0"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+   "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"
+ >
+
+
+<article>
+<articleinfo>
+ "file:///c:/programs/docbook-dtd/docbookx.dtd"
+
+  <author>
+    <firstname>Rodrigo</firstname>
+    <surname>Reyes</surname>
+  </author>
+
+<revhistory>
+  <revision>
+    <revnumber>1.0</revnumber>
+    <date>10 Sep 2003</date>
+    <authorinitials>RR</authorinitials>
+    <revremark>First draft</revremark>
+  </revision>
+</revhistory>
+
+  <title>JSmooth User Manuel</title>
+</articleinfo>
+
+<sect1>
+<title>Introduction</title>
+
+  <sect2><title>What is JSmooth?</title>
+   <para>
+
+   JSmooth is a Java Executable Wrapper that makes a standard Windows
+   executable binary (.exe) from a jar file. It makes java deployment
+   much smoother and user-friendly, as it is able to find a Java VM by
+   itself. When no VM is available, it provides feed-back to the
+   users, and can launch the default web browser to an URL that
+   explains how to download a Java VM.
+
+   </para>
+  </sect2>
+
+  <sect2><title>Rationale</title>
+   <para>
+
+   The deployment of desktop Java application is a problem since
+   version 1 of Java. One must either bundle a JRE with his
+   application, or let the users manage alone the issue of installing
+   a JVM and configuring the application.
+
+   </para>
+
+   <para>
+
+   However, it needs little experience of java deployment to
+   understand that none of those methods are an option. 
+  
+   <itemizedlist>
+
+     <listitem><para> The size of a JRE bundle gets bigger and bigger
+         as the Java language evolves, as shown in the table below.
+
+	   <informaltable frame='all'>
+	    <tgroup cols='2'>
+	      <colspec colwidth='1.0in'/>
+	      <colspec colwidth='3.0in'/>
+	      <tbody>
+	        <row><entry>Version</entry><entry>Zipped JRE Bundle (approx.)</entry></row>
+	        <row><entry>JRE 1.1</entry><entry>2MB</entry></row>
+		<row><entry>JRE 1.2</entry><entry>11MB</entry></row>
+		<row><entry>JRE 1.3</entry><entry>14MB</entry></row>
+		<row><entry>JRE 1.4</entry><entry>30MB</entry></row>
+	      </tbody>
+	      </tgroup>
+	    </informaltable>
+
+	   </para><para>
+
+	   While it was reasonable to bundle the JRE 1.1 with the
+	   application, bundling the JRE 1.4 increases drastically the
+	   size of the bundle. This may not be an issue for vendors
+	   that are used to sell a packaged box with a CD, but stays
+	   an open issue for open-source developer and companies
+	   distributing their software product on the internet.
+
+	   </para></listitem>
+
+     <listitem><para>
+
+       Letting average Joe User manage the configuration of his system
+       is probably not a good idea either. Do not forget that the
+       choice of Java for your application is your choice, not Joe's,
+       and he probably don't even know what Java is. Should he really
+       care about it? No, for sure. If your application targets experienced users,
+       you are a lucky developer and you may not need to worry about
+       the technical details of your application's usage. But even for
+       the experienced users, it is always worth it making sure they
+       won't loose their time installing and configuring the application.
+
+       </para><para>
+
+       Image now that Joe was smart enough to be able to find a JVM on
+       his own, to download and install it. Fine. It'll work
+       seamlessly for your own application, you say. Wrong. What if
+       your application requires Java 1.4 and what he installed is
+       1.3, because he did a few months ago? The application may not
+       work at all, or even worse, partially work. Remember that any
+       software anomaly is called a bug, and you are the one
+       responsible for the bugs.
+
+       </para></listitem>
+
+   </itemizedlist>
+
+   </para>
+
+   <para>
+
+     Although Sun has recently introduced the Java Web Start
+     mechanism, it does not address all the issues: users want
+     standard windows application, that install in the standard
+     "program files" directory, and they can launch by double-clicking
+     a standard .exe. 
+
+   </para>
+
+  </sect2>
+
+
+  <sect2> <title>Benefits</title>
+
+    <para>
+     JSmooth aims at enhancing the user experience by taking care of
+     all those issues: the java application is wrapped in an .exe
+     binary. When the user clicks on the .exe, the windows application
+     search the most suitable JVM installed on the computer to launch
+     the java application. If no JVM is found, a dialog box is
+     displayed to the users and they may be redirected to a web site.
+    </para>
+
+  </sect2>
+
+</sect1>
+
+<sect1><title>Making a windows application</title>
+
+ <sect2><title>Running the JSmoothGen project editor</title>
+
+    <para>
+      The JSmoothGen application is the project editor. It provides a
+      graphical user interface for the configuration of all the
+      parameters available for building a .exe. 
+    </para>
+
+    <para>
+      <mediaobject>
+        <imageobject>
+            <imagedata fileref="images/jsg-application.png" format="PNG"/>
+        </imageobject>
+        <caption>
+            <para>The JSmoothGen Application</para>
+        </caption>
+      </mediaobject>
+
+    </para>
+ </sect2>
+
+ <sect2><title>Skeleton Selection</title>
+
+    <para>
+
+       The JSmooth application is based on a template system called
+       "skeleton". Choosing a skeleton is the first step in the
+       creation of a jsmooth executable. 
+    </para>
+
+    <para>
+       A skeleton is a template with a specific behaviour.  For
+       instance, the following skeleton are bundled with JSmooth as of
+       version 0.9.3: 
+    </para>
+
+    <para>
+     <itemizedlist>
+       <listitem><para>
+
+           The Console Wrapper is a skeleton designed for console
+           application (ie. which are run in the windows
+           console). This skeleton takes care of passing the
+           parameters to java application, it ensures the i/o are
+           routed to the current console, and so on.
+	   </para>
+       
+	<para>
+	  If no JVM is found, the application displays a text message
+	to the standard output.  </para>
+
+       </listitem>
+
+       <listitem><para> The Windowed Wrapper is designed for standard
+        Windows applications, which do not use console. 
+	</para>
+
+	<para>
+	  If no JVM is found, the skeleton displays a Windows
+	  OK/Cancel alert. If the user selects the OK button, the
+	  default web browser is launched on default web page. Both
+	  the message of the alert and the URL of the web page are
+	  configurable in the Skeleton Properties panel.
+	</para>
+
+        </listitem>
+       </itemizedlist>
+
+    </para>
+
+    <para>
+      <mediaobject>
+        <imageobject>
+            <imagedata fileref="images/jsg-skeleton.png" format="PNG"/>
+        </imageobject>
+        <caption>
+            <para>The Skeleton selection panel</para>
+        </caption>
+      </mediaobject>
+    </para>
+
+
+ </sect2>
+
+ <sect2><title>The Windows Executable</title>
+
+    <para>
+      The windows executable created by the JSmooth wrapping system
+    can be configured in many ways. The executable itself can be
+    customized with the following parameters:
+     </para>
+
+     <para>
+       <itemizedlist>
+        <listitem><para>The executable name is the most obvious
+        parameter. This is simply the name of the win32 file created
+        by JSmooth.
+	   </para>
+         </listitem>
+
+        <listitem><para>The current directory can be modified to suit
+        your needs. For instance, if you want your executable to be in
+        a bin\ sub-directory, but still want it to access the
+        resources as if it were in the base directory, it may be
+        convenient to modified the current directory to be "..".
+
+	 </para><para> 
+
+            When this parameter is specified, the wrapper simply
+            changes the current directory with the value "as is". For
+            instance, to change the current directory to a "res"
+            subdirectory, write "res" in the Current Directory field.
+ 
+        </para>
+
+        <warning>
+	  <para>
+
+	    When run as a Windows Application, the default current
+	    directory is always the directory of the executable
+	    binary. However, for a console wrapper, the default
+	    current directory is the path where the command line is
+	    currently tied. 
+          </para>
+
+	  <para>
+	    Changing the current directory for a console application
+	    is probably not what you want. A common issue is for a
+	    console application to find resources which are found in
+	    the file system (i.e not in the jar of the
+	    application). Lots of application work this way, but Java
+	    applications do not have access to the information they
+	    need: the location of the binary executable they are
+	    launched from. A work-around is to use an environment
+	    variable specific to your application. This is was ANT does, for instance. 
+	  </para>
+
+	  <para>
+	    You can do something equivalent with JSmooth without using
+	  an environment variable (which may be hard to set under
+	  windows). Define a Java Property, and set "$EXECUTABLEPATH"
+	  as value. The effect of this is to pass to your application
+	  a java property which indicates where the executable is
+	  located. Just use System.getProperty() call to retrieve the
+	  value.
+	  </para>
+
+        </warning>
+
+	 </listitem>
+
+	 <listitem>
+	   <para>
+	    The executable icon field specify the icon image that is
+	    associated to the executable, under Windows. The default
+	    configuration of JSmoothGen support GIF, PNG, and JPG
+	    images. 
+	   </para>
+
+	   <para>
+	    If you want JSmoothGen to recognize additional image
+	    types, you need to download the Sun's JIMI package.  It
+	    can be downloaded on <ulink
+	    url="http://www.javasoft.com"><citetitle>Sun's JavaSoft
+	    website</citetitle></ulink>, then extract the JimiProClasses.zip file,
+	    and copy it in the lib/ directory where JSmooth is
+	    installed (probably on c:\program files\jsmooth).
+
+
+           </para>
+
+	 </listitem>
+
+        </itemizedlist>
+     </para>
+
+    <para>
+      <mediaobject>
+        <imageobject>
+            <imagedata fileref="images/jsg-executable.png" format="PNG"/>
+        </imageobject>
+        <caption>
+            <para>The Executable panel</para>
+        </caption>
+      </mediaobject>
+
+    </para>
+ </sect2>
+
+ <sect2><title>Defining the Java Application parameters</title>
+
+    <para>
+     This is the panel where you can specify all the parameters related to the java application itself.
+    </para>
+
+    <para>
+      <mediaobject>
+        <imageobject>
+            <imagedata fileref="images/jsg-javaapplication.png" format="PNG"/>
+        </imageobject>
+        <caption>
+            <para>The Java Application configuration panel</para>
+        </caption>
+      </mediaobject>
+    </para>
+
+    <para>
+    
+       <itemizedlist>
+        <listitem>
+         <para>
+	   The <guilabel>Jar Location</guilabel> field specifies the
+	   main JAR file of the application. There may be additional
+	   jar specified in the <guilabel>Classpath</guilabel>
+	   interface, but this one is mandatory. It contains the main
+	   class of the application, and is added as a resource to the
+	   executable created by JSmooth.
+	 </para>
+        </listitem>
+        <listitem>
+         <para>
+
+	   Edit the <guilabel>Main Class</guilabel> field to specify
+	   the wrapper which class of the jar (see above) is to be
+	   considered the entry point of the program. This field is
+	   mandatory as well.
+
+	 </para>
+        </listitem>
+
+        <listitem>
+         <para>
+
+	   The <guilabel>Arguments</guilabel> field allows you to
+	   specify default parameters for the application. Those
+	   arguments are passed as if they were specified on the
+	   command line, and are made available in the String array of
+	   the main method by Java.
+	 </para>
+	 <warning>
+	   <para>
+
+	     The <guilabel>Arguments</guilabel> may be overrided by
+	     some wrappers. For instance, the <guilabel>Console
+	     Wrapper</guilabel> uses the arguments from the command
+	     line instead.
+
+	   </para>
+	 </warning>
+        </listitem>
+
+        <listitem>
+         <para>
+
+	     The <guilabel>ClassPath</guilabel> list proposes you to
+	     edit an ordered list of classpaths. To add a classpath,
+	     click on the <guiicon><inlinegraphic
+	     fileref="images/stock_insert-element.png"/></guiicon> and
+	     select either a .JAR, a .ZIP or a directory using the
+	     file chooser. You can remove or edit the classpath
+	     entries with the <guiicon><inlinegraphic
+	     fileref="images/stock_remove-element.png"/></guiicon> and
+	     <guiicon><inlinegraphic
+	     fileref="images/stock_edit.png"/></guiicon> buttons.
+
+	 </para>
+	 <para>
+	 
+	     The items can be ordered to reflect the class look-up
+	     priorities of your application. Select an item, and press
+	     either <guiicon><inlinegraphic
+	     fileref="images/stock_up.png"/></guiicon> or
+	     <guiicon><inlinegraphic
+	     fileref="images/stock_down.png"/></guiicon>. The rules
+	     are simple: the higher in the list, the higher the
+	     priority in the classpath search sequence.
+
+	 </para>
+	</listitem>
+       </itemizedlist>
+    </para>
+
+ </sect2>
+
+ <sect2><title>Selecting the most suitable JVM</title>
+    <para>
+
+      Click on the <guilabel>JVM Selection</guilabel> tab to specify
+      the Java look-up parameters.
+
+    </para>
+    <para>
+      <mediaobject>
+        <imageobject>
+            <imagedata fileref="images/jsg-selection.png" format="PNG"/>
+        </imageobject>
+        <caption>
+            <para>The JVM Selection panel</para>
+        </caption>
+      </mediaobject>
+    </para>
+
+    <sect3><title>Java Version</title>
+      <para>
+       If your application requires a minimum or a maximum version of
+       Java to run, the <guilabel>Version of Target VM</guilabel>
+       subpanel will probably be of high interest for you.
+      </para>
+
+      <para>
+        Just leave the field empty if you do not wish to any
+      constraint on the JVM version required for your application.
+      </para>
+
+      <para>
+        To specify a version, either as a minimum or a maximum, you
+        must specify the major, minor, and sub-minor version number
+        you want to set the constraint on. You don't need to specify
+        all of those three numbers, but remember that if you leave it
+        empty, it is considered as 0.
+
+      </para>
+      <para>
+        The values are all inclusive. For instance, if you specify 1.4
+        as a maximum means that the java wrapper accepts 1.4.0 JVM,
+        but not 1.4.1. 
+      </para>
+
+      <para>
+        If your application runs exclusively with JVM 1.2 and 1.3, but
+      not 1.1 nor 1.4 or above, just specify 1.2 for the minimum
+      version, and 1.3.99 as a maximum version.
+      </para>
+    
+    </sect3>
+    
+    <sect3><title>JVM Bundle</title>
+      <para>
+
+        Even if the wrappers of JSmooth provide a reasonnable user
+        experience for the users who do not have Java installed, you
+        may wish to bundle a JRE with your application. In such a
+        case, tick the <guilabel>Use JVM Bundle</guilabel> checkbox,
+        and specify the directory location of the JRE.
+
+      </para>
+
+    </sect3>
+
+    <sect3><title>The JVM Search sequence</title>
+      <para>
+
+	The wrappers are able to detect most, if not all, the JVM
+	available on the end-user computer. Before launching the java
+	application, they try to find a JVM using a preference
+	order. The default is to use the Windows registry to look-up
+	the JRE that have been installed, then use some environment
+	variable, and finally try to use Microsoft's JView.
+      </para>
+
+      <para>
+
+        This search sequence is fine for most configuration, however
+        you can still modify it to best suit your needs. Use the
+        <guiicon><inlinegraphic
+        fileref="images/stock_up.png"/></guiicon> and
+        <guiicon><inlinegraphic
+        fileref="images/stock_down.png"/></guiicon> button to modify
+        the priorities..
+
+      </para>
+    </sect3>
+
+    <para>
+    </para>
+ </sect2>
+
+ <sect2><title>Configuring the JVM</title>
+    <para>
+
+      The JVM Configuration offers the possibility to specify the
+      parameters passed to the Java Virtual Machine when launching
+      your application.
+
+    </para>
+    <para>
+      <mediaobject>
+        <imageobject>
+            <imagedata fileref="images/jsg-configuration.png" format="PNG"/>
+        </imageobject>
+        <caption>
+            <para>The JVM configuration panel</para>
+        </caption>
+      </mediaobject>
+    </para>
+
+    <sect3><title>Options</title>
+
+      <para>
+        The <guilabel>Options</guilabel> panel provides editable fields
+        to configure the memory configuration of the JVM. Specify the
+        numeric value in the text field, and the unit in the combo box.
+      </para>
+    </sect3>
+
+    <sect3><title>Java Properties</title>
+
+      <para>
+
+         Java properties are name/value pairs that are passed to the
+         JVM, and are accessible by java applications using the
+         System.getProperty() method.
+
+      </para>
+
+      <para>
+
+         To add a new Java Property, click on the
+         <guiicon><inlinegraphic
+         fileref="images/stock_insert-element.png"/></guiicon>. A
+         dialog box pops up.
+	       <mediaobject>
+	         <imageobject>
+		   <imagedata fileref="images/jsg-addprop.png" format="PNG"/>
+		 </imageobject>
+	       </mediaobject>
+
+	 Specify the name and the value for this property, and click
+	 on the <guibutton>Done</guibutton> button.
+
+      </para>
+
+      <sect4><title>Special Values</title>
+        <para>
+	  
+	  You can use the Java Property mechanism to pass special
+	  values to your java app.
+
+         <itemizedlist>
+          <listitem>
+            <para>
+
+	      Environment Variable: If you pass a string of the form
+	      %ENV% in the value field of the property, the wrappers
+	      will replace the string with the content of the ENV
+	      environment variable.
+
+	    </para>
+
+	    <para>
+
+	      For instance, to pass the content of the JAVA_HOME
+	      environment variable, adds %JAVA_HOME% in the
+	      <guilabel>Value</guilabel> field.
+
+            </para>
+          </listitem>
+
+          <listitem>
+
+	    <para>
+
+	     JSmooth also makes some special variable accessible for
+	     your application.
+
+	   <informaltable frame='all'>
+	    <tgroup cols='2'>
+	      <colspec colwidth='2.0in'/>
+	      <colspec colwidth='3.0in'/>
+	      <tbody>
+	        <row><entry><para>Form</para></entry><entry><para>Meaning</para></entry></row>
+	        <row><entry><para>${EXECUTABLEPATH}</para></entry>
+
+			<entry><para> Replaced by the path to the
+			  executable binary. For instance, if the
+			  executable binary launched is located at
+			  c:/program files/jsmooth/test.exe, this variable is replaced with
+			  c:/program files/jsmooth</para>
+
+                  </entry></row>
+
+		<row><entry><para>${EXECUTABLENAME}</para></entry>
+
+		    <entry><para>Replaced by the name of the
+			  executable binary. For instance, if the
+			  executable binary launched is located at
+			  c:/program files/jsmooth/test.exe, this variable is replaced with
+			  test.exe </para>
+
+		  </entry></row>
+
+		<row><entry><para>${COMPUTERNAME}</para></entry><entry><para>Replaced by the name of the computer.</para></entry></row>
+	      </tbody>
+	      </tgroup>
+	    </informaltable>
+
+	    </para>
+
+          </listitem>
+
+
+         </itemizedlist>
+	</para>
+      </sect4>
+
+    </sect3>
+ </sect2>
+
+ <sect2><title>Skeleton Properties</title>
+    <para> 
+
+         This panel is specific to the wrapper selected in the
+         <guilabel>Skeleton Selection</guilabel> panel.
+
+    </para>
+    <para>
+      <mediaobject>
+        <imageobject>
+            <imagedata fileref="images/jsg-skeletonproperties.png" format="PNG"/>
+        </imageobject>
+        <caption>
+            <para>The Skeleton-specifics properties panel</para>
+        </caption>
+      </mediaobject>
+    </para>
+ </sect2>
+
+</sect1>
+
+</article>
