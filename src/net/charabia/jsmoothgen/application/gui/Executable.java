@@ -23,6 +23,7 @@ package net.charabia.jsmoothgen.application.gui;
 import net.charabia.jsmoothgen.application.*;
 import net.charabia.jsmoothgen.application.gui.util.*;
 import javax.swing.*;
+import java.io.File;
 
 public class Executable extends javax.swing.JPanel implements ModelUpdater
 {
@@ -59,7 +60,18 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
 	    m_currentDirectory.setFile(new java.io.File(m_model.getCurrentDirectory()));
                 
 	m_iconLocation = model.getIconLocation();
-		
+	m_iconChooser.setCurrentDirectory(basedir);
+
+	if (m_iconLocation != null)
+	    {
+		File il = new File(m_iconLocation);
+		if (il.isAbsolute() == false)
+		    {
+			il = new File(basedir, m_iconLocation);
+		    }
+		m_iconChooser.setCurrentDirectory(il.getParentFile());
+	    }
+
 	if (m_iconLocation != null)
 	    {
 		String iconpath;
@@ -69,8 +81,19 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
 		else
 		    iconpath = new java.io.File(m_basedir, model.getIconLocation()).getAbsolutePath();
 
-		ImageIcon icon = new ImageIcon(iconpath, "default icon");	
-		m_iconDisplay.setIcon(icon);
+		try {
+		    Class c = Class.forName("com.sun.jimi.core.Jimi");
+		    java.awt.Image img = com.sun.jimi.core.Jimi.getImage(iconpath);
+		    if (img != null)
+			{
+			    ImageIcon icon = new ImageIcon(img);
+			    m_iconDisplay.setIcon(icon);
+			}
+		} catch (Exception exc)
+		    {
+			ImageIcon icon = new ImageIcon(iconpath, "default icon");
+			m_iconDisplay.setIcon(icon);
+		    }
 	    }
     }
     /** This method is called from within the constructor to
@@ -159,15 +182,35 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
 	if (m_iconChooser.showOpenDialog(this) == m_iconChooser.APPROVE_OPTION)
 	    {
 		System.out.println("Icon choosen : " + m_iconChooser.getSelectedFile().toString());
-		ImageIcon icon = new ImageIcon(m_iconChooser.getSelectedFile().getAbsolutePath(), "default icon");
-		int width = icon.getIconWidth();
-		int height = icon.getIconHeight();
-		System.out.println("ICON, w:" + width + ", h:" + height);
-		if ((width != height) || ((width != 8) && (width != 16) && (height != 32)))
+		String iconpath = m_iconChooser.getSelectedFile().toString();
+ 		ImageIcon icon = null;
+		try {
+		    Class c = Class.forName("com.sun.jimi.core.Jimi");
+		    java.awt.Image img = com.sun.jimi.core.Jimi.getImage(iconpath);
+		    if (img != null)
+			{
+			    icon = new ImageIcon(img);
+			    m_iconDisplay.setIcon(icon);
+			}
+		} catch (Exception exc)
 		    {
-			JOptionPane.showMessageDialog(this, "<html>The icon must be 8x8, 16x16, or 32x32! Your icon is " + width + "x" + height+ ", which doesn't match.</html>", "Icon issue", JOptionPane.WARNING_MESSAGE);
+			icon = new ImageIcon(iconpath, "default icon");
+			m_iconDisplay.setIcon(icon);
 		    }
-		else
+
+
+		// 		ImageIcon icon = new ImageIcon(m_iconChooser.getSelectedFile().getAbsolutePath(), "default icon");
+ 		int width = icon.getIconWidth();
+ 		int height = icon.getIconHeight();
+// 		System.out.println("ICON, w:" + width + ", h:" + height);
+
+// 		if ((width != height) || ((width != 8) && (width != 16) && (height != 32)))
+// 		    {
+// 			JOptionPane.showMessageDialog(this, "<html>The icon must be 8x8, 16x16, or 32x32! Your icon is " + width + "x" + height+ ", which doesn't match.</html>", "Icon issue", JOptionPane.WARNING_MESSAGE);
+// 		    }
+// 		else
+
+		if (icon != null)
 		    {
 			m_iconDisplay.setIcon(icon);
 			m_iconLocation = m_iconChooser.getSelectedFile().getAbsolutePath();
