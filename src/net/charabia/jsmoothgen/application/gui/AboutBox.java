@@ -18,6 +18,7 @@ public class AboutBox extends javax.swing.JDialog
 	{
 		super(parent, modal);
 		initComponents();
+		m_licenceTextArea.setCaretPosition(0);
 	}
 	
 	public void setVersion(String vers)
@@ -38,8 +39,10 @@ public class AboutBox extends javax.swing.JDialog
 		jLabel3 = new javax.swing.JLabel();
 		m_labelVersion = new javax.swing.JLabel();
 		jLabel5 = new javax.swing.JLabel();
+		jLabel1 = new javax.swing.JLabel();
+		jLabel2 = new javax.swing.JLabel();
 		jScrollPane1 = new javax.swing.JScrollPane();
-		jTextArea1 = new javax.swing.JTextArea();
+		m_licenceTextArea = new javax.swing.JTextArea();
 		jPanel2 = new javax.swing.JPanel();
 		m_buttonOk = new javax.swing.JButton();
 		
@@ -81,20 +84,34 @@ public class AboutBox extends javax.swing.JDialog
 		jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/gnome-application-x-jar.png")));
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-		gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.weightx = 0.1;
 		jPanel1.add(jLabel5, gridBagConstraints);
 		
-		jTextArea1.setEditable(false);
-		jTextArea1.setLineWrap(true);
-		jTextArea1.setText("This software is distributed under the terms of the GNU General Public License (GPL).\n\nWeb site: http://sourceforge.net/projects/jsmooth/\nAuthor: Rodrigo Reyes <reyes@users.sourceforge.net>");
-		jTextArea1.setWrapStyleWord(true);
-		jScrollPane1.setViewportView(jTextArea1);
+		jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		jLabel1.setText("<html><b>Author</b></html>");
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+		jPanel1.add(jLabel1, gridBagConstraints);
+		
+		jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		jLabel2.setText("Rodrigo Reyes <reyes@charabia.net>");
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		jPanel1.add(jLabel2, gridBagConstraints);
+		
+		m_licenceTextArea.setEditable(false);
+		m_licenceTextArea.setLineWrap(true);
+		m_licenceTextArea.setText("This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.");
+		m_licenceTextArea.setWrapStyleWord(true);
+		jScrollPane1.setViewportView(m_licenceTextArea);
 		
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-		gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
+		gridBagConstraints.gridheight = 3;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
 		gridBagConstraints.weightx = 1.0;
@@ -143,14 +160,16 @@ public class AboutBox extends javax.swing.JDialog
 	
 	
 	// Variables declaration - do not modify//GEN-BEGIN:variables
+	private javax.swing.JLabel jLabel1;
+	private javax.swing.JLabel jLabel2;
 	private javax.swing.JLabel jLabel3;
 	private javax.swing.JLabel jLabel5;
 	private javax.swing.JPanel jPanel1;
 	private javax.swing.JPanel jPanel2;
 	private javax.swing.JScrollPane jScrollPane1;
-	private javax.swing.JTextArea jTextArea1;
 	private javax.swing.JButton m_buttonOk;
 	private javax.swing.JLabel m_labelVersion;
+	private javax.swing.JTextArea m_licenceTextArea;
 	// End of variables declaration//GEN-END:variables
 	
 }
