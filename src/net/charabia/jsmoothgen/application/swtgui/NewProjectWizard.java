@@ -11,11 +11,17 @@ import org.eclipse.jface.wizard.Wizard;
 public class NewProjectWizard extends Wizard {
 	
 	public NewProjectWizard() {
-//		Incomplete.
-//		addPage(new ExecutableWizardPage());
-
+		setWindowTitle("New Project");
+		
 		addPage(new JavaAppWizardPage());
-		addPage(new JVMSelectionWizardPage());
+		addPage(new JRESelectionWizardPage());
+		
+		// For Rodrigo.
+//		addPage(new ProjectNameWizardPage());
+//		addPage(new ClasspathWizardPage());
+//		addPage(new EmbedJarWizardPage());
+//		addPage(new MainClassWizardPage());
+//		addPage(new VersionWizardPage());
 	}
 	
 	/* (non-Javadoc)
