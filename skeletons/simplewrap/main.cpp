@@ -19,14 +19,12 @@
 */
 
 #include <windows.h>
-#include "JavasoftRuntimeList.h"
 
 #include <iostream>
 
 #include "common.h"
 #include "resource.h"
 #include "ResourceManager.h"
-#include "JVMLauncher.h"
 #include "JVMRegistryLookup.h"
 #include "JavaMachineManager.h"
 
@@ -148,9 +146,16 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
         ResourceManager resman("JAVA", PROPID, JARID);
         DEBUG(std::string("Main class: ") + resman.getMainName());
 
-
         JavaMachineManager man(resman);
-        man.run();
+        if (man.run() == false)
+        {
+                std::string errmsg = resman.getProperty("skel_Message");
+                std::string url = resman.getProperty("skel_URL");
+                if (MessageBox(hwnd, errmsg.c_str(), "No Java?", MB_OKCANCEL|MB_ICONQUESTION|MB_APPLMODAL) == IDOK)
+                {
+                                ShellExecute(hwnd, "open", url.c_str(), NULL, "", 0);
+                }
+        }
 
 
 //        MessageBox(hwnd, "YO", "TSE", MB_OK);
