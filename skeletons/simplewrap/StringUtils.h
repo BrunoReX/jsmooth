@@ -38,6 +38,7 @@ public:
     static void copyTo(const string& from, char* to, int length);
     
     static string join(const vector<string>& seq, const string& separator);
+    static string trim(string& str);
 };
 
 #endif

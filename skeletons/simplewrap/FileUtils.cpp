@@ -24,10 +24,11 @@ string FileUtils::createTempFileName(const string& suffix)
 {
     char temppath[512];
     int tplen = GetTempPath(512, temppath);
+    GetCurrentDirectory(512, temppath);
     
     char buftmp[512];
     GetTempFileName(temppath, "jsm", 0, buftmp);
-        
+
     return string(buftmp) + suffix;
 }
 

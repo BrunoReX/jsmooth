@@ -38,9 +38,9 @@ void Properties::setData(const char* data, int datalen)
     {
         string key = getNextToken(data, datalen, cursor, '=');
         string value = getNextToken(data, datalen, cursor, '\n');
-        m_data[key] = unescape(value);
+        m_data[key] = unescape(StringUtils::trim(value));
         
-        DEBUG("PROP <" + key + "> == <" + value + ">");
+        DEBUG("PROP <" + key + "> == <" + unescape(StringUtils::trim(value)) + ">");
     }
 }
 

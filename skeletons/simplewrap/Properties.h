@@ -24,6 +24,7 @@
 #include <string>
 #include <map>
 #include "common.h"
+#include "StringUtils.h"
 
 using namespace std;
 
@@ -46,3 +47,4 @@ class Properties
 };
 
 #endif
+

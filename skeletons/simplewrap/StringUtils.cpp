@@ -94,3 +94,49 @@ string StringUtils::join(const vector<string>& seq, const string& separator)
     }
     return result;
 }
+
+string StringUtils::trim(string& str)
+{
+    string result = "";
+    int start = str.length();
+    int end = 0;
+    
+    for (int i=0; i<str.length(); i++)
+    {
+        switch(str[i])
+        {
+                case ' ':
+                case '\n':
+                case '\t':
+                case '\r':
+                                
+                   break;
+                   
+                default:
+                   start = i;
+                   i = str.length();
+                   break;
+        }
+    }
+    
+    for (int i=str.length()-1; i>start; i--)
+    {
+        switch(str[i])
+        {
+                case ' ':
+                case '\n':
+                case '\t':
+                case '\r':
+                                
+                   break;
+                   
+                default:
+                   end = i;
+                   i = -1;
+                   break;
+        }
+    }   
+    
+    result = str.substr(start, end-start+1);    
+    return result;
+}

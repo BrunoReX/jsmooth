@@ -136,7 +136,6 @@ bool SunJVMLauncher::runVM12DLL(ResourceManager& resource)
                 
                 DEBUG("OPTIONS SET!");
                 
-//                vm_args.ignoreUnrecognized = JNI_TRUE;
                 vm_args.ignoreUnrecognized = JNI_FALSE;
                 
                 GetDefaultJavaVMInitArgs(&vm_args);
@@ -348,6 +347,7 @@ bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, Reso
       DEBUG("Running new proc for " + exepath);
 
       string classpath = resource.saveJarInTempFile();
+
       if (forceFullClasspath && (JavaHome != ""))
       {
             vector<string> cpzips = FileUtils::recursiveSearch(JavaHome, "*.zip");
@@ -359,20 +359,32 @@ bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, Reso
             classpath += string(";") + lcp;
       }
       
-      string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));
-      string arguments = "-cp \"" + classpath + "\" " + classname;
+      string addcp = resource. getProperty("classpath");
+      classpath += ";" + addcp;
       
+      string addargs = resource.getProperty("arguments");
+      
+      string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));
+      string arguments = "-classpath \"" + classpath + "\" " + classname + " " + arguments;
+
+      DEBUG("CLASSNAME = <" + classname + ">");
       STARTUPINFO info;
       GetStartupInfo(&info);
       PROCESS_INFORMATION procinfo;
-      string exeline = exepath + " " + arguments;
-//      int res = CreateProcess((char*)exepath.c_str(), (char*)arguments.c_str(), NULL, NULL, TRUE, DETACHED_PROCESS, NULL, NULL, &info, &procinfo);
-      int res = CreateProcess(NULL, (char*)exeline.c_str(), NULL, NULL, TRUE, DETACHED_PROCESS, NULL, NULL, &info, &procinfo);
 
+      string exeline = exepath + " " + arguments;
+
+      int res = CreateProcess(NULL, (char*)exeline.c_str(), NULL, NULL, TRUE, NORMAL_PRIORITY_CLASS, NULL, NULL, &info, &procinfo);
+
+      DEBUG("COMMAND LINE: " +exeline);
       if (res != 0)
       {
             WaitForSingleObject(procinfo.hProcess, INFINITE);
             return true;
+      }
+      else
+      {
+            DEBUG("Can't run " + exeline);
       }
    }
 
@@ -383,3 +395,4 @@ Version SunJVMLauncher::guessVersionByProcess()
 {
 
 }
+
