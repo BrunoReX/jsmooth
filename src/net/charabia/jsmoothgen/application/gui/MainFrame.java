@@ -196,7 +196,9 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		}
 		try
 		{
-			ExeCompiler.compile(skelroot, skel, model, new File(exedir, model.getExecutableName()));
+			File out = new File(exedir, model.getExecutableName());
+			System.out.println("out = "+ out.getAbsolutePath());
+			ExeCompiler.compile(skelroot, skel, model, out);
 		} catch (Exception exc)
 		{
 			exc.printStackTrace();

@@ -74,7 +74,7 @@ public class FileSelectionTextField extends javax.swing.JPanel
 	
 	public void setFile(java.io.File f)
 	{
-		m_filename.setText(f.getAbsolutePath());
+		m_filename.setText(f.toString());
 	}
 	
 	public java.io.File getFile()

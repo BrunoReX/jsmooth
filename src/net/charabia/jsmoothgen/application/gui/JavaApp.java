@@ -131,7 +131,10 @@ public class JavaApp extends javax.swing.JPanel implements ModelUpdater
 	{
 		m_model = model;
 		if (m_model.getJarLocation() != null)
-			m_jarLocation.setFile(new File(m_model.getJarLocation()));
+		{
+			File jarloc = new File(m_model.getJarLocation());
+			m_jarLocation.setFile(jarloc);
+		}
 		if (m_model.getMainClassName() != null)
 			m_mainClassName.setText(m_model.getMainClassName());
 		if (m_model.getArguments() != null)

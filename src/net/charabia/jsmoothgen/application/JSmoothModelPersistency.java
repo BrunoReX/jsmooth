@@ -81,7 +81,7 @@ public class JSmoothModelPersistency
 
 		if (pf.startsWith(proot))
 		{
-			File res = new File(pf.substring(proot.length()));
+			File res = new File(pf.substring(proot.length()+1));
 			return res;
 		}
 		
