@@ -11,8 +11,7 @@ to download a Java VM.
 1. Status of the project
 
  JSmooth is currently in beta phase. The proof-of-concept stage is now
- complete, and the application is still under development. No public
- release of the compiled software is available yet.
+ complete, and the application is still under development.
 
 2. How to run
 
