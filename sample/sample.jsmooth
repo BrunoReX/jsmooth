@@ -43,7 +43,7 @@
    <string>sample.jar</string> 
   </void> 
   <void property="javaProperties"> 
-   <array class="net.charabia.jsmoothgen.application.JavaPropertyPair" length="3"> 
+   <array class="net.charabia.jsmoothgen.application.JavaPropertyPair" length="6"> 
     <void index="0"> 
      <object class="net.charabia.jsmoothgen.application.JavaPropertyPair"> 
       <void property="name"> 
@@ -71,6 +71,36 @@
       </void> 
       <void property="value"> 
        <string>%JAVA_HOME%</string> 
+      </void> 
+     </object> 
+    </void> 
+    <void index="3"> 
+     <object class="net.charabia.jsmoothgen.application.JavaPropertyPair"> 
+      <void property="name"> 
+       <string>COMPUTERNAME</string> 
+      </void> 
+      <void property="value"> 
+       <string>${COMPUTERNAME}</string> 
+      </void> 
+     </object> 
+    </void> 
+    <void index="4"> 
+     <object class="net.charabia.jsmoothgen.application.JavaPropertyPair"> 
+      <void property="name"> 
+       <string>EXEPATH</string> 
+      </void> 
+      <void property="value"> 
+       <string>${EXECUTABLEPATH}</string> 
+      </void> 
+     </object> 
+    </void> 
+    <void index="5"> 
+     <object class="net.charabia.jsmoothgen.application.JavaPropertyPair"> 
+      <void property="name"> 
+       <string>EXENAME</string> 
+      </void> 
+      <void property="value"> 
+       <string>${EXECUTABLENAME}</string> 
       </void> 
      </object> 
     </void> 
