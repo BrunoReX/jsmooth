@@ -27,6 +27,8 @@
 #include "resource.h"
 #include "ResourceManager.h"
 #include "JVMLauncher.h"
+#include "JVMRegistryLookup.h"
+#include "JavaMachineManager.h"
 
 void SaveJarResource();
 
@@ -36,10 +38,13 @@ LRESULT CALLBACK WindowProcedure (HWND, UINT, WPARAM, LPARAM);
 /*  Make the class name into a global variable  */
 char szClassName[ ] = "WindowsApp";
 
-JavasoftRuntimeList *jlist;
+// JavasoftRuntimeList *jlist;
 
 std::vector< std::string > LOG;
 
+#ifdef DEBUGMODE
+DebugConsole DEBUGCONSOLE("title");
+#endif
 
 void addResId(std::string& msg, LPCTSTR id)
 {
@@ -132,20 +137,31 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
            NULL                 /* No Window Creation data */
            );
 
-
    EnumResourceTypes(NULL, rsctypecallback, 0);
 
-    jlist = new JavasoftRuntimeList();
+//    jlist = new JavasoftRuntimeList();
+
 //    const JavasoftVM& bestVm = jlist->findVersionOrHigher(Version(std::string("1.4")));
 //    DEBUG(std::string("Found BESTVM: ") + bestVm.RuntimeLibPath + " / " + bestVm.VmVersion.Value);
 //     if (bestVm.Path != "")
        {
         ResourceManager resman("JAVA", PROPID, JARID);
-       // resman.saveTemp(std::string("temp.jar"));
         DEBUG(std::string("Main class: ") + resman.getMainName());
+
+
+        JavaMachineManager man(resman);
+        man.run();
+
+
+//        MessageBox(hwnd, "YO", "TSE", MB_OK);
+
+        
+        DEBUGWAITKEY();
+        DEBUG("OK");
+        
   //      jlist->run(bestVm, std::string("temp.jar"), resman.getMainName());
   
-          jlist->run(resman);
+//          jlist->run(resman);
   
 //        jlist->run(bestVm, std::string("temp.jar"), std::string("SampleApplication"));
 //        jlist->run(bestVm, std::string("temp.jar"), std::string("net.charabia.generation.application.Application"));
@@ -153,18 +169,18 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 //    else
     {
     /* Make the window visible on the screen */
-    ShowWindow (hwnd, nFunsterStil);
-    UpdateWindow(hwnd);
 
+//        ShowWindow (hwnd, nFunsterStil);
+//        UpdateWindow(hwnd);
     }
     
     /* Run the message loop. It will run until GetMessage() returns 0 */
-    while (GetMessage (&messages, NULL, 0, 0))
+//    while (GetMessage (&messages, NULL, 0, 0))
     {
         /* Translate virtual-key messages into character messages */
-        TranslateMessage(&messages);
+//        TranslateMessage(&messages);
         /* Send message to WindowProcedure */
-        DispatchMessage(&messages);
+//        DispatchMessage(&messages);
     }
 
     /* The program return-value is 0 - The value that PostQuitMessage() gave */
@@ -183,22 +199,6 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     char * mesg = "NOT!  !  ! !! ! ! !! ! ";
     mesg = buffer;
 
-//   LOG.push_back("Test");
-
-//    HRSRC res = FindResource(NULL, "#113", "MATYPE");
-//    if (res != NULL)
-//    {
-//        sprintf(buffer,"OK %d      ! ! !! !! ", res);
-//    }
-//    else
-//    {
-//            sprintf(buffer,"NOK %d      ! ! !! !! ", res);
-//    }
-
-//    int res2 = LoadString(NULL, 214, buffer, 200);
-//    if (res2 >0)
-//        mesg = "WELL DONE !!!!! ! ! !! ";
-    
     switch (message)                  /* handle the messages */
     {
 		case WM_PAINT:
@@ -219,6 +219,9 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 			break;
 
         case WM_DESTROY:
+
+                                MessageBox(hwnd, "ALERT", "ICI", MB_OK);
+
             PostQuitMessage (0);       /* send a WM_QUIT to the message queue */
             break;
         default:                      /* for messages that we don't deal with */

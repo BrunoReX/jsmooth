@@ -412,43 +412,12 @@ void JavasoftRuntimeList::runVM11(const JavasoftVM& vm, const ResourceManager& r
                 jmethodID mid;
                 jstring jstr;
                 jobjectArray args;
-//                char classpath[2048];
-                
-//                JavaVMInitArgs vm_args;
-//                JavaVMOption options[1];
-//                std::string cpoption = "-Djava.class.path=";
-//                cpoption += jarpath;
-////                cpoption += "grostest.jar";
-//                DEBUG("Classpath: " + cpoption);
-//                options[0].optionString =  (char*)cpoption.c_str();
-//                vm_args.version = 0x00010002;
-//                vm_args.options = options;
-//                vm_args.nOptions = 1;
-//                vm_args.ignoreUnrecognized = JNI_TRUE;
-//                
-//                GetDefaultJavaVMInitArgs(&vm_args);
-//
-////                std::string classpathstr = vm_args.classpath;
-////                classpathstr += ";gen-application.jar";
-// //               copyString(classpathstr, classpath, 2047);
-////                vm_args.classpath = classpath;                
-////                this->Message = classpathstr;
-////                 res = JNI_CreateJavaVM(&vm,(void**)&env,&vm_args);
-//
-//              res = CreateJavaVM( &vm, &env, &vm_args);
               
                   JDK1_1InitArgs vm_args;
                   vm_args.version = 0x00010001;
                   GetDefaultJavaVMInitArgs(&vm_args);
 
      /* Append USER_CLASSPATH to the default system class path */
-     
-//               char classpath[2048];
-//               StringUtils::copyTo(jarpath, classpath, 2048);
-//               StringUtils::copyTo(".", classpath, 2048);
-//               DEBUG(string("CLASSPATH = ") + classpath);
-        
-//        DEBUG(string("ORG CP = ") + vm_args.classpath);
 
         std::string classpath = vm_args.classpath;
         classpath += ";" + jarpath;
@@ -456,16 +425,14 @@ void JavasoftRuntimeList::runVM11(const JavasoftVM& vm, const ResourceManager& r
      vm_args.classpath = (char*)classpath.c_str();
      /* Create the Java VM */
 
-                  res = CreateJavaVM( &javavm, &env, &vm_args);
+        res = CreateJavaVM( &javavm, &env, &vm_args);
 
-
-
-                if (res < 0)
-                {
-                                DEBUG("Can't create VM " + jvmdll);
-                                return;
-                }
-                else
+       if (res < 0)
+        {
+             DEBUG("Can't create VM " + jvmdll);
+                return;
+        }
+        else
                             DEBUG("VM Created !!");
        
                 jclass clstest = env->FindClass("java/lang/System");
