@@ -2,8 +2,8 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
                     "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
 
-<book>
-<bookinfo>
+<article>
+<articleinfo>
    "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"
 
   <author>
@@ -22,7 +22,7 @@
 
   <title>JSmooth @{VERSION}@ User Manual</title>
   <subtitle>@{RELEASEINFO}@</subtitle>
-</bookinfo>
+</articleinfo>
 
 <sect1>
 <title>Introduction</title>
@@ -60,17 +60,17 @@
   <sect2><title>Rationale</title>
    <para>
 
-   The deployment of desktop Java applications is a problem since
-   version 1 of Java. Java developers must either bundle a JRE with
+   The deployment of desktop Java applications has been a problem since
+   version 1 of Java. Java developers had to either bundle a JRE with
    their application, or let the users manage themselves the issue of
-   installing a JVM and configuring the application.
+   installing a JVM and configuring the application. Unfortunately, none
+   of those solutions are efficient and scalable.
 
    </para>
 
    <para>
 
-   However, it needs little experience of java deployment to
-   understand that none of those methods are an option. 
+    Let's examine a few facts:
   
    <itemizedlist>
 
@@ -105,14 +105,15 @@
      <listitem><para>
 
        Letting average Joe User manage the configuration of his system
-       is probably not a good idea either. Do not forget that the
-       choice of Java for your application is your choice, not Joe's,
-       and he probably don't even know what Java is. Should he really
-       care about it? No, for sure. If your application targets experienced users,
-       you are a lucky developer and you may not need to worry about
-       the technical details of your application's usage. But even for
-       the experienced users, it is always worth it making sure they
-       won't loose their time installing and configuring the application.
+       is probably not a good idea either. Do not forget that the choice
+       of Java for your application is your choice, not Joe's, and he
+       probably don't even know what Java is. Should he really care
+       about it? No, for sure. If your software product targets
+       experienced users, you are a lucky developer and you may not need
+       to worry about the technical details of your application's
+       usage. But even for the experienced users, it is always worth it
+       making sure they won't loose their time installing and
+       configuring the application.
 
        </para><para>
 
@@ -147,13 +148,12 @@
   <sect2> <title>Benefits</title>
 
     <para>
-     JSmooth aims at enhancing the user experience by taking care of
-     all those issues: the java application is wrapped in an .exe
-     binary. When the user clicks on the .exe, the windows application
-     search the most suitable JVM installed on the computer to launch
-     the java application. If no JVM is found, a dialog box is
-     displayed to the users and they may be redirected to a web site.
-    </para>
+     JSmooth aims at enhancing the user experience by taking care of all
+     those issues: the java application is wrapped in an .exe, as any
+     other Windows software. When the user clicks on the .exe, it
+     searches the most suitable JVM installed on the computer to launch
+     the java application. If no JVM is found, a dialog box is displayed
+     to the users and they may be redirected to a web site.  </para>
 
     <para>
 
@@ -198,64 +198,46 @@
  <sect2><title>Creating your first exe</title>
    <para>
 
-     JSmooth creates a binary exe that contains a java application in
-     a jar, but it also allows you to specify additional jar files or
-     directories for the classpath, to specify the java properties,
-     the minimum jvm version needed by your application, and so on.
+     JSmooth builds a binary exe that contains all the information
+     needed to launch your java application, such as the classpath, the
+     java properties, the jvm version required, and so on.
 
    </para>
 
 
-   <sect3><title>How to start?</title>
+   <sect3><title>Quick Start</title>
    <para>
+     
 
      The minimum data you need to start the creation of the binary
-     executable for your application is to have a jar file that
-     contains the entry point of the program. It is not necessary to
-     have a manifest that specifies the entry point, although JSmooth
-     can use it if available.
-   
+     executable for your application is to specify a classpath and a
+     fully-qualified class name. You can configure both in the <function>Java
+     Application</function> panel (add new jars or directories using the
+     funny icon with a yellow + sign, and type the class name in the
+     <label>Main Class</label> field.
+
+  </para>
+
+   <para>
+
+     Once done, go to the <function>Windows Executable</function> panel,
+     and type the name of the executable in the <label>Executable
+     Name</label> field. Do not forget to add the <label>.exe</label>
+     suffix, for your executable name. Something like
+     <function>my-app.exe</function> would be fine.
+
    </para>
 
    <para>
 
-     Once you have it, click on the <function>Windows
-     Executable</function> panel, and type the name of the executable
-     in the <label>Executable Name</label> field. Do not forget to add
-     the <label>.exe</label> suffix, for your executable
-     name. Something like <function>my-app.exe</function> would be
-     fine.
+    Of course, you could specify many more options for the java
+    launching, but above is all what's required. Now, you are nearly
+    done. Click on the save button (or in the
+    <guimenu>File+Save</guimenu> menu) and select a filename for the
+    project. This is an important step, because all the path stored in
+    the file, and displayed in the GUI are relative to this file.
 
    </para>
-
-   <para>
-
-     Next, click on the <label>Java Application</label>. Specify the
-     jar to embed in the binay executable using the <label>...</label>
-     on the right of the <label>Jar Location</label>. If your Jar
-     contains a manifest with a <function>main-class</function> entry,
-     the main class of your application should appear in the
-     <label>Main Class</label> field. Otherwise, just type it. For
-     obvious reasons, you really need specify a valid java class name
-     with its fully-qualified name, and using dots as separator. For
-     instance, "my.packacke.MyClass".
-
-   </para>
-
-   </sect3>
- </sect2>
-
- <sect2><title>That's it!</title>
-
- <para>
-
-   Now that you have specified all the mandatory information for the
-   creation of your executable, you are nearly done. Click on the save
-   button (or in the <guimenu>File+Save</guimenu> menu) and select a
-   filename for the project. This is an important step, because all
-   the path stored in the file, and displayed in the GUI are relative
-   to this file. 
- </para>
 
  <para>
 
@@ -268,8 +250,9 @@
 
  </para>
 
+ <note>
  <para>
-  Of course, you can modify the location of the every file in the
+  You can modify the location of the every file in the
   project, but you must always keep this simple rule in mind:
 
  <itemizedlist>
@@ -281,6 +264,7 @@
 
  </itemizedlist>
  </para>
+ </note>
 
  </sect2>
 
@@ -1102,4 +1086,4 @@ terms of the GNU General Public License.
 
 </sect1>
 
-</book>
+</article>

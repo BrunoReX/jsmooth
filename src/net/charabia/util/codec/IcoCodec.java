@@ -149,7 +149,7 @@ public class IcoCodec
 	    in.mark(32000);
 
 	    IconDir dir = new IconDir(in);
-	    System.out.println("DIR = " + dir);
+	    //	    System.out.println("DIR = " + dir);
 	    
 	    IconEntry[] entries = new IconEntry[dir.idCount];
 	    BufferedImage[] images = new BufferedImage[dir.idCount];
@@ -157,11 +157,11 @@ public class IcoCodec
 	    for (int i=0; i<dir.idCount; i++)
 		{
 		    entries[i] = new IconEntry(in);
-		    System.out.println("ENTRY " + i + " = " + entries[i]);
+		    //		    System.out.println("ENTRY " + i + " = " + entries[i]);
 		}
 
 	    IconEntry entry = entries[0];
-	    System.out.println("ENTRYx = " + entry);
+	    //	    System.out.println("ENTRYx = " + entry);
 
 	    for (int i=0; i<dir.idCount; i++)
 		{
@@ -169,13 +169,13 @@ public class IcoCodec
 		    in.skip(entries[i].dwImageOffset);
 
 		    IconHeader header = new IconHeader(in);
-		    System.out.println("Header: " + header);
+		    //		    System.out.println("Header: " + header);
 
 		    long toskip = header.Size - 40;
 		    if (toskip>0)
 			in.skip((int)toskip);
 
-		    System.out.println("skipped data");
+		    //		    System.out.println("skipped data");
 		    
 		    BufferedImage image = new BufferedImage((int)header.Width, (int)header.Height/2,
 							    BufferedImage.TYPE_INT_ARGB);
@@ -206,9 +206,9 @@ public class IcoCodec
 
     static private void loadPalettedImage(BinaryInputStream in, IconEntry entry, IconHeader header, BufferedImage image) throws Exception
     {
-	System.out.println("Loading image...");
+	//	System.out.println("Loading image...");
 	
-	System.out.println("Loading palette...");
+	//	System.out.println("Loading palette...");
 
 	// 
 	// First, load the palette
@@ -234,7 +234,7 @@ public class IcoCodec
 		in.readUByte();
 	    }
 
-	System.out.println("Palette read!");
+	//	System.out.println("Palette read!");
 
 	//
 	// Set the image
@@ -270,7 +270,7 @@ public class IcoCodec
 			    }
 		    }
 	    }
-	System.out.println("XOR data read (" + readbytes + " bytes)");
+	//	System.out.println("XOR data read (" + readbytes + " bytes)");
 
 	int height = (int)(header.Height/2);
 
@@ -280,7 +280,7 @@ public class IcoCodec
 		rowsize += 4 - (rowsize%4);
 	    }
 	
-	System.out.println("rowsize = " + rowsize);
+	//	System.out.println("rowsize = " + rowsize);
 	int[] andbytes = new int[rowsize * height ];
 
 	for (int i=0; i<andbytes.length; i++)
@@ -322,14 +322,14 @@ public class IcoCodec
 	// 		    }
 	// 	    }
 	
-	System.out.println("AND data read (" + readbytes + " bytes total)");
+	//	System.out.println("AND data read (" + readbytes + " bytes total)");
     }
     
     static public void main(String[]args) throws Exception
     {
 	File f = new File(args[0]);
 	Image img = IcoCodec.loadImages(f)[0];
-	System.out.println("img = " + img);
+	//	System.out.println("img = " + img);
 
 	javax.swing.JFrame jf = new javax.swing.JFrame("Test");
 	javax.swing.JButton button = new javax.swing.JButton(new javax.swing.ImageIcon(img));

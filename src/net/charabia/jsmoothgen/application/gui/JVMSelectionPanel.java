@@ -30,12 +30,12 @@ import javax.swing.*;
 public class JVMSelectionPanel extends javax.swing.JPanel implements ModelUpdater
 {
 	private JSmoothModelBean m_model;
-	private JFileChooser m_bundlefilechooser = new JFileChooser();
+    //	private JFileChooser m_bundlefilechooser = new JFileChooser();
 	/** Creates new form BeanForm */
 	public JVMSelectionPanel()
 	{
-		initComponents();
-                m_bundlefilechooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+	    initComponents();
+	    m_chooserBundled.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 	}
 
 	public void updateModel()
@@ -81,7 +81,8 @@ public class JVMSelectionPanel extends javax.swing.JPanel implements ModelUpdate
 			m_vmSearch.setData(v.toArray());
 		}
                 
-                m_bundlefilechooser.setCurrentDirectory(basedir);
+		//                m_bundlefilechooser.setCurrentDirectory(basedir);
+		//                m_bundlefilechooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 
 		if (m_model.getBundledJVMPath() == null) 
 		{
@@ -96,7 +97,8 @@ public class JVMSelectionPanel extends javax.swing.JPanel implements ModelUpdate
 				m_chooserBundled.setBaseDir(basedir);
 			m_chooserBundled.setFile(new java.io.File(m_model.getBundledJVMPath()));
                         System.out.println("set selected file: " + m_model.getBundledJVMPath());
-                        m_bundlefilechooser.setSelectedFile(new java.io.File(m_model.getBundledJVMPath()));
+			//                        m_bundlefilechooser.setSelectedFile(new java.io.File(m_model.getBundledJVMPath()));
+
 		}
 	}
 

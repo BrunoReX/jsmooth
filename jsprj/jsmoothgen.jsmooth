@@ -6,13 +6,14 @@
 <JVMSearchPath>jdkpath</JVMSearchPath>
 <JVMSearchPath>exepath</JVMSearchPath>
 <JVMSearchPath>jview</JVMSearchPath>
+<arguments></arguments>
 <classPath>..\lib\jox116.jar</classPath>
-<classPath>..\lib\JimiProClasses.zip</classPath>
 <classPath>..\lib\dtdparser113.jar</classPath>
+<classPath>..\lib\jsmoothgen.jar</classPath>
+<embeddedJar>false</embeddedJar>
 <executableName>..\JSmoothGen.exe</executableName>
 <iconLocation>..\src\icons\gnome-application-x-jar-bm.gif</iconLocation>
 <initialMemoryHeap>-1</initialMemoryHeap>
-<jarLocation>..\jsmoothgen.jar</jarLocation>
 <mainClassName>net.charabia.jsmoothgen.application.gui.MainFrame</mainClassName>
 <maximumMemoryHeap>-1</maximumMemoryHeap>
 <maximumVersion></maximumVersion>

@@ -147,6 +147,11 @@ public class FileSelectionTextField extends javax.swing.JPanel
 	{
 		m_fileChooser = jfc;
 	}
+
+    public void setFileSelectionMode(int mode)
+    {
+	m_fileChooser.setFileSelectionMode(mode);
+    }
 	
 	public void setBaseDir(File root)
 	{

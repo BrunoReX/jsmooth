@@ -6,7 +6,7 @@
 <JVMSearchPath>registry</JVMSearchPath>
 <JVMSearchPath>jview</JVMSearchPath>
 <JVMSearchPath>exepath</JVMSearchPath>
-<arguments></arguments>
+<embeddedJar>true</embeddedJar>
 <executableName>..\bin\testsuite-vmvendorversion-jdkpath-proc.exe</executableName>
 <initialMemoryHeap>-1</initialMemoryHeap>
 <jarLocation>..\generic-vm-sel-test\sample.jar</jarLocation>

@@ -40,7 +40,7 @@ public class WarningNotRelativeFilesDialog extends javax.swing.JDialog {
             }
         });
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_dialog-warning-64.png")));
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_dialog-warning-32.png")));
         jLabel1.setBorder(new javax.swing.border.EmptyBorder(new java.awt.Insets(10, 10, 10, 10)));
         getContentPane().add(jLabel1, java.awt.BorderLayout.WEST);
 

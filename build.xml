@@ -19,7 +19,7 @@
 
  <!-- set here the properties specific the release --> 
 
-  <property name="VERSION" value="0.9.4"/>
+  <property name="VERSION" value="0.9.5"/>
 
   <!-- You should need to modify the properties below -->
 
@@ -79,7 +79,7 @@
     <xslt basedir="${docs}" destdir="${docs}"
        in="${docs}/jsmooth-doc.xml"
        out="${docs}/jsmooth-doc.html"
-       style="${DOCBOOKBASE}/html/chunk.xsl" >
+       style="${DOCBOOKBASE}/html/docbook.xsl" >
  
         <param name="admon.graphics" expression="1"/>
         <param name="section.autolabel" expression="1"/>
@@ -181,6 +181,7 @@
     </antcall>
 
     <!-- Copy the jsmooth ant library -->
+    <copy todir="${dist}/lib" file="jsmoothgen.jar"/>
     <copy todir="${dist}/lib" file="jsmoothgen-ant.jar"/>
     <copy todir="${dist}/lib" file="lib/jox116.jar"/>
     <copy todir="${dist}/lib" file="lib/dtdparser113.jar"/>
@@ -222,6 +223,30 @@
     <copy todir="${dist}" file="${tmp}/docs/readme.txt"/>
     <copy todir="${dist}" file="${tmp}/docs/license.txt"/>
 
+
+    <!-- Compile the windowed wrapper in debug mode -->
+
+    <mkdir dir="${dist}/skeletons/windowed-wrapper-debug"/>
+    <antcall target="compileskels">
+      <param name="skelflags" value="-DDEBUGMODE=1"/>
+    </antcall>
+    <copy todir="${dist}/skeletons/windowed-wrapper-debug" file="skeletons/simplewrap/jwrap.exe"/>
+    <copy todir="${dist}/skeletons/windowed-wrapper-debug" file="skeletons/simplewrap/description-debug.skel"/>
+    <exec executable="strip.exe" dir="${dist}/skeletons/windowed-wrapper-debug">
+        <arg value="jwrap.exe"/>
+    </exec>
+
+    <!-- Compile the console wrapper in debug mode -->
+    <mkdir dir="${dist}/skeletons/console-wrapper-debug"/>
+    <antcall target="compileskels">
+      <param name="skelflags" value="-DDEBUGMODE=2"/>
+    </antcall>
+    <copy todir="${dist}/skeletons/console-wrapper-debug" file="skeletons/consolewrapper/consolewrapper.exe"/>
+    <copy todir="${dist}/skeletons/console-wrapper-debug" file="skeletons/consolewrapper/description-debug.skel"/>
+    <exec executable="strip.exe" dir="${dist}/skeletons/console-wrapper-debug">
+        <arg value="consolewrapper.exe"/>
+    </exec>
+
     <!-- Compile the normal wrappers -->
     <ant antfile="build.xml" dir="skeletons/simplewrap/samplejar/" target="dist"/>
     <ant antfile="build.xml" dir="skeletons/consolewrapper/samplejar/" target="dist"/>
@@ -240,29 +265,6 @@
     </exec>
     <exec executable="strip.exe" dir="${dist}/skeletons/windowed-wrapper">
         <arg value="jwrap.exe"/>
-    </exec>
-
-    <!-- Compile the windowed wrapper in debug mode -->
-
-    <mkdir dir="${dist}/skeletons/windowed-wrapper-debug"/>
-    <antcall target="compileskels">
-      <param name="skelflags" value="-DDEBUGMODE=1"/>
-    </antcall>
-    <copy todir="${dist}/skeletons/windowed-wrapper-debug" file="skeletons/simplewrap/jwrap.exe"/>
-    <copy todir="${dist}/skeletons/windowed-wrapper-debug" file="skeletons/simplewrap/description-debug.skel"/>
-    <exec executable="strip.exe" dir="${dist}/skeletons/windowed-wrapper">
-        <arg value="jwrap.exe"/>
-    </exec>
-
-    <!-- Compile the console wrapper in debug mode -->
-    <mkdir dir="${dist}/skeletons/console-wrapper-debug"/>
-    <antcall target="compileskels">
-      <param name="skelflags" value="-DDEBUGMODE=2"/>
-    </antcall>
-    <copy todir="${dist}/skeletons/console-wrapper-debug" file="skeletons/consolewrapper/consolewrapper.exe"/>
-    <copy todir="${dist}/skeletons/console-wrapper-debug" file="skeletons/consolewrapper/description-debug.skel"/>
-    <exec executable="strip.exe" dir="${dist}/skeletons/console-wrapper">
-        <arg value="consolewrapper.exe"/>
     </exec>
 
     <!-- Builds the jsmooth executable -->

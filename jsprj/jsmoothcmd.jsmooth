@@ -6,9 +6,11 @@
 <JVMSearchPath>jdkpath</JVMSearchPath>
 <JVMSearchPath>exepath</JVMSearchPath>
 <JVMSearchPath>jview</JVMSearchPath>
+<arguments></arguments>
 <classPath>..\lib\jox116.jar</classPath>
 <classPath>..\lib\JimiProClasses.zip</classPath>
 <classPath>..\lib\dtdparser113.jar</classPath>
+<embeddedJar>true</embeddedJar>
 <executableName>..\jsmoothcmd.exe</executableName>
 <iconLocation>..\src\icons\gnome-application-x-jar-bm.gif</iconLocation>
 <initialMemoryHeap>-1</initialMemoryHeap>
