@@ -39,8 +39,12 @@ char szClassName[ ] = "JSmooth";
 
 ResourceManager* globalResMan;
 
+DebugConsole *DEBUGCONSOLE = NULL;
+
 void lastExit()
 {
+  delete DEBUGCONSOLE;
+  DEBUGCONSOLE = 0;
   delete globalResMan;
   globalResMan = 0;
 }
@@ -53,16 +57,17 @@ void lastExit()
 // {
 //   debug(text);
 // }
-DebugConsole DEBUGCONSOLE("JSmooth Debug");
 
 void _debugOutput(const std::string& text)
 {
-  DEBUGCONSOLE.writeline(text);
+  if (DEBUGCONSOLE != NULL)
+    DEBUGCONSOLE->writeline(text);
 }
 
 void _debugWaitKey()
 {
-  DEBUGCONSOLE.waitKey();
+  if (DEBUGCONSOLE != NULL)
+    DEBUGCONSOLE->waitKey();
 }
                           
 int WINAPI WinMain (HINSTANCE hThisInstance,
@@ -118,6 +123,13 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
            );
 
     globalResMan = new ResourceManager("JAVA", PROPID, JARID);
+
+    std::string dodebug = globalResMan->getProperty("skel_Debug");
+    if (StringUtils::parseInt(dodebug) != 0)
+      {
+	DEBUGCONSOLE = new DebugConsole("JSmooth Debug");
+      }
+
     DEBUG(string("Main class: ") + globalResMan->getMainName());
 
     // sets up the command line arguments
@@ -173,6 +185,8 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 //     }
 
 //    MessageBox(hwnd, "AFTER GETMESSAGE", "DEBUG", MB_OKCANCEL|MB_ICONQUESTION|MB_APPLMODAL);
+
+    delete DEBUGCONSOLE;
 
     /* The program return-value is 0 - The value that PostQuitMessage() gave */
     return messages.wParam;
