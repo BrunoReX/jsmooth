@@ -1,17 +1,19 @@
 # Project: CommonJava
 # Makefile created by Dev-C++ 4.9.8.0
 
+RM   = rm -f
 CPP  = g++.exe
 CC   = gcc.exe
 WINDRES = windres.exe
+MINGW =
 RES  = 
 OBJ  = DebugConsole.o FileUtils.o JavaMachineManager.o JVMEnvVarLookup.o JVMRegistryLookup.o MSJViewLauncher.o Properties.o ResourceManager.o StringUtils.o SunJVMLauncher.o Version.o global.o JavaProperty.o $(RES)
 LINKOBJ  = DebugConsole.o FileUtils.o JavaMachineManager.o JVMEnvVarLookup.o JVMRegistryLookup.o MSJViewLauncher.o Properties.o ResourceManager.o StringUtils.o SunJVMLauncher.o Version.o global.o JavaProperty.o $(RES)
-LIBS =  -L"C:/Programs/Dev-Cpp-4.9.8.0/lib" 
-INCS =  -I"C:/Programs/Dev-Cpp-4.9.8.0/include"  -I"C:/Program Files/j2sdk_nb/j2sdk1.4.2/include"  -I"C:/Program Files/j2sdk_nb/j2sdk1.4.2/include/win32" 
-CXXINCS =  -I"C:/Programs/Dev-Cpp-4.9.8.0/include/c++"  -I"C:/Programs/Dev-Cpp-4.9.8.0/include/c++/mingw32"  -I"C:/Programs/Dev-Cpp-4.9.8.0/include/c++/backward"  -I"C:/Programs/Dev-Cpp-4.9.8.0/include"  -I"C:/Program Files/j2sdk_nb/j2sdk1.4.2/include"  -I"C:/Program Files/j2sdk_nb/j2sdk1.4.2/include/win32" 
+LIBS =  -L"$(MINGW)/lib" 
+INCS =  -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32" 
+CXXINCS =  -I"$(MINGW)/include/c++"  -I"$(MINGW)/include/c++/mingw32"  -I"$(MINGW)/include/c++/backward"  -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32" 
 BIN  = CommonJava.a
-CXXFLAGS = $(CXXINCS)$(CUSTOMFLAGS)  
+CXXFLAGS = $(CUSTOMFLAGS) $(CXXINCS) -DJDK="$(JDK)"
 CFLAGS = $(INCS) 
 
 .PHONY: all all-before all-after clean clean-custom
@@ -20,7 +22,7 @@ all: all-before CommonJava.a all-after
 
 
 clean: clean-custom
-	rm -f $(OBJ) $(BIN)
+	$(RM) $(OBJ) $(BIN)
 
 $(BIN): $(LINKOBJ)
 	ar r $(BIN) $(LINKOBJ)
