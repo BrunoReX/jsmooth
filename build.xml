@@ -1,7 +1,26 @@
 <project name="jsmoothgen" default="jar" basedir=".">
 
+  <!-- set here the properties specific to your computer -->
+  <!-- see the README.txt file for additional information -->
 
-  <!-- set global properties for this build -->
+  <property name="JDKDIR" value="c:\Program Files\j2sdk_nb\j2sdk1.4.2"/>
+  <property name="RM" value="CMD /C DEL"/>
+
+  <!-- Values below should be standard, but check it anyway -->
+  <!-- Also make sure that the bin folder of MINGW is in your PATH -->
+  <property name="mingw-make" value="mingw32-make.exe"/>
+  <property name="mingw-strip" value="strip.exe"/>
+
+  <!-- What's below is  optional (needed only if you build a dist) -->
+  <property name="FOP" value="c:/Programs/fop-0.20.5\fop.bat"/>
+  <property name="DOCBOOKBASE" value="c:\programs\docbook-xsl-1.62.0"/>
+
+
+ <!-- set here the properties specific the release --> 
+
+  <property name="VERSION" value="0.9.5"/>
+
+  <!-- You should need to modify the properties below -->
 
   <property environment="env"/>
   <property name="src" value="src"/>
@@ -13,11 +32,6 @@
   <property name="jsmoothjar" value="jsmoothgen.jar"/>
   <property name="jsmoothjar-ant" value="jsmoothgen-ant.jar"/>
   <property name="ant.jar" value="${env.ANT_HOME}/lib/ant.jar"/>
-
-  <property name="FOP" value="C:\Programs\fop-0.20.5\fop.bat"/>
-  <property name="DOCBOOKBASE" value="c:/Programs/docbook-xsl-1.62.0"/>
-
-  <property name="VERSION" value="0.9.4"/>
 
   <property name="distbase" value="dist"/>
   <property name="dist" value="${distbase}/jsmooth-${VERSION}"/>
@@ -39,7 +53,8 @@
   </path>
 
   <path id="jsmooth.class.path">
-  	<fileset dir="lib"/>
+    <pathelement path="lib/jox116.jar"/>
+    <pathelement path="lib/dtdparser113.jar"/>
   </path>
 
   <target name="init">
@@ -57,13 +72,13 @@
     </javac>
   </target>
 
-  <target depends="init" name="docs">
+  <target name="docs" depends="init">
     <!-- Compile the java code from ${src} into ${classes} -->
 
     <xslt basedir="${docs}" destdir="${docs}"
        in="${docs}/jsmooth-doc.xml"
        out="${docs}/jsmooth-doc.html"
-       style="${DOCBOOKBASE}/html/chunk.xsl" >
+       style="${DOCBOOKBASE}/html/docbook.xsl" >
  
         <param name="admon.graphics" expression="1"/>
         <param name="section.autolabel" expression="1"/>
@@ -165,6 +180,7 @@
     </antcall>
 
     <!-- Copy the jsmooth ant library -->
+    <copy todir="${dist}/lib" file="jsmoothgen.jar"/>
     <copy todir="${dist}/lib" file="jsmoothgen-ant.jar"/>
     <copy todir="${dist}/lib" file="lib/jox116.jar"/>
     <copy todir="${dist}/lib" file="lib/dtdparser113.jar"/>
@@ -206,6 +222,30 @@
     <copy todir="${dist}" file="${tmp}/docs/readme.txt"/>
     <copy todir="${dist}" file="${tmp}/docs/license.txt"/>
 
+
+    <!-- Compile the windowed wrapper in debug mode -->
+
+    <mkdir dir="${dist}/skeletons/windowed-wrapper-debug"/>
+    <antcall target="compileskels">
+      <param name="skelflags" value="-DDEBUGMODE=1"/>
+    </antcall>
+    <copy todir="${dist}/skeletons/windowed-wrapper-debug" file="skeletons/simplewrap/jwrap.exe"/>
+    <copy todir="${dist}/skeletons/windowed-wrapper-debug" file="skeletons/simplewrap/description-debug.skel"/>
+    <exec executable="strip.exe" dir="${dist}/skeletons/windowed-wrapper-debug">
+        <arg value="jwrap.exe"/>
+    </exec>
+
+    <!-- Compile the console wrapper in debug mode -->
+    <mkdir dir="${dist}/skeletons/console-wrapper-debug"/>
+    <antcall target="compileskels">
+      <param name="skelflags" value="-DDEBUGMODE=2"/>
+    </antcall>
+    <copy todir="${dist}/skeletons/console-wrapper-debug" file="skeletons/consolewrapper/consolewrapper.exe"/>
+    <copy todir="${dist}/skeletons/console-wrapper-debug" file="skeletons/consolewrapper/description-debug.skel"/>
+    <exec executable="strip.exe" dir="${dist}/skeletons/console-wrapper-debug">
+        <arg value="consolewrapper.exe"/>
+    </exec>
+
     <!-- Compile the normal wrappers -->
     <ant antfile="build.xml" dir="skeletons/simplewrap/samplejar/" target="dist"/>
     <ant antfile="build.xml" dir="skeletons/consolewrapper/samplejar/" target="dist"/>
@@ -226,29 +266,6 @@
         <arg value="jwrap.exe"/>
     </exec>
 
-    <!-- Compile the windowed wrapper in debug mode -->
-
-    <mkdir dir="${dist}/skeletons/windowed-wrapper-debug"/>
-    <antcall target="compileskels">
-      <param name="skelflags" value="-DDEBUGMODE=1"/>
-    </antcall>
-    <copy todir="${dist}/skeletons/windowed-wrapper-debug" file="skeletons/simplewrap/jwrap.exe"/>
-    <copy todir="${dist}/skeletons/windowed-wrapper-debug" file="skeletons/simplewrap/description-debug.skel"/>
-    <exec executable="strip.exe" dir="${dist}/skeletons/windowed-wrapper">
-        <arg value="jwrap.exe"/>
-    </exec>
-
-    <!-- Compile the console wrapper in debug mode -->
-    <mkdir dir="${dist}/skeletons/console-wrapper-debug"/>
-    <antcall target="compileskels">
-      <param name="skelflags" value="-DDEBUGMODE=2"/>
-    </antcall>
-    <copy todir="${dist}/skeletons/console-wrapper-debug" file="skeletons/consolewrapper/consolewrapper.exe"/>
-    <copy todir="${dist}/skeletons/console-wrapper-debug" file="skeletons/consolewrapper/description-debug.skel"/>
-    <exec executable="strip.exe" dir="${dist}/skeletons/console-wrapper">
-        <arg value="consolewrapper.exe"/>
-    </exec>
-
     <!-- Builds the jsmooth executable -->
     <jsmoothgen project="jsprj/jsmoothgen.jsmooth" skeletonroot="${dist}/skeletons"/>
     <jsmoothgen project="jsprj/jsmoothcmd.jsmooth" skeletonroot="${dist}/skeletons"/>
@@ -265,12 +282,14 @@
   </target>
 
    <target name="compileskel" depends="">
-     <exec executable="make.exe" dir="skeletons/${skelname}">
+     <exec executable="${mingw-make}" dir="skeletons/${skelname}">
        <arg value="-f"/>
        <arg value="Makefile.win"/>
        <arg value="clean"/>
        <arg value="all"/>
-       <arg value="CUSTOMFLAGS=${skelflags}"/>
+       <arg value='CUSTOMFLAGS=${skelflags}'/>
+       <arg value='"JDK=${JDKDIR}"'/>
+       <arg value='"RM=${RM}"'/>
      </exec>
    </target>
 
@@ -310,7 +329,7 @@
        </classpath>
      </java>
   </target>
-	
+
 	<target name="swt-tests" depends="jar">
 		<java
 		 	classname="net.charabia.jsmoothgen.application.swtgui.tests.NewProjectWizardVisualTests"
@@ -322,5 +341,6 @@
 			</classpath>
 		</java>
 	</target>
+
 </project>
 
