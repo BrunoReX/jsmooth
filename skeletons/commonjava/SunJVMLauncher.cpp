@@ -306,6 +306,7 @@ bool SunJVMLauncher::runVM12DLL(ResourceManager& resource, const string& origin)
                                 env->CallStaticVoidMethod(cls, mid, args);
                                 DEBUG("VM CALLED !!");
                                 vm->DestroyJavaVM();
+                                DEBUG("VM DESTROYED !!");
                                 return true;
                 }
                 else
