@@ -2,11 +2,10 @@
 <java version="1.4.2" class="java.beans.XMLDecoder"> 
  <object class="net.charabia.jsmoothgen.skeleton.SkeletonBean"> 
   <void property="description"> 
-   <string>Wraps java applications with GUI.&#13;
-- it doesn&apos;t show any command window&#13;
-- it doesn&apos;t work as NT services&#13;
-&#13;
-If no Java VM is found, it displays an HTML page that request the user to download the JVM.</string> 
+   <string>This skeleton wraps GUI application. 
+- No console I/O is displayed
+- If no Java VM is found, it is able to display a configurable URL (typically to a java download page).
+</string> 
   </void> 
   <void property="executableName"> 
    <string>jwrap.exe</string> 
