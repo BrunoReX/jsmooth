@@ -14,7 +14,7 @@
 
   <target depends="init" name="compile">
     <!-- Compile the java code from ${src} into ${classes} -->
-    <javac deprecation="yes" destdir="${classes}" srcdir="${src}" target="1.1"/>
+    <javac deprecation="yes" destdir="${classes}" srcdir="${src}" target="1.1" classpath="lib/JimiProClasses.zip"/>
   </target>
 
   <target depends="compile" name="dist">
