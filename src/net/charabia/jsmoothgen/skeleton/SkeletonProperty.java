@@ -27,6 +27,15 @@ public class SkeletonProperty
 	{
 	}
 
+    public SkeletonProperty(SkeletonProperty sp)
+    {
+	m_idName = sp.m_idName;
+	m_shortName = sp.m_shortName;
+	m_description = sp.m_description;
+	m_type = sp.m_type;
+	m_value = sp.m_value;
+    }
+
 	public void setIdName(String idName)
 	{
 		m_idName = idName;

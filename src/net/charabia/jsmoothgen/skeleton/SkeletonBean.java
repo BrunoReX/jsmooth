@@ -42,6 +42,37 @@ public class SkeletonBean
 	{
 	}
 		
+    public SkeletonBean(SkeletonBean sb)
+    {
+	m_executableName = sb.m_executableName;
+	m_shortName = sb.m_shortName;
+	m_description = sb.m_description;
+	m_resourceCategory = sb.m_resourceCategory;
+	m_resourceJarId = sb.m_resourceJarId;
+	m_resourcePropsId = sb.m_resourcePropsId;
+	m_skelproperties = new SkeletonProperty[sb.m_skelproperties.length];
+	for (int i=0; i<m_skelproperties.length; i++)
+	    {
+		m_skelproperties[i] = new SkeletonProperty(sb.m_skelproperties[i]);
+	    }
+	m_debug = sb.m_debug;
+    }
+
+    public boolean equals(Object obj)
+    {
+	if (obj instanceof SkeletonBean)
+	    {
+		return ((SkeletonBean)obj).m_shortName.equals(m_shortName);
+	    }
+	return false;
+    }
+
+    public int hashCode()
+    {
+	return m_shortName.hashCode();
+    }
+
+
 	public void setExecutableName(String name)
 	{
 		m_executableName = name;

@@ -78,6 +78,11 @@ public class JSmoothModelBean
 	{
 	    return this.Value;
 	}	
+
+	public String toString()
+	{
+	    return getKey() + "==" + getValue();
+	}
     }
 	
     transient Vector m_listeners = new Vector();
@@ -85,6 +90,13 @@ public class JSmoothModelBean
     public static interface Listener
     {
 	public void dataChanged();
+    }
+
+    transient Vector m_skeletonChangedListener = new Vector();
+    
+    public static interface SkeletonChangedListener
+    {
+	public void skeletonChanged();
     }
 	
     /** Creates a new instance of JSmoothModelBean */
@@ -101,6 +113,17 @@ public class JSmoothModelBean
     {
 	m_listeners.remove(l);
     }
+
+    public void addSkeletonChangedListener(JSmoothModelBean.SkeletonChangedListener l)
+    {
+	m_skeletonChangedListener.add(l);
+    }
+	
+    public void removeSkeletonChangedListener(JSmoothModelBean.SkeletonChangedListener l)
+    {
+	m_skeletonChangedListener.remove(l);
+    }
+
 	
     private void fireChanged()
     {
@@ -110,10 +133,21 @@ public class JSmoothModelBean
 		l.dataChanged();
 	    }
     }
+
+    private void fireSkeletonChanged()
+    {
+	for (Iterator i=m_skeletonChangedListener.iterator(); i.hasNext(); )
+	    {
+		JSmoothModelBean.SkeletonChangedListener l = (JSmoothModelBean.SkeletonChangedListener)i.next();
+		l.skeletonChanged();
+	    }
+    }
 	
     public void setSkeletonName(String name)
     {
 	m_skeletonName = name;
+	fireSkeletonChanged();
+	fireChanged();
     }
 	
     public String getSkeletonName()

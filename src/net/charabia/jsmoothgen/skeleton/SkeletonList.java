@@ -125,7 +125,7 @@ public class SkeletonList
     public SkeletonBean getSkeleton(String name)
     {
         try {
-	    return (SkeletonBean)m_nameToSkel.get(name);
+	    return new SkeletonBean((SkeletonBean)m_nameToSkel.get(name));
         } catch (Exception exc)
 	    {
 		return null;

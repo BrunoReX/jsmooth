@@ -87,6 +87,11 @@ public class ExeCompiler
 			exc.printStackTrace();
 		    }
 	}
+	
+	public ExeCompiler getCompiler()
+	{
+	    return ExeCompiler.this;
+	}
     }
 	
     public ExeCompiler.CompilerRunner getRunnable(File skelroot, SkeletonBean skel, File basedir, JSmoothModelBean data, File out)

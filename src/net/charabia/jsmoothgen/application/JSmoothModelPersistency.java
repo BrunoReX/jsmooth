@@ -83,6 +83,7 @@ public class JSmoothModelPersistency
 
 		    } catch (Exception exc2)
 			{
+			    exc2.printStackTrace();
 			    throw new IOException(exc2.toString());
 			}
 		}
@@ -126,6 +127,7 @@ public class JSmoothModelPersistency
     // t4:    z:/a/b/c/d
     static public File makePathRelativeIfPossible(File root, File f)
     {
+	File orgfile = f;
 	try
 	    {
 		if (f.isAbsolute() == false)
@@ -139,6 +141,9 @@ public class JSmoothModelPersistency
 	    } catch (IOException iox)
 		{
 		    iox.printStackTrace();
+		    System.out.println("Failed, returning " + orgfile);
+
+		    return orgfile;
 		}
 	Vector rootvec = new Vector();
 	Vector targetvec = new Vector();
