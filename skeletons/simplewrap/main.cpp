@@ -19,11 +19,12 @@
 */
 
 #include <windows.h>
-
 #include <iostream>
 
-#include "common.h"
 #include "resource.h"
+
+
+#include "common.h"
 #include "ResourceManager.h"
 #include "JVMRegistryLookup.h"
 #include "JavaMachineManager.h"
@@ -34,12 +35,9 @@ void SaveJarResource();
 LRESULT CALLBACK WindowProcedure (HWND, UINT, WPARAM, LPARAM);
 
 /*  Make the class name into a global variable  */
-char szClassName[ ] = "WindowsApp";
+char szClassName[ ] = "JSmooth";
 
 ResourceManager* globalResMan;
-#ifdef DEBUGMODE
-DebugConsole DEBUGCONSOLE("title");
-#endif
 
 void lastExit()
 {
@@ -47,44 +45,6 @@ void lastExit()
   globalResMan = 0;
 }
 
-void addResId(std::string& msg, LPCTSTR id)
-{
-   if ((ULONG)id & 0xFFFF0000) 
-    {
-        msg += id;
-    }
-    else
-    {
-        char buffer[200];
-        sprintf(buffer, "%u", (int)((long)id & 0xFFFF));
-        msg += buffer;
-    }
-}
-
-BOOL CALLBACK lpEnumFunc(HMODULE hModule,   // module handle
-                        LPCTSTR lpszType, // pointer to resource type
-                        LPTSTR lpszName,  // pointer to resource name
-                        LONG lParam       // application-defined parameter
-                        )
-{
-    std::string msg = "Found NAME: ";
-    addResId(msg, lpszName);
-    msg += " for ";
-    addResId(msg, lpszType);
-    
-    return TRUE;
-}
-
-
-BOOL CALLBACK  rsctypecallback(HMODULE module, LPTSTR lpszType, LONG dummy)
-{
-    std::string msg = "Found TYPE: ";
-    addResId(msg, lpszType);
-    
-     EnumResourceNames(module, lpszType, lpEnumFunc, dummy);
-    
-    return TRUE;
-}
                           
 int WINAPI WinMain (HINSTANCE hThisInstance,
                     HINSTANCE hPrevInstance,
@@ -138,13 +98,8 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
            NULL                 /* No Window Creation data */
            );
 
-   // DEBUG("START");
-   // DEBUGWAITKEY();
-
-
     globalResMan = new ResourceManager("JAVA", PROPID, JARID);
-//    ResourceManager resman("JAVA", PROPID, JARID);
-    DEBUG(std::string("Main class: ") + globalResMan->getMainName());
+    DEBUG(string("Main class: ") + globalResMan->getMainName());
 
     char curdir[256];
     GetCurrentDirectory(256, curdir);
@@ -154,7 +109,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     SetCurrentDirectory(newcurdir.c_str());
 
     JavaMachineManager man(*globalResMan);
-    if (man.run() == false)
+    if (man.run(true) == false)
     {
         std::string errmsg = globalResMan->getProperty("skel_Message");
         std::string url = globalResMan->getProperty("skel_URL");

@@ -1,18 +1,18 @@
 [Project]
 FileName=JWrap.dev
 Name=JWrap
-UnitCount=26
+UnitCount=3
 Type=0
 Ver=1
 ObjFiles=
-Includes="c:\Program Files\j2sdk_nb\j2sdk1.4.2\include\win32";"c:\Program Files\j2sdk_nb\j2sdk1.4.2\include";..\common
-Libs=..\common
+Includes="c:\Program Files\j2sdk_nb\j2sdk1.4.2\include\win32";"c:\Program Files\j2sdk_nb\j2sdk1.4.2\include";..\commonjava
+Libs=..\commonjava
 PrivateResource=JWrap_private.rc
 ResourceIncludes=
 MakeIncludes=
 Compiler=
 CppCompiler=
-Linker=
+Linker=../commonjava/CommonJava.a_@@_
 IsCpp=1
 Icon=JWrap.ico
 ExeOutput=
@@ -25,17 +25,7 @@ CommandLine=
 IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
-CompilerSettings=000000000000000100
-
-[Unit1]
-FileName=main.cpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
+CompilerSettings=000000000000000000
 
 [VersionInfo]
 Major=0
@@ -65,16 +55,6 @@ OverrideBuildCmd=0
 BuildCmd=
 CompileCpp=1
 
-[Unit6]
-FileName=common.h
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-CompileCpp=1
-
 [Unit7]
 FileName=Version.h
 CompileCpp=1
@@ -84,26 +64,6 @@ Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
-
-[Unit8]
-FileName=Version.cpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit5]
-FileName=ResourceManager.cpp
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-CompileCpp=1
 
 [Unit9]
 FileName=Properties.h
@@ -125,16 +85,6 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit11]
-FileName=StringUtils.h
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit12]
 FileName=StringUtils.cpp
 CompileCpp=1
@@ -147,36 +97,6 @@ BuildCmd=
 
 [Unit13]
 FileName=FileUtils.h
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit14]
-FileName=FileUtils.cpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit17]
-FileName=JVMRegistryLookup.h
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit18]
-FileName=JVMRegistryLookup.cpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -305,17 +225,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit2]
-FileName=resource.h
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit3]
+[Unit1]
 FileName=mainres.rc
 Folder=JWrap
 Compile=1
@@ -324,20 +234,20 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit15]
-FileName=SunJVMLauncher.h
+[Unit2]
+FileName=resource.h
 CompileCpp=1
-Folder=
+Folder=JWrap
 Compile=1
 Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit16]
-FileName=SunJVMLauncher.cpp
+[Unit3]
+FileName=main.cpp
 CompileCpp=1
-Folder=
+Folder=JWrap
 Compile=1
 Link=1
 Priority=1000

@@ -18,32 +18,37 @@
 
 */
 
-#ifndef _COMMON_H
-#define _COMMON_H
+#ifndef __JAVAMACHINEMANAGER_H_
+#define __JAVAMACHINEMANAGER_H_
 
-#include <vector>
 #include <string>
-#include <winbase.h>
+#include <vector>
 
-#include "resource.h"
-#include "DebugConsole.h"
+#include "common.h"
+#include "StringUtils.h"
+#include "SunJVMLauncher.h"
+#include "JVMRegistryLookup.h"
+#include "JVMEnvVarLookup.h"
+#include "MSJViewLauncher.h"
 
-#define DEBUGMODE
-//#undef DEBUGMODE
+class JavaMachineManager
+{
+    vector<SunJVMLauncher> m_registryVms;
+    vector<SunJVMLauncher> m_javahomeVm;
+    vector<SunJVMLauncher> m_jrepathVm;
+    vector<SunJVMLauncher> m_jdkpathVm;
+    
+    bool                   m_localVMenabled;
+    SunJVMLauncher         m_localVM;
+    
+    MSJViewLauncher        m_jviewVm;
+    
+    ResourceManager& m_resman;
 
-extern std::vector< std::string > LOG;
-extern DebugConsole DEBUGCONSOLE;
+    public:
+        JavaMachineManager(ResourceManager& resman) ;
 
-class ResourceManager;
-
-extern ResourceManager* globalResMan;
-
-#ifdef DEBUGMODE
-#    define DEBUG(x) DEBUGCONSOLE.writeline(x)
-#    define DEBUGWAITKEY() DEBUGCONSOLE.waitKey()
-#else
-#    define DEBUG(x) 
-#    define DEBUGWAITKEY()
-#endif
+        bool run(bool noConsole);
+};
 
 #endif

@@ -67,22 +67,35 @@ bool SunJVMLauncher::run(ResourceManager& resource)
     return false;
 }
 
-bool SunJVMLauncher::runProc(ResourceManager& resource)
+bool SunJVMLauncher::runProc(ResourceManager& resource, bool noConsole)
 {
     Version max(resource.getProperty(ResourceManager:: KEY_MAXVERSION));
     Version min(resource.getProperty(ResourceManager:: KEY_MINVERSION));
-    
-    DEBUG("RUN PROC... " + min.toString() + " <= " + VmVersion.toString() + "<= " + max.toString());
-    Version curver;
-    Version vjava = guessVersionByProcess(JavaHome + "\\bin\\java.exe");
-    DEBUG("JAVA VERSION = " + vjava.toString());
-    if (vjava.isValid())
-        curver = vjava;
-    else
+
+    string javapath = "\\bin\\java.exe";
+    string jrepath = "\\bin\\jre.exe";
+
+    if (noConsole)
     {
-        Version vjre = guessVersionByProcess(JavaHome + "\\bin\\jre.exe");
-        DEBUG("JRE VERSION = " + vjre.toString());    
-        curver = vjre;
+        javapath = "\\bin\\javaw.exe";
+        jrepath = "\\bin\\jrew.exe";
+    }
+
+    DEBUG("RUN PROC... " + min.toString() + " <= " + VmVersion.toString() + "<= " + max.toString());
+    Version curver = VmVersion;
+
+    if (curver.isValid() == false)
+    {
+        Version vjava = guessVersionByProcess(JavaHome + javapath);
+        DEBUG("JAVA VERSION = " + vjava.toString());
+        if (vjava.isValid())
+                curver = vjava;
+        else
+        {
+             Version vjre = guessVersionByProcess(JavaHome + jrepath);
+             DEBUG("JRE VERSION = " + vjre.toString());    
+             curver = vjre;
+        }
     }
     
     if (curver.isValid() == false)
@@ -98,10 +111,10 @@ bool SunJVMLauncher::runProc(ResourceManager& resource)
     
     if (Version("1.2") <= VmVersion)
     {
-        return runVM12proc(resource);
+        return runVM12proc(resource, noConsole);
     } else if (Version("1.1") <= VmVersion)
     {
-        return runVM11proc(resource);
+        return runVM11proc(resource, noConsole);
     }
     
     return false;
@@ -361,30 +374,46 @@ bool SunJVMLauncher::runVM11DLL(ResourceManager& resource)
     return false;
 }
 
-bool SunJVMLauncher::runVM11proc(ResourceManager& resource)
+bool SunJVMLauncher::runVM11proc(ResourceManager& resource, bool noConsole)
 {
-    if (runExe(JavaHome + "\\bin\\jre.exe", false, resource))
+    string javapath = "\\bin\\java.exe";
+    string jrepath = "\\bin\\jre.exe";
+    if (noConsole)
+    {
+        javapath = "\\bin\\javaw.exe";
+        jrepath = "\\bin\\jrew.exe";
+    }
+
+    if (runExe(JavaHome + jrepath, false, resource, noConsole))
         return true;
 
-    if (runExe(JavaHome + "\\bin\\java.exe", true, resource))
+    if (runExe(JavaHome + javapath, true, resource, noConsole))
         return true;
         
     return false;    
 }
 
-bool SunJVMLauncher::runVM12proc(ResourceManager& resource)
+bool SunJVMLauncher::runVM12proc(ResourceManager& resource, bool noConsole)
 {
-    if (runExe(JavaHome + "\\bin\\java.exe", false, resource))
+    string javapath = "\\bin\\java.exe";
+    string jrepath = "\\bin\\jre.exe";
+    if (noConsole)
+    {
+        javapath = "\\bin\\javaw.exe";
+        jrepath = "\\bin\\jrew.exe";
+    }
+
+    if (runExe(JavaHome + javapath, false, resource, noConsole))
         return true;
 
-    if (runExe(JavaHome + "\\bin\\jre.exe", false, resource))
+    if (runExe(JavaHome + jrepath, false, resource, noConsole))
         return true;
         
     return false;
 }
 
-bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource)
-{
+bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource, bool noConsole)
+{    
    if (FileUtils::fileExists(exepath))
    {
       DEBUG("Running new proc for " + exepath);
@@ -413,12 +442,28 @@ bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, Reso
       DEBUG("CLASSNAME = <" + classname + ">");
       STARTUPINFO info;
       GetStartupInfo(&info);
-      info.dwFlags = 0;
+      int creationFlags = 0;
+      int inheritsHandle;
+      if (noConsole == false)
+      {
+            info.dwFlags = STARTF_USESHOWWINDOW|STARTF_USESTDHANDLES;
+            info.hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+            info.hStdError = GetStdHandle(STD_ERROR_HANDLE);
+            info.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
+            creationFlags = NORMAL_PRIORITY_CLASS;
+            inheritsHandle = TRUE;
+      }
+      else
+      {
+            info.dwFlags = STARTF_USESHOWWINDOW;
+            info.wShowWindow = SW_HIDE;
+            creationFlags = NORMAL_PRIORITY_CLASS | DETACHED_PROCESS;
+            inheritsHandle = FALSE;
+      }
       PROCESS_INFORMATION procinfo;
-
       string exeline = exepath + " " + arguments;
 
-      int res = CreateProcess(NULL, (char*)exeline.c_str(), NULL, NULL, FALSE, DETACHED_PROCESS	| NORMAL_PRIORITY_CLASS, NULL, NULL, &info, &procinfo);
+      int res = CreateProcess(NULL, (char*)exeline.c_str(), NULL, NULL, inheritsHandle, creationFlags, NULL, NULL, &info, &procinfo);
 
       DEBUG("COMMAND LINE: " +exeline);
       if (res != 0)

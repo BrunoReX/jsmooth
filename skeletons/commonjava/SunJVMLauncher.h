@@ -41,7 +41,7 @@ class SunJVMLauncher
         Version VmVersion;
                
         virtual bool run(ResourceManager& resource);
-        virtual bool runProc(ResourceManager& resource);
+        virtual bool runProc(ResourceManager& resource, bool noConsole);
 
        std::string toString() const;
 
@@ -51,10 +51,10 @@ class SunJVMLauncher
      
        bool runVM12DLL(ResourceManager& resource);
        bool runVM11DLL(ResourceManager& resource);
-       bool runVM11proc(ResourceManager& resource);
-       bool runVM12proc(ResourceManager& resource);
+       bool runVM11proc(ResourceManager& resource, bool noConsole);
+       bool runVM12proc(ResourceManager& resource, bool noConsole);
 
-       bool runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource);
+       bool runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource, bool noConsole);
 };
 
 #endif
