@@ -174,6 +174,6 @@ bool JavaMachineManager::run(bool dontUseConsole, bool preferSingleProcess)
 		    }
 		}
     }
-
+  DEBUG("Couldn't run any suitable JVM!");
   return false;
 }

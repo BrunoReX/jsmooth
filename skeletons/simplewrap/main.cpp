@@ -55,10 +55,6 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
                     LPSTR lpszArgument,
                     int nFunsterStil)
 {
-    HWND hwnd;               /* This is the handle for our window */
-    MSG messages;            /* Here messages to the application are saved */
-    WNDCLASSEX wincl;        /* Data structure for the windowclass */
-   
     atexit(lastExit);
 
     globalResMan = new ResourceManager("JAVA", PROPID, JARID);
@@ -95,11 +91,12 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
         preferDLL = true;
     if (man.run(true, preferDLL) == false)
     {
+      DEBUG("Displaying error message to user...");
         std::string errmsg = globalResMan->getProperty("skel_Message");
         std::string url = globalResMan->getProperty("skel_URL");
-        if (MessageBox(hwnd, errmsg.c_str(), "No Java?", MB_OKCANCEL|MB_ICONQUESTION|MB_APPLMODAL) == IDOK)
+        if (MessageBox(NULL, errmsg.c_str(), "No Java?", MB_OKCANCEL|MB_ICONQUESTION|MB_APPLMODAL) == IDOK)
         {
-            ShellExecute(hwnd, "open", url.c_str(), NULL, "", 0);
+            ShellExecute(NULL, "open", url.c_str(), NULL, "", 0);
         }
     }
 
@@ -107,6 +104,6 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     DEBUGWAITKEY();
 
     /* The program return-value is 0 - The value that PostQuitMessage() gave */
-    return messages.wParam;
+    return 0;
 }
 
