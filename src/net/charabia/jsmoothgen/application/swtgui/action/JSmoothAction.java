@@ -5,8 +5,8 @@ package net.charabia.jsmoothgen.application.swtgui.action;
 
 import java.util.Observer;
 
+import net.charabia.jsmoothgen.application.swtgui.JSmoothApplication;
 import net.charabia.jsmoothgen.application.swtgui.JSmoothWindow;
-import net.charabia.jsmoothgen.application.swtgui.model.JSmoothApplication;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -17,7 +17,7 @@ public abstract class JSmoothAction extends Action implements Observer {
 
     public static final String ACTION_SHOWPAGE_WELCOME = "Action.ShowPage.Welcome";
 
-    public static final String ACTION_SHOWPAGE_EXECUTABLE = "Action.ShowPage.Executable";
+    public static final String ID_ACTION_SHOWPAGE_EXE = "Action.ShowPage.Executable";
 
     public static final String ACTION_SHOWPAGE_SKELETON = "Action.ShowPage.Skeleton";
 
@@ -36,11 +36,11 @@ public abstract class JSmoothAction extends Action implements Observer {
         (this.jsApp = jsApp).addObserver(this);
     }
 
-    protected JSmoothApplication getJSmoothApplication() {
+    protected JSmoothApplication getApplication() {
         return jsApp;
     }
 
-    protected JSmoothWindow getJSmoothWindow() {
+    protected JSmoothWindow getWindow() {
         return jsWnd;
     }
 

@@ -9,7 +9,6 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
 
-import net.charabia.jsmoothgen.application.swtgui.model.SkeletonModel;
 import net.charabia.jsmoothgen.skeleton.SkeletonProperty;
 
 import org.eclipse.jface.dialogs.Dialog;

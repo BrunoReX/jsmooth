@@ -22,7 +22,7 @@ public class JSmoothUtils {
         return fontMetrics.getAverageCharWidth() * chars;
     }
 
-    public static int computeWidth(Control control, String string) {
+    public static int computeButtonWidth(Control control, String string) {
         int stringWidth = convertWidth(control, string.length());
         int extraWidth = convertWidth(control, BUTTON_EXTRA_WIDTH);
         return stringWidth + extraWidth;

@@ -5,8 +5,8 @@ package net.charabia.jsmoothgen.application.swtgui.action;
 
 import java.util.Observable;
 
+import net.charabia.jsmoothgen.application.swtgui.JSmoothApplication;
 import net.charabia.jsmoothgen.application.swtgui.JSmoothWindow;
-import net.charabia.jsmoothgen.application.swtgui.model.JSmoothApplication;
 import net.charabia.jsmoothgen.application.swtgui.resources.JSmoothResources;
 
 import org.eclipse.swt.SWT;
@@ -23,7 +23,7 @@ public class NewProjectAction extends JSmoothAction {
     }
 
     public void run() {
-        FileDialog dlg = new FileDialog(getJSmoothWindow().getShell(), SWT.SAVE);
+        FileDialog dlg = new FileDialog(getWindow().getShell(), SWT.SAVE);
         dlg.setText("Project File");
         String path = dlg.open();
 
@@ -31,8 +31,8 @@ public class NewProjectAction extends JSmoothAction {
         if (path == null)
             return;
 
-        getJSmoothApplication().newProject(path);
-        getJSmoothApplication().saveProject();
+        getApplication().newProject(path);
+        getApplication().saveProject();
     }
 
     public void update(Observable o, Object arg) {

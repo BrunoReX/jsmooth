@@ -9,36 +9,44 @@ import java.util.Observer;
 import java.util.Set;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
 public abstract class JSmoothPage implements Observer {
 
-    private Composite cmpControl;
+    private Control control;
 
-    private JSmoothWindow jsWnd;
+    private JSmoothWindow jsmoothWnd;
     
     private Set modifyListeners;
+
+    private JSmoothApplication jsmoothApp;
     
-    public JSmoothPage(JSmoothWindow jsWnd) {
-        this.jsWnd = jsWnd;
+    public JSmoothPage(JSmoothWindow jsmoothWnd, JSmoothApplication jsmoothApp) {
+        this.jsmoothWnd = jsmoothWnd;
+        this.jsmoothApp = jsmoothApp;
+    }
+    
+    public Control createControl(Composite parent) {
+        return control= createPageArea(parent);
+    }
+    
+    public abstract Control createPageArea(Composite parent);
+
+    public Control getControl() {
+        return control;
     }
 
-    public abstract void createControl(Composite parent);
-
-    public Composite getControl() {
-        return cmpControl;
-    }
-
-    protected void setControl(Composite cmp) {
-        cmpControl = cmp;
+    protected void setControl(Control cmp) {
+        control = cmp;
     }
 
     protected JSmoothWindow getJSmoothWindow() {
-        return jsWnd;
+        return jsmoothWnd;
     }
 
     protected Shell getShell() {
-        return jsWnd.getShell();
+        return jsmoothWnd.getShell();
     }
     
     public void addPageModifyListener(PageModifyListener modifyListener) {
@@ -53,5 +61,11 @@ public abstract class JSmoothPage implements Observer {
             ((PageModifyListener) it.next()).pageModified();
         }
     }
+    
+    protected JSmoothApplication getApplication() {
+        return jsmoothApp;
+    }
+    
+    public abstract boolean apply();
     
 }

@@ -1,7 +1,7 @@
 /*
  * Created on Jun 11, 2004
  */
-package net.charabia.jsmoothgen.application.swtgui.model;
+package net.charabia.jsmoothgen.application.swtgui;
 
 import java.util.Observable;
 

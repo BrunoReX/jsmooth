@@ -5,8 +5,8 @@ package net.charabia.jsmoothgen.application.swtgui.action;
 
 import java.util.Observable;
 
+import net.charabia.jsmoothgen.application.swtgui.JSmoothApplication;
 import net.charabia.jsmoothgen.application.swtgui.JSmoothWindow;
-import net.charabia.jsmoothgen.application.swtgui.model.JSmoothApplication;
 import net.charabia.jsmoothgen.application.swtgui.resources.JSmoothResources;
 
 public class SaveProjectAction extends JSmoothAction {
@@ -19,12 +19,12 @@ public class SaveProjectAction extends JSmoothAction {
     }
 
     public void run() {
-        getJSmoothApplication().saveProject();
+        getApplication().saveProject();
     }
 
     public void update(Observable o, Object arg) {
-        setEnabled(getJSmoothApplication().isDirty()
-                && getJSmoothApplication().hasProjectFile());
+        setEnabled(getApplication().isDirty()
+                && getApplication().hasProjectFile());
     }
 
 }

@@ -14,6 +14,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
@@ -23,7 +24,7 @@ import org.eclipse.swt.widgets.Text;
 
 public class JavaAppPage extends JSmoothPage {
 
-    private Text txtJarLoc;
+    private Text jarLocation;
 
     private Text txtMainCls;
 
@@ -37,16 +38,15 @@ public class JavaAppPage extends JSmoothPage {
 
     private Button btnRemove;
 
-    public JavaAppPage(JSmoothWindow jsWnd) {
-        super(jsWnd);
+    public JavaAppPage(JSmoothWindow jsmoothWnd, JSmoothApplication jsmoothApp) {
+        super(jsmoothWnd, jsmoothApp);
     }
 
-    public void createControl(Composite parent) {
-        Composite cmpContents = new Composite(parent, SWT.NONE);
-        cmpContents.setLayout(new GridLayout());
-        setControl(cmpContents);
+    public Control createPageArea(Composite parent) {
+        Composite composite = new Composite(parent, SWT.NONE);
+        composite.setLayout(new GridLayout());
 
-        Composite cmpJavaCmd = new Composite(cmpContents, SWT.NONE);
+        Composite cmpJavaCmd = new Composite(composite, SWT.NONE);
         GridLayout layout = new GridLayout(3, false);
         layout.marginHeight = 0;
         layout.marginWidth = 0;
@@ -59,11 +59,11 @@ public class JavaAppPage extends JSmoothPage {
         GridData layData = new GridData(GridData.FILL);
         label.setLayoutData(layData);
 
-        txtJarLoc = new Text(cmpJavaCmd, SWT.BORDER);
+        jarLocation = new Text(cmpJavaCmd, SWT.BORDER);
         layData = new GridData(GridData.FILL_HORIZONTAL);
         layData.widthHint = 250;
-        txtJarLoc.setLayoutData(layData);
-        txtJarLoc.addModifyListener(getModifyListener());
+        jarLocation.setLayoutData(layData);
+        jarLocation.addModifyListener(getModifyListener());
         
         Button button = new Button(cmpJavaCmd, SWT.NONE);
         button.setText("Browse...");
@@ -73,12 +73,12 @@ public class JavaAppPage extends JSmoothPage {
                 dialog.setText("Jar Location");
                 String file = dialog.open();
                 if (file != null) {
-                    txtJarLoc.setText(file);
+                    jarLocation.setText(file);
                 }
             }
         });
         layData = new GridData(GridData.FILL);
-        layData.widthHint = JSmoothUtils.computeWidth(button, "Browse...");
+        layData.widthHint = JSmoothUtils.computeButtonWidth(button, "Browse...");
         button.setLayoutData(layData);
 
         // Main class
@@ -110,7 +110,7 @@ public class JavaAppPage extends JSmoothPage {
         new Label(cmpJavaCmd, SWT.NONE); // empty cell
 
         // Classpath list
-        Group grpClspath = new Group(cmpContents, SWT.NONE);
+        Group grpClspath = new Group(composite, SWT.NONE);
         grpClspath.setText("Classpath");
         grpClspath.setLayout(new GridLayout());
         layData = new GridData(GridData.FILL_HORIZONTAL);
@@ -152,7 +152,7 @@ public class JavaAppPage extends JSmoothPage {
             }
         });
         layData = new GridData(GridData.FILL_HORIZONTAL);
-        layData.widthHint = JSmoothUtils.computeWidth(btnAddJar,
+        layData.widthHint = JSmoothUtils.computeButtonWidth(btnAddJar,
                 "Add JAR File...");
         btnAddJar.setLayoutData(layData);
 
@@ -171,7 +171,7 @@ public class JavaAppPage extends JSmoothPage {
             }
         });
         layData = new GridData(GridData.FILL_HORIZONTAL);
-        layData.widthHint = JSmoothUtils.computeWidth(btnAddFolder,
+        layData.widthHint = JSmoothUtils.computeButtonWidth(btnAddFolder,
                 "Add Class Folder...");
         btnAddFolder.setLayoutData(layData);
 
@@ -185,8 +185,10 @@ public class JavaAppPage extends JSmoothPage {
             }
         });
         layData = new GridData(GridData.FILL_HORIZONTAL);
-        layData.widthHint = JSmoothUtils.computeWidth(btnRemove, "Remove");
+        layData.widthHint = JSmoothUtils.computeButtonWidth(btnRemove, "Remove");
         btnRemove.setLayoutData(layData);
+        
+        return composite;
     }
 
     private void updateRemoveButton() {
@@ -225,6 +227,19 @@ public class JavaAppPage extends JSmoothPage {
                 firePageModified();
             }
         };
+    }
+
+    /* (non-Javadoc)
+     * @see net.charabia.jsmoothgen.application.swtgui.JSmoothPage#apply()
+     */
+    public boolean apply() {
+        try {
+            getApplication().setJarLocation(jarLocation.getText());
+        } catch (InvalidPathException e) {
+            // FIXME:
+            return false;
+        }
+        return true;
     }
     
 }

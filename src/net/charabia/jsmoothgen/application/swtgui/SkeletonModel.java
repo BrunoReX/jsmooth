@@ -1,7 +1,7 @@
 /*
  * Created on May 14, 2004
  */
-package net.charabia.jsmoothgen.application.swtgui.model;
+package net.charabia.jsmoothgen.application.swtgui;
 
 import java.io.File;
 import java.util.Iterator;
@@ -23,18 +23,16 @@ public class SkeletonModel extends Observable {
 
     public static final int TYPE_CHECK = 3;
 
-    private SkeletonList skelList;
+    private SkeletonList skeletonList;
 
-    private JSmoothApplication jsApp;
+    private JSmoothApplication jsmoothApp;
 
     // Cached list of skeleton names
     private List skelNames;
 
     public SkeletonModel(JSmoothApplication jsthModel) {
-        this.skelList = new SkeletonList(new File("skeletons")); // why ? I
-                                                                 // don't
-                                                                 // know...
-        this.jsApp = jsthModel;
+        this.skeletonList = new SkeletonList(new File("skeletons"));
+        this.jsmoothApp = jsthModel;
     }
 
     private List getSkeletonList(boolean flush) {
@@ -53,7 +51,7 @@ public class SkeletonModel extends Observable {
     }
 
     private void fillSkeletonList(List list) {
-        Iterator i = skelList.getIteratorNoDebugName();
+        Iterator i = skeletonList.getIteratorNoDebugName();
         while (i.hasNext()) {
             list.add((String) i.next());
         }
@@ -64,7 +62,7 @@ public class SkeletonModel extends Observable {
     }
 
     public SkeletonProperty[] getProperties() {
-        SkeletonBean skelBean = skelList.getSkeleton(jsApp.getSkeletonName());
+        SkeletonBean skelBean = skeletonList.getSkeleton(jsmoothApp.getSkeletonName());
         return skelBean.getSkeletonProperties();
     }
 
@@ -91,7 +89,7 @@ public class SkeletonModel extends Observable {
         // The JSmooth API is a little bit inconsistent
         // and the SkeletonProperty value is not used actually.
         // Instead, we return the JSmoothModelBean.Property value
-        return jsApp.getPropertyValue(prop.getIdName());
+        return jsmoothApp.getPropertyValue(prop.getIdName());
     }
 
     public void setPropertyValue(SkeletonProperty prop, String value) {
@@ -99,7 +97,11 @@ public class SkeletonModel extends Observable {
                 + ((SkeletonProperty) prop).getIdName() + "\" to value \""
                 + value + "\"");
 
-        jsApp.setPropertyValue(((SkeletonProperty) prop).getIdName(), value);
+        jsmoothApp.setPropertyValue(((SkeletonProperty) prop).getIdName(), value);
     }
-
+    
+    public SkeletonList getSkeletonList() {
+        return skeletonList;
+    }
+    
 }

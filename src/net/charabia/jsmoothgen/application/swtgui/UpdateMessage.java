@@ -1,7 +1,7 @@
 /*
  * Created on Jun 12, 2004
  */
-package net.charabia.jsmoothgen.application.swtgui.model;
+package net.charabia.jsmoothgen.application.swtgui;
 
 public final class UpdateMessage {
     public static final String MSGUPD_SAVED_PROJECT = "Message.Saved_Project";
