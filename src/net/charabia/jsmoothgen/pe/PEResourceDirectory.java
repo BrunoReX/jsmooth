@@ -102,10 +102,10 @@ public class PEResourceDirectory
 			indent(level, out); out.println("CodePage="+CodePage);
 			indent(level, out); out.println("Reserved="+Reserved);
 			indent(level, out); out.print("Data={ ");
-			 			for (int i=0; i<this.Data.capacity(); i++)
-			 			{
-			 				out.print("" + Integer.toHexString((byte)Data.get()) + ",");
-			 			}
+			for (int i=0; i<this.Data.capacity(); i++)
+			{
+				out.print("" + Integer.toHexString((byte)Data.get()) + ",");
+			}
 			out.println(" }");
 			
 		}
@@ -478,18 +478,35 @@ public class PEResourceDirectory
 		
 		public ResourceEntry getResourceEntry(String name)
 		{
-		    if ((name.length()>0) && (name.charAt(0)=='#'))
+			// If name == null, get the first entry in lexical 
+			// order. If no entry in lexical order, choose the 
+			// lowest integer id entry.
+			if (name == null)
 			{
-			    try {
-				String nb = name.substring(1);
-				int i = Integer.parseInt(nb);
-				return getResourceEntry(i);
-			    } catch (Exception exc)
+				if (NamedEntries.size() > 0)
 				{
-				    exc.printStackTrace();
+					return (PEResourceDirectory.ResourceEntry)NamedEntries.get(0);
+				}
+				if (IdEntries.size() > 0)	
+				{
+					return (PEResourceDirectory.ResourceEntry)IdEntries.get(0);
+				}
+				return null;
+			}
+			
+			if ((name.length()>0) && (name.charAt(0)=='#'))
+			{
+				try
+				{
+					String nb = name.substring(1);
+					int i = Integer.parseInt(nb);
+					return getResourceEntry(i);
+				} catch (Exception exc)
+				{
+					exc.printStackTrace();
 				}
 			}
-
+			
 			for (Iterator i=this.NamedEntries.iterator(); i.hasNext(); )
 			{
 				ResourceEntry re = (ResourceEntry)i.next();
@@ -569,6 +586,11 @@ public class PEResourceDirectory
 		return resbuf;
 	}
 	
+	public PEResourceDirectory.ImageResourceDirectory getRoot()
+	{
+		return m_root;
+	}	
+	
 	public boolean replaceResource(String catId, int resourceId, int langId, ByteBuffer data)
 	{
 		ResourceEntry catEntry = m_root.getResourceEntry(catId);
@@ -588,7 +610,7 @@ public class PEResourceDirectory
 		}
 		return false;
 	}
-
+	
 	public void addNewResource(String catId, String resourceId, String languageId, ByteBuffer data)
 	{
 		DataEntry dataEntry = new DataEntry(data);
@@ -607,9 +629,9 @@ public class PEResourceDirectory
 		ResourceEntry catEntry = buildResourceEntry(catId, identDir);
 		m_root.addEntry(catEntry);
 	}
-
-    public DataEntry getData(String catId, String resourceId, String langId)
-    {
+	
+	public DataEntry getData(String catId, String resourceId, String langId)
+	{
 		ResourceEntry catEntry = m_root.getResourceEntry(catId);
 		if ((catEntry != null) && (catEntry.Directory != null))
 		{
@@ -619,13 +641,13 @@ public class PEResourceDirectory
 				ResourceEntry langEntry = identEntry.Directory.getResourceEntry(langId);
 				if ((langEntry != null) && (langEntry.Data != null))
 				{
-				    DataEntry dataslot = langEntry.Data;
-				    return dataslot;
+					DataEntry dataslot = langEntry.Data;
+					return dataslot;
 				}
 			}
 		}
 		return null;
-    }
+	}
 	
 	public ResourceEntry buildResourceEntry(String id, DataEntry data)
 	{

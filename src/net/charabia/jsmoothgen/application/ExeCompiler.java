@@ -146,7 +146,17 @@ public class ExeCompiler
 			ByteBuffer propdata = convert(props);
 			resb = resdir.replaceResource(skel.getResourceCategory(), skel.getResourcePropsId(), 1033, propdata);
 			
-			fireStepChange(80, "Saving exe...");
+			fireStepChange(80, "Loading icon...");
+			String iconpath;
+			if (new java.io.File(data.getIconLocation()).isAbsolute())
+				iconpath = data.getIconLocation();
+			else
+				iconpath = new java.io.File(new java.io.File(data.getBaseDir()), data.getIconLocation()).getAbsolutePath();
+			javax.swing.ImageIcon icon = new javax.swing.ImageIcon(iconpath, "default icon");
+			net.charabia.jsmoothgen.pe.res.ResIcon resicon = new net.charabia.jsmoothgen.pe.res.ResIcon(icon.getImage());
+			pe.replaceDefaultIcon(resicon);
+			
+			fireStepChange(90, "Saving exe...");
 			pe.dumpTo(out);
 			
 			System.out.println("PROPERTIES:\n" + props);

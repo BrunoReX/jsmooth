@@ -26,7 +26,9 @@ import javax.swing.*;
 public class Executable extends javax.swing.JPanel implements ModelUpdater
 {
 	private JSmoothModelBean m_model;
-
+	private String m_iconLocation;
+	
+	
 	/** Creates new form BeanForm */
 	public Executable()
 	{
@@ -48,6 +50,19 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
 		{
 			m_outputDir.setFile(null);
 		}
+		
+		m_iconLocation = model.getIconLocation();
+		
+		if (m_iconLocation != null)
+		{
+			String iconpath;
+			if (new java.io.File(m_iconLocation).isAbsolute())
+				iconpath = m_iconLocation;
+			else
+				iconpath = new java.io.File(new java.io.File(model.getBaseDir()), model.getIconLocation()).getAbsolutePath();
+			ImageIcon icon = new ImageIcon(iconpath, "default icon");	
+			m_iconDisplay.setIcon(icon);
+		}
 	}
 	/** This method is called from within the constructor to
 	 * initialize the form.
@@ -58,14 +73,16 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
 	{
 		java.awt.GridBagConstraints gridBagConstraints;
 		
+		m_iconChooser = new javax.swing.JFileChooser();
 		jLabel1 = new javax.swing.JLabel();
 		m_executableNameField = new javax.swing.JTextField();
 		m_labelOutputDir = new javax.swing.JLabel();
 		m_outputDir = new net.charabia.jsmoothgen.application.gui.util.FileSelectionTextField();
 		jLabel2 = new javax.swing.JLabel();
 		jPanel2 = new javax.swing.JPanel();
-		jLabel3 = new javax.swing.JLabel();
-		jButton1 = new javax.swing.JButton();
+		m_iconDisplay = new javax.swing.JLabel();
+		m_buttonIconChooser = new javax.swing.JButton();
+		
 		
 		setLayout(new java.awt.GridBagLayout());
 		
@@ -99,14 +116,19 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
 		add(jLabel2, new java.awt.GridBagConstraints());
 		
 		jPanel2.setBorder(new javax.swing.border.EtchedBorder());
-		jPanel2.setEnabled(false);
-		jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/classes/gnome-application-x-gzip.png")));
-		jLabel3.setEnabled(false);
-		jPanel2.add(jLabel3);
+		m_iconDisplay.setIcon(new javax.swing.ImageIcon(getClass().getResource("/classes/gnome-application-x-gzip.png")));
+		jPanel2.add(m_iconDisplay);
 		
-		jButton1.setText("...");
-		jButton1.setEnabled(false);
-		jPanel2.add(jButton1);
+		m_buttonIconChooser.setText("...");
+		m_buttonIconChooser.addActionListener(new java.awt.event.ActionListener()
+		{
+			public void actionPerformed(java.awt.event.ActionEvent evt)
+			{
+				buttonIconChooserActionPerformed(evt);
+			}
+		});
+		
+		jPanel2.add(m_buttonIconChooser);
 		
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
@@ -116,15 +138,30 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
 		add(jPanel2, gridBagConstraints);
 		
 	}//GEN-END:initComponents
+
+	private void buttonIconChooserActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonIconChooserActionPerformed
+	{//GEN-HEADEREND:event_buttonIconChooserActionPerformed
+		// Add your handling code here:
+		if (m_iconChooser.showOpenDialog(this) == m_iconChooser.APPROVE_OPTION)
+		{
+			System.out.println("Icon choosen : " + m_iconChooser.getSelectedFile().toString());
+			ImageIcon icon = new ImageIcon(m_iconChooser.getSelectedFile().getAbsolutePath(), "default icon");
+			m_iconDisplay.setIcon(icon);
+			m_iconLocation = m_iconChooser.getSelectedFile().getAbsolutePath();
+			this.validate();
+			this.invalidate();
+		}
+	}//GEN-LAST:event_buttonIconChooserActionPerformed
 	
 	
 	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JButton jButton1;
 	private javax.swing.JLabel jLabel1;
 	private javax.swing.JLabel jLabel2;
-	private javax.swing.JLabel jLabel3;
 	private javax.swing.JPanel jPanel2;
+	private javax.swing.JButton m_buttonIconChooser;
 	public javax.swing.JTextField m_executableNameField;
+	private javax.swing.JFileChooser m_iconChooser;
+	private javax.swing.JLabel m_iconDisplay;
 	private javax.swing.JLabel m_labelOutputDir;
 	private net.charabia.jsmoothgen.application.gui.util.FileSelectionTextField m_outputDir;
 	// End of variables declaration//GEN-END:variables
@@ -140,6 +177,7 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
 		java.io.File outputdir = m_outputDir.getFile();
 		if (outputdir != null)
 			m_model.setBaseDir(outputdir.toString());
+		m_model.setIconLocation(m_iconLocation);
 	}
 	
 	
