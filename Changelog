@@ -1,7 +1,7 @@
 0.9.5
-       - ! Made the jar embedding optional. Now, one can choose to include
-       or not a jar file in the exe. If the jar is not included, the main
-       class must be in the classpath (obviously).
+	- ! Made the jar embedding optional. Now, one can choose to
+	include or not a jar file in the exe. If the jar is not included,
+	the main class must be in the classpath (obviously).
 	- ! Added home-made ICO loader code, so that JIMI is not required
 	anymore (thus removing a dependency to a closed-source Sun
 	package).
