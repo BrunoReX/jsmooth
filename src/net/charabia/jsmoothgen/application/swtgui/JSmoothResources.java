@@ -21,83 +21,72 @@ import org.eclipse.swt.widgets.Display;
  * @author Dumon
  */
 public class JSmoothResources {
-	public static final String NEW_PROJECT_WIZBAN = "resources.images.new_project_wizban";
-	public static final String CLASSPATH_WIZBAN = "resources.images.classpath_wizban";
-	public static final String JAR_WIZBAN = "resources.images.jar_wizban";
-	public static final String MAIN_CLASS_WIZBAN = "resources.images.main_class_wizban";
-	public static final String JAVA_APP_WIZBAN = "resources.images.java_app_wizban";
-	public static final String JRE_WIZBAN = "resources.images.jre_wizban";
-	public static final String EXE_WIZBAN = "resources.images.exe_wizban";
-	
-	public static final String ADD_ITEM = "resources.images.add_item";
-	public static final String REMOVE_ITEM = "resources.images.remove_item";
-	public static final String EDIT_ITEM = "resources.images.edit_item";
-	public static final String MOVE_UP = "resources.images.move_up";
-	public static final String MOVE_DOWN = "resources.images.move_down";
-	
+	public static final String IMG_NEW_PROJECT_WIZBAN = "img.new_project_wizban";
+	public static final String IMG_CLASSPATH_WIZBAN = "img.classpath_wizban";
+	public static final String IMG_MAIN_CLASS_WIZBAN = "img.main_class_wizban";
+	public static final String IMG_JRE_WIZBAN = "img.jre_wizban";
+	public static final String IMG_EXE_WIZBAN = "img.exe_wizban";
+
+	public static final String IMG_NEW_PROJECT = "img.new_project";
+	public static final String IMG_MOVE_UP = "img.move_up";
+	public static final String IMG_MOVE_DOWN = "img.move_down";
+
 	private static final String RESOURCES_PROPERTIES = "resources.properties";
-	
+
 	private static ImageRegistry imageRegistry;
 	private static URL context;
 	private static ResourceBundle bundle;
-	
+
 	public static void loadResources(Display display, String path) {
 		imageRegistry = new ImageRegistry(display);
-		try{
+		try {
 			context = new URL("file", "localhost", path);
-		} catch(MalformedURLException muex) {
+		} catch (MalformedURLException muex) {
 			muex.printStackTrace(System.err);
 		}
-		
+
 		InputStream input = null;
 		try {
-			bundle = new PropertyResourceBundle(
-				new FileInputStream(
-					path + "/" + RESOURCES_PROPERTIES));
+			bundle = new PropertyResourceBundle(new FileInputStream(path + "/" + RESOURCES_PROPERTIES));
 		} catch (FileNotFoundException fnfex) {
 			fnfex.printStackTrace(System.err);
 		} catch (IOException ioex) {
 			ioex.printStackTrace(System.err);
 		}
-		
+
 		loadImages();
 	}
-	
+
 	public static void loadResources(String path) {
 		loadResources(Display.getCurrent(), path);
 	}
-	
+
 	private static void loadImages() {
-		loadImage(NEW_PROJECT_WIZBAN);
-		loadImage(CLASSPATH_WIZBAN);
-		loadImage(JAR_WIZBAN);
-		loadImage(MAIN_CLASS_WIZBAN);
-		loadImage(JAVA_APP_WIZBAN);
-		loadImage(JRE_WIZBAN);
-		loadImage(EXE_WIZBAN);
-		loadImage(ADD_ITEM);
-		loadImage(REMOVE_ITEM);
-		loadImage(EDIT_ITEM);
-		loadImage(MOVE_UP);
-		loadImage(MOVE_DOWN);
+		loadImage(IMG_NEW_PROJECT_WIZBAN);
+		loadImage(IMG_CLASSPATH_WIZBAN);
+		loadImage(IMG_MAIN_CLASS_WIZBAN);
+		loadImage(IMG_JRE_WIZBAN);
+		loadImage(IMG_EXE_WIZBAN);
+		loadImage(IMG_NEW_PROJECT);
+		loadImage(IMG_MOVE_UP);
+		loadImage(IMG_MOVE_DOWN);
 	}
-	
+
 	private static void loadImage(String key) {
 		URL url = null;
 		try {
 			url = new URL(context, bundle.getString(key));
-		} catch (MalformedURLException e) {
-			e.printStackTrace(System.err);
+		} catch (MalformedURLException muex) {
+			muex.printStackTrace(System.err);
 		}
-		ImageDescriptor descriptor =
-			ImageDescriptor.createFromURL(url);
+		ImageDescriptor descriptor = ImageDescriptor.createFromURL(url);
 		imageRegistry.put(key, descriptor);
 	}
-	
+
 	public static Image getImage(String key) {
 		return getDescriptor(key).createImage(true);
 	}
-	
+
 	public static ImageDescriptor getDescriptor(String key) {
 		return imageRegistry.getDescriptor(key);
 	}

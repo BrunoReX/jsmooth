@@ -4,110 +4,76 @@
 package net.charabia.jsmoothgen.application.swtgui;
 
 import java.io.File;
-import java.io.IOException;
 
 import net.charabia.jsmoothgen.application.JSmoothModelBean;
-import net.charabia.jsmoothgen.application.JSmoothModelPersistency;
-import net.charabia.jsmoothgen.application.gui.MainController;
 import net.charabia.jsmoothgen.skeleton.SkeletonList;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.window.ApplicationWindow;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Shell;
 
 /**
  * @author Dumon
  */
-public class MainWindow extends ApplicationWindow implements MainController {
-	private static final String FILE_ITEM = "File";
-	private static final String PROJECT_ITEM = "Project";
-
-	private File m_projectFile;
-	private SkeletonList m_skeletonList;
-
+public class MainWindow extends ApplicationWindow {
+	private static final String STR_FILE_ITEM = "File";
+	private static final String STR_PROJECT_ITEM = "Project";
+	private static final String STR_NEW_PROJECT = "New Project...";
+	private static final String STR_TOOLTIP_NEW_PROJECT = "New Project";
+	
+	private static final String DIR_SKELETON = "skeletons";
+	
+	private Action actionNewProject = new NewProjectAction();
+	
+	private SkeletonList skeletonList;
+	private JSmoothModelBean model;
+	private File projectFile;
+	
 	public MainWindow() {
 		super(null);
 		setBlockOnOpen(true);
 		addMenuBar();
-	}
-
-	public static void main(String[] args) {
-		new MainWindow().open();
+		addToolBar(SWT.FLAT | SWT.NO_FOCUS);
+		
+		skeletonList = new SkeletonList(new File(DIR_SKELETON));
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.window.ApplicationWindow#createMenuManager()
 	 */
 	protected MenuManager createMenuManager() {
-		MenuManager mainMenu = new MenuManager();
+		MenuManager mainMenu = super.createMenuManager();
 
-		MenuManager fileMenu = new MenuManager(FILE_ITEM);
-		fileMenu.add(new NewProjectAction());
-		fileMenu.add(new OpenProjectAction());
+		MenuManager fileMenu = new MenuManager(STR_FILE_ITEM);
+		fileMenu.add(actionNewProject);
 		mainMenu.add(fileMenu);
-
-		MenuManager projectMenu = new MenuManager(PROJECT_ITEM);
-		mainMenu.add(projectMenu);
 
 		return mainMenu;
 	}
 
 	/* (non-Javadoc)
-	 * @see net.charabia.jsmoothgen.application.gui.MainController#getSkeletonList()
+	 * @see org.eclipse.jface.window.ApplicationWindow#createToolBarManager(int)
 	 */
-	public SkeletonList getSkeletonList() {
-		return m_skeletonList;
-	}
-
-	/* (non-Javadoc)
-	 * @see net.charabia.jsmoothgen.application.gui.MainController#setStateText(java.lang.String)
-	 */
-	public void setStateText(String text) {
-	}
-
-	class OpenProjectAction extends Action {
-		private static final String NAME = "Open...";
-
-		public OpenProjectAction() {
-			super(NAME);
-		}
-
-		public void run() {
-			Shell wShell = Display.getCurrent().getActiveShell();
-			FileDialog fileDialog =
-				new FileDialog(wShell, SWT.OPEN);
-			String[] extensions = new String[] { "*.jsmooth" };
-			fileDialog.setFilterExtensions(extensions);
-			String sFile = fileDialog.open();
-			if (sFile == null) {
-				return;
-			}
-			m_projectFile = new File(sFile);
-
-			JSmoothModelBean model = null;
-			try {
-				model =
-					JSmoothModelPersistency.load(
-						m_projectFile);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+	protected ToolBarManager createToolBarManager(int style) {
+		ToolBarManager toolbar = super.createToolBarManager(style);
+		toolbar.add(actionNewProject);
+		return toolbar;
 	}
 
 	class NewProjectAction extends Action {
-		private static final String NAME = "New";
-
 		public NewProjectAction() {
-			super(NAME);
+			super(STR_NEW_PROJECT);
+			String key = JSmoothResources.IMG_NEW_PROJECT;
+			setImageDescriptor(JSmoothResources.getDescriptor(key));
+			setToolTipText(STR_TOOLTIP_NEW_PROJECT);
 		}
 
 		public void run() {
-			m_projectFile = null;
+			WizardDialog wizard = new WizardDialog(getShell(), new NewProjectWizard());
+			wizard.open();
 		}
 	}
 

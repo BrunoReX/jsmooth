@@ -18,136 +18,81 @@ import org.eclipse.swt.widgets.Text;
  * @author Dumon
  */
 public class JREBundleWizardPage extends WizardPage {
-	private static final int BUTTON_EXTRA_WIDTH = 6;
-	private static final int VERSION_TEXT_WIDTH = 40;
-	private static final int VERSION_TEXT_LIMIT = 5;
-	private static final int JRE_SEARCH_HEIGHT = 10;
-	private static final String JRE_WIZBAN = JSmoothResources.JRE_WIZBAN;
-	private static final String ADD_ITEM = JSmoothResources.ADD_ITEM;
-	private static final String REMOVE_ITEM = JSmoothResources.REMOVE_ITEM;
-	private static final String EDIT_ITEM = JSmoothResources.EDIT_ITEM;
-	private static final String MOVE_UP = JSmoothResources.MOVE_UP;
-	private static final String MOVE_DOWN = JSmoothResources.MOVE_DOWN;
 	
-	private Text versionText;
-	private Text bundleText;
-	private Button bundleBrowse;
+	private Button chkUseJREBundle;
+	private Text txtJREBundle;
+	private Button btnJREBundle;
 	
+	private static final int DIM_VERSION_TEXT_WIDTH = 40;
+	private static final int DIM_VERSION_TEXT_LIMIT = 5;
+	private static final int DIM_JRE_SEARCH_HEIGHT = 10;
+	private static final String STR_BROWSE = "Browse...";
+
 	public JREBundleWizardPage() {
 		super("wizard.jre_bundle");
 		setTitle("JRE Bundle");
 		setMessage("Java Runtime Environment bundle.");
-		setImageDescriptor(JSmoothResources.getDescriptor(JRE_WIZBAN));
+		String key = JSmoothResources.IMG_JRE_WIZBAN;
+		setImageDescriptor(JSmoothResources.getDescriptor(key));
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
 	public void createControl(Composite parent) {
-		GridLayout layout = null;
-		GridData layoutData = null;
+		Composite composite = new Composite(parent, SWT.NONE);
+		GridLayout layout = new GridLayout(3, false);
+		composite.setLayout(layout);
 		
-		Composite comp = new Composite(parent, SWT.NONE);
-		layout = new GridLayout(3, false);
-		comp.setLayout(layout);
+		createWidgets(composite);
 		
-		createJREBundle(comp);
-		createJREVersion(comp);
+		useJREBundleSelected();
 		
-		setControl(comp);
+		setControl(composite);
 	}
-	
-	private void createJREVersion(Composite parent) {
-		GridData layoutData = null;
-		
-		Composite comp = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout(2, false);
-		layout.marginWidth = 0;
-		comp.setLayout(layout);
-		layoutData = new GridData(GridData.FILL);
+
+	private void createWidgets(Composite parent) {
+		chkUseJREBundle = new Button(parent, SWT.CHECK | SWT.LEFT_TO_RIGHT);
+		chkUseJREBundle.setText("Use JRE bundle");
+		chkUseJREBundle.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				useJREBundleSelected();
+			}
+
+		});
+		GridData layoutData = new GridData(GridData.FILL);
 		layoutData.horizontalSpan = 3;
-		comp.setLayoutData(layoutData);
-		
-		Button check = new Button(
-			comp,
-			SWT.CHECK | SWT.LEFT_TO_RIGHT);
-		layoutData = new GridData(GridData.FILL);
-		check.setLayoutData(layoutData);
-		check.setText("Need minimum JRE version");
-		check.addSelectionListener(
-			new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					toggleJREVersionEnable(e);
-				}
-
-			});
-		
-		versionText = new Text(comp, SWT.BORDER);
-		layoutData = new GridData(GridData.FILL);
-		layoutData.widthHint = VERSION_TEXT_WIDTH;
-		versionText.setLayoutData(layoutData);
-		versionText.setTextLimit(VERSION_TEXT_LIMIT);
-		versionText.setEnabled(false);
-	}
-	
-	/**
-	 * @param e
-	 */
-	protected void toggleJREVersionEnable(SelectionEvent e) {
-		Button check = (Button) e.widget;
-		versionText.setEnabled(check.getSelection());
-	}
-
-	/**
-	 * @param e
-	 */
-	protected void toggleJREBundleEnable(SelectionEvent e) {
-		Button check = (Button) e.widget;
-		bundleText.setEnabled(check.getSelection());
-		bundleBrowse.setEnabled(check.getSelection());
-	}
-	
-	private void createJREBundle(Composite parent) {
-		GridData layoutData = null;
-		
-		Button check = new Button(
-			parent,
-			SWT.CHECK | SWT.LEFT_TO_RIGHT);
-		layoutData = new GridData(GridData.FILL);
-		layoutData.horizontalSpan = 3;
-		check.setLayoutData(layoutData);
-		check.setText("Use JRE bundle");
-		check.addSelectionListener(
-			new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					toggleJREBundleEnable(e);
-				}
-
-			});
+		chkUseJREBundle.setLayoutData(layoutData);
 		
 		Label label = new Label(parent, SWT.NONE);
-		layoutData = new GridData(GridData.FILL);
 		label.setText("Directory:");
-		
-		bundleText = new Text(parent, SWT.BORDER);
-		layoutData = new GridData(GridData.FILL_HORIZONTAL);
-		bundleText.setLayoutData(layoutData);
-		bundleText.setEnabled(false);
-		
-		bundleBrowse = new Button(parent, SWT.PUSH);
 		layoutData = new GridData(GridData.FILL);
-		String buttonText = "Browse...";
-		layoutData.widthHint =
-			computeButtonWidth(bundleBrowse, buttonText);
-		bundleBrowse.setLayoutData(layoutData);
-		bundleBrowse.setText(buttonText);
-		bundleBrowse.setEnabled(false);
+		label.setLayoutData(layoutData);
+		
+		txtJREBundle = new Text(parent, SWT.BORDER);
+		layoutData = new GridData(GridData.FILL_HORIZONTAL);
+		txtJREBundle.setLayoutData(layoutData);
+		
+		btnJREBundle = new Button(parent, SWT.NONE);
+		btnJREBundle.setSize(Util.computeWidth(btnJREBundle, STR_BROWSE), SWT.DEFAULT);
+		btnJREBundle.setText(STR_BROWSE);
+		layoutData = new GridData(GridData.FILL);
+		layoutData.widthHint = btnJREBundle.getSize().x;
+		btnJREBundle.setLayoutData(layoutData);
+		
+		
+		Composite composite = new Composite(parent, SWT.NONE);
+		GridLayout layout = new GridLayout(2, false);
+		layout.marginWidth = 0;
+		composite.setLayout(layout);
+		layoutData = new GridData(GridData.FILL);
+		layoutData.horizontalSpan = 3;
+		composite.setLayoutData(layoutData);
 	}
-	
-	private int computeButtonWidth(Button button, String text) {
-		initializeDialogUnits(button);
-		return convertWidthInCharsToPixels(
-			text.toCharArray().length + BUTTON_EXTRA_WIDTH);
+
+	private void useJREBundleSelected() {
+		txtJREBundle.setEnabled(chkUseJREBundle.getSelection());
+		btnJREBundle.setEnabled(chkUseJREBundle.getSelection());
 	}
-	
+
 }

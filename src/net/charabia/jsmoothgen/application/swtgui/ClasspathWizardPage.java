@@ -3,98 +3,200 @@
  */
 package net.charabia.jsmoothgen.application.swtgui;
 
+import java.io.File;
+import java.util.Arrays;
+
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.List;
 
 /**
  * @author Dumon
  */
 public class ClasspathWizardPage extends WizardPage {
-	private static final int BUTTON_EXTRA_WIDTH = 6;
-	private static final int CLASSPATH_HEIGHT = 10;
-	private static final String JAVA_APP_WIZBAN = JSmoothResources.JAVA_APP_WIZBAN;
-	private static final String ADD_ITEM = JSmoothResources.ADD_ITEM;
-	private static final String REMOVE_ITEM = JSmoothResources.REMOVE_ITEM;
-	private static final String EDIT_ITEM = JSmoothResources.EDIT_ITEM;
-	private static final String MOVE_UP = JSmoothResources.MOVE_UP;
-	private static final String MOVE_DOWN = JSmoothResources.MOVE_DOWN;
+	
+	private static final String STRING_ADD_JAR = "Add JAR...";
+	private static final String STRING_ADD_CLASS_FOLDER = "Add Class Folder...";
+	private static final String STRING_EDIT = "Edit...";
+	private static final String STRING_REMOVE = "Remove";
+	
+	private static final String WIDGET_ADD_BUTTON = "AddButton";
+	private static final String WIDGET_BUTTON_BAR = "ButtonBar";
+	private static final String WIDGET_EDIT_BUTTON = "EditButton";
+	private static final String WIDGET_REMOVE_BUTTON = "RemoveButton";
+	private static final String WIDGET_LIST = "List";
+	private static final String WIDGET_TOP = "Top";
+	
+	private Button btnAddJar;
+	private Button btnAddClassFolder;
+	private Button btnRemove;
+	private Button btnEdit;
+	private List lstClasspath;
 	
 	public ClasspathWizardPage() {
 		super("wizard.classpath");
 		setTitle("Classpath");
 		setMessage("The Java application classpath.");
-		setImageDescriptor(
-			JSmoothResources.getDescriptor(JAVA_APP_WIZBAN));
+		String key = JSmoothResources.IMG_CLASSPATH_WIZBAN;
+		setImageDescriptor(JSmoothResources.getDescriptor(key));
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
 	public void createControl(Composite parent) {
-		GridLayout layout = null;
-		GridData layoutData = null;
+		Composite composite = new Composite(parent, SWT.NONE);
+		GridLayout layout = new GridLayout(2, false);
+		composite.setLayout(layout);
 		
-		Composite comp = new Composite(parent, SWT.NONE);
-		layout = new GridLayout(2, false);
-		comp.setLayout(layout);
+		lstClasspath = new List(composite,
+		                        SWT.BORDER |
+		                        SWT.H_SCROLL |
+		                        SWT.V_SCROLL |
+		                        SWT.SINGLE);
+		GridData layoutData = new GridData(GridData.FILL_BOTH);
+		lstClasspath.setLayoutData(layoutData);
 		
-		createClasspath(comp);
-		
-		setControl(comp);
-	}
-	
-	private int computeButtonWidth(Button button, String text) {
-		initializeDialogUnits(button);
-		return convertWidthInCharsToPixels(
-			text.toCharArray().length + BUTTON_EXTRA_WIDTH);
-	}
-	
-	private void createClasspath(Composite parent) {
-		GridData layoutData = null;
-		
-		List list = new List(parent, SWT.BORDER);
-		layoutData = new GridData(GridData.FILL_BOTH);
-		list.setLayoutData(layoutData);
-		
-		Composite classpathButtonBar = new Composite(parent, SWT.NONE);
-		classpathButtonBar.setLayout(new GridLayout());
+		Composite buttonBar = new Composite(composite, SWT.NONE);
+		layout = new GridLayout();
+		layout.marginHeight = 0;
+		layout.marginWidth = 0;
+		buttonBar.setLayout(layout);
 		layoutData = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-		layoutData.heightHint =
-			list.getItemHeight() * CLASSPATH_HEIGHT;
-		classpathButtonBar.setLayoutData(layoutData);
+		buttonBar.setLayoutData(layoutData);
 		
-		createButtonForClasspath(classpathButtonBar, "Add...");
-		createButtonForClasspath(classpathButtonBar, "Remove...");
-		createButtonForClasspath(classpathButtonBar, "Edit...");
-	}
-	
-	private Button createButtonForClasspath(
-		Composite parent,
-		String text,
-		Image image) {
-			
-		Button button = new Button(parent, SWT.PUSH);
-		GridData layoutData = new GridData(GridData.FILL_HORIZONTAL);
-		layoutData.widthHint = computeButtonWidth(button, text);
-		button.setLayoutData(layoutData);
-		button.setText(text);
-		button.setImage(image);
+		btnAddJar = new Button(buttonBar, SWT.PUSH);
+		btnAddJar.setSize(Util.computeWidth(btnAddJar, STRING_ADD_JAR), SWT.DEFAULT);
+		btnAddJar.setText(STRING_ADD_JAR);
+		layoutData = new GridData(GridData.FILL_HORIZONTAL);
+		layoutData.widthHint = btnAddJar.getSize().x;
+		btnAddJar.setLayoutData(layoutData);
+		btnAddJar.addSelectionListener(new SelectionAdapter(){
+			/* (non-Javadoc)
+			 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+			 */
+			public void widgetSelected(SelectionEvent e) {
+				addJarButtonPressed();
+			}
+		});
 		
-		return button;
+		btnAddClassFolder = new Button(buttonBar, SWT.PUSH);
+		btnAddClassFolder.setSize(Util.computeWidth(btnAddClassFolder, STRING_ADD_CLASS_FOLDER), SWT.DEFAULT);
+		btnAddClassFolder.setText(STRING_ADD_CLASS_FOLDER);
+		layoutData = new GridData(GridData.FILL_HORIZONTAL);
+		layoutData.widthHint = btnAddClassFolder.getSize().x;
+		btnAddClassFolder.setLayoutData(layoutData);
+		btnAddClassFolder.addSelectionListener(new SelectionAdapter(){
+			/* (non-Javadoc)
+			 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+			 */
+			public void widgetSelected(SelectionEvent e) {
+				addClassFolderButtonPressed();
+			}
+		});
+		
+		btnEdit = new Button(buttonBar, SWT.PUSH);
+		btnEdit.setSize(Util.computeWidth(btnEdit, STRING_EDIT), SWT.DEFAULT);
+		btnEdit.setText(STRING_EDIT);
+		layoutData = new GridData(GridData.FILL_HORIZONTAL);
+		layoutData.widthHint = btnEdit.getSize().x;
+		btnEdit.setLayoutData(layoutData);
+		btnEdit.addSelectionListener(new SelectionAdapter(){
+			/* (non-Javadoc)
+			 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+			 */
+			public void widgetSelected(SelectionEvent e) {
+				editButtonButtonPressed();
+			}
+		});
+		
+		btnRemove = new Button(buttonBar, SWT.PUSH);
+		btnRemove.setSize(Util.computeWidth(btnRemove, STRING_REMOVE), SWT.DEFAULT);
+		btnRemove.setText(STRING_REMOVE);
+		layoutData = new GridData(GridData.FILL_HORIZONTAL);
+		layoutData.widthHint = btnRemove.getSize().x;
+		btnRemove.setLayoutData(layoutData);
+		btnRemove.addSelectionListener(new SelectionAdapter(){
+			/* (non-Javadoc)
+			 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+			 */
+			public void widgetSelected(SelectionEvent e) {
+				removeButtonPressed();
+			}
+		});
+		
+		setControl(composite);
 	}
 	
-	private Button createButtonForClasspath(Composite parent, String text) {
-		return createButtonForClasspath(parent, text, null);
+	/**
+	 * Called when the "Edit" btton is pressed. It checks whether the
+	 * selected list item is a folder or a file. Then, based on
+	 * the result, the event is delegated to addJarButtonPressed() or
+	 * addClassFolderPressed().
+	 * Within the dialogs that pop up, the respective folder or file is
+	 * selected.
+	 */
+	private void editButtonButtonPressed() {
+		String[] items = lstClasspath.getSelection();
+		
+		// No selection.
+		if(items.length == 0) return;
+		
+		// We now there can be max one item.
+		// Due to the SWT.SINGLE style of the list.
+		File file = new File(items[0]);
+		if(file.isFile()) {
+			addJarButtonPressed();
+		}
+		if(file.isDirectory()) {
+			addClassFolderButtonPressed();
+		}
 	}
-	
-	private Button createButtonForClasspath(Composite parent, Image image) {
-		return createButtonForClasspath(parent, "", image);
+
+	/**
+	 * Called when the "Remove" button is pressed.
+	 * Deletes all the selected lines from the list.
+	 */
+	private void removeButtonPressed() {
+		for (int i = 0; i < lstClasspath.getItemCount(); i++) {
+			if(lstClasspath.isSelected(i)) lstClasspath.remove(i);
+		} 
+	}
+
+	private void addJarButtonPressed() {
+		FileDialog dialog = new FileDialog(getShell(), SWT.OPEN);
+		String file = dialog.open();
+		
+		// True if the dialog _wasn't_ cancelled.
+		if(file != null) {
+			String[] items = lstClasspath.getItems();
+			java.util.List list = Arrays.asList(items);
+			if(!list.contains(file)) {
+				lstClasspath.add(file);
+			}
+		}
+	}
+
+	private void addClassFolderButtonPressed() {
+		DirectoryDialog dialog = new DirectoryDialog(getShell(), SWT.OPEN);
+		String folder = dialog.open();
+		
+		// True if the dialog _wasn't_ cancelled.
+		if(folder != null) {
+			String[] items = lstClasspath.getItems();
+			java.util.List list = Arrays.asList(items);
+			if(!list.contains(folder)) {
+				lstClasspath.add(folder);
+			}
+		}
 	}
 	
 }

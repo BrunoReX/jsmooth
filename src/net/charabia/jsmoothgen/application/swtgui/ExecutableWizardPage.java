@@ -16,8 +16,17 @@ import org.eclipse.swt.widgets.Text;
  * @author Dumon
  */
 public class ExecutableWizardPage extends WizardPage {
-	private static final int BUTTON_EXTRA_WIDTH = 6;
-	private static final String EXE_WIZBAN = JSmoothResources.EXE_WIZBAN;
+	private static final String EXE_WIZBAN = JSmoothResources.IMG_EXE_WIZBAN;
+	private static final String STRING_BROWSE = "Browse...";
+	
+	private static final String WIDGET_ICON = "Icon";
+	private static final String WIDGET_ICON_BUTTON = "IconButton";
+	private static final String WIDGET_ICON_COMPOSITE = "IconComposite";
+	private static final String WIDGET_ICON_LABEL = "IconLabel";
+	private static final String WIDGET_NAME_BUTTON = "NameButton";
+	private static final String WIDGET_NAME_LABEL = "NameLabel";
+	private static final String WIDGET_NAME_TEXT = "NameText";
+	private static final String WIDGET_TOP = "Top";
 	
 	public ExecutableWizardPage() {
 		super("wizard.executble");
@@ -30,77 +39,64 @@ public class ExecutableWizardPage extends WizardPage {
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
 	public void createControl(Composite parent) {
-		GridLayout layout = null;
-		GridData layoutData = null;
+		Composite composite = new Composite(parent, SWT.NONE);
+		GridLayout layout = new GridLayout(3, false);
+		composite.setLayout(layout);
 		
-		Composite comp = new Composite(parent, SWT.NONE);
-		layout = new GridLayout(3, false);
-		comp.setLayout(layout);
+		createWidgets(composite);
 		
-		createExecutableName(comp);
-		createExecutableIcon(comp);
-		
-		setControl(comp);
+		setControl(composite);
 	}
 	
-	/**
-	 * @param comp
-	 */
-	private void createExecutableIcon(Composite parent) {
-		GridData layoutData = null;
+	private void createWidgets(Composite parent) {
 		Label label = new Label(parent, SWT.NONE);
-		layoutData = new GridData(GridData.FILL);
+		label.setText("Executable name:");		
+		GridData layoutData = new GridData(GridData.FILL);
 		label.setLayoutData(layoutData);
-		label.setText("Executable icon:");
-		
-		Composite comp = new Composite(parent, SWT.NONE);
-		layoutData = new GridData(GridData.FILL);
-		comp.setLayoutData(layoutData);
-		GridLayout layout = new GridLayout(2, false);
-		layout.marginHeight = 0;
-		layout.marginWidth = 0;
-		comp.setLayout(layout);
-		
-		Label icon = new Label(comp, SWT.BORDER);
-		layoutData = new GridData(GridData.FILL);
-		layoutData.widthHint = 32;
-		layoutData.heightHint = 32;
-		icon.setLayoutData(layoutData);
-		
-		Button button = new Button(comp, SWT.NONE);
-		layoutData = new GridData(GridData.FILL);
-		layoutData.widthHint = computeButtonWidth(button, "Browse...");
-		button.setLayoutData(layoutData);
-		button.setText("Browse...");
-		
-		Label blank = new Label(parent, SWT.NONE);
-	}
-
-	/**
-	 * @param comp
-	 */
-	private void createExecutableName(Composite parent) {
-		GridData layoutData = null;
-		Label label = new Label(parent, SWT.NONE);
-		layoutData = new GridData(GridData.FILL);
-		label.setLayoutData(layoutData);
-		label.setText("Executable name:");
 		
 		Text text = new Text(parent, SWT.BORDER);
 		layoutData = new GridData(GridData.FILL_HORIZONTAL);
 		text.setLayoutData(layoutData);
 		
 		Button button = new Button(parent, SWT.NONE);
+		button.setSize(Util.computeWidth(button, STRING_BROWSE), SWT.DEFAULT);
+		button.setText(STRING_BROWSE);
 		layoutData = new GridData(GridData.FILL);
-		layoutData.widthHint = computeButtonWidth(button, "Browse...");
+		layoutData.widthHint = button.getSize().x;
 		button.setLayoutData(layoutData);
-		button.setText("Browse...");
-	}
-
-	private int computeButtonWidth(Button button, String text) {
-		initializeDialogUnits(button);
-		return convertWidthInCharsToPixels(
-			text.toCharArray().length + BUTTON_EXTRA_WIDTH);
+		
+		label = new Label(parent, SWT.NONE);
+		label.setText("Executable icon:");
+		layoutData = new GridData(GridData.FILL);
+		label.setLayoutData(layoutData);
+		
+		Composite composite = new Composite(parent, SWT.NONE);
+		GridLayout layout = new GridLayout(2, false);
+		layout.marginHeight = 0;
+		layout.marginWidth = 0;
+		composite.setLayout(layout);
+		layoutData = new GridData(GridData.FILL);
+		composite.setLayoutData(layoutData);
+		
+		createIconWidgets(composite);
 	}
 	
+	/**
+	 * @param parent
+	 */
+	private void createIconWidgets(Composite parent) {
+		Label label = new Label(parent, SWT.BORDER);
+		GridData layoutData = new GridData(GridData.FILL);
+		layoutData.widthHint = 32;
+		layoutData.heightHint = 32;
+		label.setLayoutData(layoutData);
+		
+		Button button = new Button(parent, SWT.NONE);
+		button.setSize(Util.computeWidth(button, STRING_BROWSE), SWT.DEFAULT);
+		button.setText(STRING_BROWSE);
+		layoutData = new GridData(GridData.FILL);
+		layoutData.widthHint = button.getSize().x;
+		button.setLayoutData(layoutData);
+	}
+
 }
