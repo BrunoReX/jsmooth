@@ -17,33 +17,45 @@ to download a Java VM.
 
  -- PREREQUISITE --
  
- 2.1 The JIMI package
+ 2.2 MINGW for Windows (required)
 
- To compile the project, you need to install Sun's JIMI package. This
- package is not provided due to the non-free license used by Sun to
- distribute it. JIMI adds the possibility to load additional image
- file formats (the .ico for instance) and to reduce the 16 and 32-bit
- images to 256 colours.
+ You need the MINGW GCC compiler to compile the Windows wrappers. Just
+ install the last version (3.1.0 or above) from the following website:
 
- Download it on http://www.javasoft.com website, then extract the
- JimiProClasses.zip file from the archive downloaded, and copy it in
- the lib/ directory.
+  http://www.mingw.org/
 
- 2.2 The GCC compiler for Windows
+ You need to download the MINGW-v.exe package (where v is the
+ version). For instance MinGW-3.1.0-1.exe should be fine. You don't need
+ any other package, so don't be afraid of all the stuff available on
+ their web site.
 
- You need the MINGW GCC compiler to compile the wrappers. The easiest
- way is probably to download and install the last version of DEV-C++,
- which is a free Windows IDE for GCC/MINGW.
-
- Download DEV-C++ it at http://www.bloodshed.net/
-
- Alternatively, you can also just download and install the MINGW
- package instead of DEV-C++: http://www.mingw.org/
-
- In both case, you need to setup your %PATH% environment variable to
- add the directory where the make.exe/strip.exe executable are
- installed.
+ Once installed, you still need to setup your %PATH% environment variable to add the bin/
+ directory where MINGW is installed.
  
+2.3 DOCUMENTATION STUFF (optional)
+
+If you want to build the whole distribution package (including the
+documentation, you need to install the docbook compilation chain).
+
+Install:
+	- http://xml.apache.org/xalan-j/ and put the xalan jars into
+	the lib folder of ANT. This is required to make ANT able to
+	process XSLT.
+
+	- docbook-xsl, available at
+          http://sourceforge.net/projects/docbook/
+	  Just download the docbook-xsl package, you don't need anything
+          else here.
+
+	- FOP, available at http://xml.apache.org/fop/
+
+Configure:
+
+	- Open the build.xml ant script at the root of the project, and
+         change the properties located at the top of the file. They are
+         just under the comment:
+         <!-- set here the properties specific to your computer -->
+
  -- BUILDING --
 
  2.3
