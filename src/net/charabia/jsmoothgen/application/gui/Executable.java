@@ -110,10 +110,6 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
 		icon = new javax.swing.ImageIcon(iconfile.getAbsolutePath(), "default icon");
 	    }
 
-	int width = icon.getIconWidth();
-	int height = icon.getIconHeight();
-
-	System.out.println("ICON, w:" + width + ", h:" + height);
 
 	// 		if ((width != height) || ((width != 8) && (width != 16) && (height != 32)))
 	// 		    {
@@ -123,10 +119,20 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
 
 	if (icon != null)
 	    {
+		int width = icon.getIconWidth();
+		int height = icon.getIconHeight();
+
+		//		System.out.println("ICON, w:" + width + ", h:" + height);
+
 		m_iconDisplay.setIcon(icon);
 		m_iconLocation = iconfile.getAbsolutePath();
 		this.validate();
 		this.invalidate();
+	    }
+	else
+	    {
+		m_iconDisplay.setIcon(null);
+		m_iconLocation = null;
 	    }
 	
     }
