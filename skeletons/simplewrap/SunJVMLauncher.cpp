@@ -212,7 +212,6 @@ bool SunJVMLauncher::runVM12DLL(ResourceManager& resource)
                                 env->CallStaticVoidMethod(cls, mid, args);
                                 DEBUG("VM CALLED !!");
                                 vm->DestroyJavaVM();
-                                MessageBox(NULL, "TEST", "TEST1", MB_OK);
                                 return true;
                 }
                 else
@@ -341,11 +340,8 @@ bool SunJVMLauncher::runVM11DLL(ResourceManager& resource)
                 {
                                 env->CallStaticVoidMethod(cls, mid, args);
                                 DEBUG("VM CALLED !!");
-
-        MessageBox(NULL, "BEFORE", "ERASING", MB_OK);
                                 
                                 javavm->DestroyJavaVM();
-        MessageBox(NULL, "AFTER", "ERASING", MB_OK);
                                 return true;
                 }
                 else

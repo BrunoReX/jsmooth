@@ -64,27 +64,27 @@ ResourceManager::~ResourceManager()
 {
     for (std::vector<std::string>::iterator i=m_deleteOnFinalize.begin(); i != m_deleteOnFinalize.end(); i++)
     {
-        MessageBox(NULL, i->c_str(), "ERASING", MB_OK);
+//        MessageBox(NULL, i->c_str(), "ERASING", MB_OK);
         int res = DeleteFile(i->c_str());
-        MessageBox(NULL, ("DONE " + StringUtils::toString(res) + " / " + StringUtils::toString(GetLastError())).c_str(), "ERASING", MB_OK);
+//        MessageBox(NULL, ("DONE " + StringUtils::toString(res) + " / " + StringUtils::toString(GetLastError())).c_str(), "ERASING", MB_OK);
     
-    LPVOID lpMsgBuf;
- 
-FormatMessage( 
-    FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-    NULL,
-    GetLastError(),
-    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-    (LPTSTR) &lpMsgBuf,
-    0,
-    NULL 
-);
-
-// Display the string.
-MessageBox( NULL, (const CHAR*)lpMsgBuf, "GetLastError", MB_OK|MB_ICONINFORMATION );
-
-// Free the buffer.
-LocalFree( lpMsgBuf );
+//    LPVOID lpMsgBuf;
+// 
+//FormatMessage( 
+//    FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+//    NULL,
+//    GetLastError(),
+//    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+//    (LPTSTR) &lpMsgBuf,
+//    0,
+//    NULL 
+//);
+//
+//// Display the string.
+//MessageBox( NULL, (const CHAR*)lpMsgBuf, "GetLastError", MB_OK|MB_ICONINFORMATION );
+//
+//// Free the buffer.
+//LocalFree( lpMsgBuf );
 
     }
 }

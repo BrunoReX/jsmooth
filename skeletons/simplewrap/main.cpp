@@ -36,12 +36,7 @@ LRESULT CALLBACK WindowProcedure (HWND, UINT, WPARAM, LPARAM);
 /*  Make the class name into a global variable  */
 char szClassName[ ] = "WindowsApp";
 
-// JavasoftRuntimeList *jlist;
-
-std::vector< std::string > LOG;
-
 ResourceManager* globalResMan;
-
 #ifdef DEBUGMODE
 DebugConsole DEBUGCONSOLE("title");
 #endif
@@ -77,7 +72,6 @@ BOOL CALLBACK lpEnumFunc(HMODULE hModule,   // module handle
     msg += " for ";
     addResId(msg, lpszType);
     
-    LOG.push_back(msg);
     return TRUE;
 }
 
@@ -86,7 +80,6 @@ BOOL CALLBACK  rsctypecallback(HMODULE module, LPTSTR lpszType, LONG dummy)
 {
     std::string msg = "Found TYPE: ";
     addResId(msg, lpszType);
-    LOG.push_back(msg);
     
      EnumResourceNames(module, lpszType, lpEnumFunc, dummy);
     
@@ -144,6 +137,9 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
            hThisInstance,       /* Program Instance handler */
            NULL                 /* No Window Creation data */
            );
+
+   // DEBUG("START");
+   // DEBUGWAITKEY();
 
 
     globalResMan = new ResourceManager("JAVA", PROPID, JARID);
