@@ -124,8 +124,11 @@ public class SkeletonChooser extends javax.swing.JPanel implements ModelUpdater
 	private void comboNamesActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_comboNamesActionPerformed
 	{//GEN-HEADEREND:event_comboNamesActionPerformed
 		// Add your handling code here:
-		System.out.println("COMBO: " + m_comboNames.getSelectedItem().toString());
+//		System.out.println("COMBO: " + m_comboNames.getSelectedItem().toString());
 		String skelname = (String) m_comboNames.getSelectedItem();
+		if (skelname == null)
+			return;
+		
 		SkeletonBean skel = m_list.getSkeleton(skelname);
 		if (skel != null)
 		{
