@@ -1,3 +1,9 @@
+0.9.5
+	- Fixed bug that prevented the wrappers to launch the bundled jvm
+	- Added ICO loader code, so that JIMI is not required anymore
+	- Fixed transparency issue with icon resource set up in the
+	executable
+	
 0.9.4
 	- ! Added Ant Task support 
 	- ! Added Command Line compiler
