@@ -22,6 +22,43 @@
 
 extern "C" {
 
+  //
+  // Grabbed the function below in a MS KB, solves the issue of the
+  // WaitForSingleObject() blocking Windows Explorer
+  // 
+BOOL WaitWithMessageLoop(HANDLE hEvent)
+{
+  DWORD dwRet;
+  MSG msg;
+
+  while(1)
+    {
+      dwRet = MsgWaitForMultipleObjects( 1,    // One event to wait for
+					 &hEvent,        // The array of events
+					 FALSE,          // Wait for 1 event
+					 INFINITE,       // Timeout value
+					 QS_ALLINPUT);   // Any message wakes up
+      if(dwRet == WAIT_OBJECT_0)
+	{
+	  // The event was signaled, return
+	  return TRUE;
+	} else if(dwRet == WAIT_OBJECT_0 + 1)
+	  {
+	    // There is a window message available. Dispatch it.
+	    while(PeekMessage(&msg,NULL,NULL,NULL,PM_REMOVE))
+	      {
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	      }
+	  } else
+	    {
+	      // Something else happened. Return.
+	      return FALSE;
+	    }
+    }
+}
+
+
   static jint JNICALL  myvprintf(FILE *fp, const char *format, va_list args)
   {
         DEBUG("MYPRINTF");
@@ -40,6 +77,8 @@ std::string SunJVMLauncher::toString() const
 
 bool SunJVMLauncher::run(ResourceManager& resource, const string& origin)
 {
+  MessageBox(NULL, "Doing DLL call", "debug", MB_OKCANCEL|MB_ICONQUESTION|MB_APPLMODAL);
+
     if ( ! VmVersion.isValid())
         return false;
 
@@ -53,6 +92,8 @@ bool SunJVMLauncher::run(ResourceManager& resource, const string& origin)
         return false;
 
     DEBUG("Launching " + toString());
+
+    MessageBox(NULL, "Launching", "debug", MB_OKCANCEL|MB_ICONQUESTION|MB_APPLMODAL);
 
     if (Version("1.2") <= VmVersion)
     {
@@ -585,7 +626,10 @@ bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, Reso
       DEBUG("RESULT: " + StringUtils::toString(res));
       if (res != 0)
       {
-            WaitForSingleObject(procinfo.hProcess, INFINITE);
+      DEBUG("WAITING: " + StringUtils::toString(res));
+	// WaitForSingleObject(procinfo.hProcess, INFINITE);
+	    WaitWithMessageLoop(procinfo.hProcess);
+	    DEBUG("WAIT ENDED");
             return true;
       }
       else
@@ -632,8 +676,9 @@ Version SunJVMLauncher::guessVersionByProcess(const string& exepath)
     
       if (res != 0)
       {
-            WaitForSingleObject(procinfo.hProcess, INFINITE);
-            CloseHandle(tmph);
+	// WaitWithMessageLoop(procinfo.hProcess);
+	WaitForSingleObject(procinfo.hProcess, INFINITE);
+	CloseHandle(tmph);
             
             tmph = CreateFile(tmpfilename.c_str(), GENERIC_READ,
                             FILE_SHARE_READ, NULL,
