@@ -62,7 +62,6 @@ int Version::getSubMinor() const
 
 bool operator < (const Version& v1, const Version& v2)
 {
-    DEBUG("<version v1="+v1.toString() + " , v2="+v2.toString());
     if ((v1.m_major == 0) && (v1.m_minor == 0) && (v1.m_sub == 0))
         return true;
 
