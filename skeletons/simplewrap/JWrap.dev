@@ -1,12 +1,12 @@
 [Project]
 FileName=JWrap.dev
 Name=JWrap
-UnitCount=30
+UnitCount=26
 Type=0
 Ver=1
 ObjFiles=
-Includes="F:\Program Files\j2sdk_nb\j2sdk1.4.2\include";"F:\Program Files\j2sdk_nb\j2sdk1.4.2\include\win32"
-Libs=
+Includes="F:\Program Files\j2sdk_nb\j2sdk1.4.2\include\win32";"F:\Program Files\j2sdk_nb\j2sdk1.4.2\include";..\common
+Libs=..\common
 PrivateResource=JWrap_private.rc
 ResourceIncludes=
 MakeIncludes=
@@ -18,7 +18,7 @@ Icon=JWrap.ico
 ExeOutput=
 ObjectOutput=
 OverrideOutput=1
-OverrideOutputName=TEST5.exe
+OverrideOutputName=JWrap.exe
 HostApplication=
 Folders=
 CommandLine=
@@ -55,37 +55,7 @@ ProductName=
 ProductVersion=
 AutoIncBuildNr=0
 
-[Unit2]
-FileName=JavasoftRuntimeList.cpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit3]
-FileName=JavasoftRuntimeList.h
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit4]
-FileName=resource.h
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-CompileCpp=1
-
-[Unit6]
 FileName=ResourceManager.h
 Folder=
 Compile=1
@@ -95,36 +65,17 @@ OverrideBuildCmd=0
 BuildCmd=
 CompileCpp=1
 
-[Unit7]
-FileName=ResourceManager.cpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit8]
+[Unit6]
 FileName=common.h
-CompileCpp=1
 Folder=
 Compile=1
 Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
+CompileCpp=1
 
-[Unit5]
-FileName=mainres.rc
-Folder=JWrap
-Compile=1
-Link=0
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit9]
+[Unit7]
 FileName=Version.h
 CompileCpp=1
 Folder=
@@ -134,7 +85,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit10]
+[Unit8]
 FileName=Version.cpp
 CompileCpp=1
 Folder=
@@ -144,7 +95,17 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit11]
+[Unit5]
+FileName=ResourceManager.cpp
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+CompileCpp=1
+
+[Unit9]
 FileName=Properties.h
 CompileCpp=1
 Folder=
@@ -154,7 +115,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit12]
+[Unit10]
 FileName=Properties.cpp
 CompileCpp=1
 Folder=
@@ -164,7 +125,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit13]
+[Unit11]
 FileName=StringUtils.h
 CompileCpp=1
 Folder=
@@ -174,7 +135,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit14]
+[Unit12]
 FileName=StringUtils.cpp
 CompileCpp=1
 Folder=
@@ -184,7 +145,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit15]
+[Unit13]
 FileName=FileUtils.h
 CompileCpp=1
 Folder=
@@ -194,7 +155,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit16]
+[Unit14]
 FileName=FileUtils.cpp
 CompileCpp=1
 Folder=
@@ -205,46 +166,6 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit17]
-FileName=JVMLauncher.h
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit18]
-FileName=JVMLauncher.cpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit19]
-FileName=SunJVMLauncher.h
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit20]
-FileName=SunJVMLauncher.cpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit21]
 FileName=JVMRegistryLookup.h
 CompileCpp=1
 Folder=
@@ -254,7 +175,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit22]
+[Unit18]
 FileName=JVMRegistryLookup.cpp
 CompileCpp=1
 Folder=
@@ -264,7 +185,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit23]
+[Unit19]
 FileName=DebugConsole.h
 CompileCpp=1
 Folder=
@@ -274,7 +195,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit24]
+[Unit20]
 FileName=DebugConsole.cpp
 CompileCpp=1
 Folder=
@@ -284,7 +205,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit25]
+[Unit21]
 FileName=JavaMachineManager.h
 CompileCpp=1
 Folder=
@@ -294,7 +215,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit26]
+[Unit22]
 FileName=JavaMachineManager.cpp
 CompileCpp=1
 Folder=
@@ -304,7 +225,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit27]
+[Unit23]
 FileName=JVMEnvVarLookup.h
 CompileCpp=1
 Folder=
@@ -314,8 +235,48 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit28]
+[Unit24]
 FileName=JVMEnvVarLookup.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit25]
+FileName=MSJViewLauncher.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit26]
+FileName=MSJViewLauncher.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit27]
+FileName=MSJViewLauncher.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit28]
+FileName=MSJViewLauncher.cpp
 CompileCpp=1
 Folder=
 Compile=1
@@ -336,6 +297,45 @@ BuildCmd=
 
 [Unit30]
 FileName=MSJViewLauncher.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit2]
+FileName=resource.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit3]
+FileName=mainres.rc
+Folder=JWrap
+Compile=1
+Link=0
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit15]
+FileName=SunJVMLauncher.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit16]
+FileName=SunJVMLauncher.cpp
 CompileCpp=1
 Folder=
 Compile=1
