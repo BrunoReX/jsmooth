@@ -13,57 +13,30 @@ to download a Java VM.
  JSmooth is currently in beta phase. The proof-of-concept stage is now
  complete, and the application is still under development.
 
-2. How to run
+2. Installation
 
- JSmooth requires Java 1.4 or higher. Just run the JSmoothGen.exe
- program. In case of problem, you can use the run.bat script in the
- bin/ directory.
+ The JSmooth software is distributed with a nice installer, so that
+ installation shouldn't be an issue.
 
-3. Architecture
+ However, JSmooth requires Java 1.4 or higher. If you are not sure it
+ is installed, just run the JSmoothGen.exe program, and it will
+ automatically try to locate it.
 
- JSmooth is made up of two sub-projects:
+ In case of problem, you can use the run.bat script in the bin/
+ directory.
 
- - JSmoothGen: the main program. It is responsible for creating and
-   editing the project, and generating the final windows executable.
+3. Additional software
 
- - The skeletons: those are what the final windows executable are made
-   of.
+ If you want to be able to use .ico files for your icons (instead of
+ the default .GIF, .PNG, and .JPG), you need to install Sun's JIMI
+ package. This package is not free software, this is why you need to
+ download it separately.
 
-Typically, one creates a new project by selecting a skeleton and by
-specifying the jar and options (such as classpath, main class, VM
-options).
+ Download it on http://www.javasoft.com website, then extract the
+ JimiProClasses.zip file, and copy it in the lib/ directory where
+ JSmooth is installed (probably on c:\program files\jsmooth).
 
-The rationale of the skeleton system is to allow the user to select a
-specialized and customizable executable, rather than having just one
-big executable that is supposed to manage all the possible
-situations. For instance, there may be a skeleton for windowed
-applications, a skeleton for command-line application, a skeleton for
-NT Services applications, or even skeletons customized for
-distribution on your company's intranet.
-
-
-4. How to compile
-
-- First, you'll need ant, to compile the JSmoothGen software, and all
-  the sample java applications (found in each of the skeleton
-  directories).
-
-  ant is available at http://ant.apache.org/
-
-- Then you'll need MingW to compile the Windows executables. My
-  recommandation is to just download and use the dev-c++ IDE, which
-  includes the MingW package as well as all what you need to
-  comfortably compile the projects.
-
-  Dev-C++ is avaiable at http://www.bloodshed.net/
-  At this time, I use version 4.9.8.0 of dev-c++.
-
- There is no global compilation script, so you'll need to do it by
- hand. However each project contains either an ant-script, either a
- makefile or a dev-c++ project file.
-
-
-5. License
+4. License
 
 All the JSmooth project is distributed under the terms of the GNU
 General Public License. Please read the License.txt file that comes
