@@ -73,6 +73,8 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 	 */
 	private void initComponents()//GEN-BEGIN:initComponents
 	{
+		java.awt.GridBagConstraints gridBagConstraints;
+		
 		m_leftButtonsGroup = new javax.swing.ButtonGroup();
 		m_leftPane = new javax.swing.JPanel();
 		m_buttonSkeleton = new javax.swing.JToggleButton();
@@ -82,11 +84,11 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 		m_buttonJVMConfig = new javax.swing.JToggleButton();
 		m_buttonErrors = new javax.swing.JToggleButton();
 		jPanel1 = new javax.swing.JPanel();
-		jScrollPane1 = new javax.swing.JScrollPane();
 		m_centerPane = new javax.swing.JPanel();
+		jScrollPane1 = new javax.swing.JScrollPane();
 		
 		
-		setLayout(new java.awt.BorderLayout());
+		setLayout(new java.awt.GridBagLayout());
 		
 		m_leftPane.setLayout(new java.awt.GridLayout(0, 1));
 		
@@ -177,7 +179,11 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 		
 		m_leftPane.add(m_buttonErrors);
 		
-		add(m_leftPane, java.awt.BorderLayout.WEST);
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+		gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+		add(m_leftPane, gridBagConstraints);
 		
 		jPanel1.setLayout(new java.awt.GridLayout(1, 1));
 		
@@ -185,17 +191,22 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 		m_centerPane.setLayout(new java.awt.GridLayout(1, 1, 10, 10));
 		
 		m_centerPane.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.EtchedBorder(), new javax.swing.border.EmptyBorder(new java.awt.Insets(20, 20, 20, 20))));
-		jScrollPane1.setViewportView(m_centerPane);
+		m_centerPane.add(jScrollPane1);
 		
-		jPanel1.add(jScrollPane1);
+		jPanel1.add(m_centerPane);
 		
-		add(jPanel1, java.awt.BorderLayout.CENTER);
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.weightx = 0.9;
+		gridBagConstraints.weighty = 0.9;
+		add(jPanel1, gridBagConstraints);
 		
 	}//GEN-END:initComponents
 
 	private void buttonErrorsActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonErrorsActionPerformed
 	{//GEN-HEADEREND:event_buttonErrorsActionPerformed
 		// Add your handling code here:
+		updateModel();
 		UserInteractionPanel uip = new UserInteractionPanel();
 		uip.setModel(m_model);
 		setNewCentralPanel(uip, uip);
@@ -204,6 +215,7 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 	private void buttonJVMConfigActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonJVMConfigActionPerformed
 	{//GEN-HEADEREND:event_buttonJVMConfigActionPerformed
 		// Add your handling code here:
+		updateModel();
 		JVMConfigurationPanel jconf = new JVMConfigurationPanel();
 		jconf.setModel(m_model);
 		setNewCentralPanel(jconf, jconf);
@@ -212,6 +224,7 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 	private void buttonJVMSelectionActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonJVMSelectionActionPerformed
 	{//GEN-HEADEREND:event_buttonJVMSelectionActionPerformed
 		// Add your handling code here:
+		updateModel();
 		JVMSelectionPanel jvmsel = new JVMSelectionPanel();
 		jvmsel.setModel(m_model);
 		setNewCentralPanel(jvmsel,jvmsel);
@@ -220,6 +233,7 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 	private void buttonJavaAppActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonJavaAppActionPerformed
 	{//GEN-HEADEREND:event_buttonJavaAppActionPerformed
 		// Add your handling code here:
+		updateModel();
 		JavaApp japp = new JavaApp();
 		japp.setModel(m_model);
 		setNewCentralPanel(japp, japp);
@@ -228,6 +242,7 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 	private void buttonExecutableActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonExecutableActionPerformed
 	{//GEN-HEADEREND:event_buttonExecutableActionPerformed
 		// Add your handling code here:
+		updateModel();
 		Executable exec = new Executable();
 		exec.setModel(m_model);
 		setNewCentralPanel(exec, exec);
@@ -236,7 +251,7 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 	private void buttonSkeletonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonSkeletonActionPerformed
 	{//GEN-HEADEREND:event_buttonSkeletonActionPerformed
 		// Add your handling code here:
-		
+		updateModel();
 		SkeletonChooser sc = new SkeletonChooser();
 		sc.setModel(m_model);
 		sc.setSkeletonList(m_main.getSkeletonList());
@@ -246,10 +261,6 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 	public void setNewCentralPanel(JPanel pan, ModelUpdater upd)
 	{
 		m_centerPane.removeAll();
-		if (m_currentEditor != null)
-		{
-			m_currentEditor.updateModel();
-		}	
 		m_centerPane.add(pan);
 		m_currentEditor = upd;
 		

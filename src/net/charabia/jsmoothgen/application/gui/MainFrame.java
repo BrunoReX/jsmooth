@@ -43,8 +43,6 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		m_centralPane.add(m_wizard);
 		
 		m_projectFileChooser.addChoosableFileFilter(new SimpleFileFilter("jsmooth", "JSmooth Project Files"));
-		
-		pack();
 	}
 	
 	/** This method is called from within the constructor to
@@ -58,7 +56,15 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		
 		m_projectFileChooser = new javax.swing.JFileChooser();
 		jToolBar1 = new javax.swing.JToolBar();
+		m_buttonOpen = new javax.swing.JButton();
+		m_buttonSave = new javax.swing.JButton();
+		m_buttonSaveAs = new javax.swing.JButton();
+		jSeparator4 = new javax.swing.JSeparator();
 		m_buttonCompile = new javax.swing.JButton();
+		jSeparator5 = new javax.swing.JSeparator();
+		jSeparator6 = new javax.swing.JSeparator();
+		jSeparator7 = new javax.swing.JSeparator();
+		jSeparator8 = new javax.swing.JSeparator();
 		jPanel1 = new javax.swing.JPanel();
 		jSeparator1 = new javax.swing.JSeparator();
 		jTextField1 = new javax.swing.JTextField();
@@ -72,10 +78,14 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		m_menuSaveAs = new javax.swing.JMenuItem();
 		jSeparator3 = new javax.swing.JSeparator();
 		m_menuExit = new javax.swing.JMenuItem();
+		m_menuProject = new javax.swing.JMenu();
+		m_menuCompile = new javax.swing.JMenuItem();
+		m_menuRunExe = new javax.swing.JMenuItem();
 		jMenu2 = new javax.swing.JMenu();
-		jMenuItem1 = new javax.swing.JMenuItem();
+		m_menuAbout = new javax.swing.JMenuItem();
 		
 		
+		setLocationRelativeTo(null);
 		addWindowListener(new java.awt.event.WindowAdapter()
 		{
 			public void windowClosing(java.awt.event.WindowEvent evt)
@@ -84,7 +94,42 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 			}
 		});
 		
-		m_buttonCompile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_autopilot.png")));
+		m_buttonOpen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_open.png")));
+		m_buttonOpen.addActionListener(new java.awt.event.ActionListener()
+		{
+			public void actionPerformed(java.awt.event.ActionEvent evt)
+			{
+				buttonOpenActionPerformed(evt);
+			}
+		});
+		
+		jToolBar1.add(m_buttonOpen);
+		
+		m_buttonSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_save.png")));
+		m_buttonSave.addActionListener(new java.awt.event.ActionListener()
+		{
+			public void actionPerformed(java.awt.event.ActionEvent evt)
+			{
+				buttonSaveActionPerformed(evt);
+			}
+		});
+		
+		jToolBar1.add(m_buttonSave);
+		
+		m_buttonSaveAs.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_save_as.png")));
+		m_buttonSaveAs.addActionListener(new java.awt.event.ActionListener()
+		{
+			public void actionPerformed(java.awt.event.ActionEvent evt)
+			{
+				buttonSaveAsActionPerformed(evt);
+			}
+		});
+		
+		jToolBar1.add(m_buttonSaveAs);
+		
+		jToolBar1.add(jSeparator4);
+		
+		m_buttonCompile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_autopilot-24.png")));
 		m_buttonCompile.addActionListener(new java.awt.event.ActionListener()
 		{
 			public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -94,6 +139,14 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		});
 		
 		jToolBar1.add(m_buttonCompile);
+		
+		jToolBar1.add(jSeparator5);
+		
+		jToolBar1.add(jSeparator6);
+		
+		jToolBar1.add(jSeparator7);
+		
+		jToolBar1.add(jSeparator8);
 		
 		getContentPane().add(jToolBar1, java.awt.BorderLayout.NORTH);
 		
@@ -115,8 +168,9 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		
 		getContentPane().add(m_centralPane, java.awt.BorderLayout.CENTER);
 		
-		jMenu1.setText("_File");
+		jMenu1.setText("File");
 		m_menuNew.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
+		m_menuNew.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_new-16.png")));
 		m_menuNew.setText("New");
 		m_menuNew.addActionListener(new java.awt.event.ActionListener()
 		{
@@ -131,6 +185,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		jMenu1.add(jSeparator2);
 		
 		m_menuLoad.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+		m_menuLoad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_open-16.png")));
 		m_menuLoad.setText("Open project...");
 		m_menuLoad.addActionListener(new java.awt.event.ActionListener()
 		{
@@ -143,6 +198,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		jMenu1.add(m_menuLoad);
 		
 		m_menuSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+		m_menuSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_save-16.png")));
 		m_menuSave.setText("Save");
 		m_menuSave.addActionListener(new java.awt.event.ActionListener()
 		{
@@ -154,6 +210,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		
 		jMenu1.add(m_menuSave);
 		
+		m_menuSaveAs.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_save_as-16.png")));
 		m_menuSaveAs.setText("Save as...");
 		m_menuSaveAs.addActionListener(new java.awt.event.ActionListener()
 		{
@@ -167,43 +224,146 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		
 		jMenu1.add(jSeparator3);
 		
+		m_menuExit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_exit-16.png")));
 		m_menuExit.setText("Exit");
 		jMenu1.add(m_menuExit);
 		
 		jMenuBar1.add(jMenu1);
 		
+		m_menuProject.setText("Project");
+		m_menuCompile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_autopilot-16.png")));
+		m_menuCompile.setText("Create Exe");
+		m_menuCompile.addActionListener(new java.awt.event.ActionListener()
+		{
+			public void actionPerformed(java.awt.event.ActionEvent evt)
+			{
+				menuCompileActionPerformed(evt);
+			}
+		});
+		
+		m_menuProject.add(m_menuCompile);
+		
+		m_menuRunExe.setText("Run Exe");
+		m_menuRunExe.addActionListener(new java.awt.event.ActionListener()
+		{
+			public void actionPerformed(java.awt.event.ActionEvent evt)
+			{
+				menuRunExeActionPerformed(evt);
+			}
+		});
+		
+		m_menuProject.add(m_menuRunExe);
+		
+		jMenuBar1.add(m_menuProject);
+		
 		jMenu2.setText("Help");
-		jMenuItem1.setText("About");
-		jMenu2.add(jMenuItem1);
+		m_menuAbout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_about-16.png")));
+		m_menuAbout.setText("About");
+		m_menuAbout.addActionListener(new java.awt.event.ActionListener()
+		{
+			public void actionPerformed(java.awt.event.ActionEvent evt)
+			{
+				menuAboutActionPerformed(evt);
+			}
+		});
+		
+		jMenu2.add(m_menuAbout);
 		
 		jMenuBar1.add(jMenu2);
 		
 		setJMenuBar(jMenuBar1);
 		
-		pack();
+		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+		setBounds((screenSize.width-550)/2, (screenSize.height-500)/2, 550, 500);
 	}//GEN-END:initComponents
+	
+	private void menuRunExeActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_menuRunExeActionPerformed
+	{//GEN-HEADEREND:event_menuRunExeActionPerformed
+		// Add your handling code here:
+		compile();
+		runexe();
+	}//GEN-LAST:event_menuRunExeActionPerformed
+	
+	private void menuCompileActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_menuCompileActionPerformed
+	{//GEN-HEADEREND:event_menuCompileActionPerformed
+		// Add your handling code here:
+		compile();
+	}//GEN-LAST:event_menuCompileActionPerformed
+	
+	private void menuAboutActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_menuAboutActionPerformed
+	{//GEN-HEADEREND:event_menuAboutActionPerformed
+		// Add your handling code here:
+		new AboutBox(this, true).show();
+	}//GEN-LAST:event_menuAboutActionPerformed
+	
+	private void buttonSaveAsActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonSaveAsActionPerformed
+	{//GEN-HEADEREND:event_buttonSaveAsActionPerformed
+		// Add your handling code here:
+		save(true);
+	}//GEN-LAST:event_buttonSaveAsActionPerformed
+	
+	private void buttonSaveActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonSaveActionPerformed
+	{//GEN-HEADEREND:event_buttonSaveActionPerformed
+		// Add your handling code here:
+		save(false);
+	}//GEN-LAST:event_buttonSaveActionPerformed
+	
+	private void buttonOpenActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonOpenActionPerformed
+	{//GEN-HEADEREND:event_buttonOpenActionPerformed
+		// Add your handling code here:
+		open();
+	}//GEN-LAST:event_buttonOpenActionPerformed
 	
 	private void buttonCompileActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonCompileActionPerformed
 	{//GEN-HEADEREND:event_buttonCompileActionPerformed
 		// Add your handling code here:
+		compile();
+	}//GEN-LAST:event_buttonCompileActionPerformed
+	
+	
+	public void compile()
+	{
+		m_wizard.updateModel();
+		m_wizard.getModel().normalizePaths();
+		
 		JSmoothModelBean model = m_wizard.getModel();
 		SkeletonBean skel = m_skelList.getSkeleton(model.getSkeletonName());
 		File skelroot = m_skelList.getDirectory(skel);
-		File exedir = new File(".");
-		if (m_projectFile != null)
-		{
-			exedir = m_projectFile.getParentFile();
-		}
+		File exedir = new File(model.getBaseDir());
+		
 		try
 		{
 			File out = new File(exedir, model.getExecutableName());
 			System.out.println("out = "+ out.getAbsolutePath());
 			ExeCompiler.compile(skelroot, skel, model, out);
+			
 		} catch (Exception exc)
 		{
 			exc.printStackTrace();
 		}
-	}//GEN-LAST:event_buttonCompileActionPerformed
+	}
+	
+	public void runexe()
+	{
+		m_wizard.updateModel();
+		JSmoothModelBean model = m_wizard.getModel();
+		
+		try
+		{
+			File f = new File(model.getBaseDir(), model.getExecutableName());
+			String[] cmd = new String[]{
+				f.getAbsolutePath()
+			};
+			System.out.println("RUNNING " + cmd[0] + " @ " + model.getBaseDir());
+			Runtime.getRuntime().exec(cmd,
+					new String[0],
+					new File(model.getBaseDir()));
+
+		} catch (Exception exc)
+		{
+			//exc.printStackTrace();
+		}
+	}
 	
 	private void menuLoadActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_menuLoadActionPerformed
 	{//GEN-HEADEREND:event_menuLoadActionPerformed
@@ -238,16 +398,16 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		if (m_projectFileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
 		{
 			m_projectFile = m_projectFileChooser.getSelectedFile();
-		}
-		this.setTitle("JSmooth: " + m_projectFile.toString());
-		
-		try
-		{
-			JSmoothModelBean model = JSmoothModelPersistency.load(m_projectFile);
-			m_wizard.setModel(model);
-		} catch (IOException iox)
-		{
-			iox.printStackTrace();
+			this.setTitle("JSmooth: " + m_projectFile.toString());
+			
+			try
+			{
+				JSmoothModelBean model = JSmoothModelPersistency.load(m_projectFile);
+				m_wizard.setModel(model);
+			} catch (IOException iox)
+			{
+				iox.printStackTrace();
+			}
 		}
 	}
 	
@@ -271,8 +431,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		}
 		try
 		{
-			File root = m_projectFile.getParentFile();
-			String[]res = m_wizard.getModel().normalizePaths(root);
+			String[]res = m_wizard.getModel().normalizePaths();
 			
 			if (res != null)
 			{
@@ -330,18 +489,29 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private javax.swing.JMenu jMenu2;
 	private javax.swing.JMenuBar jMenuBar1;
-	private javax.swing.JMenuItem jMenuItem1;
 	private javax.swing.JPanel jPanel1;
 	private javax.swing.JSeparator jSeparator1;
 	private javax.swing.JSeparator jSeparator2;
 	private javax.swing.JSeparator jSeparator3;
+	private javax.swing.JSeparator jSeparator4;
+	private javax.swing.JSeparator jSeparator5;
+	private javax.swing.JSeparator jSeparator6;
+	private javax.swing.JSeparator jSeparator7;
+	private javax.swing.JSeparator jSeparator8;
 	private javax.swing.JTextField jTextField1;
 	private javax.swing.JToolBar jToolBar1;
 	private javax.swing.JButton m_buttonCompile;
+	private javax.swing.JButton m_buttonOpen;
+	private javax.swing.JButton m_buttonSave;
+	private javax.swing.JButton m_buttonSaveAs;
 	private javax.swing.JPanel m_centralPane;
+	private javax.swing.JMenuItem m_menuAbout;
+	private javax.swing.JMenuItem m_menuCompile;
 	private javax.swing.JMenuItem m_menuExit;
 	private javax.swing.JMenuItem m_menuLoad;
 	private javax.swing.JMenuItem m_menuNew;
+	private javax.swing.JMenu m_menuProject;
+	private javax.swing.JMenuItem m_menuRunExe;
 	private javax.swing.JMenuItem m_menuSave;
 	private javax.swing.JMenuItem m_menuSaveAs;
 	private javax.swing.JFileChooser m_projectFileChooser;

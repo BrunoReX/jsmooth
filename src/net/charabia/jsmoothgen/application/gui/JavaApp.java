@@ -1,22 +1,22 @@
 /*
   JSmooth: a VM wrapper toolkit for Windows
   Copyright (C) 2003 Rodrigo Reyes <reyes@charabia.net>
-
+ 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
-
+ 
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-
+ 
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-*/
+ 
+ */
 
 package net.charabia.jsmoothgen.application.gui;
 
@@ -28,19 +28,21 @@ import java.io.*;
 public class JavaApp extends javax.swing.JPanel implements ModelUpdater
 {
 	private JSmoothModelBean m_model;
+	private JFileChooser m_jarLocFileChooser;
+	private EditableListFileEditor m_fileeditor;
 	
 	/** Creates new form BeanForm */
 	public JavaApp()
 	{
 		initComponents();
-		JFileChooser fc = new JFileChooser();
-		fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-		fc.addChoosableFileFilter(new ClassPathFileFilter());
-		EditableListFileEditor elle = new EditableListFileEditor();
-		elle.setFileChooser(fc);
-		m_classPathList.setEditor(elle);
+		m_jarLocFileChooser = new JFileChooser();
+		m_jarLocFileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+		m_jarLocFileChooser.addChoosableFileFilter(new ClassPathFileFilter());
+		m_fileeditor = new EditableListFileEditor();
+		m_fileeditor.setFileChooser(m_jarLocFileChooser);
+		m_classPathList.setEditor(m_fileeditor);
 	}
-		
+	
 	/** This method is called from within the constructor to
 	 * initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is
@@ -85,6 +87,7 @@ public class JavaApp extends javax.swing.JPanel implements ModelUpdater
 		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+		gridBagConstraints.weightx = 0.5;
 		add(m_mainClassName, gridBagConstraints);
 		
 		jLabel3.setText("Arguments");
@@ -97,6 +100,7 @@ public class JavaApp extends javax.swing.JPanel implements ModelUpdater
 		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+		gridBagConstraints.weightx = 0.5;
 		add(m_arguments, gridBagConstraints);
 		
 		classpathPanel.setLayout(new java.awt.BorderLayout());
@@ -109,13 +113,21 @@ public class JavaApp extends javax.swing.JPanel implements ModelUpdater
 		gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+		gridBagConstraints.weightx = 1.0;
+		gridBagConstraints.weighty = 0.2;
 		add(classpathPanel, gridBagConstraints);
 		
 	}//GEN-END:initComponents
-
+	
 	public void updateModel()
 	{
-		m_model.setJarLocation(m_jarLocation.getFile().toString());
+//		m_model.setJarLocation(JSmoothModelPersistency.makePathRelativeIfPossible(new File(m_model.getBaseDir()),
+//				m_jarLocation.getFile()).toString());
+		File jar = m_jarLocation.getFile();
+		if (jar != null)
+			m_model.setJarLocation(jar.toString());
+		else
+			m_model.setJarLocation(null);
 		m_model.setMainClassName(m_mainClassName.getText());
 		m_model.setArguments(m_arguments.getText());
 		Object[] flist = m_classPathList.getData();
@@ -125,15 +137,30 @@ public class JavaApp extends javax.swing.JPanel implements ModelUpdater
 			data[i] = flist[i].toString();
 		}
 		m_model.setClassPath(data);
-	}	
+	}
 	
 	public void setModel(JSmoothModelBean model)
 	{
 		m_model = model;
+		if (m_model.getBaseDir() != null)
+		{
+			m_jarLocation.setBaseDir(new File(m_model.getBaseDir()));
+			m_jarLocFileChooser.setCurrentDirectory(new File(m_model.getBaseDir()));
+			
+			m_fileeditor.setRootDir(new File(m_model.getBaseDir()));
+		}
+		else
+		{
+			m_jarLocation.setBaseDir(null);
+		}
+		
+		m_jarLocation.setFileChooser(m_jarLocFileChooser);
 		if (m_model.getJarLocation() != null)
 		{
-			File jarloc = new File(m_model.getJarLocation());
-			m_jarLocation.setFile(jarloc);
+				System.out.println("basedir: " + m_model.getBaseDir());
+				System.out.println("jarloc: " + m_model.getJarLocation());
+				
+				m_jarLocation.setFile(new File(m_model.getJarLocation()));
 		}
 		if (m_model.getMainClassName() != null)
 			m_mainClassName.setText(m_model.getMainClassName());
@@ -146,13 +173,17 @@ public class JavaApp extends javax.swing.JPanel implements ModelUpdater
 			for (int i=0; i<classpathstr.length; i++)
 			{
 				File f = new File(classpathstr[i]);
+				if (m_model.getBaseDir() != null)
+				{
+					f = JSmoothModelPersistency.makePathRelativeIfPossible(new File(m_model.getBaseDir()), f);
+				}
 				flist[i] = f;
 			}
 			m_classPathList.setData(flist);
 		}
 	}
 	
-
+	
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private javax.swing.JPanel classpathPanel;
 	private javax.swing.JLabel jLabel1;

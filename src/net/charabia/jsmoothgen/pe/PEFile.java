@@ -66,12 +66,12 @@ public class PEFile
 	m_oldmsheader = new PEOldMSHeader(this);				
 
 	m_oldmsheader.read();
-	m_oldmsheader.dump(System.out);
+	// m_oldmsheader.dump(System.out);
 	long headoffset = m_oldmsheader.e_lfanew;
 		
 	m_header = new PEHeader(this, headoffset);
 	m_header.read();
-	m_header.dump(System.out);
+	// m_header.dump(System.out);
 
 	int seccount = m_header.NumberOfSections;
 	System.out.println("LOADING " + seccount + " sections...");
@@ -84,7 +84,7 @@ public class PEFile
 
 		PESection sect = new PESection(this, offset);
 		sect.read();
-		sect.dump(System.out);
+		// sect.dump(System.out);
 		m_sections.add(sect);
 		offset += 40;
 	    }
@@ -150,7 +150,7 @@ public class PEFile
 	resb = resdir.replaceResource("JAVA", 102, 1033, bcn);
 	
 	//resdir.addNewResource("POUET", "A666", "#1033", data);
-	resdir.dump(System.out);
+	//resdir.dump(System.out);
 	System.out.println("New size = " + resdir.size());
 	File out = new File("F:/Documents and Settings/Rodrigo/Mes documents/projects/jsmooth/skeletons/simplewrap/COPIE.exe");
 	pe.dumpTo(out);
@@ -346,7 +346,7 @@ public class PEFile
  	out.position(newexeoffset);
  	outputcount = out.write(headbuffer);
 
-	peheader.dump(System.out);
+	// peheader.dump(System.out);
 	System.out.println("Dumping the section again...");
  	offset = oldmsheader.e_lfanew + (m_header.NumberOfRvaAndSizes * 8) + 24 + 96;
  	out.position(offset);
@@ -354,7 +354,7 @@ public class PEFile
 	    {
 		System.out.println("  offset: " + out.position());
 		PESection sect = (PESection) sections.get(i);
-		sect.dump(System.out);
+		// sect.dump(System.out);
 		ByteBuffer buf = sect.get();
 		outputcount = out.write(buf);
 	    }

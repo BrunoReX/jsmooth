@@ -42,6 +42,7 @@ public class JSmoothModelBean
 	private String m_minimumVersion = "";
 	private String m_maximumVersion = "";
 	private String[] m_jvmSearch = null;
+	private String m_basedir = null;
 	
 	transient Vector m_listeners = new Vector();
 
@@ -184,15 +185,44 @@ public class JSmoothModelBean
 		return m_jvmSearch;
 	}
 	
+	public void setBaseDir(String basedir)
+	{
+		if (m_basedir != null)
+			normalizePaths(new File(m_basedir), false);
+		m_basedir = basedir;
+		// normalizePaths(new File(m_basedir));
+	}
+	
+	public String getBaseDir()
+	{
+		return m_basedir;
+	}
+	
+	public String[] normalizePaths()
+	{
+		if (m_basedir == null)
+			return new String[0];
+		return normalizePaths(new File(m_basedir), true);
+	}
+
 	public String[] normalizePaths(java.io.File root)
 	{
-		Vector result = new Vector();
+		return normalizePaths(root, true);
+	}
+
+	public String[] normalizePaths(java.io.File root, boolean toRelativePath)
+	{
+		if (getBaseDir() == null)
+			return new String[0];
 		
-		m_iconLocation = checkRelativePath(root, m_iconLocation, result, "Icon location");
-		m_jarLocation = checkRelativePath(root, m_jarLocation, result, "Jar location");
+		Vector result = new Vector();
+		File exeroot = new File(getBaseDir());
+		m_iconLocation = checkRelativePath(root, m_iconLocation, result, "Icon location", toRelativePath);
+		m_jarLocation = checkRelativePath(root, m_jarLocation, result, "Jar location", toRelativePath);
+		
 		for (int i=0; i<m_classPath.length; i++)
 		{
-			m_classPath[i] = checkRelativePath(root, m_classPath[i], result, "Classpath entry (" + i + ")");
+			m_classPath[i] = checkRelativePath(exeroot, m_classPath[i], result, "Classpath entry (" + i + ")", toRelativePath);
 		}
 		
 		if (result.size() == 0)
@@ -204,16 +234,29 @@ public class JSmoothModelBean
 		return res;
 	}
 	
-	private String checkRelativePath(java.io.File root, String value, java.util.Vector errors, String name)
+	private String checkRelativePath(java.io.File root, String value, java.util.Vector errors, String name, boolean toRelativePath)
 	{
 		if (value == null)
 			value = "";
-		
-		File nf = JSmoothModelPersistency.makePathRelativeIfPossible(root, new File(value));
-		if (nf.isAbsolute())
+	
+		if (toRelativePath)
 		{
-			errors.add(name);
+			File nf = JSmoothModelPersistency.makePathRelativeIfPossible(root, new File(value));
+			if (nf.isAbsolute())
+			{
+				errors.add(name);
+			}
+			return nf.toString();
+		} else
+		{
+			File nf = new File(value);
+			if (nf.isAbsolute() == false)
+			{
+				nf = new File(root, value);
+//				nf = JSmoothModelPersistency.makePathRelativeIfPossible(root, new File(value));
+				nf = nf.getAbsoluteFile();
+			}
+			return nf.toString();
 		}
-		return nf.toString();
 	}
 }

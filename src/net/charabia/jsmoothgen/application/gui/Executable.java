@@ -21,6 +21,7 @@
 package net.charabia.jsmoothgen.application.gui;
 
 import net.charabia.jsmoothgen.application.*;
+import javax.swing.*;
 
 public class Executable extends javax.swing.JPanel implements ModelUpdater
 {
@@ -30,12 +31,23 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
 	public Executable()
 	{
 		initComponents();
+		JFileChooser fc = new JFileChooser();
+		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		m_outputDir.setFileChooser(fc);
 	}
 	
 	public void setModel(JSmoothModelBean model)
 	{
 		m_model = model;
 		m_executableNameField.setText(m_model.getExecutableName());
+		if (m_model.getBaseDir() != null)
+		{
+			m_outputDir.setFile(new java.io.File(m_model.getBaseDir()));
+		}
+		else
+		{
+			m_outputDir.setFile(null);
+		}
 	}
 	/** This method is called from within the constructor to
 	 * initialize the form.
@@ -48,6 +60,8 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
 		
 		jLabel1 = new javax.swing.JLabel();
 		m_executableNameField = new javax.swing.JTextField();
+		m_labelOutputDir = new javax.swing.JLabel();
+		m_outputDir = new net.charabia.jsmoothgen.application.gui.util.FileSelectionTextField();
 		jLabel2 = new javax.swing.JLabel();
 		jPanel2 = new javax.swing.JPanel();
 		jLabel3 = new javax.swing.JLabel();
@@ -70,6 +84,17 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
 		gridBagConstraints.weightx = 0.8;
 		add(m_executableNameField, gridBagConstraints);
 		
+		m_labelOutputDir.setText("Output Directory");
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
+		add(m_labelOutputDir, gridBagConstraints);
+		
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.insets = new java.awt.Insets(10, 0, 0, 0);
+		add(m_outputDir, gridBagConstraints);
+		
 		jLabel2.setText("Executable Icon");
 		add(jLabel2, new java.awt.GridBagConstraints());
 		
@@ -85,9 +110,9 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
 		
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-		gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
+		gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+		gridBagConstraints.insets = new java.awt.Insets(10, 5, 5, 5);
 		add(jPanel2, gridBagConstraints);
 		
 	}//GEN-END:initComponents
@@ -99,7 +124,9 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
 	private javax.swing.JLabel jLabel2;
 	private javax.swing.JLabel jLabel3;
 	private javax.swing.JPanel jPanel2;
-	private javax.swing.JTextField m_executableNameField;
+	public javax.swing.JTextField m_executableNameField;
+	private javax.swing.JLabel m_labelOutputDir;
+	private net.charabia.jsmoothgen.application.gui.util.FileSelectionTextField m_outputDir;
 	// End of variables declaration//GEN-END:variables
 		
 	public String getExecutableName()
@@ -110,6 +137,9 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
 	public void updateModel()
 	{
 		m_model.setExecutableName(m_executableNameField.getText());
+		java.io.File outputdir = m_outputDir.getFile();
+		if (outputdir != null)
+			m_model.setBaseDir(outputdir.toString());
 	}
 	
 	

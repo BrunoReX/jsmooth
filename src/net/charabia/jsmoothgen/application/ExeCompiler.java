@@ -31,7 +31,7 @@ public class ExeCompiler
 {
 	static public boolean compile(File skelroot, SkeletonBean skel, JSmoothModelBean data, File out) throws Exception
 	{
-		File basedir = out.getParentFile();
+		File basedir = new File(data.getBaseDir());
 		
 		File pattern = new File(skelroot, skel.getExecutableName());
 		if (pattern.exists() == false)
@@ -43,7 +43,7 @@ public class ExeCompiler
 		PEFile pe = new PEFile(pattern);
 		pe.open();
 		
-		File jarloc = new File(basedir, data.getJarLocation());
+		File jarloc = concFile(basedir, new File(data.getJarLocation()));
 		if (jarloc.exists() == false)
 		{
 			System.out.println("Can't find jar at " + jarloc);
@@ -63,6 +63,8 @@ public class ExeCompiler
 		resb = resdir.replaceResource(skel.getResourceCategory(), skel.getResourcePropsId(), 1033, propdata);
 		
 		pe.dumpTo(out);
+
+		System.out.println("PROPERTIES:\n" + props);
 	
 		return true;
 	}
@@ -93,6 +95,14 @@ public class ExeCompiler
 		
 		result.position(0);
 		return result;
+	}
+
+	static public File concFile(File root, File name)
+	{
+		if (name.isAbsolute())
+			return name;
+		
+		return new File(root, name.toString());
 	}
 	
 }

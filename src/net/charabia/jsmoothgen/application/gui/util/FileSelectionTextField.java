@@ -21,9 +21,12 @@
 package net.charabia.jsmoothgen.application.gui.util;
 
 import javax.swing.*;
+import java.io.*;
 
 public class FileSelectionTextField extends javax.swing.JPanel
 {
+	
+	private File m_basedir =  null;
 	
 	/** Creates new form BeanForm */
 	public FileSelectionTextField()
@@ -64,22 +67,69 @@ public class FileSelectionTextField extends javax.swing.JPanel
 	{//GEN-HEADEREND:event_buttonFileSelectionActionPerformed
 		// Add your handling code here:
 		java.io.File cur = new java.io.File(m_filename.getText());
+		if ((cur.isAbsolute() == false) && (m_basedir != null))
+		{
+			cur = new File(m_basedir, cur.toString()).getAbsoluteFile();
+			try {
+				cur = cur.getCanonicalFile();
+			} catch (IOException iox)
+			{
+				iox.printStackTrace();
+			}
+		}
 		m_fileChooser.setSelectedFile(cur);
 		if (m_fileChooser.showDialog(this, "Select") == JFileChooser.APPROVE_OPTION)
 		{
 			java.io.File f = m_fileChooser.getSelectedFile();
-			m_filename.setText(f.getAbsolutePath());
+			if (m_basedir != null)
+			{
+				File rel = net.charabia.jsmoothgen.application.JSmoothModelPersistency.makePathRelativeIfPossible(m_basedir, f);
+				m_filename.setText(rel.toString());
+			}
+			else
+			{
+				m_filename.setText(f.getAbsolutePath());
+			}
 		}
 	}//GEN-LAST:event_buttonFileSelectionActionPerformed
 	
 	public void setFile(java.io.File f)
 	{
-		m_filename.setText(f.toString());
+		if (f == null)
+		{
+			m_filename.setText("");
+		}
+		else if (m_basedir != null)
+		{
+			File rel = net.charabia.jsmoothgen.application.JSmoothModelPersistency.makePathRelativeIfPossible(m_basedir, f);
+			m_filename.setText(rel.toString());
+		}
+		else
+		{
+			m_filename.setText(f.getAbsolutePath());
+		}
 	}
 	
 	public java.io.File getFile()
 	{
+		if (m_filename.getText().trim().length() == 0)
+			return null;
 		return new java.io.File(m_filename.getText());
+	}
+	
+	public void setFileChooser(JFileChooser jfc)
+	{
+		m_fileChooser = jfc;
+	}
+	
+	public void setBaseDir(File root)
+	{
+		m_basedir = root;
+	}
+	
+	public File getBaseDir()
+	{
+		return m_basedir;
 	}
 	
 	// Variables declaration - do not modify//GEN-BEGIN:variables
