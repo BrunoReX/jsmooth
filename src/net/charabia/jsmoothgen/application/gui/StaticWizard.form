@@ -5,6 +5,9 @@
     <Component class="javax.swing.ButtonGroup" name="m_leftButtonsGroup">
     </Component>
   </NonVisualComponents>
+  <AuxValues>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,54,0,0,1,-4"/>
+  </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
   <SubComponents>
@@ -104,19 +107,19 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonJVMConfigActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JToggleButton" name="m_buttonErrors">
+        <Component class="javax.swing.JToggleButton" name="m_buttonSkeletonProperties">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.openide.explorer.propertysheet.editors.IconEditor">
-              <Image iconType="3" name="/icons/stock_web-support.png"/>
+              <Image iconType="3" name="/icons/stock_template_props.png"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="User Interactions"/>
+            <Property name="text" type="java.lang.String" value="Skeleton Properties"/>
             <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
               <ComponentRef name="m_leftButtonsGroup"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="2"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonErrorsActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonSkeletonPropertiesActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

@@ -21,6 +21,7 @@
 package net.charabia.jsmoothgen.application.gui;
 
 import net.charabia.jsmoothgen.application.*;
+import net.charabia.jsmoothgen.skeleton.*;
 import javax.swing.*;
 
 public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
@@ -35,7 +36,8 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 	private JavaApp m_panelJavaApp = new JavaApp();
 	private SkeletonChooser m_panelSkeletonChooser = new SkeletonChooser();
 	private UserInteractionPanel m_panelUserInteraction = new UserInteractionPanel();
-	
+	private SkeletonPropertiesPanel m_panelSkeletonProps = new SkeletonPropertiesPanel();
+
 	/** Creates new form StaticWizard */
 	public StaticWizard()
 	{
@@ -89,7 +91,7 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 		m_buttonJavaApp = new javax.swing.JToggleButton();
 		m_buttonJVMSelection = new javax.swing.JToggleButton();
 		m_buttonJVMConfig = new javax.swing.JToggleButton();
-		m_buttonErrors = new javax.swing.JToggleButton();
+		m_buttonSkeletonProperties = new javax.swing.JToggleButton();
 		jPanel1 = new javax.swing.JPanel();
 		m_centerPane = new javax.swing.JPanel();
 		jScrollPane1 = new javax.swing.JScrollPane();
@@ -172,19 +174,19 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 		
 		m_leftPane.add(m_buttonJVMConfig);
 		
-		m_buttonErrors.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_web-support.png")));
-		m_buttonErrors.setText("User Interactions");
-		m_leftButtonsGroup.add(m_buttonErrors);
-		m_buttonErrors.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-		m_buttonErrors.addActionListener(new java.awt.event.ActionListener()
+		m_buttonSkeletonProperties.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_template_props.png")));
+		m_buttonSkeletonProperties.setText("Skeleton Properties");
+		m_leftButtonsGroup.add(m_buttonSkeletonProperties);
+		m_buttonSkeletonProperties.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+		m_buttonSkeletonProperties.addActionListener(new java.awt.event.ActionListener()
 		{
 			public void actionPerformed(java.awt.event.ActionEvent evt)
 			{
-				buttonErrorsActionPerformed(evt);
+				buttonSkeletonPropertiesActionPerformed(evt);
 			}
 		});
 		
-		m_leftPane.add(m_buttonErrors);
+		m_leftPane.add(m_buttonSkeletonProperties);
 		
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
@@ -210,14 +212,31 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 		
 	}//GEN-END:initComponents
 
-	private void buttonErrorsActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonErrorsActionPerformed
-	{//GEN-HEADEREND:event_buttonErrorsActionPerformed
+	private void buttonSkeletonPropertiesActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonSkeletonPropertiesActionPerformed
+	{//GEN-HEADEREND:event_buttonSkeletonPropertiesActionPerformed
 		// Add your handling code here:
 		updateModel();
-//		UserInteractionPanel uip = new UserInteractionPanel();
-		m_panelUserInteraction.setModel(m_model);
-		setNewCentralPanel(m_panelUserInteraction, m_panelUserInteraction);
-	}//GEN-LAST:event_buttonErrorsActionPerformed
+		
+//		SkeletonPropertiesPanel skelpan = new SkeletonPropertiesPanel();
+		String skelname = m_model.getSkeletonName();
+		if (skelname != null)
+		{
+			System.out.println("Seting skeleton " + skelname);
+			SkeletonBean skel = m_main.getSkeletonList().getSkeleton(skelname);
+			if (skel != null)
+			{
+				System.out.println("Seting skeleton bean " + skel);
+				m_panelSkeletonProps.setSkeletonProperties(skel.getSkeletonProperties());
+			}
+			else
+				m_panelSkeletonProps.setSkeletonProperties(new SkeletonProperty[0]);
+		}
+		else
+			m_panelSkeletonProps.setSkeletonProperties(new SkeletonProperty[0]);
+	
+		m_panelSkeletonProps.setModel(m_model);
+		setNewCentralPanel(m_panelSkeletonProps, m_panelSkeletonProps);
+	}//GEN-LAST:event_buttonSkeletonPropertiesActionPerformed
 
 	private void buttonJVMConfigActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonJVMConfigActionPerformed
 	{//GEN-HEADEREND:event_buttonJVMConfigActionPerformed
@@ -285,12 +304,12 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private javax.swing.JPanel jPanel1;
 	private javax.swing.JScrollPane jScrollPane1;
-	private javax.swing.JToggleButton m_buttonErrors;
 	private javax.swing.JToggleButton m_buttonExecutable;
 	private javax.swing.JToggleButton m_buttonJVMConfig;
 	private javax.swing.JToggleButton m_buttonJVMSelection;
 	private javax.swing.JToggleButton m_buttonJavaApp;
 	private javax.swing.JToggleButton m_buttonSkeleton;
+	private javax.swing.JToggleButton m_buttonSkeletonProperties;
 	private javax.swing.JPanel m_centerPane;
 	private javax.swing.ButtonGroup m_leftButtonsGroup;
 	private javax.swing.JPanel m_leftPane;
