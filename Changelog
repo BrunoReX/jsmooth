@@ -2,7 +2,14 @@
 	- Now the JVM look-up method also takes the installed JDK into
 	account (not only the installed JRE)
 	- Fixed bug #858829 (Windowed Wrapper blocks Explorer)
-	- Fixed issue with main class selector
+	- Fixed bug #909610 (Class chooser not working when "embedded jar"
+	not selected)
+	- Fixed bug #910091 (SingleProcess flag of Windowed wrapper not
+	working)
+	- Fixed bug #854895 (Windowed Wrapper (Debug) does not display
+	debug log)
+	- adds sorting of the registry JVMs from highest version number to
+	lower (thus, most recent JVMs are tried first).
 	
 0.9.5
 	- ! Made the jar embedding optional. Now, one can choose to
