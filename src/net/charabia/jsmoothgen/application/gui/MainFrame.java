@@ -56,6 +56,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 	 */
 	private void initComponents()//GEN-BEGIN:initComponents
 	{
+		java.awt.GridBagConstraints gridBagConstraints;
 		javax.swing.JMenu jMenu1;
 		
 		m_projectFileChooser = new javax.swing.JFileChooser();
@@ -92,7 +93,6 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		
 		
 		setTitle("JSmooth");
-		setLocationRelativeTo(null);
 		addWindowListener(new java.awt.event.WindowAdapter()
 		{
 			public void windowClosing(java.awt.event.WindowEvent evt)
@@ -304,7 +304,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		setJMenuBar(jMenuBar1);
 		
 		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds((screenSize.width-550)/2, (screenSize.height-480)/2, 550, 480);
+		setBounds((screenSize.width-578)/2, (screenSize.height-462)/2, 578, 462);
 	}//GEN-END:initComponents
 
 	private void buttonNewActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonNewActionPerformed
@@ -401,27 +401,35 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 			File out = new File(exedir, model.getExecutableName());
 			System.out.println("out = "+ out.getAbsolutePath());
 			ExeCompiler compiler = new ExeCompiler();
-			boolean res = compiler.compile(skelroot, skel, model, out);
-			if (res == false)
-			{
-				String msg = "<html>There are errors in the compilation process:<p><ol>";
-				Vector errs = compiler.getErrors();
-				for (Iterator i=errs.iterator(); i.hasNext(); )
-				{
-					msg += "<li>" + i.next().toString() + "<br>";
-				}
-				msg += "</ol></html>";
-				JOptionPane.showMessageDialog(this, msg);
-				return false;
-			}
+			ExeCompiler.CompilerRunner runner = compiler.getRunnable(skelroot, skel, model, out);
+
+			CompilationDialog dia = new CompilationDialog(this, true);
+			dia.setCompiler(compiler);
+			dia.compile(runner);
+			System.out.println("FINISH !!");			
+			return dia.getResult();
+			
+
+//			boolean res = compiler.compile(skelroot, skel, model, out);
+//			compiler.compileAsync(skelroot, skel, model, out);
+//			if (res == false)
+//			{
+//				String msg = "<html>There are errors in the compilation process:<p><ol>";
+//				Vector errs = compiler.getErrors();
+//				for (Iterator i=errs.iterator(); i.hasNext(); )
+//				{
+//					msg += "<li>" + i.next().toString() + "<br>";
+//				}
+//				msg += "</ol></html>";
+//				JOptionPane.showMessageDialog(this, msg);
+//				return false;
+//			}
 		} catch (Exception exc)
 		{
 			String msg = "Not all the parameters have been specified.\nCompilation aborted.";
 			JOptionPane.showMessageDialog(this, msg);
 			return false;
 		}
-		
-		return true;
 	}
 	
 	public void runexe()
