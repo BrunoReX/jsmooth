@@ -144,8 +144,16 @@ public class JavaApp extends javax.swing.JPanel implements ModelUpdater
             }
             JarFile jf = new JarFile(jar);
             JarClassChooser jcc = new JarClassChooser(JOptionPane.getFrameForComponent(this), true);
+            jcc.setLocationRelativeTo(this);
             jcc.setJar(jf);
+            System.out.println("Classname to set: " + m_mainClassName.getText());
+            jcc.setClassName((m_mainClassName.getText()!=null)?m_mainClassName.getText():"");
             jcc.show();
+            if (jcc.validated())
+            {
+                String classname = jcc.getClassName();
+                m_mainClassName.setText(classname);
+            }
         } catch (IOException iox)
         {
             iox.printStackTrace();

@@ -82,134 +82,133 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
      */
     private void initComponents()//GEN-BEGIN:initComponents
     {
-	java.awt.GridBagConstraints gridBagConstraints;
-		
-	m_leftButtonsGroup = new javax.swing.ButtonGroup();
-	m_leftPane = new javax.swing.JPanel();
-	m_buttonSkeleton = new javax.swing.JToggleButton();
-	m_buttonExecutable = new javax.swing.JToggleButton();
-	m_buttonJavaApp = new javax.swing.JToggleButton();
-	m_buttonJVMSelection = new javax.swing.JToggleButton();
-	m_buttonJVMConfig = new javax.swing.JToggleButton();
-	m_buttonSkeletonProperties = new javax.swing.JToggleButton();
-	jPanel1 = new javax.swing.JPanel();
-	m_centerPane = new javax.swing.JPanel();
-	jScrollPane1 = new javax.swing.JScrollPane();
-		
-		
-	setLayout(new java.awt.GridBagLayout());
-		
-	m_leftPane.setLayout(new java.awt.GridLayout(0, 1));
-		
-	m_leftPane.setBorder(new javax.swing.border.EmptyBorder(new java.awt.Insets(10, 10, 10, 10)));
-	m_buttonSkeleton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_new-template.png")));
-	m_buttonSkeleton.setText("Skeleton Selection");
-	m_leftButtonsGroup.add(m_buttonSkeleton);
-	m_buttonSkeleton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-	m_buttonSkeleton.addActionListener(new java.awt.event.ActionListener()
-	    {
-		public void actionPerformed(java.awt.event.ActionEvent evt)
-		{
-		    buttonSkeletonActionPerformed(evt);
-		}
-	    });
-		
-	m_leftPane.add(m_buttonSkeleton);
-		
-	m_buttonExecutable.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_autopilot-24.png")));
-	m_buttonExecutable.setText("Windows Executable");
-	m_leftButtonsGroup.add(m_buttonExecutable);
-	m_buttonExecutable.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-	m_buttonExecutable.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-	m_buttonExecutable.addActionListener(new java.awt.event.ActionListener()
-	    {
-		public void actionPerformed(java.awt.event.ActionEvent evt)
-		{
-		    buttonExecutableActionPerformed(evt);
-		}
-	    });
-		
-	m_leftPane.add(m_buttonExecutable);
-		
-	m_buttonJavaApp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_form-image-control.png")));
-	m_buttonJavaApp.setText("Java Application");
-	m_leftButtonsGroup.add(m_buttonJavaApp);
-	m_buttonJavaApp.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-	m_buttonJavaApp.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-	m_buttonJavaApp.addActionListener(new java.awt.event.ActionListener()
-	    {
-		public void actionPerformed(java.awt.event.ActionEvent evt)
-		{
-		    buttonJavaAppActionPerformed(evt);
-		}
-	    });
-		
-	m_leftPane.add(m_buttonJavaApp);
-		
-	m_buttonJVMSelection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_search.png")));
-	m_buttonJVMSelection.setText("JVM Selection");
-	m_leftButtonsGroup.add(m_buttonJVMSelection);
-	m_buttonJVMSelection.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-	m_buttonJVMSelection.addActionListener(new java.awt.event.ActionListener()
-	    {
-		public void actionPerformed(java.awt.event.ActionEvent evt)
-		{
-		    buttonJVMSelectionActionPerformed(evt);
-		}
-	    });
-		
-	m_leftPane.add(m_buttonJVMSelection);
-		
-	m_buttonJVMConfig.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_form-properties.png")));
-	m_buttonJVMConfig.setText("JVM Configuration");
-	m_leftButtonsGroup.add(m_buttonJVMConfig);
-	m_buttonJVMConfig.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-	m_buttonJVMConfig.addActionListener(new java.awt.event.ActionListener()
-	    {
-		public void actionPerformed(java.awt.event.ActionEvent evt)
-		{
-		    buttonJVMConfigActionPerformed(evt);
-		}
-	    });
-		
-	m_leftPane.add(m_buttonJVMConfig);
-		
-	m_buttonSkeletonProperties.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_template_props.png")));
-	m_buttonSkeletonProperties.setText("Skeleton Properties");
-	m_leftButtonsGroup.add(m_buttonSkeletonProperties);
-	m_buttonSkeletonProperties.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-	m_buttonSkeletonProperties.addActionListener(new java.awt.event.ActionListener()
-	    {
-		public void actionPerformed(java.awt.event.ActionEvent evt)
-		{
-		    buttonSkeletonPropertiesActionPerformed(evt);
-		}
-	    });
-		
-	m_leftPane.add(m_buttonSkeletonProperties);
-		
-	gridBagConstraints = new java.awt.GridBagConstraints();
-	gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
-	gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-	gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
-	add(m_leftPane, gridBagConstraints);
-		
-	jPanel1.setLayout(new java.awt.GridLayout(1, 1));
-		
-	jPanel1.setBorder(new javax.swing.border.EmptyBorder(new java.awt.Insets(10, 0, 10, 10)));
-	m_centerPane.setLayout(new java.awt.GridLayout(1, 1, 10, 10));
-		
-	m_centerPane.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.EtchedBorder(), new javax.swing.border.EmptyBorder(new java.awt.Insets(5, 5, 5, 5))));
-	m_centerPane.add(jScrollPane1);
-		
-	jPanel1.add(m_centerPane);
-		
-	gridBagConstraints = new java.awt.GridBagConstraints();
-	gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-	gridBagConstraints.weightx = 0.9;
-	gridBagConstraints.weighty = 0.9;
-	add(jPanel1, gridBagConstraints);
-		
+        java.awt.GridBagConstraints gridBagConstraints;
+
+        m_leftButtonsGroup = new javax.swing.ButtonGroup();
+        m_leftPane = new javax.swing.JPanel();
+        m_buttonSkeleton = new javax.swing.JToggleButton();
+        m_buttonExecutable = new javax.swing.JToggleButton();
+        m_buttonJavaApp = new javax.swing.JToggleButton();
+        m_buttonJVMSelection = new javax.swing.JToggleButton();
+        m_buttonJVMConfig = new javax.swing.JToggleButton();
+        m_buttonSkeletonProperties = new javax.swing.JToggleButton();
+        jPanel1 = new javax.swing.JPanel();
+        m_centerPane = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+
+        setLayout(new java.awt.GridBagLayout());
+
+        m_leftPane.setLayout(new java.awt.GridLayout(0, 1));
+
+        m_leftPane.setBorder(new javax.swing.border.EmptyBorder(new java.awt.Insets(10, 10, 10, 10)));
+        m_buttonSkeleton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_new-template.png")));
+        m_buttonSkeleton.setText("Skeleton Selection");
+        m_leftButtonsGroup.add(m_buttonSkeleton);
+        m_buttonSkeleton.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        m_buttonSkeleton.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                buttonSkeletonActionPerformed(evt);
+            }
+        });
+
+        m_leftPane.add(m_buttonSkeleton);
+
+        m_buttonExecutable.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_autopilot-24.png")));
+        m_buttonExecutable.setText("Windows Executable");
+        m_leftButtonsGroup.add(m_buttonExecutable);
+        m_buttonExecutable.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        m_buttonExecutable.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        m_buttonExecutable.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                buttonExecutableActionPerformed(evt);
+            }
+        });
+
+        m_leftPane.add(m_buttonExecutable);
+
+        m_buttonJavaApp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_form-image-control.png")));
+        m_buttonJavaApp.setText("Java Application");
+        m_leftButtonsGroup.add(m_buttonJavaApp);
+        m_buttonJavaApp.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        m_buttonJavaApp.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        m_buttonJavaApp.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                buttonJavaAppActionPerformed(evt);
+            }
+        });
+
+        m_leftPane.add(m_buttonJavaApp);
+
+        m_buttonJVMSelection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_search.png")));
+        m_buttonJVMSelection.setText("JVM Selection");
+        m_leftButtonsGroup.add(m_buttonJVMSelection);
+        m_buttonJVMSelection.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        m_buttonJVMSelection.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                buttonJVMSelectionActionPerformed(evt);
+            }
+        });
+
+        m_leftPane.add(m_buttonJVMSelection);
+
+        m_buttonJVMConfig.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_form-properties.png")));
+        m_buttonJVMConfig.setText("JVM Configuration");
+        m_leftButtonsGroup.add(m_buttonJVMConfig);
+        m_buttonJVMConfig.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        m_buttonJVMConfig.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                buttonJVMConfigActionPerformed(evt);
+            }
+        });
+
+        m_leftPane.add(m_buttonJVMConfig);
+
+        m_buttonSkeletonProperties.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_template_props.png")));
+        m_buttonSkeletonProperties.setText("Skeleton Properties");
+        m_leftButtonsGroup.add(m_buttonSkeletonProperties);
+        m_buttonSkeletonProperties.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        m_buttonSkeletonProperties.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                buttonSkeletonPropertiesActionPerformed(evt);
+            }
+        });
+
+        m_leftPane.add(m_buttonSkeletonProperties);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        add(m_leftPane, gridBagConstraints);
+
+        jPanel1.setLayout(new java.awt.GridLayout(1, 1));
+
+        jPanel1.setBorder(new javax.swing.border.EmptyBorder(new java.awt.Insets(10, 0, 10, 10)));
+        m_centerPane.setLayout(new java.awt.GridLayout(1, 1, 10, 10));
+
+        m_centerPane.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.EtchedBorder(), new javax.swing.border.EmptyBorder(new java.awt.Insets(5, 5, 5, 5))));
+        m_centerPane.add(jScrollPane1);
+
+        jPanel1.add(m_centerPane);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.9;
+        gridBagConstraints.weighty = 0.9;
+        add(jPanel1, gridBagConstraints);
+
     }//GEN-END:initComponents
 
     private void buttonSkeletonPropertiesActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonSkeletonPropertiesActionPerformed

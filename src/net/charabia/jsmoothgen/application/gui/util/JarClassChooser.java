@@ -25,31 +25,53 @@ import java.util.jar.*;
 import java.util.*;
 import javax.swing.tree.*;
 
-public class JarClassChooser extends javax.swing.JDialog {
-
-    public class JarEntryTreeNode extends javax.swing.tree.DefaultMutableTreeNode {
-        public JarEntryTreeNode(String value) {
-            super(value);
-        }
+public class JarClassChooser extends javax.swing.JDialog
+{
+    JarEntryTreeNode m_root;
+    
+    private boolean m_valid = false;
+    
+    public class JarEntryTreeNode extends javax.swing.tree.DefaultMutableTreeNode
+    {
         
-        public void add(String[] items) {
+        public JarEntryTreeNode(String value)
+        {
+            super(value);
+            DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
+            javax.swing.ImageIcon leaf = new javax.swing.ImageIcon(getClass().getResource("/icons/stock_form-autopilots-16.png"));
+            renderer.setLeafIcon(leaf);
+            m_tree.setCellRenderer(renderer);
+            
+            m_tree.setEditable(false);
+        }
+
+        /**
+         * Attach a java path to this node.
+         */
+        public void add(String[] items)
+        {
             JarEntryTreeNode current = this;
-            for (int i=0; i<items.length; i++) {
+            for (int i=0; i<items.length; i++)
+            {
                 JarEntryTreeNode next = null;
                 
-                for (Enumeration e=current.children(); (e.hasMoreElements()) && (next == null); ) {
+                for (Enumeration e=current.children(); (e.hasMoreElements()) && (next == null); )
+                {
                     JarEntryTreeNode jtn = (JarEntryTreeNode)e.nextElement();
-                    if (jtn.getUserObject().equals(items[i])) {
+                    if (jtn.getUserObject().equals(items[i]))
+                    {
                         next = jtn;
                     }
                 }
                 
-                if (next == null) {
+                if (next == null)
+                {
                     next = new JarEntryTreeNode(items[i]);
                     current.add(next);
                     current = next;
                 }
-                else {
+                else
+                {
                     current = next;
                 }
             }
@@ -58,23 +80,77 @@ public class JarClassChooser extends javax.swing.JDialog {
     
     
     /** Creates new form JarClassChooser */
-    public JarClassChooser(java.awt.Frame parent, boolean modal) {
+    public JarClassChooser(java.awt.Frame parent, boolean modal)
+    {
         super(parent, modal);
         initComponents();
     }
     
-    public void setJar(JarFile jf) {
-
+    public void setJar(JarFile jf)
+    {
         JarEntryTreeNode root = new JarEntryTreeNode(jf.getName());
-        
-        for (Enumeration e=jf.entries(); e.hasMoreElements(); ) {
+        m_root = root;
 
+        for (Enumeration e=jf.entries(); e.hasMoreElements(); )
+        {
+            
             JarEntry entry = (JarEntry)e.nextElement();
             String[] res = entry.toString().split("/");
             System.out.println("JarEntry: " + entry);
-            root.add(res);
+            if ((res.length > 0) && (res[res.length-1].toLowerCase().endsWith(".class")))
+            {
+                String rs = res[res.length-1];
+                rs = rs.substring(0, rs.length()-6);
+                res[res.length-1] = rs;
+                root.add(res);
+            }
         }
-        m_tree.setModel(new DefaultTreeModel(root));        
+        m_tree.setModel(new DefaultTreeModel(root));
+    }
+
+    public String getClassName()
+    {
+        TreePath path = m_tree.getSelectionPath();
+        Object[] objs = path.getPath();
+        StringBuffer cname = new StringBuffer();
+        for (int i=1; i<objs.length; i++)
+        {
+            if (i>1)
+                cname.append(".");
+            cname.append(((JarEntryTreeNode)objs[i]).getUserObject().toString());
+        }
+        return cname.toString();
+    }
+    
+    public void setClassName(String classname)
+    {
+        if (m_root == null)
+               return;
+
+        String[] res = classname.split("[.]");
+        JarEntryTreeNode node = m_root;
+        JarEntryTreeNode best = m_root;
+
+        for (int i=0; i<res.length; i++)
+        {
+            String item = res[i];
+            JarEntryTreeNode next = null;
+            for (Enumeration e=node.children(); e.hasMoreElements(); )
+            {
+                JarEntryTreeNode opt = (JarEntryTreeNode)e.nextElement();
+
+                if (item.equals(opt.getUserObject()))
+                    next = opt;
+            }
+
+            node = next;
+            if (node != null)
+                best = node;
+        }
+
+        TreePath tp = new TreePath(best.getPath());
+        m_tree.setSelectionPath(tp);
+        m_tree.makeVisible(tp);
     }
     
     /** This method is called from within the constructor to
@@ -82,19 +158,23 @@ public class JarClassChooser extends javax.swing.JDialog {
      * WARNING: Do NOT modify this code. The content of this method is
      * always regenerated by the Form Editor.
      */
-    private void initComponents() {//GEN-BEGIN:initComponents
+    private void initComponents()//GEN-BEGIN:initComponents
+    {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         m_tree = new javax.swing.JTree();
         jPanel2 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        m_buttonSelect = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
-        jButton2 = new javax.swing.JButton();
+        m_buttonCancel = new javax.swing.JButton();
 
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
+        setTitle("Class Selector");
+        addWindowListener(new java.awt.event.WindowAdapter()
+        {
+            public void windowClosing(java.awt.event.WindowEvent evt)
+            {
                 closeDialog(evt);
             }
         });
@@ -116,23 +196,55 @@ public class JarClassChooser extends javax.swing.JDialog {
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_calc-accept-16.png")));
-        jButton1.setText("Select");
-        jPanel2.add(jButton1);
+        m_buttonSelect.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_calc-accept-16.png")));
+        m_buttonSelect.setText("Select");
+        m_buttonSelect.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                buttonSelectActionPerformed(evt);
+            }
+        });
+
+        jPanel2.add(m_buttonSelect);
 
         jPanel2.add(jSeparator1);
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_calc-cancel-16.png")));
-        jButton2.setText("Cancel");
-        jPanel2.add(jButton2);
+        m_buttonCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_calc-cancel-16.png")));
+        m_buttonCancel.setText("Cancel");
+        m_buttonCancel.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                buttonCancelActionPerformed(evt);
+            }
+        });
+
+        jPanel2.add(m_buttonCancel);
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.SOUTH);
 
-        pack();
+        java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+        setBounds((screenSize.width-371)/2, (screenSize.height-260)/2, 371, 260);
     }//GEN-END:initComponents
+
+    private void buttonSelectActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonSelectActionPerformed
+    {//GEN-HEADEREND:event_buttonSelectActionPerformed
+        // Add your handling code here:
+        m_valid = true;
+        hide();
+    }//GEN-LAST:event_buttonSelectActionPerformed
+
+    private void buttonCancelActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonCancelActionPerformed
+    {//GEN-HEADEREND:event_buttonCancelActionPerformed
+        // Add your handling code here:
+        m_valid = false;
+        hide();
+    }//GEN-LAST:event_buttonCancelActionPerformed
     
     /** Closes the dialog */
     private void closeDialog(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_closeDialog
+        m_valid = false;
         setVisible(false);
         dispose();
     }//GEN-LAST:event_closeDialog
@@ -140,20 +252,25 @@ public class JarClassChooser extends javax.swing.JDialog {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String args[])
+    {
         new JarClassChooser(new javax.swing.JFrame(), true).show();
     }
     
+    public boolean validated()
+    {
+        return m_valid;
+    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JButton m_buttonCancel;
+    private javax.swing.JButton m_buttonSelect;
     private javax.swing.JTree m_tree;
     // End of variables declaration//GEN-END:variables
     
