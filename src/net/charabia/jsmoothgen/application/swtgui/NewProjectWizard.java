@@ -13,8 +13,11 @@ public class NewProjectWizard extends Wizard {
 	public NewProjectWizard() {
 		setWindowTitle("New Project");
 		
-		addPage(new JavaAppWizardPage());
+		addPage(new ProjectFileWizardPage());
+		addPage(new ClasspathWizardPage());
+		addPage(new MainClassWizardPage());
 		addPage(new JRESelectionWizardPage());
+		addPage(new JREBundleWizardPage());
 		
 		// For Rodrigo.
 //		addPage(new ProjectNameWizardPage());

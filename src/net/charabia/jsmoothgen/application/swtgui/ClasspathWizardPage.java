@@ -5,27 +5,39 @@ package net.charabia.jsmoothgen.application.swtgui;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 
 /**
  * @author Dumon
  */
 public class ClasspathWizardPage extends WizardPage {
-	private static final String CLASSPATH_WIZBAN =
-		JSmoothResources.CLASSPATH_WIZBAN;
+	private static final int BUTTON_EXTRA_WIDTH = 6;
+	private static final int CLASSPATH_HEIGHT = 10;
+	private static final String JAVA_APP_WIZBAN =
+		JSmoothResources.JAVA_APP_WIZBAN;
+	private static final String ADD_ITEM =
+		JSmoothResources.ADD_ITEM;
+	private static final String REMOVE_ITEM =
+		JSmoothResources.REMOVE_ITEM;
+	private static final String EDIT_ITEM =
+		JSmoothResources.EDIT_ITEM;
+	private static final String MOVE_UP =
+		JSmoothResources.MOVE_UP;
+	private static final String MOVE_DOWN =
+		JSmoothResources.MOVE_DOWN;
 	
 	public ClasspathWizardPage() {
-		super("wizard.classpath");
-		setTitle("Classpath");
-		setMessage("Specify the project classpath.");
+		super("wizard.java_app");
+		setTitle("Java Application");
+		setMessage("Parameters for the Java application.");
 		setImageDescriptor(
-			JSmoothResources.getDescriptor(CLASSPATH_WIZBAN));
+			JSmoothResources.getDescriptor(JAVA_APP_WIZBAN));
 	}
 	
 	/* (non-Javadoc)
@@ -36,64 +48,69 @@ public class ClasspathWizardPage extends WizardPage {
 		GridData layoutData = null;
 		
 		Composite comp = new Composite(parent, SWT.NONE);
-		comp.setLayout(new GridLayout());
+		layout = new GridLayout();
+		comp.setLayout(layout);
 //		comp.setBackground(
 //			new Color(Display.getCurrent(), 250, 50, 50));
 		
-		Group classpathGroup = new Group(comp, SWT.NONE);
-		layoutData = new GridData(GridData.FILL_HORIZONTAL);
-		classpathGroup.setLayoutData(layoutData);
-		layout = new GridLayout(2, false);
-		classpathGroup.setLayout(layout);
-		classpathGroup.setText("Classpath");
-
-		createClasspath(classpathGroup);
+		createClasspath(comp);
 		
 		setControl(comp);
+	}
+	
+	private int computeButtonWidth(Button button, String text) {
+		initializeDialogUnits(button);
+		return convertWidthInCharsToPixels(
+			text.toCharArray().length + BUTTON_EXTRA_WIDTH);
 	}
 	
 	private void createClasspath(Composite parent) {
 		GridData layoutData = null;
 		
-		List list = new List(parent, SWT.BORDER);
+		Group group = new Group(parent, SWT.NONE);
+		layoutData = new GridData(GridData.FILL_HORIZONTAL);
+		group.setLayoutData(layoutData);
+		GridLayout layout = new GridLayout(2, false);
+		group.setLayout(layout);
+		group.setText("Classpath");
+		
+		List list = new List(group, SWT.BORDER);
 		layoutData = new GridData(GridData.FILL_BOTH);
 		list.setLayoutData(layoutData);
 		
-		Composite classpathButtonBar = new Composite(parent, SWT.NONE);
+		Composite classpathButtonBar = new Composite(group, SWT.NONE);
 		classpathButtonBar.setLayout(new GridLayout());
-		layoutData = new GridData(GridData.FILL);
+		layoutData = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+		layoutData.heightHint =
+			list.getItemHeight() * CLASSPATH_HEIGHT;
 		classpathButtonBar.setLayoutData(layoutData);
 		
-		Button addButton = new Button(classpathButtonBar, SWT.NONE);
-		layoutData = new GridData(GridData.FILL_HORIZONTAL);
-		addButton .setLayoutData(layoutData);
-		addButton .setText("Add...");
-		
-		Button removeButton = new Button(classpathButtonBar, SWT.NONE);
-		layoutData = new GridData(GridData.FILL_HORIZONTAL);
-		removeButton .setLayoutData(layoutData);
-		removeButton .setText("Remove...");
-		
-		Button editButton = new Button(classpathButtonBar, SWT.NONE);
-		layoutData = new GridData(GridData.FILL_HORIZONTAL);
-		editButton .setLayoutData(layoutData);
-		editButton .setText("Edit...");
-		
-		Label separatorLabel = new Label(
-			classpathButtonBar,
-			SWT.SEPARATOR | SWT.HORIZONTAL);
-		layoutData = new GridData(GridData.FILL_HORIZONTAL);
-		separatorLabel .setLayoutData(layoutData);
-		separatorLabel.setVisible(false);
-		
-		Button upButton = new Button(classpathButtonBar, SWT.NONE);
-		layoutData = new GridData(GridData.FILL_HORIZONTAL);
-		upButton.setLayoutData(layoutData);
-		upButton.setText("Up");
-		
-		Button downButton = new Button(classpathButtonBar, SWT.NONE);
-		layoutData = new GridData(GridData.FILL_HORIZONTAL);
-		downButton.setLayoutData(layoutData);
-		downButton.setText("Down");
+		createButtonForClasspath(classpathButtonBar, "Add...");
+		createButtonForClasspath(classpathButtonBar, "Remove...");
+		createButtonForClasspath(classpathButtonBar, "Edit...");
 	}
+	
+	private Button createButtonForClasspath(
+		Composite parent,
+		String text,
+		Image image) {
+			
+		Button button = new Button(parent, SWT.PUSH);
+		GridData layoutData = new GridData(GridData.FILL_HORIZONTAL);
+		layoutData.widthHint = computeButtonWidth(button, text);
+		button.setLayoutData(layoutData);
+		button.setText(text);
+		button.setImage(image);
+		
+		return button;
+	}
+	
+	private Button createButtonForClasspath(Composite parent, String text) {
+		return createButtonForClasspath(parent, text, null);
+	}
+	
+	private Button createButtonForClasspath(Composite parent, Image image) {
+		return createButtonForClasspath(parent, "", image);
+	}
+	
 }
