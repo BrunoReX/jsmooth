@@ -29,6 +29,7 @@
 #include "Properties.h"
 #include "FileUtils.h"
 #include "JavaProperty.h"
+
 /**
  * Manages the executable resources associated to a Java
  * application. This class manages the resources that are used to

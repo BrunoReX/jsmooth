@@ -24,7 +24,6 @@
 #include <string>
 #include <jni.h>
 
-
 #include "Version.h"
 #include "StringUtils.h"
 #include "FileUtils.h"
@@ -34,30 +33,80 @@
 typedef jint (JNICALL *CreateJavaVM_t)(JavaVM **pvm, JNIEnv **env, void *args);
 typedef jint (JNICALL *GetDefaultJavaVMInitArgs_t)(void *args);
 
+/**
+ * Manages a Sun's JVM available on the computer.
+ * @author Rodrigo Reyes <reyes@charabia.net>
+ */ 
+
 class SunJVMLauncher
 {
-    public:
-        std::string RuntimeLibPath;
-        std::string JavaHome;
-        Version VmVersion;
+ public:
+  /**
+   * The path to the .DLL that can be used to create a JVM
+   * instance. The string may be empty is the information is not
+   * known.
+   */ 
+  std::string RuntimeLibPath;
+
+  /**
+   * The path to a directory where a JRE is installed. It is expected
+   * that the executable bin\\java.exe, bin\\javaw.exe, bin\\jre.exe,
+   * or bin\\jrew.exe exist. The string may be empty is the
+   * information is not known.
+   */ 
+  std::string JavaHome;
+
+  /**
+   * The version of the JVM targetted by this object. The object may
+   * be invalid, if the information is not known.
+   */
+  Version VmVersion;
                
-        virtual bool run(ResourceManager& resource);
-        virtual bool runProc(ResourceManager& resource, bool noConsole);
+  /**
+   * Launches the JVM target of this object. The object is run using
+   * the RuntimeLibPath and trying to load the .dll.
+   *
+   * @param resource a ResourceManager instance that describes the
+   * java program to launch.
+   *
+   * @return true if the java application was successfully launched,
+   * false otherwise.
+   */ 
+  virtual bool run(ResourceManager& resource);
 
-       std::string toString() const;
 
-       Version guessVersionByProcess(const string& exepath);
+  /**
+   * Runs the JVM as a process and launches the application. The
+   * command line is created according to the parameters of the
+   * application (defined in the ResourceManager object), and the
+   * version of the JRE (guessed at runtime). The process is then
+   * created with this command line.
+   *
+   * @param resource a ResourceManager instance that describes the
+   * java program to launch.
+   * @param noConsole if true, the process created is detached from
+   * the current process, and no console i/o is inherited. Otherwise,
+   * the process shares the i/o with the current process.
+   *
+   * @return true if the java application was successfully launched,
+   * false otherwise.
+   */ 
+  virtual bool runProc(ResourceManager& resource, bool noConsole);
 
-     private:
+  std::string toString() const;
+
+  Version guessVersionByProcess(const string& exepath);
+
+ private:
      
-       bool runVM12DLL(ResourceManager& resource);
-       bool runVM11DLL(ResourceManager& resource);
-       bool runVM11proc(ResourceManager& resource, bool noConsole);
-       bool runVM12proc(ResourceManager& resource, bool noConsole);
+  bool runVM12DLL(ResourceManager& resource);
+  bool runVM11DLL(ResourceManager& resource);
+  bool runVM11proc(ResourceManager& resource, bool noConsole);
+  bool runVM12proc(ResourceManager& resource, bool noConsole);
 
-       bool runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource, bool noConsole, const std::string& version);
+  bool runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource, bool noConsole, const std::string& version);
        
-       std::string sizeToString(int size);
+  std::string sizeToString(int size);
 };
 
 #endif

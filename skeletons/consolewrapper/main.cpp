@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
     globalResMan->setProperty(string(ResourceManager::KEY_ARGUMENTS), args);
     
     JavaMachineManager man(*globalResMan);
-    if (man.run(false) == false)
+    if (man.run(false, false) == false)
     {
         std::string errmsg = globalResMan->getProperty("skel_Message");
         cerr << errmsg.c_str();

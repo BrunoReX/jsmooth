@@ -66,11 +66,28 @@ class JavaMachineManager
   /**
    * Start the Java application.  The java application started is
    * described by the ResourceManager passed to the constructor.
+   * 
+   * The noConsole argument specifies whether the launcher prefers having a 
+   * console attached or not. If the value of noConsonle is true, the launcher
+   * tries to detach the java app from the console i/o of the current process. 
+   * Otherwise, it tries to share the console i/o with the java app.
+   *
+   * The preferSingleProcess argument specifies whether the launcher shall
+   * prefer to launch the java app in the same process or not. The main effect
+   * if setting this parameter to true, is that the process name that appears
+   * in the Windows Task Manager is the name of the application only (otherwise
+   * the java.exe or equivalent may appear in the task manager). The main
+   * drawback of setting this value to true is that there is a bug in the
+   * Sun's DLL that prevents it to exit nicely, and which prevents the 
+   * executable to clean up the temporary files used to launch the app. This
+   * is a minor issue though, as the behaviour of most Windows application is
+   * not to delete themselves the temporary files.
    *
    * @param noConsole if true, the application started is not attached to the console.
+   * @param preferSingleProcess if true, the launcher first tries to launch the application in his own process.
    * @return true if the application is successfully started, false otherwise.
    */
-  bool run(bool noConsole);
+  bool run(bool noConsole, bool preferSingleProcess);
 };
 
 #endif

@@ -50,7 +50,6 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
                     HINSTANCE hPrevInstance,
                     LPSTR lpszArgument,
                     int nFunsterStil)
-
 {
     HWND hwnd;               /* This is the handle for our window */
     MSG messages;            /* Here messages to the application are saved */
@@ -109,7 +108,11 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     SetCurrentDirectory(newcurdir.c_str());
 
     JavaMachineManager man(*globalResMan);
-    if (man.run(true) == false)
+    std::string preferDLLstr = globalResMan->getProperty("skel_SingleProcess");
+    bool preferDLL = false;
+    if (StringUtils::parseInt(preferDLLstr) > 0)
+        preferDLL = true;
+    if (man.run(true, preferDLL) == false)
     {
         std::string errmsg = globalResMan->getProperty("skel_Message");
         std::string url = globalResMan->getProperty("skel_URL");

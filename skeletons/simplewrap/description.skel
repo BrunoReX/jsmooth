@@ -23,7 +23,7 @@
    <string>Windowed Wrapper</string> 
   </void> 
   <void property="skeletonProperties"> 
-   <array class="net.charabia.jsmoothgen.skeleton.SkeletonProperty" length="2"> 
+   <array class="net.charabia.jsmoothgen.skeleton.SkeletonProperty" length="3"> 
     <void index="0"> 
      <object class="net.charabia.jsmoothgen.skeleton.SkeletonProperty"> 
       <void property="description"> 
@@ -59,6 +59,25 @@
       </void> 
       <void property="value"> 
        <string>http://www.java.com</string> 
+      </void> 
+     </object> 
+    </void> 
+    <void index="2"> 
+     <object class="net.charabia.jsmoothgen.skeleton.SkeletonProperty"> 
+      <void property="description"> 
+       <string>The default behaviour is to launch the java application in a different (detached)  process. If you want to force the wrapper to launch the Java application in the same process than the exe, than select this option.</string> 
+      </void> 
+      <void property="idName"> 
+       <string>SingleProcess</string> 
+      </void> 
+      <void property="label"> 
+       <string>Launch java app in the exe process</string> 
+      </void> 
+      <void property="type"> 
+       <string>boolean</string> 
+      </void> 
+      <void property="value"> 
+       <string>0</string> 
       </void> 
      </object> 
     </void> 

@@ -36,7 +36,7 @@ JavaMachineManager::JavaMachineManager(ResourceManager& resman): m_resman(resman
     }
 }
 
-bool JavaMachineManager::run(bool dontUseConsole)
+bool JavaMachineManager::run(bool dontUseConsole, bool preferSingleProcess)
 {
     string vmorder = m_resman.getProperty(ResourceManager::KEY_JVMSEARCH);
 
@@ -69,19 +69,43 @@ bool JavaMachineManager::run(bool dontUseConsole)
 
                 if (dontUseConsole)
                 {
-                     DEBUG("DONT USE CONSOLE == TRUE");
-                     if (m_registryVms[i].runProc(m_resman, dontUseConsole))
+                     //
+                     // If we are here, then we prefer to launch the java
+                     // application detached from any console. Typically
+                     // for a Windows app.
+                     //
+                     
+                     if (preferSingleProcess)
                      {
-                        return true;
-                     } 
+                        if (m_registryVms[i].run(m_resman))
+                        {
+                           return true;
+                        } else if (m_registryVms[i].runProc(m_resman, dontUseConsole))
+                        {
+                           return true;
+                        }
+                     }
+                     else
+                     {
+                          DEBUG("DONT USE CONSOLE == TRUE");
+                          if (m_registryVms[i].runProc(m_resman, dontUseConsole))
+                          {
+                              return true;
+                          } else if (m_registryVms[i].run(m_resman))
+                          {
+                              return true;
+                          }
+                     
+                     }
+                          
                 }
                 else
                 {
                      DEBUG("DONT USE CONSOLE == FALSE");
-                     if (m_registryVms[i].run(m_resman))
+                     if (m_registryVms[i].runProc(m_resman, dontUseConsole))
                      {
                         return true;
-                     } else if (m_registryVms[i].runProc(m_resman, dontUseConsole))
+                     } else if (m_registryVms[i].run(m_resman))
                      {
                         return true;
                      }
