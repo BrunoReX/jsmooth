@@ -29,7 +29,7 @@
 
 //#define DEBUGMODE 1
 //#undef DEBUGMODE
-#define DEBUGMODE 2
+//#define DEBUGMODE 2
 
 extern std::vector< std::string > LOG;
 extern DebugConsole DEBUGCONSOLE;
