@@ -28,7 +28,9 @@ import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
 import java.awt.*;
+import java.awt.image.*;
 import java.lang.reflect.*;
+import net.charabia.util.codec.*;
 
 public class ExeCompiler
 {
@@ -156,6 +158,9 @@ public class ExeCompiler
 			iconpath = new java.io.File(basedir, data.getIconLocation()).getAbsolutePath();
 
 		    Image img = getScaledImage(iconpath, 32, 32);
+		    Hashtable set = calculateColorCount(img);
+		    System.out.println("COLORS TOTAL 4: " + set.size());
+
 		    if (img != null)
 			{
 			    net.charabia.jsmoothgen.pe.res.ResIcon resicon = new net.charabia.jsmoothgen.pe.res.ResIcon(img);
@@ -179,46 +184,308 @@ public class ExeCompiler
 	    }
     }
 	
-    public Image getScaledImage(String path, int width, int height)
+    public Image loadImage(String path)
     {
-	Image orgimage = null;
-	try {
-	    Class c = Class.forName("com.sun.jimi.core.Jimi");
-	    Method m = c.getDeclaredMethod("getImage", new Class[] { String.class });
-	    orgimage = (java.awt.Image) m.invoke(null, new Object[] { path });
-	    //	    orgimage = com.sun.jimi.core.Jimi.getImage(path);
+	File f = new File(path);
 
-	    Class reducerclazz = Class.forName("com.sun.jimi.core.util.ColorReducer");
-	    Constructor redconstr = reducerclazz.getDeclaredConstructor(new Class[] { int.class });
-	    Object colorreducer = redconstr.newInstance(new Object[] { new Integer(256) });
-	    Method redmeth = reducerclazz.getDeclaredMethod("getColorReducedImage", new Class[]{java.awt.Image.class});
-	   
-	    orgimage = (java.awt.Image) redmeth.invoke(colorreducer, new Object[]{ orgimage });
-
-	    //	    com.sun.jimi.core.util.ColorReducer reducer = new com.sun.jimi.core.util.ColorReducer(256);
-	    //	    orgimage = reducer.getColorReducedImage(orgimage);
-	} catch (Exception exc)
+	if (path.toUpperCase().endsWith(".ICO"))
 	    {
-		javax.swing.ImageIcon icon = new javax.swing.ImageIcon(path, "default icon");
-		orgimage = icon.getImage();
+		//
+		// Try to load with our ico codec...
+		//
+		try {
+		    java.awt.Image img = net.charabia.util.codec.IcoCodec.loadImage(f);
+		    if (img != null)
+			{
+			    return img;
+			}
+		} catch (java.io.IOException exc)
+		    {
+			exc.printStackTrace();
+		    }
 	    }
+	
+	// 
+	// defaults to the standard java loading process
+	//
 
-	if (orgimage == null)
-	    return null;
+	javax.swing.ImageIcon icon = new javax.swing.ImageIcon(path, "default icon");
+	return icon.getImage();
+    }
 
+    public void checkImageLoaded(Image img)
+    {
 	MediaTracker mtrack = new MediaTracker(new Label(""));
-
-	Image resimg = orgimage.getScaledInstance(width, height, Image.SCALE_DEFAULT);
-	mtrack.addImage(orgimage, 0);
-	mtrack.addImage(resimg, 1);
-
+	
+	mtrack.addImage(img, 1);
+	
 	try {
 	    mtrack.waitForAll();
 	} catch (InterruptedException e) {
-	    return null;
 	}
-	return resimg;
     }
+
+    private Hashtable calculateColorCount(Image img)
+    {
+	int width = img.getWidth(null);
+	int height = img.getHeight(null);
+	int[] pixels = new int[width*height];
+	PixelGrabber grabber = new PixelGrabber(img, 0, 0, width, height, pixels, 0, width);
+	try
+	    {
+		grabber.grabPixels();
+	    } catch (InterruptedException e)
+		{
+		    System.err.println("interrupted waiting for pixels!");
+		    //		    throw new Exception("Can't load the image provided",e);
+		}
+		
+
+
+	Hashtable result = new Hashtable();
+	int colorindex = 0;
+	for (int i=0; i<pixels.length; i++)
+	    {
+		int pix = pixels[i];
+		if (((pix>>24)&0xFF) > 0)
+		    {
+			pix &= 0x00FFFFFF;
+			Integer pixi = new Integer(pix);
+			Object o = result.get(pixi);
+			if (o == null)
+			    {
+				result.put(pixi, new Integer(colorindex++));
+			    }
+			//			if (colorindex > 256)
+			//			    return result;
+		    }
+	    }
+	return result;
+    }
+
+    public BufferedImage getQuantizedImage(Image img)
+    {
+
+	int width = img.getWidth(null);
+	int height = img.getHeight(null);
+	int[][] data = new int[width][height];
+	
+	int[] pixelbuffer = new int[width*height];
+	PixelGrabber grabber = new PixelGrabber(img, 0, 0, width, height, pixelbuffer, 0, width);
+	try
+	    {
+		grabber.grabPixels();
+	    } catch (InterruptedException e)
+		{
+		    System.err.println("interrupted waiting for pixels!");
+		    throw new RuntimeException("Can't load the image provided",e);
+		}
+	for (int i=0; i<pixelbuffer.length; i++)
+	    {
+		data[i%width][i/width] = pixelbuffer[i];
+	    }
+	
+	System.out.println("BEFORE...");
+	for (int y=0; y<height; y++)
+	    {
+		for (int x=0; x<width; x++)
+		    {
+			//			int rgb = ((BufferedImage)img).getRGB(x, y);
+			int rgb = data[x][y];
+			if (((rgb>>24)&0xFF)>0)
+			    {
+				System.out.print(".");
+			    }
+			else
+			    System.out.print("*");
+		    }
+		System.out.println("");
+	    }
+
+	int[][] savedata = new int[width][height];	
+
+	for(int y=0;y<height;y++)
+	    for (int x=0;x<width;x++)
+		savedata[x][y] = data[x][y];
+	
+	int[] palette = net.charabia.util.codec.Quantize.quantizeImage(data, 255);
+	byte[] cmap = new byte[256*4];
+
+	for (int i=0; i<palette.length; i++)
+	    {
+		System.out.println(" i= " + (i));
+		cmap[(i*4)] = (byte)((palette[i] >> 16) & 0xFF);
+		cmap[(i*4)+1] = (byte)((palette[i] >> 8) & 0xFF);
+		cmap[(i*4)+2] = (byte) (palette[i] & 0xFF);
+		cmap[(i*4)+3] = (byte) 0xFF;
+	    }
+ 	System.out.println("Quantized image to " + palette.length + " colors");
+
+	IndexColorModel colmodel = new IndexColorModel(8, palette.length, cmap, 0, true, 0);
+// 	System.out.println("INDEX0 = " + colmodel.getRGB(0));
+	//	BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED);
+	BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+	//	result.setRGB(0,0, width, height, pixelbuffer, 0, width);
+
+	//
+	// The normal manner of quantizing would be to run
+	// result.setRGB(0,0, width, height, pixelbuffer, 0, width);
+	// where result is a BufferedImage of
+	// BufferedImage.TYPE_BYTE_INDEXED type. Unfortunately, I
+	// couldn't make it work. So, here is a work-around that
+	// should work similarly.
+	//
+	java.util.Hashtable set = new java.util.Hashtable();
+	for (int y=0; y<height; y++)
+	    {
+		for (int x=0; x<width; x++)
+		    {
+			int alpha = (savedata[x][y]>>24)&0xFF;
+			if (alpha == 0)
+			    {
+				result.setRGB(x,y, 0);
+ 				System.out.print(".");
+			    }
+			else
+			    {
+				int rgb = colmodel.getRGB(data[x][y]);
+				rgb |= 0xFF000000;
+				set.put(new Integer(rgb), new Integer(rgb));
+				result.setRGB(x,y,rgb);
+ 				System.out.print("*");
+			    }
+		    }
+		System.out.println("");
+	    }
+
+	System.out.println("COLORS TOTAL: " + set.size());
+
+	Hashtable set2 = calculateColorCount(result);
+	System.out.println("COLORS TOTAL 2: " + set2.size());
+
+// 	System.out.println("INDEX0+ = " + colmodel.getRGB(0));
+// 	System.out.println("AFTER...");
+//  	WritableRaster raster = result.getRaster();
+// 	for (int y=0; y<result.getHeight(); y++)
+// 	    {
+// 		for (int x=0; x<result.getWidth(); x++)
+// 		    {
+// 			if (((savedata[x][y]>>24)&0xFF) == 0)
+// 			    {
+// 				System.out.print(".");
+// 				//				result.setRGB(x,y,0x00FFFFFF);
+// 				raster.setSample(x,y,0,0);
+// 			    }
+// 			else
+// 			    {
+// 				System.out.print("*");
+// 			    }
+// 		    }
+// 		System.out.println("");
+// 	    }
+
+// 	System.out.println("SAMPLES...");
+// 	raster = result.getRaster();
+// 	for (int y=0; y<result.getHeight(); y++)
+// 	    {
+// 		for (int x=0; x<result.getWidth(); x++)
+// 		    {
+// 			int pix = raster.getSample(x,y,0);
+// 			if (pix == 0)
+// 			    {
+// 				System.out.print(".");
+// 			    }
+// 			else
+// 			    {
+// 				System.out.print("*");
+// 			    }
+// 		    }
+// 		System.out.println("");
+// 	    }
+
+	System.out.println("FINAL...");
+	for (int y=0; y<result.getHeight(); y++)
+	    {
+		for (int x=0; x<result.getWidth(); x++)
+		    {
+			int rgb = result.getRGB(x,y);
+			if (((rgb>>24)&0xFF) == 0)		       
+			    {
+				System.out.print(".");
+			    }
+			else
+			    {
+				System.out.print("*");
+			    }
+		    }
+		System.out.println("");
+	    }
+
+	return result;
+    }
+
+    public Image getScaledImage(String path, int width, int height)
+    {
+	Image orgimage = loadImage(path);
+	if (orgimage == null)
+	    return null;
+	
+	checkImageLoaded(orgimage);
+
+	int w = orgimage.getWidth(null);
+	int h = orgimage.getHeight(null);
+
+	if ( (w==16 && h==16) || (w==32 && h==32) || (w==64 && h==64))
+	    {
+		return getQuantizedImage(orgimage);
+	    }
+
+	//	orgimage = getQuantizedImage(orgimage);
+
+	Hashtable set = calculateColorCount(orgimage);
+	System.out.println("COLORS TOTAL 3: " + set.size());
+
+// 	if ( (w==16 && h==16) || (w==32 && h==32) || (w==64 && h==64))
+// 	    {
+// 		return orgimage;
+// 	    }
+
+	orgimage = orgimage.getScaledInstance(32, 32, Image.SCALE_AREA_AVERAGING);
+	checkImageLoaded(orgimage);
+	return getQuantizedImage(orgimage);
+    }
+
+//     public int colorCount(BufferedImage img)
+//     {
+// 	MediaTracker mtrack = new MediaTracker(new Label(""));	
+// 	mtrack.addImage(img, 0);
+
+// 	try {
+// 	    mtrack.waitForAll();
+// 	} catch (InterruptedException e) {
+// 	    return 0;
+// 	}
+	
+// 	Hashtable result = new Hashtable();
+// 	int colorindex = 0;
+// 	for (int y=0; y<img.getHeight(null); y++)
+// 	    for (int x=0; x<img.getWidth(null); x++)
+// 		{	
+// 		    int pix = img.getRGB(x,y); // pixels[i]; // & 0x00FFFFFF; // remove alpha channel
+// 		    pix &= 0x00FFFFFF;
+// 		    Integer pixi = new Integer(pix);
+// 		    Object o = result.get(pixi);
+// 		    if (o == null)
+// 			{
+// 			    result.put(pixi, new Integer(colorindex++));
+// 			}
+// 		    if (colorindex > 256)
+// 			return result;
+// 		}
+
+// 	return result.size();
+//     }
 
     private ByteBuffer load(File in) throws Exception
     {

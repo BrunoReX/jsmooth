@@ -63,45 +63,74 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
 	m_iconLocation = model.getIconLocation();
 	m_iconChooser.setCurrentDirectory(basedir);
 
-	if (m_iconLocation != null)
-	    {
-		File il = new File(m_iconLocation);
-		if (il.isAbsolute() == false)
-		    {
-			il = new File(basedir, m_iconLocation);
-		    }
-		m_iconChooser.setCurrentDirectory(il.getParentFile());
-	    }
+// 	if (m_iconLocation != null)
+// 	    {
+// 		File il = new File(m_iconLocation);
+// 		if (il.isAbsolute() == false)
+// 		    {
+// 			il = new File(basedir, m_iconLocation);
+// 		    }
+// 		m_iconChooser.setCurrentDirectory(il.getParentFile());
+// 	    }
 
 	if (m_iconLocation != null)
 	    {
-		String iconpath;
-
-		if (new java.io.File(m_iconLocation).isAbsolute())
-		    iconpath = m_iconLocation;
-		else
-		    iconpath = new java.io.File(m_basedir, model.getIconLocation()).getAbsolutePath();
-
-		try {
-		    //		    Class c = Class.forName("com.sun.jimi.core.Jimi");
-		    //		    java.awt.Image img = com.sun.jimi.core.Jimi.getImage(iconpath);
-
-		    Class c = Class.forName("com.sun.jimi.core.Jimi");
-		    Method m = c.getDeclaredMethod("getImage", new Class[] { String.class });
-		    java.awt.Image img = (java.awt.Image) m.invoke(null, new Object[] { iconpath });
-
-		    if (img != null)
-			{
-			    ImageIcon icon = new ImageIcon(img);
-			    m_iconDisplay.setIcon(icon);
-			}
-		} catch (Exception exc)
-		    {
-			ImageIcon icon = new ImageIcon(iconpath, "default icon");
-			m_iconDisplay.setIcon(icon);
-		    }
+		setIconLocation(new File(m_iconLocation));
 	    }
     }
+
+    public void setIconLocation(File iconfile)
+    {
+	if (iconfile.isAbsolute() == false)
+	    {
+		iconfile = new File(m_basedir, iconfile.toString());
+	    }
+	ImageIcon icon = null;
+
+	if (iconfile.toString().toUpperCase().endsWith(".ICO"))
+	    {
+		//
+		// Try to load with our ico codec...
+		//
+		try {
+		    java.awt.image.BufferedImage[] images = net.charabia.util.codec.IcoCodec.loadImages(iconfile);
+		    //		    java.awt.Image img = net.charabia.util.codec.IcoCodec.loadImage(iconfile);
+		    if ((images != null) && (images.length>0))
+			{
+			    java.awt.Image img = images[0];
+			    icon = new ImageIcon(img);
+			}
+		} catch (java.io.IOException exc)
+		    {
+			exc.printStackTrace();
+		    }
+	    }
+	else   // Otherwise try with the standard toolkit functions...
+	    {
+		icon = new javax.swing.ImageIcon(iconfile.getAbsolutePath(), "default icon");
+	    }
+
+	int width = icon.getIconWidth();
+	int height = icon.getIconHeight();
+
+	System.out.println("ICON, w:" + width + ", h:" + height);
+
+	// 		if ((width != height) || ((width != 8) && (width != 16) && (height != 32)))
+	// 		    {
+	// 			JOptionPane.showMessageDialog(this, "<html>The icon must be 8x8, 16x16, or 32x32! Your icon is " + width + "x" + height+ ", which doesn't match.</html>", "Icon issue", JOptionPane.WARNING_MESSAGE);
+	// 		    }
+	// 		else
+
+	if (icon != null)
+	    {
+		m_iconDisplay.setIcon(icon);
+		m_iconLocation = iconfile.getAbsolutePath();
+		this.validate();
+		this.invalidate();
+	    }
+	
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -170,12 +199,12 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
 
         m_buttonIconChooser.setText("...");
         m_buttonIconChooser.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                buttonIconChooserActionPerformed(evt);
-            }
-        });
+	    {
+		public void actionPerformed(java.awt.event.ActionEvent evt)
+		{
+		    buttonIconChooserActionPerformed(evt);
+		}
+	    });
 
         jPanel3.add(m_buttonIconChooser, new java.awt.GridBagConstraints());
 
@@ -213,43 +242,66 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
 	    {
 		System.out.println("Icon choosen : " + m_iconChooser.getSelectedFile().toString());
 		String iconpath = m_iconChooser.getSelectedFile().toString();
- 		ImageIcon icon = null;
-		try {
-		    Class c = Class.forName("com.sun.jimi.core.Jimi");
 
-		    Method m = c.getDeclaredMethod("getImage", new Class[] { String.class });
-		    java.awt.Image img = (java.awt.Image) m.invoke(null, new Object[] { iconpath });
+		setIconLocation(m_iconChooser.getSelectedFile().getAbsoluteFile());
 
-		    if (img != null)
-			{
-			    icon = new ImageIcon(img);
-			    m_iconDisplay.setIcon(icon);
-			}
-		} catch (Exception exc)
-		    {
-			icon = new ImageIcon(iconpath, "default icon");
-			m_iconDisplay.setIcon(icon);
-		    }
+//  		ImageIcon icon = null;
 
+// 		if (iconpath.toUpperCase().endsWith(".ICO"))
+// 		    {
+// 			//
+// 			// Try to load with our ico codec...
+// 			//
+// 			try {
+// 			    java.awt.Image img = net.charabia.util.codec.IcoCodec.loadImage(m_iconChooser.getSelectedFile());
+// 			    if (img != null)
+// 				{
+// 				    icon = new ImageIcon(img);
+// 				}
+// 			} catch (java.io.IOException exc)
+// 			    {
+// 				exc.printStackTrace();
+// 			    }
+// 		    }
+		
+// 		// 		if (icon == null)
+// 		// 		    {
+// 		// 			try {
+// 		// 			    Class c = Class.forName("com.sun.jimi.core.Jimi");
 
-		// 		ImageIcon icon = new ImageIcon(m_iconChooser.getSelectedFile().getAbsolutePath(), "default icon");
- 		int width = icon.getIconWidth();
- 		int height = icon.getIconHeight();
+// 		// 			    Method m = c.getDeclaredMethod("getImage", new Class[] { String.class });
+// 		// 			    java.awt.Image img = (java.awt.Image) m.invoke(null, new Object[] { iconpath });
+
+// 		// 			    if (img != null)
+// 		// 				{
+// 		// 				    icon = new ImageIcon(img);
+// 		// 				    m_iconDisplay.setIcon(icon);
+// 		// 				}
+// 		// 			} catch (Exception exc)
+// 		// 			    {
+// 		// 				icon = new ImageIcon(iconpath, "default icon");
+// 		// 				m_iconDisplay.setIcon(icon);
+// 		// 			    }
+// 		// 		    }
+// 		// 		ImageIcon icon = new ImageIcon(m_iconChooser.getSelectedFile().getAbsolutePath(), "default icon");
+//  		int width = icon.getIconWidth();
+//  		int height = icon.getIconHeight();
+
 // 		System.out.println("ICON, w:" + width + ", h:" + height);
 
-// 		if ((width != height) || ((width != 8) && (width != 16) && (height != 32)))
-// 		    {
-// 			JOptionPane.showMessageDialog(this, "<html>The icon must be 8x8, 16x16, or 32x32! Your icon is " + width + "x" + height+ ", which doesn't match.</html>", "Icon issue", JOptionPane.WARNING_MESSAGE);
-// 		    }
-// 		else
+// 		// 		if ((width != height) || ((width != 8) && (width != 16) && (height != 32)))
+// 		// 		    {
+// 		// 			JOptionPane.showMessageDialog(this, "<html>The icon must be 8x8, 16x16, or 32x32! Your icon is " + width + "x" + height+ ", which doesn't match.</html>", "Icon issue", JOptionPane.WARNING_MESSAGE);
+// 		// 		    }
+// 		// 		else
 
-		if (icon != null)
-		    {
-			m_iconDisplay.setIcon(icon);
-			m_iconLocation = m_iconChooser.getSelectedFile().getAbsolutePath();
-			this.validate();
-			this.invalidate();
-		    }
+// 		if (icon != null)
+// 		    {
+// 			m_iconDisplay.setIcon(icon);
+// 			m_iconLocation = m_iconChooser.getSelectedFile().getAbsolutePath();
+// 			this.validate();
+// 			this.invalidate();
+// 		    }
 
 	    }
     }//GEN-LAST:event_buttonIconChooserActionPerformed
