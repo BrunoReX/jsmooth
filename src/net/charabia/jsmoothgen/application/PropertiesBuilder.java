@@ -120,7 +120,7 @@ public class PropertiesBuilder
 
 	File abs = new File(previousbasedir, value).getAbsoluteFile();
 	File n = JSmoothModelPersistency.makePathRelativeIfPossible(newbasedir, abs);
-	System.out.println("PROPERTY RENORM " + value + " -> " + n.toString());
+	//	System.out.println("PROPERTY RENORM " + value + " -> " + n.toString());
 
 	return n.toString();
     }
