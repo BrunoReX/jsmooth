@@ -26,6 +26,7 @@
 #include "common.h"
 #include "resource.h"
 #include "ResourceManager.h"
+#include "JVMLauncher.h"
 
 void SaveJarResource();
 
@@ -135,14 +136,17 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
    EnumResourceTypes(NULL, rsctypecallback, 0);
 
     jlist = new JavasoftRuntimeList();
-    const JavasoftVM& bestVm = jlist->findVersionOrHigher(Version(std::string("1.4")));
-    DEBUG(std::string("Found BESTVM: ") + bestVm.Path + " / " + bestVm.VmVersion.Value);
+//    const JavasoftVM& bestVm = jlist->findVersionOrHigher(Version(std::string("1.4")));
+//    DEBUG(std::string("Found BESTVM: ") + bestVm.RuntimeLibPath + " / " + bestVm.VmVersion.Value);
 //     if (bestVm.Path != "")
        {
-        ResourceManager resman("JAVA", 102, 103);
-        resman.saveTemp(std::string("temp.jar"));
+        ResourceManager resman("JAVA", PROPID, JARID);
+       // resman.saveTemp(std::string("temp.jar"));
         DEBUG(std::string("Main class: ") + resman.getMainName());
-        jlist->run(bestVm, std::string("temp.jar"), resman.getMainName());
+  //      jlist->run(bestVm, std::string("temp.jar"), resman.getMainName());
+  
+          jlist->run(resman);
+  
 //        jlist->run(bestVm, std::string("temp.jar"), std::string("SampleApplication"));
 //        jlist->run(bestVm, std::string("temp.jar"), std::string("net.charabia.generation.application.Application"));
     }

@@ -24,29 +24,45 @@
 #include <windows.h>
 #include <string>
 #include <vector>
+
 #include "common.h"
+#include "Properties.h"
+#include "FileUtils.h"
 
 class ResourceManager
 {
 private:
     std::string m_mainName;
     std::string m_resourceCategory;
-    int m_resourceMainId;
+    Properties m_props;
+    
+    int m_resourcePropsId;
     int m_resourceJarId;
     std::string m_lastError;    
     HGLOBAL m_jarHandler;
     int m_jarSize;
 public:
-
-    ResourceManager(std::string category, int mainNameId, int jarId);
-    void saveTemp(std::string tempname);
-    std::string getMainName();
+ 
+    static char * const KEY_MAINCLASSNAME = "mainclassname";
+    static char * const KEY_ARGUMENTS     = "arguments";
+    static char * const KEY_CLASSPATH     = "classpath";
+    static char * const KEY_JVMSEARCH     = "jvmsearch";
+    static char * const KEY_MINVERSION    = "minversion";
+    static char * const KEY_MAXVERSION    = "maxversion";
+    static char * const KEY_NOJVMMESSAGE  = "nojvmmessage";
+    static char * const KEY_NOJVMURL      = "nojvmurl";
+ 
+    ResourceManager(std::string category, int propsId, int jarId);
+    std::string saveJarInTempFile() const;
+    std::string getMainName() const;
     std::string getLastErrorString()
     {
         return m_lastError;
     }
     
-    std::string idToResourceName(int id)
+    std::string getProperty(const std::string& key) const;
+    
+    std::string idToResourceName(int id) const
     {
         char buffer[32];
         sprintf(buffer, "%d", id);
@@ -54,6 +70,8 @@ public:
         result += buffer;
         return result;
     }
+private:
+    void saveTemp(std::string tempname) const;
     
 };
 

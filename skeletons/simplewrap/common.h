@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include "resource.h"
 
 extern std::vector< std::string > LOG;
 

@@ -2,75 +2,75 @@
 
 Version::Version(std::string val)
 {
-    Value = val;
+    m_major = m_minor = m_sub = 0;
+    parseValue(val);
 }
 
 Version::Version()
 {
+    m_major = m_minor = m_sub = 0;
+}
+
+void Version::parseValue(const std::string& val)
+{
+    std::vector<std::string> tokens = StringUtils::split(val, '.');
+
+    if (tokens.size() > 0)
+        m_major = StringUtils::parseInt(tokens[0]);
+    
+    if (tokens.size() > 1)
+        m_minor =  StringUtils::parseInt(tokens[1]);
+        
+    if (tokens.size() > 2)
+        m_sub =  StringUtils::parseInt(tokens[2]);
 }
 
 int Version::getMajor() const
 {
-    return extractIntAt(Value, 0);
+    return m_major;
 }
     
 int Version::getMinor() const
     {
-        int pos = Value.find(".", 0);
-        if (pos != std::string::npos)
-        {
-            return extractIntAt(Value, pos+1);
-        }
-        return 0;
+        return m_minor;
     }
 
 int Version::getSubMinor() const
 {
-     int pos = Value.find(".", 0);
-     if (pos != std::string::npos)
-        {
-                int pos2 = Value.find(".", pos+1);
-                if (pos2 != std::string::npos)
-                {
-                     return extractIntAt(Value, pos2);
-                }
-        }
-        return 0;
+    return m_sub;
 }
-
-
-int Version::extractIntAt(const std::string& val, int pos) const
-{
-    if (pos == std::string::npos)
-            return pos;
-            
-    std::string tmp("");
-    for (int i=pos; (i != std::string::npos) && (i<val.length()) && (val[i]!='.'); i++)
-    {
-            tmp += val[i];
-    }
-    return atoi(tmp.c_str());
- }    
-
 
 bool operator < (const Version& v1, const Version& v2)
 {
-    if (v1.getMajor() < v2.getMajor())
+    if ((v1.m_major == 0) && (v1.m_minor == 0) && (v1.m_sub == 0))
         return true;
-    if (v1.getMajor() > v2.getMajor())
-        return false;
-        
-     if (v1.getMinor() < v2.getMinor())
-          return true;
-     if (v1.getMinor() > v2.getMinor())
-          return false;
 
-     if (v1.getSubMinor() < v2.getSubMinor())
-          return true;
-     if (v1.getSubMinor() > v2.getSubMinor())
-          return false;
-          
-     return false;
+    if ((v2.m_major == 0) && (v2.m_minor == 0) && (v2.m_sub == 0))
+        return true;
+
+    long v1val = (v1.m_major * 1000 * 1000) + (v1.m_minor * 1000) + v1.m_sub;
+    long v2val = (v2.m_major * 1000 * 1000) + (v2.m_minor * 1000) + v2.m_sub;
+    
+    return v1val < v2val;
 }
 
+std::string Version::toString() const
+{
+    char buffer[128];
+    sprintf(buffer, "%d.%d.%d", m_major, m_minor, m_sub);
+    return string(buffer);
+}
 
+bool operator <= (const Version& v1, const Version& v2)
+{
+    if ((v1.m_major == 0) && (v1.m_minor == 0) && (v1.m_sub == 0))
+        return true;
+
+    if ((v2.m_major == 0) && (v2.m_minor == 0) && (v2.m_sub == 0))
+        return true;
+
+    long v1val = (v1.m_major * 1000 * 1000) + (v1.m_minor * 1000) + v1.m_sub;
+    long v2val = (v2.m_major * 1000 * 1000) + (v2.m_minor * 1000) + v2.m_sub;
+       
+    return v1val <= v2val;
+}

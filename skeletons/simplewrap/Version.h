@@ -3,8 +3,16 @@
 
 #include <string>
 
+#include "common.h"
+#include "StringUtils.h"
+
 class Version
 {
+private:
+    int m_major;
+    int m_minor;
+    int m_sub;
+
 public:
     std::string Value;
     
@@ -14,10 +22,15 @@ public:
     int getMinor() const;
     int getSubMinor() const;
 
+    std::string toString() const;
+
 //    bool operator > (const Version& v) const;
 
     friend bool operator < (const Version& v1, const Version& v2);
+    friend bool operator <= (const Version& v1, const Version& v2);
 private:
+    void parseValue(const std::string& val);
+
     int extractIntAt(const std::string& val, int pos) const;
     
 public:

@@ -1,18 +1,6 @@
 
 #include "resource.h"
-#define AUTRE 101
-#define AUTRE2 102
-#define AUTRE3 103
-#define AUTRE4 104
 
-STRINGTABLE
-BEGIN
-    ID_COUCOU "Coucou"
-END
-
-#define SLIKA 100
-#define SLIKA2 101
-
-AUTRE2 JAVA "samplejar/main.txt"
-AUTRE3 JAVA "samplejar/sample.jar"
+JARID JAVA "samplejar/sample.jar"
+PROPID JAVA "samplejar/sample.props"
 

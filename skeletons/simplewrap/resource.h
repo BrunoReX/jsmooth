@@ -1,3 +1,4 @@
-#define ID_COUCOU 214
-#define ID_RAWAMOI 311
+
+#define JARID 102
+#define PROPID 103
 

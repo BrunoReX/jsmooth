@@ -25,6 +25,9 @@
 
 #include "common.h"
 #include "Version.h"
+#include "JVMLauncher.h"
+#include "StringUtils.h"
+
 #include <functional>
 
 //
@@ -32,18 +35,20 @@
 // Registry.
 //
 //
+
 class JavasoftVM
 {
     public:
-    std::string Path;
-    Version VmVersion;    
+    std::string RuntimeLibPath;
+    std::string JavaHome;
+    Version VmVersion;
     friend bool operator < (JavasoftVM&  v1, JavasoftVM& v2);
 };
 
 bool operator<(const JavasoftVM& jvm1, const JavasoftVM& jvm2);
 bool operator<(JavasoftVM& jvm1, JavasoftVM& jvm2);
 
-class JavasoftRuntimeList
+class JavasoftRuntimeList : public JVMLauncher
 {
 private:
     std::vector<JavasoftVM> m_jvms;
@@ -52,12 +57,10 @@ public:
     std::string Message;
     JavasoftVM INVALID;
     
-  JavasoftRuntimeList();
+    JavasoftRuntimeList();
   
-  int getCount()
-  {
-    return m_jvms.size();
-  }
+    virtual bool run(const ResourceManager& resource);
+    const JavasoftVM& find(Version min, Version max);
   
   const JavasoftVM& getAt(int i)
   {
@@ -70,6 +73,9 @@ public:
 
   void runVM12(const JavasoftVM& vm, const std::string& jarpath, const std::string& classname);
 //  void run2();
+
+  void runVM12(const JavasoftVM& vm, const ResourceManager& resource);
+  void runVM11(const JavasoftVM& vm, const ResourceManager& resource);
 
   void copyString(const std::string& str, char* buffer, int max)
   {

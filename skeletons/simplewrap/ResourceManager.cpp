@@ -20,28 +20,31 @@
 
 #include "ResourceManager.h"
 
-ResourceManager::ResourceManager(std::string category, int mainNameId, int jarId)
+ResourceManager::ResourceManager(std::string category, int propsId, int jarId)
 {
     m_resourceCategory = category;
-    m_resourceMainId = mainNameId;
+    m_resourcePropsId = propsId;
     m_resourceJarId = jarId;
 
-    std::string mainidstr = this->idToResourceName(mainNameId);
-    HRSRC resmain = FindResource(NULL, mainidstr.c_str(), category.c_str());
-    if (resmain != NULL)
+    //
+    // Load the Properties
+    std::string propsidstr = this->idToResourceName(propsId);
+    HRSRC resprop = FindResource(NULL, propsidstr.c_str(), category.c_str());
+    if (resprop != NULL)
     {
-        m_mainName = "";
-    
         int mainsize = 0;
-        mainsize = SizeofResource(NULL, resmain);
-        char mainbuf[mainsize+1];
+        mainsize = SizeofResource(NULL, resprop);
+        // char mainbuf[mainsize+1];
+
+        HGLOBAL main = LoadResource(NULL, resprop);
+//        char* mainptr = (char*) main;
+ //       for (int i=0; i<mainsize; i++)
+//        {
+//                m_mainName += *(mainptr++);
+//        }
+
+        m_props.setData((const char*)main, mainsize);
         
-        HGLOBAL main = LoadResource(NULL, resmain);
-        char* mainptr = (char*) main;
-        for (int i=0; i<mainsize; i++)
-        {
-                m_mainName += *(mainptr++);
-        }
     }
     else
     {
@@ -63,14 +66,14 @@ ResourceManager::ResourceManager(std::string category, int mainNameId, int jarId
     
 }
 
-void ResourceManager::saveTemp(std::string tempname)
+void ResourceManager::saveTemp(std::string tempname) const
 {
     HANDLE temp = CreateFile(tempname.c_str(),
                             GENERIC_WRITE,
                             FILE_SHARE_WRITE,
                             NULL, 
                             CREATE_ALWAYS, 
-                            FILE_ATTRIBUTE_HIDDEN,
+                            FILE_ATTRIBUTE_NORMAL,
                             NULL);
     
     if (temp != NULL)
@@ -82,8 +85,20 @@ void ResourceManager::saveTemp(std::string tempname)
     
 }
 
-std::string ResourceManager::getMainName()
+std::string ResourceManager::getMainName()  const
 {
-    return m_mainName;
+    return getProperty(string("mainclassname"));
 }
 
+std::string ResourceManager::getProperty(const std::string& key)  const
+{
+    return m_props.get(key);
+}
+
+std::string ResourceManager::saveJarInTempFile() const
+{
+    std::string tempfilename = FileUtils::createTempFileName(".jar");
+    DEBUG("Created tempfilename " + tempfilename);
+    saveTemp(tempfilename);
+    return tempfilename;
+}
