@@ -39,15 +39,17 @@ public class PropertiesBuilder
 	// BundledVM & classpaths are changed to be accessible
 	// from the current directory
 	File curdir = new File(obj.getExecutableName()).getParentFile();
+
+	if (curdir == null)
+	    curdir = basedir.getAbsoluteFile();
+
 	if (curdir.isAbsolute() == false)
 	    {
 		curdir = new File(basedir, curdir.toString());
 	    }
-	System.out.println("curdir =" + curdir.toString());
 
 	if (obj.getCurrentDirectory() != null)
 	    {
-		System.out.println("obj curdir =" + obj.getCurrentDirectory());
 		File newcurdir = new File(obj.getCurrentDirectory());
 		if (newcurdir.isAbsolute() == false)
 		    {
@@ -56,17 +58,19 @@ public class PropertiesBuilder
 		else
 		    curdir = newcurdir;
 	    }
-	System.out.println("relocating from " + basedir + " to " + curdir);
-		
-	addPair("bundledvm", getRenormalizedPathIfNeeded(obj.getBundledJVMPath(), basedir, curdir), out);
 
-	String[] relcp = new String[obj.getClassPath().length];
-	for (int i=0; i<relcp.length; i++)
-	    {
-		relcp[i] = getRenormalizedPathIfNeeded(obj.getClassPath()[i], basedir, curdir);
-	    }
-	addPair("classpath", makePathConc(relcp), out);
+	if (obj.getBundledJVMPath() != null)
+	    addPair("bundledvm", getRenormalizedPathIfNeeded(obj.getBundledJVMPath(), basedir, curdir), out);
 
+        if (obj.getClassPath() != null)
+        {
+            String[] relcp = new String[obj.getClassPath().length];
+            for (int i=0; i<relcp.length; i++)
+                {
+                    relcp[i] = getRenormalizedPathIfNeeded(obj.getClassPath()[i], basedir, curdir);
+                }
+            addPair("classpath", makePathConc(relcp), out);
+        }
 	//
 	// Adds all the skeleton-specific properties
 	//
@@ -93,14 +97,16 @@ public class PropertiesBuilder
 	//
 
 	JavaPropertyPair[] javapairs = obj.getJavaProperties();
-	addPair("javapropertiescount", new Integer(javapairs.length).toString(), out);
-	for (int i=0; i<javapairs.length; i++)
-	    {
-		addPair("javaproperty_name_" + i, javapairs[i].getName(), out);
-		addPair("javaproperty_value_" + i, javapairs[i].getValue(), out);
-	    }
+        if (javapairs != null)
+        {
+            addPair("javapropertiescount", new Integer(javapairs.length).toString(), out);
+            for (int i=0; i<javapairs.length; i++)
+                {
+                    addPair("javaproperty_name_" + i, javapairs[i].getName(), out);
+                    addPair("javaproperty_value_" + i, javapairs[i].getValue(), out);
+                }
+        }
 
-	System.out.println("made properties:" + out.toString());
 	return out.toString();
     }
 	

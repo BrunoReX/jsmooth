@@ -63,7 +63,6 @@ public class SkeletonList
 			    }
 		    }
 	    }
-	System.out.println(toString());
     }
 
     public void addSkeletonDirectory(File dir, File desc)
