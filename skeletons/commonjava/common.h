@@ -32,7 +32,6 @@
 //#define DEBUGMODE 2
 
 extern std::vector< std::string > LOG;
-extern DebugConsole DEBUGCONSOLE;
 
 void _debugOutput(const std::string& text);
 void _debugWaitKey();
