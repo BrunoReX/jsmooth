@@ -26,6 +26,7 @@
 
 package net.charabia.jsmoothgen.pe;
 
+import net.charabia.jsmoothgen.pe.res.*;
 import java.util.*;
 import java.io.*;
 import java.nio.*;
@@ -149,11 +150,29 @@ public class PEFile
 	bcn.position(0);
 	resb = resdir.replaceResource("JAVA", 102, 1033, bcn);
 	
+	PEResourceDirectory.DataEntry entry = resdir.getData("#14", "A", "#1033");
+	entry.Data.position(0);
+	System.out.println("DataEntry found : " + entry + " (size=" + entry.Data.remaining() + ")");
+	entry.Data.position(0);
+	ResIconDir rid = new ResIconDir(entry.Data);
+	System.out.println("ResIconDir :");
+	System.out.println(rid.toString());
+	int iconid = rid.getEntries()[0].dwImageOffset;
+	System.out.println("Icon Index: " + iconid);
+	
+	PEResourceDirectory.DataEntry iconentry = resdir.getData("#3", "#"+iconid, "#1033");
+	iconentry.Data.position(0);
+	ResIcon icon = new ResIcon(iconentry.Data);
+	System.out.println("Icon :");
+	System.out.println(icon.toString());
+	
 	//resdir.addNewResource("POUET", "A666", "#1033", data);
 	//resdir.dump(System.out);
 	System.out.println("New size = " + resdir.size());
 	File out = new File("F:/Documents and Settings/Rodrigo/Mes documents/projects/jsmooth/skeletons/simplewrap/COPIE.exe");
 	pe.dumpTo(out);
+
+	
     }
 
     public PEResourceDirectory getResourceDirectory() throws IOException

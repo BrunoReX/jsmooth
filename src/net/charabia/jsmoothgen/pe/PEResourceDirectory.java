@@ -102,10 +102,10 @@ public class PEResourceDirectory
 			indent(level, out); out.println("CodePage="+CodePage);
 			indent(level, out); out.println("Reserved="+Reserved);
 			indent(level, out); out.print("Data={ ");
-			// 			for (int i=0; i<this.Data.capacity(); i++)
-			// 			{
-			// 				out.print("" + Integer.toHexString((byte)Data.get()) + ",");
-			// 			}
+			 			for (int i=0; i<this.Data.capacity(); i++)
+			 			{
+			 				out.print("" + Integer.toHexString((byte)Data.get()) + ",");
+			 			}
 			out.println(" }");
 			
 		}
@@ -478,6 +478,18 @@ public class PEResourceDirectory
 		
 		public ResourceEntry getResourceEntry(String name)
 		{
+		    if ((name.length()>0) && (name.charAt(0)=='#'))
+			{
+			    try {
+				String nb = name.substring(1);
+				int i = Integer.parseInt(nb);
+				return getResourceEntry(i);
+			    } catch (Exception exc)
+				{
+				    exc.printStackTrace();
+				}
+			}
+
 			for (Iterator i=this.NamedEntries.iterator(); i.hasNext(); )
 			{
 				ResourceEntry re = (ResourceEntry)i.next();
@@ -576,7 +588,7 @@ public class PEResourceDirectory
 		}
 		return false;
 	}
-	
+
 	public void addNewResource(String catId, String resourceId, String languageId, ByteBuffer data)
 	{
 		DataEntry dataEntry = new DataEntry(data);
@@ -595,6 +607,25 @@ public class PEResourceDirectory
 		ResourceEntry catEntry = buildResourceEntry(catId, identDir);
 		m_root.addEntry(catEntry);
 	}
+
+    public DataEntry getData(String catId, String resourceId, String langId)
+    {
+		ResourceEntry catEntry = m_root.getResourceEntry(catId);
+		if ((catEntry != null) && (catEntry.Directory != null))
+		{
+			ResourceEntry identEntry = catEntry.Directory.getResourceEntry(resourceId);
+			if ((identEntry != null) && (identEntry.Directory != null))
+			{
+				ResourceEntry langEntry = identEntry.Directory.getResourceEntry(langId);
+				if ((langEntry != null) && (langEntry.Data != null))
+				{
+				    DataEntry dataslot = langEntry.Data;
+				    return dataslot;
+				}
+			}
+		}
+		return null;
+    }
 	
 	public ResourceEntry buildResourceEntry(String id, DataEntry data)
 	{
