@@ -24,13 +24,16 @@ import net.charabia.jsmoothgen.application.*;
 import net.charabia.jsmoothgen.application.gui.util.*;
 import javax.swing.*;
 import java.io.*;
+import java.util.jar.*;
 
 public class JavaApp extends javax.swing.JPanel implements ModelUpdater
 {
 	private JSmoothModelBean m_model;
 	private JFileChooser m_jarLocFileChooser;
 	private EditableListFileEditor m_fileeditor;
-	
+	private File m_basedir;
+        
+        
 	/** Creates new form BeanForm */
 	public JavaApp()
 	{
@@ -41,8 +44,8 @@ public class JavaApp extends javax.swing.JPanel implements ModelUpdater
 		m_fileeditor = new EditableListFileEditor();
 		m_fileeditor.setFileChooser(m_jarLocFileChooser);
 		m_classPathList.setEditor(m_fileeditor);
-	}
-	
+	}    
+    
 	/** This method is called from within the constructor to
 	 * initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is
@@ -54,7 +57,9 @@ public class JavaApp extends javax.swing.JPanel implements ModelUpdater
         jLabel1 = new javax.swing.JLabel();
         m_jarLocation = new net.charabia.jsmoothgen.application.gui.util.FileSelectionTextField();
         jLabel2 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
         m_mainClassName = new javax.swing.JTextField();
+        m_jarChooser = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         m_arguments = new javax.swing.JTextField();
         classpathPanel = new javax.swing.JPanel();
@@ -82,12 +87,23 @@ public class JavaApp extends javax.swing.JPanel implements ModelUpdater
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         add(jLabel2, gridBagConstraints);
 
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        jPanel1.add(m_mainClassName, java.awt.BorderLayout.CENTER);
+
+        m_jarChooser.setText("...");
+        m_jarChooser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jarChooserActionPerformed(evt);
+            }
+        });
+
+        jPanel1.add(m_jarChooser, java.awt.BorderLayout.EAST);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.5;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
-        add(m_mainClassName, gridBagConstraints);
+        add(jPanel1, gridBagConstraints);
 
         jLabel3.setText("Arguments");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -98,8 +114,8 @@ public class JavaApp extends javax.swing.JPanel implements ModelUpdater
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.5;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        gridBagConstraints.weightx = 0.5;
         add(m_arguments, gridBagConstraints);
 
         classpathPanel.setLayout(new java.awt.BorderLayout());
@@ -111,12 +127,30 @@ public class JavaApp extends javax.swing.JPanel implements ModelUpdater
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 0.2;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(classpathPanel, gridBagConstraints);
 
     }//GEN-END:initComponents
+
+    private void jarChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jarChooserActionPerformed
+        // Add your handling code here:
+        try {
+            File jar = m_jarLocation.getFile();
+            if (jar.isAbsolute() == false)
+            {
+                jar = new File(m_basedir, jar.toString());
+            }
+            JarFile jf = new JarFile(jar);
+            JarClassChooser jcc = new JarClassChooser(JOptionPane.getFrameForComponent(this), true);
+            jcc.setJar(jf);
+            jcc.show();
+        } catch (IOException iox)
+        {
+            iox.printStackTrace();
+        }
+    }//GEN-LAST:event_jarChooserActionPerformed
 	
 	public void updateModel()
 	{
@@ -141,6 +175,8 @@ public class JavaApp extends javax.swing.JPanel implements ModelUpdater
 	public void setModel(java.io.File basedir, JSmoothModelBean model)
 	{
 		m_model = model;
+                m_basedir = basedir;
+                
 		if (basedir != null)
 		{
 		    System.out.println("basedir of jarlocation: " + basedir);
@@ -202,8 +238,10 @@ public class JavaApp extends javax.swing.JPanel implements ModelUpdater
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField m_arguments;
     private net.charabia.jsmoothgen.application.gui.util.SortedEditableList m_classPathList;
+    private javax.swing.JButton m_jarChooser;
     private net.charabia.jsmoothgen.application.gui.util.FileSelectionTextField m_jarLocation;
     private javax.swing.JTextField m_mainClassName;
     // End of variables declaration//GEN-END:variables

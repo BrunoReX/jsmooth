@@ -26,7 +26,7 @@ import net.charabia.jsmoothgen.skeleton.*;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
-
+import java.util.prefs.*;
 
 public class MainFrame extends javax.swing.JFrame implements MainController
 {
@@ -535,19 +535,18 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 	    {
 		String[]res = m_wizard.getModel().normalizePaths(m_projectFile.getParentFile());
 			
-		if (res != null)
+		Preferences prefs = Preferences.systemNodeForPackage(this.getClass());
+                String prefname = "filesNotRelativeWarningDontDisplay";
+		if ((res != null) && (prefs.getBoolean(prefname, false) == false))
 		    {
-			StringBuffer msg = new StringBuffer();
-			msg.append("<html>Not all the paths specified in the project are relative:<br><ul>");
-			for (int i=0; i<res.length; i++)
-			    {
-				msg.append("<li>");
-				msg.append(res[i]);
-				msg.append("<br>");
-			    }
-			msg.append("</ul><p>The project will be saved correctly, but you should check the issue.</html>");
-				
-			JOptionPane.showMessageDialog(this, msg.toString(), "Warning", JOptionPane.WARNING_MESSAGE);
+                        WarningNotRelativeFilesDialog wnrfd = new WarningNotRelativeFilesDialog(this, true);
+                        wnrfd.setErrors(res);
+                        wnrfd.show();
+                        
+                        if (wnrfd.dontDisplayAnymore() == true)
+                        {
+                            prefs.putBoolean(prefname, true);
+                        }
 		    }
 			
 		JSmoothModelPersistency.save(m_projectFile, m_wizard.getModel());
