@@ -28,23 +28,67 @@
 
 using namespace std;
 
+/**
+ * Manages a set of properties. Properties are pairs of name/value
+ * texts. The properties object is created from a char array that stores
+ * properties under the form:
+ *
+ * <CODE>
+name1=value1 <BR>
+name2=value 2 is a string<BR>
+name3=<BR>
+name4=can be empty<BR>
+   </CODE>
+ * 
+ * @author Rodrigo Reyes <reyes@charabia.net>
+ */
+
 class Properties
 {
-    map<string, string> m_data;
+  map<string, string> m_data;
 
-    public:
-        Properties(const char *data, int datalength);
-        Properties();
+ public:
+  /**
+   * This constructor builds a Properties object based on the text
+   * passed in the char array.
+   *
+   * @param data the array of chars
+   * @param datalen the length of the array
+   */
+  Properties(const char *data, int datalength);
+
+  /**
+   * This default constructor builds an empty Properties object.
+   */
+  Properties();
+
+  /**
+   * Sets up the properties data from a char array.
+   *
+   * @param data the array of chars
+   * @param datalen the length of the array
+   */
+  void setData(const char *data, int datalength);
+  
+  /**
+   * Retrieves a value from a property name.
+   *
+   * @param key the name of the property to retrieve
+   * @return the value associated to the name, or an empty string if the key is not defined.
+   */
+  string get(const string& key) const;
+
+  /**
+   * Adds a new property.
+   *
+   * @param key the name of the property
+   * @param value the value associated to the property
+   */
+  void set(const string& key, const string& value);
         
-        void setData(const char *data, int datalength);
-        string getNextToken(const char* data, int datalen, int& cursor, char stopchar);
-        
-        string get(const string& key) const;
-        void set(const string& key, const string& value);
-        
-    private:
-    
-        std::string unescape(const string& val);
+ private:
+  string getNextToken(const char* data, int datalen, int& cursor, char stopchar);    
+  std::string unescape(const string& val);
 };
 
 #endif

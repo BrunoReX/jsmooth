@@ -31,24 +31,46 @@
 #include "JVMEnvVarLookup.h"
 #include "MSJViewLauncher.h"
 
+/** Manages the JVM available on the computer.  It builds the list of
+ * all the JVM available on the computer, and provide a method to run
+ * the application according to the ResourceManager object passed to
+ * the constructor.
+ *
+ * @author Rodrigo Reyes <reyes@charabia.net>
+ */
+
 class JavaMachineManager
 {
-    vector<SunJVMLauncher> m_registryVms;
-    vector<SunJVMLauncher> m_javahomeVm;
-    vector<SunJVMLauncher> m_jrepathVm;
-    vector<SunJVMLauncher> m_jdkpathVm;
+  vector<SunJVMLauncher> m_registryVms;
+  vector<SunJVMLauncher> m_javahomeVm;
+  vector<SunJVMLauncher> m_jrepathVm;
+  vector<SunJVMLauncher> m_jdkpathVm;
     
-    bool                   m_localVMenabled;
-    SunJVMLauncher         m_localVM;
+  bool                   m_localVMenabled;
+  SunJVMLauncher         m_localVM;
     
-    MSJViewLauncher        m_jviewVm;
+  MSJViewLauncher        m_jviewVm;
     
-    ResourceManager& m_resman;
+  ResourceManager& m_resman;
 
-    public:
-        JavaMachineManager(ResourceManager& resman) ;
+ public:
+  /**
+   * This constructor builds a JavaMachineManager with a ResourceManager.
+   *
+   * @param resman a ResourceManager object
+   * @see ResourceManager
+   */ 
+  JavaMachineManager(ResourceManager& resman) ;
 
-        bool run(bool noConsole);
+
+  /**
+   * Start the Java application.  The java application started is
+   * described by the ResourceManager passed to the constructor.
+   *
+   * @param noConsole if true, the application started is not attached to the console.
+   * @return true if the application is successfully started, false otherwise.
+   */
+  bool run(bool noConsole);
 };
 
 #endif

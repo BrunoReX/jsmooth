@@ -30,10 +30,24 @@
 
 using namespace std;
 
+/** Utility class that checks environment variables for Sun's JVM.
+ *
+ * @author Rodrigo Reyes <reyes@charabia.net>
+ */
+
 class JVMEnvVarLookup
 {
-public:
-    static vector<SunJVMLauncher> lookupJVM(const string& envvar);
+ public:
+  /**
+   * This method creates SunJVMLauncher objects from a given
+   * environment variable.  If the environment variable exists, it
+   * returns a vector with one SunJVMLauncher object. Otherwise, the
+   * vector is returned empty.
+   *
+   * @param envvar an environment variable
+   * @return a vector which contains 0 or 1 SunJVMLauncher.
+   */
+  static vector<SunJVMLauncher> lookupJVM(const string& envvar);
 };
 
 #endif

@@ -26,10 +26,23 @@
 #include "FileUtils.h"
 #include "ResourceManager.h"
 
+/**
+ * Manages an instance of the Microsoft's JView JVM.
+ *
+ * @author Rodrigo Reyes <reyes@charabia.net>
+ */
+
 class MSJViewLauncher
 {
-public:
-    bool runProc(ResourceManager& resource, bool noConsole);
+ public:
+  /**
+   * Runs the MS JView JVM, launching the application described by the
+   * ResourceManager object passed as parameter.
+   *
+   * @param resource the ResourceManager that describes the java application
+   * @param noConsole if true, the application started is not attached to the console.
+   */
+  bool runProc(ResourceManager& resource, bool noConsole);
 
 };
 

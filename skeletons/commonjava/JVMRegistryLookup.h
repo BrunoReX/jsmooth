@@ -26,13 +26,24 @@
 #include "SunJVMLauncher.h"
 #include "JVMRegistryLookup.h"
 
+/** Utility class that scans the windows registry for installed JRE.
+ *
+ * @author Rodrigo Reyes <reyes@charabia.net>
+ */
+
 class JVMRegistryLookup
 {
-public:
-    static vector<SunJVMLauncher> lookupJVM();
+ public:
+  /**
+   * Scans the Windows Registry for the Java Runtime Environments. If
+   * no JRE is found, an empty vector is returned.
+   *
+   * @return a vector containing the JRE found.
+   */ 
+  static vector<SunJVMLauncher> lookupJVM();
 
-private:
-    static vector<SunJVMLauncher> lookup(HKEY key, const string& path);
+ private:
+  static vector<SunJVMLauncher> lookup(HKEY key, const string& path);
 
 };
 

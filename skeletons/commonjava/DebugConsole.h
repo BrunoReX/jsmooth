@@ -24,19 +24,46 @@
 #include <string>
 #include <windows.h>
 
+
+/** Manages a Debug Console.  
+ * The DebugConsole manages a debug console. This is mainly a standard
+ * windows console that can be used for output.
+ *
+ * @author Rodrigo Reyes <reyes@charabia.net>
+ */
+
 class DebugConsole
 {
-private:
-    HANDLE m_out;
-    HANDLE m_in;
+ private:
+  HANDLE m_out;
+  HANDLE m_in;
     
-public:
-    DebugConsole();
-    DebugConsole(const std::string& title);
+ public:
+
+  /**
+   * The default constructor
+   */
+  DebugConsole();
+
+  /** 
+   * Creates a console with a given title.
+   * This constructor creates the console and set up the title of the
+   * console windows with the name passed as parameter.
+   *
+   * @param title the title of the console
+   */
+  DebugConsole(const std::string& title);
+
+  
+  /** 
+   * Output a line of text to the console.
+   * @param str the text string
+   */
+  void writeline(const std::string& str);
     
-    void writeline(const std::string& str);
-    
-    void waitKey();
+  /// Makes the console to wait a key press.
+  void waitKey();
+
 };
 
 #endif

@@ -25,18 +25,49 @@
 
 using namespace std;
 
+/**
+ * Holds a Java Property. A Java Property is a name/value pair that is
+ * passed to the Java Virtual Machine, and can be used as a kind of
+ * environment variable. The java properties are usually passed to the
+ * JVM under the form "-Dname=value", but the form is JVM-specific.
+ *
+ * @author Rodrigo Reyes <reyes@charabia.net>
+ */
+
 class JavaProperty
 {
-    string m_name;
-    string m_value;
+  string m_name;
+  string m_value;
 
-public:
+ public:
+  /**
+   * The default constructor. The name and value strings are both
+   * empty.
+   */
+  JavaProperty();
 
-    JavaProperty();
-    JavaProperty(const string& name, const string& value);
+  /**
+   * This constructor sets up the name/value pair with the values
+   * passed as parameter.
+   *
+   * @param name the name of the property
+   * @param value the value of the property
+   */
+  JavaProperty(const string& name, const string& value);
     
-    const string& getName() const;    
-    const string& getValue() const;
+  /**
+   * Returns the name of the property
+   *
+   * @return the name
+   */
+  const string& getName() const;    
+
+  /**
+   * Returns the value of the property
+   *
+   * @return the value
+   */
+  const string& getValue() const;
 };
 
 #endif
