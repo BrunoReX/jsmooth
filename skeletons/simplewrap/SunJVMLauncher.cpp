@@ -408,16 +408,17 @@ bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, Reso
       string addargs = resource.getProperty("arguments");
       
       string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));
-      string arguments = "-classpath \"" + classpath + "\" " + classname + " " + arguments;
+      string arguments = "-classpath \"" + classpath + "\" " + classname + " " + addargs;
 
       DEBUG("CLASSNAME = <" + classname + ">");
       STARTUPINFO info;
       GetStartupInfo(&info);
+      info.dwFlags = 0;
       PROCESS_INFORMATION procinfo;
 
       string exeline = exepath + " " + arguments;
 
-      int res = CreateProcess(NULL, (char*)exeline.c_str(), NULL, NULL, TRUE, NORMAL_PRIORITY_CLASS, NULL, NULL, &info, &procinfo);
+      int res = CreateProcess(NULL, (char*)exeline.c_str(), NULL, NULL, FALSE, DETACHED_PROCESS	| NORMAL_PRIORITY_CLASS, NULL, NULL, &info, &procinfo);
 
       DEBUG("COMMAND LINE: " +exeline);
       if (res != 0)

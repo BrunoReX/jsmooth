@@ -196,7 +196,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		
 	jTextField1.setEditable(false);
 	jTextField1.setHorizontalAlignment(javax.swing.JTextField.LEFT);
-	jTextField1.setText("jTextField1");
+	jTextField1.setText("1");
 	jTextField1.setBorder(new javax.swing.border.EmptyBorder(new java.awt.Insets(1, 1, 1, 1)));
 	jTextField1.setFocusable(false);
 	jPanel1.add(jTextField1, java.awt.BorderLayout.CENTER);
