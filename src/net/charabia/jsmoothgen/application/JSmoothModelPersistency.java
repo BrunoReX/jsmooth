@@ -45,11 +45,19 @@ public class JSmoothModelPersistency
 	FileInputStream fis = new FileInputStream(fin);
 	try
 	    {
+		JSmoothModelBean jobj = new JSmoothModelBean();
+		String INVALID = "INVALID";
+		jobj.setSkeletonName(INVALID);
 		FileReader fr = new FileReader(fin);
 		JOXBeanReader jbr = new JOXBeanReader(fr);
-		JSmoothModelBean jobj = (JSmoothModelBean)jbr.readObject(JSmoothModelBean.class);
+		jbr.readObject(jobj);
 		jbr.close();
 		fr.close();
+
+		if (jobj.getSkeletonName() == INVALID)
+		    {
+			throw new Exception("Not a JOX File");
+		    }
 
 		return jobj;
 
