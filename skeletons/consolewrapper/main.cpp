@@ -33,7 +33,7 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {    
-    ResourceManager* globalResMan = new ResourceManager("JAVA", PROPID, JARID, "", "");
+    ResourceManager* globalResMan = new ResourceManager("JAVA", PROPID, JARID);
     char curdir[256];
     GetCurrentDirectory(256, curdir);
 

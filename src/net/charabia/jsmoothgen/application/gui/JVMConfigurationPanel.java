@@ -72,7 +72,7 @@ public class JVMConfigurationPanel extends javax.swing.JPanel implements ModelUp
 		initComponents();
                 m_proplist.setEditor(new PropEditor());
                 // m_propeditor.pack();*
-                m_propeditor.pack();
+                m_propeditor.setSize(400,300);
                 m_propeditor.setLocationRelativeTo(m_proplist);
 	}
 	
@@ -117,7 +117,9 @@ public class JVMConfigurationPanel extends javax.swing.JPanel implements ModelUp
 
         jPanel2.setBorder(new javax.swing.border.EmptyBorder(new java.awt.Insets(5, 1, 5, 1)));
         jLabel3.setText("Name");
-        jPanel2.add(jLabel3, new java.awt.GridBagConstraints());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 4);
+        jPanel2.add(jLabel3, gridBagConstraints);
 
         m_name.setText("jTextField1");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -126,7 +128,9 @@ public class JVMConfigurationPanel extends javax.swing.JPanel implements ModelUp
         jPanel2.add(m_name, gridBagConstraints);
 
         jLabel2.setText("Value");
-        jPanel2.add(jLabel2, new java.awt.GridBagConstraints());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 4);
+        jPanel2.add(jLabel2, gridBagConstraints);
 
         m_value.setText("jTextField2");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -139,6 +143,7 @@ public class JVMConfigurationPanel extends javax.swing.JPanel implements ModelUp
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.insets = new java.awt.Insets(5, 1, 1, 5);
         gridBagConstraints.weightx = 0.8;
+        gridBagConstraints.weighty = 1.0;
         m_propeditor.getContentPane().add(jPanel2, gridBagConstraints);
 
         jPanel4.setLayout(new java.awt.GridBagLayout());
@@ -174,8 +179,10 @@ public class JVMConfigurationPanel extends javax.swing.JPanel implements ModelUp
         jPanel4.add(jSeparator2, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
         gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         m_propeditor.getContentPane().add(jPanel4, gridBagConstraints);
 
         setLayout(new java.awt.GridBagLayout());

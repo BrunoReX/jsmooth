@@ -154,9 +154,21 @@ bool SunJVMLauncher::runVM12DLL(ResourceManager& resource)
                 jstring jstr;
                 jobjectArray args;
                 char classpath[2048];
+
+        //
+        // create the properties array
+        //
+      const vector<JavaProperty>& jprops = resource.getJavaProperties();
+      vector<string> jpropstrv;
+      for (int i=0; i<jprops.size(); i++)
+      {
+            const JavaProperty& jp = jprops[i];
+            jpropstrv.push_back("-D" + jp.getName() + "=" + jp.getValue());
+      }
+
                 
                 JavaVMInitArgs vm_args;
-                JavaVMOption options[4];
+                JavaVMOption options[1 + jpropstrv.size()];
                 std::string cpoption = "-Djava.class.path=";
                 cpoption += jarpath;
 
@@ -164,7 +176,12 @@ bool SunJVMLauncher::runVM12DLL(ResourceManager& resource)
                 options[0].optionString =  (char*)cpoption.c_str();
                 vm_args.version = 0x00010002;
                 vm_args.options = options;
-                vm_args.nOptions = 1;
+                vm_args.nOptions = 1 + jpropstrv.size();
+                
+                for (int i=0; i<jpropstrv.size(); i++)
+                {
+                    options[1 + i].optionString = (char*)jpropstrv[i].c_str();
+                }
                 
                 DEBUG("OPTIONS SET!");
                 
@@ -175,11 +192,11 @@ bool SunJVMLauncher::runVM12DLL(ResourceManager& resource)
                 res = CreateJavaVM( &vm, &env, &vm_args);
                 if (res != 0)
                 {
-                                DEBUG("Can't create VM");
-                                return false;
+                    DEBUG("Can't create VM");
+                    return false;
                 }
                 else
-                            DEBUG("VM Created !!");
+                    DEBUG("VM Created !!");
                 
                 jclass clstest = env->FindClass("java/lang/System");
                 if (clstest != 0)
@@ -247,7 +264,6 @@ bool SunJVMLauncher::runVM12DLL(ResourceManager& resource)
 
 bool SunJVMLauncher::runVM11DLL(ResourceManager& resource)
 {
-
     std::string jarpath = resource.saveJarInTempFile();
     std::string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));
     std::string extracp = resource.getProperty(string(ResourceManager::KEY_CLASSPATH));
@@ -291,6 +307,26 @@ bool SunJVMLauncher::runVM11DLL(ResourceManager& resource)
                   vm_args.exit = myexit;
                   vm_args.version = 0x00010001;
                   GetDefaultJavaVMInitArgs(&vm_args);
+                  
+        //
+        // create the properties array
+        //
+      const vector<JavaProperty>& jprops = resource.getJavaProperties();
+      vector<string> jpropstrv;
+      for (int i=0; i<jprops.size(); i++)
+      {
+            const JavaProperty& jp = jprops[i];
+            jpropstrv.push_back(jp.getName() + "=" + jp.getValue());
+      }
+      
+      char  const  * props[jprops.size()+1];
+      for (int i=0; i<jpropstrv.size(); i++)
+      {
+             props[i] = jpropstrv[i].c_str();
+      }
+      props[jprops.size()] = NULL;
+      
+      vm_args.properties = (char**)props;
 
      /* Append USER_CLASSPATH to the default system class path */
 

@@ -73,7 +73,7 @@ bool JavaMachineManager::run(bool dontUseConsole)
                      if (m_registryVms[i].runProc(m_resman, dontUseConsole))
                      {
                         return true;
-                     }                
+                     } 
                 }
                 else
                 {

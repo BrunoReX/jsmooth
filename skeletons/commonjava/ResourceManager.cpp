@@ -20,7 +20,7 @@
 
 #include "ResourceManager.h"
 
-ResourceManager::ResourceManager(std::string category, int propsId, int jarId, const string& commanddir, const string& commandname)
+ResourceManager::ResourceManager(std::string category, int propsId, int jarId)
 {
     m_resourceCategory = category;
     m_resourcePropsId = propsId;
@@ -63,7 +63,6 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId, c
         return;
     }
 
-
     //
     // Extract the java properties from the Property
     //
@@ -80,7 +79,7 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId, c
         string name = m_props.get(namekey);
         string value = m_props.get(valuekey);
 
-        DEBUG("JPROP: " + name + "=" + value);
+        DEBUG("JPROP: " + name + "=" + StringUtils::StringUtils::replaceEnvironmentVariable(value));
         
         JavaProperty jprop(name, StringUtils::StringUtils::replaceEnvironmentVariable(value));
         m_javaProperties.push_back(jprop);

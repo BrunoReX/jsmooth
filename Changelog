@@ -1,3 +1,15 @@
+0.9.3
+	- Added Java Properties management
+	- Fixed bug: incorrect Sun's jre.exe/java.exe 1.1 classpath
+	- Fixed minor bug: FileUtils::recursiveSearch method scanning
+	files instead of just the directories
+	- Fixed major bug: *.jar files not added to classpath for Sun's
+	JRE 1.1
+	
+0.9.2 (5 Sept 2003)
+	- Fixed a bug that prevented jsmoothgen to compile if the JIMI API
+	is not in the path
+
 0.9.1 (03 Sept 2003)
 	- Added the Console Wrapper
 	- Fixed a bug on the Windowed Wrapper (java.exe was called instead of javaw.exe)

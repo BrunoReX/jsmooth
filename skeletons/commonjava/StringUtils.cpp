@@ -184,7 +184,9 @@ string StringUtils::replaceEnvironmentVariable(const string& str)
 {
     string result = str;
     int start = 0;
-
+    
+    DEBUG("Looking for % in " + result + " = " + StringUtils::toString(result.find('%', start)));
+    
     while ( (start=result.find('%', start)) != str.npos)
     {
         start++;
@@ -196,8 +198,11 @@ string StringUtils::replaceEnvironmentVariable(const string& str)
                 
                 char buffer[512];
                 buffer[0]=0;
-                
+                         
                 GetEnvironmentVariable(envname.c_str(), buffer, 512);
+
+                DEBUG("REPLACING <" + envname + "> with " + buffer);
+
                 result.replace(start-1, replacelen+2, buffer);
                 start+= strlen(buffer);                
         }

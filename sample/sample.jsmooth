@@ -26,9 +26,6 @@
   <void property="arguments"> 
    <string></string> 
   </void> 
-  <void property="baseDir"> 
-   <string>F:\Documents and Settings\Rodrigo\Mes documents\projects\jsmooth\sample</string> 
-  </void> 
   <void property="classPath"> 
    <array class="java.lang.String" length="0"/> 
   </void> 
@@ -41,11 +38,45 @@
   <void property="jarLocation"> 
    <string>sample.jar</string> 
   </void> 
+  <void property="javaProperties"> 
+   <array class="net.charabia.jsmoothgen.application.JavaPropertyPair" length="3"> 
+    <void index="0"> 
+     <object class="net.charabia.jsmoothgen.application.JavaPropertyPair"> 
+      <void property="name"> 
+       <string>nom1</string> 
+      </void> 
+      <void property="value"> 
+       <string>valeur1</string> 
+      </void> 
+     </object> 
+    </void> 
+    <void index="1"> 
+     <object class="net.charabia.jsmoothgen.application.JavaPropertyPair"> 
+      <void property="name"> 
+       <string>MONPATH</string> 
+      </void> 
+      <void property="value"> 
+       <string>%PATH%</string> 
+      </void> 
+     </object> 
+    </void> 
+    <void index="2"> 
+     <object class="net.charabia.jsmoothgen.application.JavaPropertyPair"> 
+      <void property="name"> 
+       <string>MONHOME</string> 
+      </void> 
+      <void property="value"> 
+       <string>%JAVA_HOME%</string> 
+      </void> 
+     </object> 
+    </void> 
+   </array> 
+  </void> 
   <void property="mainClassName"> 
    <string>JSmoothPropertiesDisplayer</string> 
   </void> 
   <void property="minimumVersion"> 
-   <string>1.1</string> 
+   <string>1.2</string> 
   </void> 
   <void property="skeletonName"> 
    <string>Windowed Wrapper</string> 

@@ -59,7 +59,7 @@ public:
     static char * const KEY_BUNDLEDVM     = "bundledvm";
     static char * const KEY_CURRENTDIR    = "currentdir";
  
-    ResourceManager(std::string category, int propsId, int jarId, const string& commanddir, const string& commandname);
+    ResourceManager(std::string category, int propsId, int jarId);
     ~ResourceManager();
     
     std::string saveJarInTempFile();
