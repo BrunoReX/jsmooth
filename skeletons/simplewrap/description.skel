@@ -23,5 +23,47 @@ If no Java VM is found, it displays an HTML page that request the user to downlo
   <void property="shortName"> 
    <string>Windowed Wrapper</string> 
   </void> 
+  <void property="skeletonProperties"> 
+   <array class="net.charabia.jsmoothgen.skeleton.SkeletonProperty" length="2"> 
+    <void index="0"> 
+     <object class="net.charabia.jsmoothgen.skeleton.SkeletonProperty"> 
+      <void property="description"> 
+       <string>When no JVM is found in the target computer, the user is prompted with the message defined below. Then, the default browser is launched with the URL defined here.</string> 
+      </void> 
+      <void property="idName"> 
+       <string>Message</string> 
+      </void> 
+      <void property="label"> 
+       <string>Message</string> 
+      </void> 
+      <void property="type"> 
+       <string>textarea</string> 
+      </void> 
+      <void property="value"> 
+       <string>Java has not been found on your computer. Do you want to download it?</string> 
+      </void> 
+     </object> 
+    </void> 
+    <void index="1"> 
+     <object class="net.charabia.jsmoothgen.skeleton.SkeletonProperty"> 
+      <void property="description"> 
+       <string>If the user selects YES to the message prompted above, the default web browser is launched with this URL.</string> 
+      </void> 
+      <void property="idName"> 
+       <string>URL</string> 
+      </void> 
+      <void property="label"> 
+       <string>URL</string> 
+      </void> 
+      <void property="type"> 
+       <string>string</string> 
+      </void> 
+      <void property="value"> 
+       <string>http://www.java.com</string> 
+      </void> 
+     </object> 
+    </void> 
+   </array> 
+  </void> 
  </object> 
 </java> 
