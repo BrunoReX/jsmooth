@@ -1,0 +1,10 @@
+0.9.1 (03 Sept 2003)
+	- Added the Console Wrapper
+	- Fixed a bug on the Windowed Wrapper (java.exe was called instead of javaw.exe)
+	- Fixed the broken icon generation
+	- Added JIMI library support (optional)
+	- Fixed several minor bugs
+
+0.9 (28 Aug 2003)
+	- First public release
+	- Window Wrapper available
