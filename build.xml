@@ -242,9 +242,11 @@
     <!-- Builds the jsmooth executable -->
     <jsmoothgen project="jsprj/jsmoothgen.jsmooth" skeletonroot="${dist}/skeletons"/>
     <jsmoothgen project="jsprj/jsmoothcmd.jsmooth" skeletonroot="${dist}/skeletons"/>
+    <jsmoothgen project="jsprj/prooftest.jsmooth" skeletonroot="${dist}/skeletons"/>
 
     <copy todir="${dist}" file="jsmoothgen.exe"/>
     <copy todir="${dist}" file="jsmoothcmd.exe"/>
+    <copy todir="${dist}" file="proof-test.exe"/>
     <copy todir="${dist}/sample">
       <fileset dir="sample"/>
     </copy>
