@@ -29,24 +29,42 @@ import java.nio.channels.*;
 
 public class ExeCompiler
 {
-	static public boolean compile(File skelroot, SkeletonBean skel, JSmoothModelBean data, File out) throws Exception
+	private java.util.Vector m_errors = new java.util.Vector();
+	
+	public void cleanErrors()
+	{
+		m_errors.removeAllElements();
+	}
+	
+	public java.util.Vector getErrors()
+	{
+		return m_errors;
+	}
+	
+	public boolean compile(File skelroot, SkeletonBean skel, JSmoothModelBean data, File out) throws Exception
 	{
 		File basedir = new File(data.getBaseDir());
 		
 		File pattern = new File(skelroot, skel.getExecutableName());
 		if (pattern.exists() == false)
 		{
-			System.out.println("Can't find skeleton at " + skelroot);
+			m_errors.add("Error: Can't find any skeleton at " + skelroot);
 			return false;
 		}
 
 		PEFile pe = new PEFile(pattern);
 		pe.open();
 		
+		if (data.getJarLocation() == null)
+		{
+			m_errors.add("Error: Jar is not specified!");
+			return false;
+		}
+		
 		File jarloc = concFile(basedir, new File(data.getJarLocation()));
 		if (jarloc.exists() == false)
 		{
-			System.out.println("Can't find jar at " + jarloc);
+			m_errors.add("Error: Can't find jar at " + jarloc);
 			return false;
 		}
 		ByteBuffer jardata = load(jarloc);
@@ -55,7 +73,8 @@ public class ExeCompiler
 		boolean resb = resdir.replaceResource(skel.getResourceCategory(), skel.getResourceJarId(), 1033, jardata);
 		if (resb == false)
 		{
-			System.out.println("Can't replace jar resource !");
+			System.out.println("Error: Can't replace jar resource! It is probably missing from the skeleton.");
+			return false;
 		}
 		
 		String props = PropertiesBuilder.makeProperties(data);
@@ -69,7 +88,7 @@ public class ExeCompiler
 		return true;
 	}
 	
-	static private ByteBuffer load(File in) throws Exception
+	private ByteBuffer load(File in) throws Exception
 	{
 		FileInputStream fis = new FileInputStream(in);
 		ByteBuffer data = ByteBuffer.allocate((int)in.length());
@@ -82,7 +101,7 @@ public class ExeCompiler
 		return data;
 	}
 	
-	static private ByteBuffer convert(String data)
+	private ByteBuffer convert(String data)
 	{
 		ByteBuffer result = ByteBuffer.allocate(data.length()+1);
 		result.position(0);

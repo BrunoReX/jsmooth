@@ -24,7 +24,7 @@ import net.charabia.jsmoothgen.application.*;
 
 public class UserInteractionPanel extends javax.swing.JPanel  implements ModelUpdater
 {
-	
+	private JSmoothModelBean m_model;
 	/** Creates new form BeanForm */
 	public UserInteractionPanel()
 	{
@@ -38,26 +38,95 @@ public class UserInteractionPanel extends javax.swing.JPanel  implements ModelUp
 	 */
 	private void initComponents()//GEN-BEGIN:initComponents
 	{
+		java.awt.GridBagConstraints gridBagConstraints;
+		
+		jPanel1 = new javax.swing.JPanel();
+		jLabel3 = new javax.swing.JLabel();
+		jLabel2 = new javax.swing.JLabel();
+		jScrollPane1 = new javax.swing.JScrollPane();
+		m_message = new javax.swing.JTextPane();
 		jLabel1 = new javax.swing.JLabel();
+		m_url = new javax.swing.JTextField();
 		
-		setLayout(new java.awt.BorderLayout());
+		setLayout(new java.awt.GridBagLayout());
 		
-		jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		jLabel1.setText("N/A");
-		add(jLabel1, java.awt.BorderLayout.CENTER);
+		jPanel1.setLayout(new java.awt.GridBagLayout());
+		
+		jPanel1.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.TitledBorder("When no JVM is found...."), new javax.swing.border.EmptyBorder(new java.awt.Insets(5, 5, 5, 5))));
+		jLabel3.setText("<html><small>When no JVM is found in the target computer, the user is prompted with the message defined below. Then, the default browser is launched with the URL defined here.</small></html>");
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		jPanel1.add(jLabel3, gridBagConstraints);
+		
+		jLabel2.setText("Message");
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
+		jPanel1.add(jLabel2, gridBagConstraints);
+		
+		m_message.setText("You need Java(tm) to run this application.\nDo you want to download it ?\n");
+		jScrollPane1.setViewportView(m_message);
+		
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.weighty = 0.3;
+		jPanel1.add(jScrollPane1, gridBagConstraints);
+		
+		jLabel1.setText("URL");
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
+		jPanel1.add(jLabel1, gridBagConstraints);
+		
+		m_url.setText("http://www.java.com");
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.weightx = 1.0;
+		jPanel1.add(m_url, gridBagConstraints);
+		
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.weightx = 1.0;
+		gridBagConstraints.weighty = 1.0;
+		add(jPanel1, gridBagConstraints);
 		
 	}//GEN-END:initComponents
 
 	public void setModel(JSmoothModelBean model)
 	{
+		m_model = model;
+		if (model.getNoJvmMessage() != null)
+		{
+			m_message.setText(model.getNoJvmMessage());
+		} else
+		{
+			m_message.setText("");
+		}
+		
+		if (model.getNoJvmURL() != null)
+		{
+			m_url.setText(model.getNoJvmURL());
+		} else
+		{
+			m_url.setText("");
+		}
 	}	
 	
 	public void updateModel()
 	{
+		m_model.setNoJvmMessage(m_message.getText());
+		m_model.setNoJvmURL(m_url.getText());
 	}	
 	
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private javax.swing.JLabel jLabel1;
+	private javax.swing.JLabel jLabel2;
+	private javax.swing.JLabel jLabel3;
+	private javax.swing.JPanel jPanel1;
+	private javax.swing.JScrollPane jScrollPane1;
+	private javax.swing.JTextPane m_message;
+	private javax.swing.JTextField m_url;
 	// End of variables declaration//GEN-END:variables
 	
 }

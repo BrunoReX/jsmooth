@@ -29,6 +29,13 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 	private MainController m_main;
 	private JSmoothModelBean m_model;
 	
+	private Executable m_panelExecutable = new Executable();
+	private JVMConfigurationPanel m_panelJVMConfiguration = new JVMConfigurationPanel();
+	private JVMSelectionPanel m_panelSelection = new JVMSelectionPanel();
+	private JavaApp m_panelJavaApp = new JavaApp();
+	private SkeletonChooser m_panelSkeletonChooser = new SkeletonChooser();
+	private UserInteractionPanel m_panelUserInteraction = new UserInteractionPanel();
+	
 	/** Creates new form StaticWizard */
 	public StaticWizard()
 	{
@@ -166,7 +173,7 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 		m_leftPane.add(m_buttonJVMConfig);
 		
 		m_buttonErrors.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_web-support.png")));
-		m_buttonErrors.setText("Error Management");
+		m_buttonErrors.setText("User Interactions");
 		m_leftButtonsGroup.add(m_buttonErrors);
 		m_buttonErrors.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 		m_buttonErrors.addActionListener(new java.awt.event.ActionListener()
@@ -207,55 +214,55 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 	{//GEN-HEADEREND:event_buttonErrorsActionPerformed
 		// Add your handling code here:
 		updateModel();
-		UserInteractionPanel uip = new UserInteractionPanel();
-		uip.setModel(m_model);
-		setNewCentralPanel(uip, uip);
+//		UserInteractionPanel uip = new UserInteractionPanel();
+		m_panelUserInteraction.setModel(m_model);
+		setNewCentralPanel(m_panelUserInteraction, m_panelUserInteraction);
 	}//GEN-LAST:event_buttonErrorsActionPerformed
 
 	private void buttonJVMConfigActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonJVMConfigActionPerformed
 	{//GEN-HEADEREND:event_buttonJVMConfigActionPerformed
 		// Add your handling code here:
 		updateModel();
-		JVMConfigurationPanel jconf = new JVMConfigurationPanel();
-		jconf.setModel(m_model);
-		setNewCentralPanel(jconf, jconf);
+//		JVMConfigurationPanel jconf = new JVMConfigurationPanel();
+		m_panelJVMConfiguration.setModel(m_model);
+		setNewCentralPanel(m_panelJVMConfiguration, m_panelJVMConfiguration);
 	}//GEN-LAST:event_buttonJVMConfigActionPerformed
 
 	private void buttonJVMSelectionActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonJVMSelectionActionPerformed
 	{//GEN-HEADEREND:event_buttonJVMSelectionActionPerformed
 		// Add your handling code here:
 		updateModel();
-		JVMSelectionPanel jvmsel = new JVMSelectionPanel();
-		jvmsel.setModel(m_model);
-		setNewCentralPanel(jvmsel,jvmsel);
+//		JVMSelectionPanel jvmsel = new JVMSelectionPanel();
+		m_panelSelection.setModel(m_model);
+		setNewCentralPanel(m_panelSelection,m_panelSelection);
 	}//GEN-LAST:event_buttonJVMSelectionActionPerformed
 
 	private void buttonJavaAppActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonJavaAppActionPerformed
 	{//GEN-HEADEREND:event_buttonJavaAppActionPerformed
 		// Add your handling code here:
 		updateModel();
-		JavaApp japp = new JavaApp();
-		japp.setModel(m_model);
-		setNewCentralPanel(japp, japp);
+//		JavaApp japp = new JavaApp();
+		m_panelJavaApp.setModel(m_model);
+		setNewCentralPanel(m_panelJavaApp, m_panelJavaApp);
 	}//GEN-LAST:event_buttonJavaAppActionPerformed
 
 	private void buttonExecutableActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonExecutableActionPerformed
 	{//GEN-HEADEREND:event_buttonExecutableActionPerformed
 		// Add your handling code here:
 		updateModel();
-		Executable exec = new Executable();
-		exec.setModel(m_model);
-		setNewCentralPanel(exec, exec);
+//		Executable exec = new Executable();
+		m_panelExecutable.setModel(m_model);
+		setNewCentralPanel(m_panelExecutable, m_panelExecutable);
 	}//GEN-LAST:event_buttonExecutableActionPerformed
 
 	private void buttonSkeletonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonSkeletonActionPerformed
 	{//GEN-HEADEREND:event_buttonSkeletonActionPerformed
 		// Add your handling code here:
 		updateModel();
-		SkeletonChooser sc = new SkeletonChooser();
-		sc.setModel(m_model);
-		sc.setSkeletonList(m_main.getSkeletonList());
-		setNewCentralPanel(sc, sc);
+//		SkeletonChooser sc = new SkeletonChooser();
+		m_panelSkeletonChooser.setModel(m_model);
+		m_panelSkeletonChooser.setSkeletonList(m_main.getSkeletonList());
+		setNewCentralPanel(m_panelSkeletonChooser, m_panelSkeletonChooser);
 	}//GEN-LAST:event_buttonSkeletonActionPerformed
 
 	public void setNewCentralPanel(JPanel pan, ModelUpdater upd)
@@ -264,7 +271,9 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 		m_centerPane.add(pan);
 		m_currentEditor = upd;
 		
+		invalidate();
 		revalidate();
+		repaint();
 	}
 	
 	public void updateModel()

@@ -157,15 +157,26 @@ public class JavaApp extends javax.swing.JPanel implements ModelUpdater
 		m_jarLocation.setFileChooser(m_jarLocFileChooser);
 		if (m_model.getJarLocation() != null)
 		{
-				System.out.println("basedir: " + m_model.getBaseDir());
-				System.out.println("jarloc: " + m_model.getJarLocation());
+			System.out.println("basedir: " + m_model.getBaseDir());
+			System.out.println("jarloc: " + m_model.getJarLocation());
 				
-				m_jarLocation.setFile(new File(m_model.getJarLocation()));
+			m_jarLocation.setFile(new File(m_model.getJarLocation()));
 		}
+		else
+		{
+			m_jarLocation.setFile(null);
+		}
+		
 		if (m_model.getMainClassName() != null)
 			m_mainClassName.setText(m_model.getMainClassName());
+		else
+			m_mainClassName.setText("");
+		
 		if (m_model.getArguments() != null)
 			m_arguments.setText(m_model.getArguments());
+		else
+			m_arguments.setText("");
+		
 		if (m_model.getClassPath() != null)
 		{
 			String[] classpathstr = m_model.getClassPath();
@@ -180,6 +191,9 @@ public class JavaApp extends javax.swing.JPanel implements ModelUpdater
 				flist[i] = f;
 			}
 			m_classPathList.setData(flist);
+		} else
+		{
+			m_classPathList.setData(new String[0]);
 		}
 	}
 	

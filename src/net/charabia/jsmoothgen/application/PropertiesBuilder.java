@@ -22,15 +22,34 @@ public class PropertiesBuilder
 		addPair("jvmsearch", makePathConc(obj.getJVMSearchPath()), out);
 		addPair("minversion", obj.getMinimumVersion(), out);
 		addPair("maxversion", obj.getMaximumVersion(), out);
-
+		addPair("nojvmmessage", obj.getNoJvmMessage(), out);
+		addPair("nojvmurl", obj.getNoJvmURL(), out);
+		return out.toString();
+	}
+	
+	static public String escapeString(String str)
+	{
+		StringBuffer out = new StringBuffer();
+		for (int i=0; i<str.length(); i++)
+		{
+			char c = str.charAt(i);
+			switch(c)
+			{
+				case '\n':
+					out.append("\\n");
+					break;
+				default:
+					out.append(c);
+			}
+		}
 		return out.toString();
 	}
 	
 	static private void addPair(String name, String value, StringBuffer out)
 	{
-		out.append(name);
+		out.append(escapeString(name));
 		out.append("=");
-		out.append(value);
+		out.append(escapeString(value));
 		out.append("\n");
 	}
 	

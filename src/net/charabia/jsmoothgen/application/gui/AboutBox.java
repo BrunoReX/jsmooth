@@ -20,6 +20,11 @@ public class AboutBox extends javax.swing.JDialog
 		initComponents();
 	}
 	
+	public void setVersion(String vers)
+	{
+		m_labelVersion.setText(vers);
+	}
+	
 	/** This method is called from within the constructor to
 	 * initialize the form.
 	 * WARNING: Do NOT modify this code. The content of this method is
@@ -27,9 +32,14 @@ public class AboutBox extends javax.swing.JDialog
 	 */
 	private void initComponents()//GEN-BEGIN:initComponents
 	{
+		java.awt.GridBagConstraints gridBagConstraints;
+		
 		jPanel1 = new javax.swing.JPanel();
-		jLabel1 = new javax.swing.JLabel();
-		jLabel2 = new javax.swing.JLabel();
+		jLabel3 = new javax.swing.JLabel();
+		m_labelVersion = new javax.swing.JLabel();
+		jLabel5 = new javax.swing.JLabel();
+		jScrollPane1 = new javax.swing.JScrollPane();
+		jTextArea1 = new javax.swing.JTextArea();
 		jPanel2 = new javax.swing.JPanel();
 		m_buttonOk = new javax.swing.JButton();
 		
@@ -45,18 +55,51 @@ public class AboutBox extends javax.swing.JDialog
 			}
 		});
 		
-		jPanel1.setLayout(new java.awt.BorderLayout());
+		jPanel1.setLayout(new java.awt.GridBagLayout());
 		
 		jPanel1.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.EmptyBorder(new java.awt.Insets(5, 5, 5, 5)), new javax.swing.border.EtchedBorder()));
-		jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/gnome-application-x-jar.png")));
-		jLabel1.setText("<html><p align=\"center\"<big><strong>JSmooth</strong></big><p>JSmooth is a Java Executable Wrapper that makes a standard Windows executable binary (.exe) from a jar file. It makes java deployment much smoother and user-friendly, as it is able to find a Java VM by itself.</html>");
-		jLabel1.setFocusable(false);
-		jPanel1.add(jLabel1, java.awt.BorderLayout.CENTER);
+		jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		jLabel3.setText("<html><big>JSmooth</big></html>");
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridx = 2;
+		gridBagConstraints.gridy = 1;
+		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.weightx = 0.5;
+		jPanel1.add(jLabel3, gridBagConstraints);
 		
-		jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-		jLabel2.setText("<html>Information<ul><li>Web site: https://sourceforge.net/projects/jsmooth/</li><li>Author: Rodrigo Reyes &lt;reyes@users.sourceforge.net&gt; </ul></html>");
-		jPanel1.add(jLabel2, java.awt.BorderLayout.SOUTH);
+		m_labelVersion.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		m_labelVersion.setText("Unknown Version");
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridy = 2;
+		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.weightx = 0.5;
+		jPanel1.add(m_labelVersion, gridBagConstraints);
+		
+		jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/gnome-application-x-jar.png")));
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+		gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.weightx = 0.1;
+		jPanel1.add(jLabel5, gridBagConstraints);
+		
+		jTextArea1.setEditable(false);
+		jTextArea1.setLineWrap(true);
+		jTextArea1.setText("This software is distributed under the terms of the GNU General Public License (GPL).\n\nWeb site: http://sourceforge.net/projects/jsmooth/\nAuthor: Rodrigo Reyes <reyes@users.sourceforge.net>");
+		jTextArea1.setWrapStyleWord(true);
+		jScrollPane1.setViewportView(jTextArea1);
+		
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+		gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+		gridBagConstraints.weightx = 1.0;
+		gridBagConstraints.weighty = 1.0;
+		jPanel1.add(jScrollPane1, gridBagConstraints);
 		
 		getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 		
@@ -74,7 +117,7 @@ public class AboutBox extends javax.swing.JDialog
 		getContentPane().add(jPanel2, java.awt.BorderLayout.SOUTH);
 		
 		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds((screenSize.width-400)/2, (screenSize.height-300)/2, 400, 300);
+		setBounds((screenSize.width-450)/2, (screenSize.height-350)/2, 450, 350);
 	}//GEN-END:initComponents
 
 	private void buttonOkActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonOkActionPerformed
@@ -100,11 +143,14 @@ public class AboutBox extends javax.swing.JDialog
 	
 	
 	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JLabel jLabel1;
-	private javax.swing.JLabel jLabel2;
+	private javax.swing.JLabel jLabel3;
+	private javax.swing.JLabel jLabel5;
 	private javax.swing.JPanel jPanel1;
 	private javax.swing.JPanel jPanel2;
+	private javax.swing.JScrollPane jScrollPane1;
+	private javax.swing.JTextArea jTextArea1;
 	private javax.swing.JButton m_buttonOk;
+	private javax.swing.JLabel m_labelVersion;
 	// End of variables declaration//GEN-END:variables
 	
 }

@@ -43,7 +43,10 @@ public class JSmoothModelBean
 	private String m_maximumVersion = "";
 	private String[] m_jvmSearch = null;
 	private String m_basedir = null;
-	
+
+	private String m_noJvmMessage;
+	private String m_noJvmURL;
+
 	transient Vector m_listeners = new Vector();
 
 	public static interface Listener
@@ -197,6 +200,26 @@ public class JSmoothModelBean
 	{
 		return m_basedir;
 	}
+
+	public void setNoJvmMessage(String msg)
+	{
+		m_noJvmMessage = msg;
+	}
+	
+	public String getNoJvmMessage()
+	{
+		return m_noJvmMessage;
+	}
+	
+	public void setNoJvmURL(String url)
+	{
+		m_noJvmURL = url;
+	}
+	
+	public String getNoJvmURL()
+	{
+		return m_noJvmURL;
+	}
 	
 	public String[] normalizePaths()
 	{
@@ -220,9 +243,12 @@ public class JSmoothModelBean
 		m_iconLocation = checkRelativePath(root, m_iconLocation, result, "Icon location", toRelativePath);
 		m_jarLocation = checkRelativePath(root, m_jarLocation, result, "Jar location", toRelativePath);
 		
-		for (int i=0; i<m_classPath.length; i++)
+		if (m_classPath != null)
 		{
-			m_classPath[i] = checkRelativePath(exeroot, m_classPath[i], result, "Classpath entry (" + i + ")", toRelativePath);
+			for (int i=0; i<m_classPath.length; i++)
+			{
+				m_classPath[i] = checkRelativePath(exeroot, m_classPath[i], result, "Classpath entry (" + i + ")", toRelativePath);
+			}
 		}
 		
 		if (result.size() == 0)

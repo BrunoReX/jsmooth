@@ -24,6 +24,7 @@ import net.charabia.jsmoothgen.application.*;
 import net.charabia.jsmoothgen.application.gui.util.*;
 import net.charabia.jsmoothgen.skeleton.*;
 import java.io.*;
+import java.util.*;
 import javax.swing.*;
 
 
@@ -32,6 +33,9 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 	private StaticWizard m_wizard;
 	private SkeletonList m_skelList;
 	private File m_projectFile = null;
+	
+	final static public String VERSION = "0.9";
+	
 	/** Creates new form MainFrame */
 	public MainFrame()
 	{
@@ -56,6 +60,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		
 		m_projectFileChooser = new javax.swing.JFileChooser();
 		jToolBar1 = new javax.swing.JToolBar();
+		m_buttonNew = new javax.swing.JButton();
 		m_buttonOpen = new javax.swing.JButton();
 		m_buttonSave = new javax.swing.JButton();
 		m_buttonSaveAs = new javax.swing.JButton();
@@ -95,6 +100,17 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 				exitForm(evt);
 			}
 		});
+		
+		m_buttonNew.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_new.png")));
+		m_buttonNew.addActionListener(new java.awt.event.ActionListener()
+		{
+			public void actionPerformed(java.awt.event.ActionEvent evt)
+			{
+				buttonNewActionPerformed(evt);
+			}
+		});
+		
+		jToolBar1.add(m_buttonNew);
 		
 		m_buttonOpen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_open.png")));
 		m_buttonOpen.addActionListener(new java.awt.event.ActionListener()
@@ -291,6 +307,14 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		setBounds((screenSize.width-550)/2, (screenSize.height-480)/2, 550, 480);
 	}//GEN-END:initComponents
 
+	private void buttonNewActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonNewActionPerformed
+	{//GEN-HEADEREND:event_buttonNewActionPerformed
+		// Add your handling code here:
+		JSmoothModelBean model = new JSmoothModelBean();
+		m_wizard.setModel(model);
+		m_projectFile = null;
+	}//GEN-LAST:event_buttonNewActionPerformed
+
 	private void buttonRunExeActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonRunExeActionPerformed
 	{//GEN-HEADEREND:event_buttonRunExeActionPerformed
 		// Add your handling code here:
@@ -314,7 +338,9 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 	private void menuAboutActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_menuAboutActionPerformed
 	{//GEN-HEADEREND:event_menuAboutActionPerformed
 		// Add your handling code here:
-		new AboutBox(this, true).show();
+		AboutBox ab = new AboutBox(this, true);
+		ab.setVersion(VERSION);
+		ab.show();
 	}//GEN-LAST:event_menuAboutActionPerformed
 	
 	private void buttonSaveAsActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonSaveAsActionPerformed
@@ -344,29 +370,54 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 	
 	public boolean compile()
 	{	
+		m_wizard.updateModel();
+		m_wizard.getModel().normalizePaths();		
+		
 		if (m_wizard.getModel().getBaseDir() == null)
 		{
 			JOptionPane.showMessageDialog(this, "The Output Directory has not been specified.");
 			return false;
 		}
 		
-		m_wizard.updateModel();
-		m_wizard.getModel().normalizePaths();
-		
 		JSmoothModelBean model = m_wizard.getModel();
+		if (model.getSkeletonName() == null)
+		{
+			String msg = "The skeleton is not specified!";
+			JOptionPane.showMessageDialog(this, msg);
+			return false;
+		}
 		SkeletonBean skel = m_skelList.getSkeleton(model.getSkeletonName());
+		if (skel == null)
+		{
+			String msg = "The skeleton is not registered!";
+			JOptionPane.showMessageDialog(this, msg);
+			return false;			
+		}
 		File skelroot = m_skelList.getDirectory(skel);
 		File exedir = new File(model.getBaseDir());
-		
+
 		try
 		{
 			File out = new File(exedir, model.getExecutableName());
 			System.out.println("out = "+ out.getAbsolutePath());
-			ExeCompiler.compile(skelroot, skel, model, out);
-			
+			ExeCompiler compiler = new ExeCompiler();
+			boolean res = compiler.compile(skelroot, skel, model, out);
+			if (res == false)
+			{
+				String msg = "<html>There are errors in the compilation process:<p><ol>";
+				Vector errs = compiler.getErrors();
+				for (Iterator i=errs.iterator(); i.hasNext(); )
+				{
+					msg += "<li>" + i.next().toString() + "<br>";
+				}
+				msg += "</ol></html>";
+				JOptionPane.showMessageDialog(this, msg);
+				return false;
+			}
 		} catch (Exception exc)
 		{
-			exc.printStackTrace();
+			String msg = "Not all the parameters have been specified.\nCompilation aborted.";
+			JOptionPane.showMessageDialog(this, msg);
 			return false;
 		}
 		
@@ -531,6 +582,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 	private javax.swing.JTextField jTextField1;
 	private javax.swing.JToolBar jToolBar1;
 	private javax.swing.JButton m_buttonCompile;
+	private javax.swing.JButton m_buttonNew;
 	private javax.swing.JButton m_buttonOpen;
 	private javax.swing.JButton m_buttonRunExe;
 	private javax.swing.JButton m_buttonSave;

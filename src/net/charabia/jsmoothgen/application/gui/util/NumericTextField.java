@@ -78,6 +78,11 @@ public class NumericTextField extends javax.swing.JPanel
 			return Integer.parseInt(m_data.getText());
 	}
 	
+	public void clear()
+	{
+		m_data.setText("");
+	}
+	
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private javax.swing.JTextField m_data;
 	// End of variables declaration//GEN-END:variables

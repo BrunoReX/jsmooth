@@ -99,8 +99,8 @@ public class JVMSelectionPanel extends javax.swing.JPanel implements ModelUpdate
 		jLabel1.setText("Minimum Version");
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-		gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
 		gridBagConstraints.weightx = 0.3;
+		gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
 		jPanel1.add(jLabel1, gridBagConstraints);
 		
 		gridBagConstraints = new java.awt.GridBagConstraints();
