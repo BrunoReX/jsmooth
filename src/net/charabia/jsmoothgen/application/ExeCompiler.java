@@ -116,34 +116,43 @@ public class ExeCompiler
 	    fireStepChange(10, "Scanning skeleton...");
 	    PEFile pe = new PEFile(pattern);
 	    pe.open();
-			
-	    if (data.getJarLocation() == null)
-		{
-		    m_errors.add("Error: Jar is not specified!");
-		    fireFailedChange();
-		    return false;
-		}
-			
-	    fireStepChange(40, "Loading Jar...");
-	    File jarloc = concFile(basedir, new File(data.getJarLocation()));
-	    if (jarloc.exists() == false)
-		{
-		    m_errors.add("Error: Can't find jar at " + jarloc);
-		    fireFailedChange();
-		    return false;
-		}
-	    ByteBuffer jardata = load(jarloc);
-			
-	    fireStepChange(60, "Adding Jar to Resources...");
 	    PEResourceDirectory resdir = pe.getResourceDirectory();
-	    boolean resb = resdir.replaceResource(skel.getResourceCategory(), skel.getResourceJarId(), 1033, jardata);
-	    if (resb == false)
+
+	    boolean resb = false;
+		
+	    //
+	    // Adds the jar only if the user selected one
+	    //
+	    if (data.getEmbeddedJar() == true)
 		{
-		    m_errors.add("Error: Can't replace jar resource! It is probably missing from the skeleton.");
-		    fireFailedChange();
-		    return false;
-		}
+		    if (data.getJarLocation() == null)
+			{
+			    m_errors.add("Error: Jar is not specified!");
+			    fireFailedChange();
+			    return false;
+			}
 			
+		    fireStepChange(40, "Loading Jar...");
+		    File jarloc = concFile(basedir, new File(data.getJarLocation()));
+		    if (jarloc.exists() == false)
+			{
+			    m_errors.add("Error: Can't find jar at " + jarloc);
+			    fireFailedChange();
+			    return false;
+			}
+
+		    ByteBuffer jardata = load(jarloc);
+
+		    fireStepChange(60, "Adding Jar to Resources...");
+		    resb = resdir.replaceResource(skel.getResourceCategory(), skel.getResourceJarId(), 1033, jardata);
+		    if (resb == false)
+			{
+			    m_errors.add("Error: Can't replace jar resource! It is probably missing from the skeleton.");
+			    fireFailedChange();
+			    return false;
+			}
+		}
+	    
 	    fireStepChange(70, "Adding Properties to Resources...");
 	    String props = PropertiesBuilder.makeProperties(basedir, data);
 	    ByteBuffer propdata = convert(props);
@@ -159,7 +168,7 @@ public class ExeCompiler
 
 		    Image img = getScaledImage(iconpath, 32, 32);
 		    Hashtable set = calculateColorCount(img);
-		    System.out.println("COLORS TOTAL 4: " + set.size());
+		    //		    System.out.println("COLORS TOTAL 4: " + set.size());
 
 		    if (img != null)
 			{
@@ -285,22 +294,22 @@ public class ExeCompiler
 		data[i%width][i/width] = pixelbuffer[i];
 	    }
 	
-	System.out.println("BEFORE...");
-	for (int y=0; y<height; y++)
-	    {
-		for (int x=0; x<width; x++)
-		    {
-			//			int rgb = ((BufferedImage)img).getRGB(x, y);
-			int rgb = data[x][y];
-			if (((rgb>>24)&0xFF)>0)
-			    {
-				System.out.print(".");
-			    }
-			else
-			    System.out.print("*");
-		    }
-		System.out.println("");
-	    }
+	//	System.out.println("BEFORE...");
+// 	for (int y=0; y<height; y++)
+// 	    {
+// 		for (int x=0; x<width; x++)
+// 		    {
+// 			//			int rgb = ((BufferedImage)img).getRGB(x, y);
+// 			int rgb = data[x][y];
+// 			if (((rgb>>24)&0xFF)>0)
+// 			    {
+// 				//				System.out.print(".");
+// 			    }
+// 			else
+// 			    System.out.print("*");
+// 		    }
+// 		//		System.out.println("");
+// 	    }
 
 	int[][] savedata = new int[width][height];	
 
@@ -313,13 +322,13 @@ public class ExeCompiler
 
 	for (int i=0; i<palette.length; i++)
 	    {
-		System.out.println(" i= " + (i));
+		//		System.out.println(" i= " + (i));
 		cmap[(i*4)] = (byte)((palette[i] >> 16) & 0xFF);
 		cmap[(i*4)+1] = (byte)((palette[i] >> 8) & 0xFF);
 		cmap[(i*4)+2] = (byte) (palette[i] & 0xFF);
 		cmap[(i*4)+3] = (byte) 0xFF;
 	    }
- 	System.out.println("Quantized image to " + palette.length + " colors");
+	// 	System.out.println("Quantized image to " + palette.length + " colors");
 
 	IndexColorModel colmodel = new IndexColorModel(8, palette.length, cmap, 0, true, 0);
 // 	System.out.println("INDEX0 = " + colmodel.getRGB(0));
@@ -345,7 +354,7 @@ public class ExeCompiler
 			if (alpha == 0)
 			    {
 				result.setRGB(x,y, 0);
- 				System.out.print(".");
+				// 				System.out.print(".");
 			    }
 			else
 			    {
@@ -353,16 +362,16 @@ public class ExeCompiler
 				rgb |= 0xFF000000;
 				set.put(new Integer(rgb), new Integer(rgb));
 				result.setRGB(x,y,rgb);
- 				System.out.print("*");
+				// 				System.out.print("*");
 			    }
 		    }
-		System.out.println("");
+		//		System.out.println("");
 	    }
 
-	System.out.println("COLORS TOTAL: " + set.size());
+	//	System.out.println("COLORS TOTAL: " + set.size());
 
 	Hashtable set2 = calculateColorCount(result);
-	System.out.println("COLORS TOTAL 2: " + set2.size());
+	//	System.out.println("COLORS TOTAL 2: " + set2.size());
 
 // 	System.out.println("INDEX0+ = " + colmodel.getRGB(0));
 // 	System.out.println("AFTER...");
@@ -404,23 +413,23 @@ public class ExeCompiler
 // 		System.out.println("");
 // 	    }
 
-	System.out.println("FINAL...");
-	for (int y=0; y<result.getHeight(); y++)
-	    {
-		for (int x=0; x<result.getWidth(); x++)
-		    {
-			int rgb = result.getRGB(x,y);
-			if (((rgb>>24)&0xFF) == 0)		       
-			    {
-				System.out.print(".");
-			    }
-			else
-			    {
-				System.out.print("*");
-			    }
-		    }
-		System.out.println("");
-	    }
+//	System.out.println("FINAL...");
+// 	for (int y=0; y<result.getHeight(); y++)
+// 	    {
+// 		for (int x=0; x<result.getWidth(); x++)
+// 		    {
+// 			int rgb = result.getRGB(x,y);
+// 			if (((rgb>>24)&0xFF) == 0)		       
+// 			    {
+// 				System.out.print(".");
+// 			    }
+// 			else
+// 			    {
+// 				System.out.print("*");
+// 			    }
+// 		    }
+// 		System.out.println("");
+// 	    }
 
 	return result;
     }
