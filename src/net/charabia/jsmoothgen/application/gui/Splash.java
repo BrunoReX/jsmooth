@@ -60,25 +60,15 @@ public class Splash
 	}                
     }
 
-    public class Closer extends MouseAdapter
-    {
-	public void mouseClicked(MouseEvent e)
-	{
-	    //                Splash.this.m_window.dispose();
-	}
-    }
-
     public Splash(Frame parent, String imagefilename, boolean dialog)
     {
 	if (dialog)
 	    {
                 m_window = new MyDialog(parent);
-                m_window.addMouseListener(new Closer());
 	    }
 	else
 	    {
                 m_window = new MyWindow(parent);
-                m_window.addMouseListener(new Closer());
 	    }
 	javax.swing.ImageIcon icon = new javax.swing.ImageIcon(getClass().getResource(imagefilename));
 	m_splashImage = icon.getImage();

@@ -24,119 +24,109 @@ package net.charabia.jsmoothgen.application.gui.util;
 
 import javax.swing.*;
 import java.util.prefs.*;
+import java.util.Vector;
+
 /**
  *
  * @author  'Rodrigo Reyes"
  */
 public class RecentFileMenu
 {
-	private JMenu m_root;
-	private String[] m_recent;
-	private Class m_prefAttach;
-	private RecentFileMenu.Action m_action;
+    private JMenu m_root;
+    private Vector m_recent;
+    private Class m_prefAttach;
+    private RecentFileMenu.Action m_action;
+    private int m_recentCount;
+    public interface Action
+    {
+	public void action(String path);
+    }
 	
-	public interface Action
-	{
-		public void action(String path);
-	}
-	
-	/** Creates a new instance of RecentFileMenu */
-	public RecentFileMenu(JMenu menuroot, int recentCount, Class prefAttach, RecentFileMenu.Action action)
-	{
-		m_recent = new String[recentCount];
-		m_root = menuroot;
-		m_prefAttach = prefAttach;
-		m_action = action;
+    /** Creates a new instance of RecentFileMenu */
+    public RecentFileMenu(JMenu menuroot, int recentCount, Class prefAttach, RecentFileMenu.Action action)
+    {
+	m_recent = new Vector(recentCount);
+	m_recentCount = recentCount;
+	m_root = menuroot;
+	m_prefAttach = prefAttach;
+	m_action = action;
 		
-		loadRecentPrefs();
-	}
+	loadRecentPrefs();
+    }
 	
-	private void loadRecentPrefs()
-	{
-		Preferences p = Preferences.systemNodeForPackage(m_prefAttach);
-		int count = p.getInt("recentfilecount", 0);
+    private void loadRecentPrefs()
+    {
+	Preferences p = Preferences.systemNodeForPackage(m_prefAttach);
+	int count = p.getInt("recentfilecount", 0);
 		
-		int offset = 0;
-		for (int i=0; i<count; i++)
-		{
-			String rf = p.get("recentfile_" + i, null);
-			if ((rf != null) && (offset<m_recent.length))
-			{
-				m_recent[offset++] = rf;
-			}
-		}
+	m_recent.removeAllElements();
+	for (int i=0; i<count; i++)
+	    {
+		String rf = p.get("recentfile_" + i, null);
 		
-		buildMenu();
-	}
+		if ((rf != null) && (m_recent.size()<m_recentCount))
+		    {
+			m_recent.add(rf);
+		    }
+	    }
+		
+	buildMenu();
+    }
 	
-	public void savePrefs()
-	{
-		Preferences p = Preferences.systemNodeForPackage(m_prefAttach);
-		int offset = 0;
-		for (int i=0; i<m_recent.length; i++)
-		{
-			if (m_recent[i] != null)
-			{
-				p.put("recentfile_" + offset, m_recent[i]);
-				offset ++;
-			}
-		}
-		p.putInt("recentfilecount", offset);
-	}
+    public void savePrefs()
+    {
+	Preferences p = Preferences.systemNodeForPackage(m_prefAttach);
+	
+	for (int i=0; i<m_recent.size(); i++)
+	    {
+		p.put("recentfile_" + i, m_recent.elementAt(i).toString());
+	    }
+	p.putInt("recentfilecount", m_recent.size());
+    }
 
-	public class ActionRecent implements java.awt.event.ActionListener
-	{
-		public int Offset;
+    public class ActionRecent implements java.awt.event.ActionListener
+    {
+	public int Offset;
 
+	public void actionPerformed(java.awt.event.ActionEvent evt)
+	{
+	    if (m_recent.elementAt(Offset)!=null)
+		{
+		    RecentFileMenu.this.m_action.action(m_recent.elementAt(Offset).toString());
+		    add(m_recent.elementAt(Offset).toString());
+		}
+	}
+    }
+	
+    private void buildMenu()
+    {
+	m_root.removeAll();
+	for (int i=0; i<Math.min(m_recent.size(),m_recentCount); i++)
+	    {
+		JMenuItem item = new JMenuItem(m_recent.elementAt(i).toString());
+		ActionRecent ar = new ActionRecent();
+		ar.Offset = i;
+		item.addActionListener(ar);
+		m_root.add(item);
+	    }
+	m_root.addSeparator();
+	JMenuItem clear = new JMenuItem("Clear");
+	clear.addActionListener(new java.awt.event.ActionListener() {
 		public void actionPerformed(java.awt.event.ActionEvent evt)
 		{
-			if (m_recent[Offset]!=null)
-				RecentFileMenu.this.m_action.action(m_recent[Offset]);
+		    m_recent.removeAllElements();
+		    buildMenu();
 		}
-	}
+	    });
+	m_root.add(clear);
+    }
 	
-	private void buildMenu()
-	{
-		m_root.removeAll();
-		for (int i=0; i<m_recent.length; i++)
-		{
-			if (m_recent[i] != null)
-			{
-				JMenuItem item = new JMenuItem(m_recent[i]);
-				ActionRecent ar = new ActionRecent();
-				ar.Offset = i;
-				item.addActionListener(ar);
-				m_root.add(item);
-			}
-		}
-		m_root.addSeparator();
-		JMenuItem clear = new JMenuItem("Clear");
-		clear.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt)
-			{
-				for (int i=0; i<m_recent.length; i++)
-				{
-					m_recent[i] = null;
-				}
-				buildMenu();
-			}
-		});
-		m_root.add(clear);
-	}
-	
-	public void add(String rec)
-	{
-		for (int i=m_recent.length-1; i>=0; i--)
-		{
-			if (rec.equals(m_recent[i]))
-				return;
-		}
-		
-		for (int i=m_recent.length-1; i>0; i--)
-		{
-			m_recent[i] = m_recent[i-1];
-		}
-		m_recent[0] = rec;
-		buildMenu();
-	}
+    public void add(String rec)
+    {
+	m_recent.remove(rec);
+	m_recent.insertElementAt(rec, 0);
+	while (m_recent.size()>m_recentCount)
+	    m_recent.remove(m_recent.size()-1);
+	buildMenu();
+    }
 }

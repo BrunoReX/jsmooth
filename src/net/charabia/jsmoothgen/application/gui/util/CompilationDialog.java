@@ -18,7 +18,7 @@
 
 */
 
-package net.charabia.jsmoothgen.application.gui;
+package net.charabia.jsmoothgen.application.gui.util;
 
 import net.charabia.jsmoothgen.application.*;
 import java.util.*;
@@ -51,7 +51,8 @@ public class CompilationDialog extends javax.swing.JDialog implements ExeCompile
         jLabel1 = new javax.swing.JLabel();
         m_progress = new javax.swing.JProgressBar();
         jScrollPane1 = new javax.swing.JScrollPane();
-        m_state = new javax.swing.JTextPane();
+        m_state = new javax.swing.JTextArea(10,60);
+	m_state.setLineWrap(true);
         m_cancelbutton = new javax.swing.JButton();
 
         getContentPane().setLayout(new java.awt.GridBagLayout());
@@ -76,9 +77,9 @@ public class CompilationDialog extends javax.swing.JDialog implements ExeCompile
         gridBagConstraints.insets = new java.awt.Insets(5, 20, 5, 20);
         getContentPane().add(m_progress, gridBagConstraints);
 
-        jScrollPane1.setBorder(new javax.swing.border.TitledBorder("Compilation Information"));
-        m_state.setBackground((java.awt.Color) javax.swing.UIManager.getDefaults().get("Button.background"));
-        m_state.setBorder(null);
+	//        jScrollPane1.setBorder(new javax.swing.border.TitledBorder("Compilation Information"));
+	//        m_state.setBackground((java.awt.Color) javax.swing.UIManager.getDefaults().get("Button.background"));
+	//        m_state.setBorder(null);
         m_state.setEditable(false);
         jScrollPane1.setViewportView(m_state);
 
@@ -91,8 +92,6 @@ public class CompilationDialog extends javax.swing.JDialog implements ExeCompile
         getContentPane().add(jScrollPane1, gridBagConstraints);
 
         m_cancelbutton.setText("Cancel");
-        m_cancelbutton.setMaximumSize(new java.awt.Dimension(140, 80));
-        m_cancelbutton.setMinimumSize(new java.awt.Dimension(140, 80));
         m_cancelbutton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelbuttonActionPerformed(evt);
@@ -102,6 +101,8 @@ public class CompilationDialog extends javax.swing.JDialog implements ExeCompile
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTH;
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+        gridBagConstraints.weighty = 0.0001;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.NONE;
         getContentPane().add(m_cancelbutton, gridBagConstraints);
 
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
@@ -154,7 +155,8 @@ public class CompilationDialog extends javax.swing.JDialog implements ExeCompile
 		{
 			m_result = true;
 			setNewState(100, "Done");
-			this.dispose();
+			m_cancelbutton.setText("Done");			
+			m_cancelbutton.grabFocus();
 		}
 	}	
 	
@@ -179,7 +181,7 @@ public class CompilationDialog extends javax.swing.JDialog implements ExeCompile
 	public void setNewState(int percentComplete, String state)
 	{
 		m_progress.setValue(percentComplete);
-		m_state.setText(state);
+		m_state.append(state+"\n");
 	}
 	
 	public boolean getResult()
@@ -192,7 +194,7 @@ public class CompilationDialog extends javax.swing.JDialog implements ExeCompile
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton m_cancelbutton;
     private javax.swing.JProgressBar m_progress;
-    private javax.swing.JTextPane m_state;
+    private javax.swing.JTextArea m_state;
     // End of variables declaration//GEN-END:variables
 	
 }

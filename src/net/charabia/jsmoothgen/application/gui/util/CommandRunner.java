@@ -24,7 +24,6 @@ import java.io.*;
 
 /**
  *
- * @author  'Rodrigo Reyes"
  */
 public class CommandRunner
 {

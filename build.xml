@@ -17,7 +17,7 @@
 
  <!-- set here the properties specific the release --> 
 
-  <property name="VERSION" value="0.9.6"/>
+  <property name="VERSION" value="0.9.7"/>
 
   <!-- You should need to modify the properties below -->
 
@@ -108,6 +108,9 @@
     <copy todir="classes/icons">
       <fileset dir="src/icons"/>
     </copy>
+    <copy todir="classes/locale">
+      <fileset dir="src/locale"/>
+    </copy>
     <jar basedir="classes" jarfile="${jsmoothjar}" manifest="src\MANIFEST.txt"/>
   </target>
 
@@ -180,6 +183,7 @@
     <copy todir="${dist}/lib" file="jsmoothgen-ant.jar"/>
     <copy todir="${dist}/lib" file="lib/jox116.jar"/>
     <copy todir="${dist}/lib" file="lib/dtdparser113.jar"/>
+    <copy todir="${dist}/lib" file="lib/l2fprod-common.jar"/>
 
     <!-- Now that the ANT task is available, register it  -->
 
@@ -296,6 +300,7 @@
        </classpath>
      </java>
   </target>
+
 
   <target name="runskeletoneditor" depends="jar">
      <java classname="net.charabia.jsmoothgen.skeleton.SkeletonEditor" fork="yes" >

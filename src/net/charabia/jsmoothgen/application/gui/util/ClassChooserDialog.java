@@ -26,7 +26,7 @@ import java.util.*;
 import javax.swing.tree.*;
 import javax.swing.event.*;
 
-public class JarClassChooser extends javax.swing.JDialog
+public class ClassChooserDialog extends javax.swing.JDialog
 {
     JarEntryTreeNode m_root;
     
@@ -100,8 +100,8 @@ public class JarClassChooser extends javax.swing.JDialog
     }
     
     
-    /** Creates new form JarClassChooser */
-    public JarClassChooser(java.awt.Frame parent, boolean modal)
+    /** Creates new form ClassChooserDialog */
+    public ClassChooserDialog(java.awt.Frame parent, boolean modal)
     {
         super(parent, modal);
         initComponents();
@@ -290,7 +290,7 @@ public class JarClassChooser extends javax.swing.JDialog
      */
     public static void main(String args[])
     {
-        new JarClassChooser(new javax.swing.JFrame(), true).show();
+        new ClassChooserDialog(new javax.swing.JFrame(), true).show();
     }
     
     public boolean validated()

@@ -209,6 +209,7 @@ public class SortedEditableList extends javax.swing.JPanel
 			m_model.add(index+1, o);
 			m_itemList.setSelectedIndex(index+1);
 		}
+		modelChanged();
 	}//GEN-LAST:event_buttonDownActionPerformed
 
 	private void buttonUpActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonUpActionPerformed
@@ -221,7 +222,7 @@ public class SortedEditableList extends javax.swing.JPanel
 			m_model.add(index-1, o);
 			m_itemList.setSelectedIndex(index-1);
 		}
-
+		modelChanged();
 	}//GEN-LAST:event_buttonUpActionPerformed
 
 	public void setEditableItems(boolean b)
@@ -252,7 +253,7 @@ public class SortedEditableList extends javax.swing.JPanel
 				m_itemList.setSelectedIndex(index);
 			}
 		}
-		
+		modelChanged();
 	}//GEN-LAST:event_buttonEditActionPerformed
 
 	private void buttonRemoveActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonRemoveActionPerformed
@@ -269,6 +270,7 @@ public class SortedEditableList extends javax.swing.JPanel
 				m_model.removeElement(o);
 			}
 		}
+	    modelChanged();
 	}//GEN-LAST:event_buttonRemoveActionPerformed
 
 	private void buttonAddActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonAddActionPerformed
@@ -292,9 +294,13 @@ public class SortedEditableList extends javax.swing.JPanel
 			    if (m_model.contains(item) == false)
 				m_model.addElement(item);
 			}
+		    modelChanged();
 		}
 	}//GEN-LAST:event_buttonAddActionPerformed
-	
+
+    protected void modelChanged()
+    {
+    }
 	
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private javax.swing.JScrollPane jScrollPane1;

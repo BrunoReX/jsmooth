@@ -25,67 +25,72 @@ import javax.swing.*;
 
 public class EditableListFileEditor implements SortedEditableList.Editor
 {
-	private File m_rootDir;
-	private JFileChooser m_fileChooser = new JFileChooser();
-	
-	/** Creates a new instance of EditableListFileEditor */
-	public EditableListFileEditor()
-	{
-	}
+    private File m_rootDir;
+    private JFileChooser m_fileChooser = new JFileChooser();
 
-	public void setFileChooser(JFileChooser chooser)
-	{
-		m_fileChooser = chooser;
-	}
+    /** Creates a new instance of EditableListFileEditor */
+    public EditableListFileEditor()
+    {
+    }
+
+    public void setFileChooser(JFileChooser chooser)
+    {
+	m_fileChooser = chooser;
+    }
+
+    public JFileChooser getFileChooser()
+    {
+	return m_fileChooser;
+    }
 	
-	public void setRootDir(File dir)
-	{
-		m_rootDir = dir;
-		m_fileChooser.setCurrentDirectory(dir);
-	}
+    public void setRootDir(File dir)
+    {
+	m_rootDir = dir;
+	m_fileChooser.setCurrentDirectory(dir);
+    }
 	
-	public File getRootDir()
-	{
-		return m_rootDir;
-	}
+    public File getRootDir()
+    {
+	return m_rootDir;
+    }
 	
-	public Object createNewItem(SortedEditableList selist)
-	{
-		if (m_fileChooser.showOpenDialog(selist) == JFileChooser.APPROVE_OPTION)
-		{
-			File[] files = m_fileChooser.getSelectedFiles();
-			for (int i=0; i<files.length; i++)
-			    {
-				File f = files[i];
-				if (m_rootDir != null)
-				    {
-					f = net.charabia.jsmoothgen.application.JSmoothModelPersistency.makePathRelativeIfPossible(m_rootDir, f);
-					files[i] = f;
-				    }
-			    }
-			return files;
-		}
-		return null;
-	}
-	
-	public Object editItem(SortedEditableList selist, Object item)
-	{
-		m_fileChooser.setSelectedFile((File)item);
-		if (m_fileChooser.showOpenDialog(selist) == JFileChooser.APPROVE_OPTION)
-		{
-			File f = m_fileChooser.getSelectedFile();
+    public Object createNewItem(SortedEditableList selist)
+    {
+	if (m_fileChooser.showOpenDialog(selist) == JFileChooser.APPROVE_OPTION)
+	    {
+		File[] files = m_fileChooser.getSelectedFiles();
+		for (int i=0; i<files.length; i++)
+		    {
+			File f = files[i];
 			if (m_rootDir != null)
-			{
+			    {
 				f = net.charabia.jsmoothgen.application.JSmoothModelPersistency.makePathRelativeIfPossible(m_rootDir, f);
-			}
-			return f;
-		}
-		return null;
-	}
+				files[i] = f;
+			    }
+		    }
+		return files;
+	    }
+	return null;
+    }
 	
-	public boolean removeItem(SortedEditableList selist, Object item)
-	{
-		return true;
-	}
+    public Object editItem(SortedEditableList selist, Object item)
+    {
+	m_fileChooser.setSelectedFile((File)item);
+	if (m_fileChooser.showOpenDialog(selist) == JFileChooser.APPROVE_OPTION)
+	    {
+		File f = m_fileChooser.getSelectedFile();
+		if (m_rootDir != null)
+		    {
+			f = net.charabia.jsmoothgen.application.JSmoothModelPersistency.makePathRelativeIfPossible(m_rootDir, f);
+		    }
+		return f;
+	    }
+	return null;
+    }
+	
+    public boolean removeItem(SortedEditableList selist, Object item)
+    {
+	return true;
+    }
 	
 }

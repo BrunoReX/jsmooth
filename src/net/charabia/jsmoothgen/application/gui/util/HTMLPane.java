@@ -18,12 +18,39 @@
 
 */
 
-package net.charabia.jsmoothgen.application.gui;
+package net.charabia.jsmoothgen.application.gui.util;
 
-import net.charabia.jsmoothgen.skeleton.*;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.*;
+import java.io.*;
+import com.l2fprod.common.swing.*;
 
-public interface MainController
+/**
+ * Represents a JTextField associated with a button that pops up a
+ * file dialog selector.
+ *
+ */
+
+public class HTMLPane extends JPanel
 {
-	public void setStateText(String text);
-	public SkeletonList getSkeletonList();
+    private JScrollPane m_scroller;
+    private JEditorPane m_html;
+
+    public HTMLPane()
+    {
+	m_html = new JEditorPane("text/html","<html></html>");
+	m_scroller = new JScrollPane(m_html);
+	setLayout(new BorderLayout());
+	m_html.setEditable(false);
+	add(BorderLayout.CENTER, m_scroller);
+    }
+
+    public void setText(String s)
+    {
+	m_html.setText(s);
+	m_html.setCaretPosition(0);
+    }
+
 }
