@@ -108,6 +108,9 @@
     <jar basedir="classes" jarfile="${jsmoothjar-ant}" manifest="src\MANIFEST.txt"/>
   </target>
 
+
+
+
     <!-- 
          Builds the distribution file for jsmooth.
        
@@ -201,6 +204,9 @@
     <copy todir="${dist}" file="${tmp}/docs/license.txt"/>
 
     <!-- Compile the normal wrappers -->
+    <ant antfile="skeletons/simplewrap/samplejar/build.xml" dir="skeletons/simplewrap/samplejar/" target="jar"/>
+    <ant antfile="skeletons/consolewrapper/samplejar/build.xml" dir="skeletons/consolewrapper/samplejar/" target="jar"/>
+
     <mkdir dir="${dist}/skeletons/windowed-wrapper"/>
     <mkdir dir="${dist}/skeletons/console-wrapper"/>
     <antcall target="compileskels">
@@ -218,6 +224,7 @@
     </exec>
 
     <!-- Compile the windowed wrapper in debug mode -->
+
     <mkdir dir="${dist}/skeletons/windowed-wrapper-debug"/>
     <antcall target="compileskels">
       <param name="skelflags" value="-DDEBUGMODE=1"/>
