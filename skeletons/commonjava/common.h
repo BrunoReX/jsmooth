@@ -23,7 +23,7 @@
 
 #include <vector>
 #include <string>
-#include <winbase.h>
+#include <windows.h>
 
 #include "DebugConsole.h"
 
