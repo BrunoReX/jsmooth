@@ -27,6 +27,7 @@ public class JSmoothResources {
 	public static final String MAIN_CLASS_WIZBAN = "resources.images.main_class_wizban";
 	public static final String JAVA_APP_WIZBAN = "resources.images.java_app_wizban";
 	public static final String JRE_WIZBAN = "resources.images.jre_wizban";
+	public static final String EXE_WIZBAN = "resources.images.exe_wizban";
 	
 	public static final String ADD_ITEM = "resources.images.add_item";
 	public static final String REMOVE_ITEM = "resources.images.remove_item";
@@ -39,8 +40,6 @@ public class JSmoothResources {
 	private static ImageRegistry imageRegistry;
 	private static URL context;
 	private static ResourceBundle bundle;
-	
-	private static JSmoothResources instance;
 	
 	public static void loadResources(Display display, String path) {
 		imageRegistry = new ImageRegistry(display);
@@ -75,6 +74,7 @@ public class JSmoothResources {
 		loadImage(MAIN_CLASS_WIZBAN);
 		loadImage(JAVA_APP_WIZBAN);
 		loadImage(JRE_WIZBAN);
+		loadImage(EXE_WIZBAN);
 		loadImage(ADD_ITEM);
 		loadImage(REMOVE_ITEM);
 		loadImage(EDIT_ITEM);

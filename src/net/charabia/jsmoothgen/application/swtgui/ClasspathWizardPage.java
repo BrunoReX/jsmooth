@@ -10,7 +10,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.List;
 
 /**
@@ -19,23 +18,17 @@ import org.eclipse.swt.widgets.List;
 public class ClasspathWizardPage extends WizardPage {
 	private static final int BUTTON_EXTRA_WIDTH = 6;
 	private static final int CLASSPATH_HEIGHT = 10;
-	private static final String JAVA_APP_WIZBAN =
-		JSmoothResources.JAVA_APP_WIZBAN;
-	private static final String ADD_ITEM =
-		JSmoothResources.ADD_ITEM;
-	private static final String REMOVE_ITEM =
-		JSmoothResources.REMOVE_ITEM;
-	private static final String EDIT_ITEM =
-		JSmoothResources.EDIT_ITEM;
-	private static final String MOVE_UP =
-		JSmoothResources.MOVE_UP;
-	private static final String MOVE_DOWN =
-		JSmoothResources.MOVE_DOWN;
+	private static final String JAVA_APP_WIZBAN = JSmoothResources.JAVA_APP_WIZBAN;
+	private static final String ADD_ITEM = JSmoothResources.ADD_ITEM;
+	private static final String REMOVE_ITEM = JSmoothResources.REMOVE_ITEM;
+	private static final String EDIT_ITEM = JSmoothResources.EDIT_ITEM;
+	private static final String MOVE_UP = JSmoothResources.MOVE_UP;
+	private static final String MOVE_DOWN = JSmoothResources.MOVE_DOWN;
 	
 	public ClasspathWizardPage() {
-		super("wizard.java_app");
-		setTitle("Java Application");
-		setMessage("Parameters for the Java application.");
+		super("wizard.classpath");
+		setTitle("Classpath");
+		setMessage("The Java application classpath.");
 		setImageDescriptor(
 			JSmoothResources.getDescriptor(JAVA_APP_WIZBAN));
 	}
@@ -48,10 +41,8 @@ public class ClasspathWizardPage extends WizardPage {
 		GridData layoutData = null;
 		
 		Composite comp = new Composite(parent, SWT.NONE);
-		layout = new GridLayout();
+		layout = new GridLayout(2, false);
 		comp.setLayout(layout);
-//		comp.setBackground(
-//			new Color(Display.getCurrent(), 250, 50, 50));
 		
 		createClasspath(comp);
 		
@@ -67,18 +58,11 @@ public class ClasspathWizardPage extends WizardPage {
 	private void createClasspath(Composite parent) {
 		GridData layoutData = null;
 		
-		Group group = new Group(parent, SWT.NONE);
-		layoutData = new GridData(GridData.FILL_HORIZONTAL);
-		group.setLayoutData(layoutData);
-		GridLayout layout = new GridLayout(2, false);
-		group.setLayout(layout);
-		group.setText("Classpath");
-		
-		List list = new List(group, SWT.BORDER);
+		List list = new List(parent, SWT.BORDER);
 		layoutData = new GridData(GridData.FILL_BOTH);
 		list.setLayoutData(layoutData);
 		
-		Composite classpathButtonBar = new Composite(group, SWT.NONE);
+		Composite classpathButtonBar = new Composite(parent, SWT.NONE);
 		classpathButtonBar.setLayout(new GridLayout());
 		layoutData = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 		layoutData.heightHint =

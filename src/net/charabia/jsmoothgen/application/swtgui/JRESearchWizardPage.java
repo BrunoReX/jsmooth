@@ -10,13 +10,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.List;
 
 /**
  * @author Dumon
  */
-public class JRESelectionWizardPage extends WizardPage {
+public class JRESearchWizardPage extends WizardPage {
 	private static final int BUTTON_EXTRA_WIDTH = 6;
 	private static final int VERSION_TEXT_WIDTH = 40;
 	private static final int VERSION_TEXT_LIMIT = 5;
@@ -34,10 +33,10 @@ public class JRESelectionWizardPage extends WizardPage {
 	private static final String MOVE_DOWN =
 		JSmoothResources.MOVE_DOWN;
 	 
-	public JRESelectionWizardPage() {
-		super("wizard.jre_selection");
-		setTitle("JRE Selection");
-		setMessage("Parameters for the Java Runtime Environment.");
+	public JRESearchWizardPage() {
+		super("wizard.jre_search");
+		setTitle("JRE Search");
+		setMessage("Locations to search the Java Runtime Environment.");
 		setImageDescriptor(
 			JSmoothResources.getDescriptor(JRE_WIZBAN));
 	}
@@ -50,10 +49,8 @@ public class JRESelectionWizardPage extends WizardPage {
 		GridData layoutData = null;
 		
 		Composite comp = new Composite(parent, SWT.NONE);
-		layout = new GridLayout();
+		layout = new GridLayout(2, false);
 		comp.setLayout(layout);
-//		comp.setBackground(
-//			new Color(Display.getCurrent(), 250, 50, 50));
 		
 		createJRESearch(comp);
 		
@@ -63,18 +60,11 @@ public class JRESelectionWizardPage extends WizardPage {
 	private void createJRESearch(Composite parent) {
 		GridData layoutData = null;
 		
-		Group group = new Group(parent, SWT.NONE);
-		layoutData = new GridData(GridData.FILL_BOTH);
-		group.setLayoutData(layoutData);
-		GridLayout layout = new GridLayout(2, false);
-		group.setLayout(layout);
-		group.setText("JRE Search");
-		
-		List list = new List(group, SWT.BORDER);
+		List list = new List(parent, SWT.BORDER);
 		layoutData = new GridData(GridData.FILL_BOTH);
 		list.setLayoutData(layoutData);
 		
-		Composite jreSearchButtonBar = new Composite(group, SWT.NONE);
+		Composite jreSearchButtonBar = new Composite(parent, SWT.NONE);
 		jreSearchButtonBar.setLayout(new GridLayout());
 		layoutData = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 		layoutData.heightHint =

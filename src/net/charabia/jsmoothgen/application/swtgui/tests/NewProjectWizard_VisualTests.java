@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Shell;
 /**
  * @author Dumon
  */
-public class NewProjectWizardVisualTests extends TestCase {
+public class NewProjectWizard_VisualTests extends TestCase {
 	private Shell shell;
 	
 	// The trailing "/" required !
@@ -43,6 +43,6 @@ public class NewProjectWizardVisualTests extends TestCase {
 	}
 
 	public static Test suite() {
-		return new TestSuite(NewProjectWizardVisualTests.class);
+		return new TestSuite(NewProjectWizard_VisualTests.class);
 	}
 }

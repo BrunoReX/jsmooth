@@ -21,7 +21,7 @@ public class ProjectFileWizardPage extends WizardPage {
 	private static final int BUTTON_EXTRA_WIDTH = 6;
 	
 	public ProjectFileWizardPage() {
-		super("wizard.project_name");
+		super("wizard.project_file");
 		setTitle("JSmooth Project");
 		setMessage("Create a new JSmooth project.");
 		setImageDescriptor(

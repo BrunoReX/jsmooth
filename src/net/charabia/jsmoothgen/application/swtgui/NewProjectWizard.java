@@ -16,15 +16,9 @@ public class NewProjectWizard extends Wizard {
 		addPage(new ProjectFileWizardPage());
 		addPage(new ClasspathWizardPage());
 		addPage(new MainClassWizardPage());
-		addPage(new JRESelectionWizardPage());
+		addPage(new JRESearchWizardPage());
 		addPage(new JREBundleWizardPage());
-		
-		// For Rodrigo.
-//		addPage(new ProjectNameWizardPage());
-//		addPage(new ClasspathWizardPage());
-//		addPage(new EmbedJarWizardPage());
-//		addPage(new MainClassWizardPage());
-//		addPage(new VersionWizardPage());
+		addPage(new ExecutableWizardPage());
 	}
 	
 	/* (non-Javadoc)
