@@ -69,6 +69,10 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId)
     std::string jpropcountstr = m_props.get("javapropertiescount");
     DEBUG("JAVA PROPERTIES COUNT = " + jpropcountstr);
     
+    string exepath = FileUtils::getExecutablePath();
+    string exename = FileUtils::getExecutableFileName();
+    string computername = FileUtils::getComputerName();
+    
     int jpropcount = StringUtils::parseInt(jpropcountstr);
     for (int i=0; i<jpropcount; i++)
     {
@@ -81,7 +85,12 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId)
 
         DEBUG("JPROP: " + name + "=" + StringUtils::StringUtils::replaceEnvironmentVariable(value));
         
-        JavaProperty jprop(name, StringUtils::StringUtils::replaceEnvironmentVariable(value));
+        value = StringUtils::replaceEnvironmentVariable(value);
+        value = StringUtils::replace(value, "${EXECUTABLEPATH}", exepath);
+        value = StringUtils::replace(value, "${EXECUTABLENAME}", exename);
+        value = StringUtils::replace(value, "${COMPUTERNAME}", computername);
+        
+        JavaProperty jprop(name, value);
         m_javaProperties.push_back(jprop);
     }
 }

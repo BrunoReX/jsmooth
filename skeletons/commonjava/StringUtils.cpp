@@ -213,3 +213,16 @@ string StringUtils::replaceEnvironmentVariable(const string& str)
     return result;
 }
 
+string StringUtils::replace(const string& str, const string& pattern, const string& replacement)
+{
+    string result = str;
+    int pos;
+    
+    while ( (pos=result.find(pattern, 0)) != result.npos )
+    {
+        result.replace(pos, pattern.length(), replacement);
+    }
+    
+    return result;
+}
+

@@ -37,10 +37,12 @@ public:
     static string toString(const vector<string>& seq);
     static void copyTo(const string& from, char* to, int length);
 
-    static string StringUtils::replaceEnvironmentVariable(const string& str);
+    static string replaceEnvironmentVariable(const string& str);
+    static string replace(const string& str, const string& pattern, const string& replacement);
     
     static string join(const vector<string>& seq, const string& separator);
     static string trim(string& str);
+    
 };
 
 #endif

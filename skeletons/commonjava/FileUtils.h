@@ -37,6 +37,10 @@ public:
     static bool fileExists(const string& filename);    
     static vector<string> recursiveSearch(const string& path, const string& pattern);
     static std::string FileUtils::extractFileName(const std::string& filename);
+    
+    static std::string getExecutablePath();
+    static std::string getExecutableFileName();
+    static std::string getComputerName();
 };
 
 #endif

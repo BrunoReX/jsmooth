@@ -97,3 +97,31 @@ std::string FileUtils::extractFileName(const std::string& filename)
     return filename;
 }
 
+std::string FileUtils::getExecutablePath()
+{
+    char buffer[512];
+    GetModuleFileName(NULL, buffer, 512);
+    string full = buffer;
+    int pos = full.rfind('\\', full.npos);
+    
+    return full.substr(0, pos+1);
+}
+
+std::string FileUtils::getExecutableFileName()
+{
+    char buffer[512];
+    GetModuleFileName(NULL, buffer, 512);
+    string full = buffer;
+    int pos = full.rfind('\\', full.npos);
+    
+    return full.substr(pos+1);
+}
+
+std::string FileUtils::getComputerName()
+{
+    char buffer[MAX_COMPUTERNAME_LENGTH + 1];
+    DWORD size = MAX_COMPUTERNAME_LENGTH+1;
+    GetComputerName(buffer, &size);
+    return buffer;
+}
+
