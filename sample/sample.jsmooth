@@ -27,7 +27,11 @@
    <string></string> 
   </void> 
   <void property="classPath"> 
-   <array class="java.lang.String" length="0"/> 
+   <array class="java.lang.String" length="1"> 
+    <void index="0"> 
+     <string>Z:\jlfgr-1_0.jar</string> 
+    </void> 
+   </array> 
   </void> 
   <void property="executableName"> 
    <string>Sample.exe</string> 
@@ -76,10 +80,10 @@
    <string>JSmoothPropertiesDisplayer</string> 
   </void> 
   <void property="minimumVersion"> 
-   <string>1.2</string> 
+   <string>1.1</string> 
   </void> 
   <void property="skeletonName"> 
-   <string>Windowed Wrapper</string> 
+   <string>Console Wrapper</string> 
   </void> 
   <void property="skeletonProperties"> 
    <array class="net.charabia.jsmoothgen.application.JSmoothModelBean$Property" length="2"> 
