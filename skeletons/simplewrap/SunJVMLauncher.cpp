@@ -28,11 +28,12 @@ extern "C" {
   }
   void JNICALL myexit(jint code)
   {
-       DEBUG("EXIT CALLED");
-        DEBUGWAITKEY();
-    	exit(code);
+       DEBUG("EXIT CALLED FROM JVM DLL");
+//        delete globalResMan;
+//        globalResMan = 0;
+        
+    	exit(code); 
   }
-  
 }
 
 std::string SunJVMLauncher::toString() const
@@ -42,26 +43,28 @@ std::string SunJVMLauncher::toString() const
 
 bool SunJVMLauncher::run(ResourceManager& resource)
 {
+    if ( ! VmVersion.isValid())
+        return false;
+
     Version max(resource.getProperty(ResourceManager:: KEY_MAXVERSION));
     Version min(resource.getProperty(ResourceManager:: KEY_MINVERSION));
     
-    if ((VmVersion < min) || (max < VmVersion))
-    {
+    if (min.isValid() && (VmVersion < min))
         return false;
-    }
-    
+
+    if (max.isValid() && (max < VmVersion))
+        return false;
+
     DEBUG("Launching " + toString());
-    
+
     if (Version("1.2") <= VmVersion)
     {
         DEBUG("RUNNING L VM " + VmVersion.toString());
-//        runVM12DLL(resource);
-        return runVM12proc(resource);
+        return runVM12DLL(resource);
     } else if (Version("1.1") <= VmVersion)
     {
-            DEBUG("RUNNING L VM11 = " + VmVersion.toString());
-                    return runVM11proc(resource);
-//            runVM11DLL(resource);
+        DEBUG("RUNNING L VM11 = " + VmVersion.toString());
+        return runVM11DLL(resource);
     }
     
     return false;
@@ -72,8 +75,7 @@ bool SunJVMLauncher::runProc(ResourceManager& resource)
     Version max(resource.getProperty(ResourceManager:: KEY_MAXVERSION));
     Version min(resource.getProperty(ResourceManager:: KEY_MINVERSION));
     
-    DEBUG("RUN PROC... " + min.toString() + " / " + VmVersion.toString() + " / " + max.toString());
-    
+    DEBUG("RUN PROC... " + min.toString() + " <= " + VmVersion.toString() + "<= " + max.toString());
     
     if ( VmVersion.isValid() && ((VmVersion < min) || (max < VmVersion)))
     {
@@ -95,16 +97,22 @@ bool SunJVMLauncher::runProc(ResourceManager& resource)
 
 bool SunJVMLauncher::runVM12DLL(ResourceManager& resource)
 {
-
     std::string jarpath = resource.saveJarInTempFile();
     std::string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));
 
-    HINSTANCE vmlib = LoadLibrary(this->RuntimeLibPath.c_str());
+    std::string args = resource.getProperty(ResourceManager::KEY_ARGUMENTS);
+
+    vector<string> pargs = StringUtils::split(args, " \t\n\r", "\"\'");
+    for (int i=0; i<pargs.size(); i++)
+        DEBUG("ARG:: <" + pargs[i] + ">");
     
+    HINSTANCE vmlib = LoadLibrary(this->RuntimeLibPath.c_str());
+ 
     if (vmlib != 0)
     {
         DEBUG("VM12 LOADED!");
         CreateJavaVM_t CreateJavaVM = (CreateJavaVM_t)GetProcAddress(vmlib, "JNI_CreateJavaVM");
+
         GetDefaultJavaVMInitArgs_t GetDefaultJavaVMInitArgs = (GetDefaultJavaVMInitArgs_t)GetProcAddress(vmlib, "JNI_GetDefaultJavaVMInitArgs");
         
         if ((CreateJavaVM != NULL) && (GetDefaultJavaVMInitArgs != NULL))
@@ -127,12 +135,14 @@ bool SunJVMLauncher::runVM12DLL(ResourceManager& resource)
 //                cpoption += "grostest.jar";
                 DEBUG("Classpath: " + cpoption);
                 options[0].optionString =  (char*)cpoption.c_str();
-                options[1].optionString = "exit";
-                options[1].extraInfo = (void*)myexit;
+   //             options[1].optionString = "exit";
+   //             options[1].extraInfo = (void*)myexit;
                 
+       //        options[1].optionString = "vprintf";
+       //        options[1].extraInfo = (void*)myvprintf;
                 vm_args.version = 0x00010002;
                 vm_args.options = options;
-                vm_args.nOptions = 2;
+                vm_args.nOptions = 1;
                 
                 DEBUG("OPTIONS SET!");
                 
@@ -148,7 +158,7 @@ bool SunJVMLauncher::runVM12DLL(ResourceManager& resource)
 //                 res = JNI_CreateJavaVM(&vm,(void**)&env,&vm_args);
 
               res = CreateJavaVM( &vm, &env, &vm_args);
-                if (res < 0)
+                if (res != 0)
                 {
                                 DEBUG("Can't create VM");
                                 return false;
@@ -183,12 +193,26 @@ bool SunJVMLauncher::runVM12DLL(ResourceManager& resource)
                 sprintf(strbuf, "");
                 jstr = (env)->NewStringUTF(strbuf);
                 mid = (env)->GetStaticMethodID(cls, "main", "([Ljava/lang/String;)V");
-                args = (env)->NewObjectArray(0, (env)->FindClass("java/lang/String"), jstr);
+                if (pargs.size() > 0)
+                {
+                   args = (env)->NewObjectArray(pargs.size(), (env)->FindClass("java/lang/String"), jstr);
+                   for (int i=0; i<pargs.size(); i++)
+                   {
+                       jstr = (env)->NewStringUTF(pargs[i].c_str());
+                       (env)->SetObjectArrayElement(args, i, jstr);
+                   }
+                }
+                else
+                {
+                    args = (env)->NewObjectArray(0, (env)->FindClass("java/lang/String"), jstr);
+                }
+                
                 if ((mid != 0) && (args != 0))
                 {
                                 env->CallStaticVoidMethod(cls, mid, args);
                                 DEBUG("VM CALLED !!");
                                 vm->DestroyJavaVM();
+                                MessageBox(NULL, "TEST", "TEST1", MB_OK);
                                 return true;
                 }
                 else
@@ -212,6 +236,9 @@ bool SunJVMLauncher::runVM11DLL(ResourceManager& resource)
 
     std::string jarpath = resource.saveJarInTempFile();
     std::string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));
+
+    std::string args = resource.getProperty(ResourceManager::KEY_ARGUMENTS);
+    vector<string> pargs = StringUtils::split(args, " \t\n\r", "\"\'");
 
     string jvmdll = RuntimeLibPath;
     
@@ -295,13 +322,30 @@ bool SunJVMLauncher::runVM11DLL(ResourceManager& resource)
                 sprintf(strbuf, "");
                 jstr = (env)->NewStringUTF(strbuf);
                 mid = (env)->GetStaticMethodID(cls, "main", "([Ljava/lang/String;)V");
-                args = (env)->NewObjectArray(0, (env)->FindClass("java/lang/String"), jstr);
+
+                if (pargs.size() > 0)
+                {
+                   args = (env)->NewObjectArray(pargs.size(), (env)->FindClass("java/lang/String"), jstr);
+                   for (int i=0; i<pargs.size(); i++)
+                   {
+                       jstr = (env)->NewStringUTF(pargs[i].c_str());
+                       (env)->SetObjectArrayElement(args, i, jstr);
+                   }
+                }
+                else
+                {
+                    args = (env)->NewObjectArray(0, (env)->FindClass("java/lang/String"), jstr);
+                }
+
                 if ((mid != 0) && (args != 0))
                 {
                                 env->CallStaticVoidMethod(cls, mid, args);
                                 DEBUG("VM CALLED !!");
+
+        MessageBox(NULL, "BEFORE", "ERASING", MB_OK);
                                 
                                 javavm->DestroyJavaVM();
+        MessageBox(NULL, "AFTER", "ERASING", MB_OK);
                                 return true;
                 }
                 else

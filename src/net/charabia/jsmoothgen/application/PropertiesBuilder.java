@@ -6,25 +6,47 @@
 
 package net.charabia.jsmoothgen.application;
 
+import java.io.*;
+
 /**
  *
  * @author  Rodrigo
  */
 public class PropertiesBuilder
 {
-	static public String makeProperties(JSmoothModelBean obj)
+	static public String makeProperties(File basedir, JSmoothModelBean obj)
 	{
 		StringBuffer out = new StringBuffer();
 
 		addPair("arguments", obj.getArguments(), out);
 		addPair("mainclassname", obj.getMainClassName(), out);
-		addPair("classpath", makePathConc(obj.getClassPath()), out);
 		addPair("jvmsearch", makePathConc(obj.getJVMSearchPath()), out);
 		addPair("minversion", obj.getMinimumVersion(), out);
 		addPair("maxversion", obj.getMaximumVersion(), out);
 
 		addPair("currentdir", obj.getCurrentDirectory(), out);
-		addPair("bundledvm", obj.getBundledJVMPath(), out);
+
+		// BundledVM & classpaths are changed to be accessible
+		// from the current directory
+		File curdir = null;
+
+		if (obj.getCurrentDirectory() != null)
+		    {
+			curdir = new File(obj.getCurrentDirectory());
+			if (curdir.isAbsolute() == false)
+			    {
+				curdir = new File(basedir, obj.getCurrentDirectory()).getAbsoluteFile();
+			    }
+		    }
+		
+		addPair("bundledvm", getRenormalizedPathIfNeeded(obj.getBundledJVMPath(), basedir, curdir), out);
+
+		String[] relcp = new String[obj.getClassPath().length];
+		for (int i=0; i<relcp.length; i++)
+		    {
+			relcp[i] = getRenormalizedPathIfNeeded(obj.getClassPath()[i], basedir, curdir);
+		    }
+		addPair("classpath", makePathConc(relcp), out);
 
 		// addPair("nojvmmessage", obj.getNoJvmMessage(), out);
 		// addPair("nojvmurl", obj.getNoJvmURL(), out);
@@ -45,6 +67,21 @@ public class PropertiesBuilder
 		return out.toString();
 	}
 	
+    static public String getRenormalizedPathIfNeeded(String value, File previousbasedir, File newbasedir)
+    {
+	if (newbasedir == null)
+	    return value;
+
+	if (value == null)
+	    return "";
+
+	File abs = new File(previousbasedir, value).getAbsoluteFile();
+	File n = JSmoothModelPersistency.makePathRelativeIfPossible(newbasedir, abs);
+	System.out.println("PROPERTY RENORM " + value + " -> " + n.toString());
+
+	return n.toString();
+    }
+
 	static public String escapeString(String str)
 	{
 		StringBuffer out = new StringBuffer();

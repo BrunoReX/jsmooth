@@ -13,12 +13,10 @@ import java.util.*;
  */
 public class JSmoothPropertiesDisplayer extends java.awt.Frame
 {
-    private String[] m_arguments = new String[0];
-   
+	
 	/** Creates new form Frame */
-	public JSmoothPropertiesDisplayer(String[] args)
+	public JSmoothPropertiesDisplayer()
 	{
-            m_arguments = args;
 		initComponents();
 		displayInformation();
 	}
@@ -97,8 +95,7 @@ public class JSmoothPropertiesDisplayer extends java.awt.Frame
 	 */
 	public static void main(String args[])
 	{
-            JSmoothPropertiesDisplayer m = new JSmoothPropertiesDisplayer(args);
-            m.show();
+		new JSmoothPropertiesDisplayer().show();
 	}
 
 	private void displayInformation()
@@ -106,20 +103,6 @@ public class JSmoothPropertiesDisplayer extends java.awt.Frame
 		StringBuffer out = new StringBuffer();
 		out.append("-- Sample --\n\n");
 		
-                out.append("Arguments:\n\n");
-                for (int i=0; i<m_arguments.length; i++)
-                {
-                    out.append("arg[");
-                    out.append(i);
-                    out.append("]=");
-                    out.append(m_arguments[i]);
-                    out.append("\n");
-                }
-                
-                out.append("\nCurrent Directory=");
-                out.append(new java.io.File(".").getAbsolutePath());
-                out.append("\n\n");
-                
 		out.append("System Properties:\n\n");
 		Properties props = System.getProperties();
 		for (Enumeration e = props.propertyNames(); e.hasMoreElements(); )

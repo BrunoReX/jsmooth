@@ -10,12 +10,17 @@ to download a Java VM.
 
 1. Status of the project
 
- JSmooth is currently in pre-alpha. The proof-of-concept stage is now
+ JSmooth is currently in beta phase. The proof-of-concept stage is now
  complete, and the application is still under development. No public
  release of the compiled software is available yet.
 
+2. How to run
 
-2. Architecture
+ JSmooth requires Java 1.4 or higher. Just run the JSmoothGen.exe
+ program. In case of problem, you can use the run.bat script in the
+ bin/ directory.
+
+3. Architecture
 
  JSmooth is made up of two sub-projects:
 
@@ -38,7 +43,7 @@ NT Services applications, or even skeletons customized for
 distribution on your company's intranet.
 
 
-3. How to compile
+4. How to compile
 
 - First, you'll need ant, to compile the JSmoothGen software, and all
   the sample java applications (found in each of the skeleton
@@ -59,7 +64,7 @@ distribution on your company's intranet.
  makefile or a dev-c++ project file.
 
 
-4. License
+5. License
 
 All the JSmooth project is distributed under the terms of the GNU
 General Public License. Please read the License.txt file that comes

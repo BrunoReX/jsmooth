@@ -20,19 +20,58 @@
 
 #include "StringUtils.h"
 
-vector<string> StringUtils::split(const string& str, char separator)
+vector<string> StringUtils::split(const string& str, const string& separators, const string& quotechars)
 {
     vector<string> result;
     string buf = "";
 
     for (int i=0; i<str.length(); i++)
     {
-        if (separator == str[i])
+        if (str[i] == '\\')
+        {
+                i++;
+                if (i<str.length())
+                {
+                    switch(str[i])
+                    {
+                       case '\'':
+                       case '\"':
+                          buf += str[i];
+                          break;
+                       
+                       case 'n':
+                          buf += '\n';
+                          break;
+                       case 'r':
+                          buf += '\r';
+                          break;
+                       case 't':
+                          buf += '\t';
+                          break;
+                    }
+                }
+        }
+        else if (separators.find(str[i], 0) != separators.npos)
         {
                 if (buf.length() > 0)
                 {
                                 result.push_back(buf);
                                 buf = "";
+                }
+        }
+        else if (quotechars.find(str[i], 0) != separators.npos)
+        {
+                if (buf.length() > 0)
+                {
+                      result.push_back(buf);
+                      buf = "";
+                }
+                        
+                char qc = quotechars[ quotechars.find(str[i], 0) ];
+                i++;
+                while ( (i<str.length()) && (str[i] != qc) )
+                {
+                    buf += str[i++];
                 }
         }
         else

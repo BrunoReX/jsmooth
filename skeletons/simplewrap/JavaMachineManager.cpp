@@ -49,17 +49,20 @@ bool JavaMachineManager::run()
                 return true;
     }
 
-   if (vmorder == "")
+   // if (vmorder == "")
     {
-        vmorder = "registry,jdkpath,jrepath,javahome,jview,exepath";
+        vmorder = "registry;jdkpath;jrepath;javahome;jview;exepath";
     }
     
-    vector<string> jvmorder = StringUtils::split(vmorder, ';');
+    DEBUG("VMORDER == " + vmorder);
+    
+    vector<string> jvmorder = StringUtils::split(vmorder, ";,", "");
 
     for (vector<string>::const_iterator i = jvmorder.begin(); i != jvmorder.end(); i++)
     {
         if (*i == "registry")
         {
+            DEBUG("Lookup " + *i + " :: " + StringUtils::toString(m_registryVms.size()));
             for (int i=0; i<m_registryVms.size(); i++)
             {
                 DEBUG("trying registry: " + m_registryVms[i].toString());

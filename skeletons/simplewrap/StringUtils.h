@@ -31,7 +31,7 @@ using namespace std;
 class StringUtils
 {
 public:
-    static vector<string> split(const string& str, char separator);
+    static vector<string> split(const string& str, const string& separators, const string& quotechars);
     static int parseInt(const string& val);
     static string toString(int val);
     static string toString(const vector<string>& seq);

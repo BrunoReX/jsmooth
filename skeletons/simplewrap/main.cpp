@@ -40,9 +40,17 @@ char szClassName[ ] = "WindowsApp";
 
 std::vector< std::string > LOG;
 
+ResourceManager* globalResMan;
+
 #ifdef DEBUGMODE
 DebugConsole DEBUGCONSOLE("title");
 #endif
+
+void lastExit()
+{
+  delete globalResMan;
+  globalResMan = 0;
+}
 
 void addResId(std::string& msg, LPCTSTR id)
 {
@@ -97,6 +105,8 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 
 //    jlist->run();
     
+    atexit(lastExit);
+    
     /* The Window structure */
     wincl.hInstance = hThisInstance;
     wincl.lpszClassName = szClassName;
@@ -135,22 +145,31 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
            NULL                 /* No Window Creation data */
            );
 
-    ResourceManager resman("JAVA", PROPID, JARID);
-    DEBUG(std::string("Main class: ") + resman.getMainName());
 
-    JavaMachineManager man(resman);
+    globalResMan = new ResourceManager("JAVA", PROPID, JARID);
+//    ResourceManager resman("JAVA", PROPID, JARID);
+    DEBUG(std::string("Main class: ") + globalResMan->getMainName());
+
+    char curdir[256];
+    GetCurrentDirectory(256, curdir);
+    DEBUG(string("Currentdir: ") + curdir);
+
+    string newcurdir = globalResMan->getProperty(ResourceManager::KEY_CURRENTDIR);
+    SetCurrentDirectory(newcurdir.c_str());
+
+    JavaMachineManager man(*globalResMan);
     if (man.run() == false)
     {
-        std::string errmsg = resman.getProperty("skel_Message");
-        std::string url = resman.getProperty("skel_URL");
+        std::string errmsg = globalResMan->getProperty("skel_Message");
+        std::string url = globalResMan->getProperty("skel_URL");
         if (MessageBox(hwnd, errmsg.c_str(), "No Java?", MB_OKCANCEL|MB_ICONQUESTION|MB_APPLMODAL) == IDOK)
         {
             ShellExecute(hwnd, "open", url.c_str(), NULL, "", 0);
         }
     }
-
+    
+    DEBUG("NORMAL EXIT");
     DEBUGWAITKEY();
-    DEBUG("OK");
 
     /* Make the window visible on the screen */
 

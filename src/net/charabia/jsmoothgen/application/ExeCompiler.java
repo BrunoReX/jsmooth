@@ -144,7 +144,7 @@ public class ExeCompiler
 			}
 			
 			fireStepChange(70, "Adding Properties to Resources...");
-			String props = PropertiesBuilder.makeProperties(data);
+			String props = PropertiesBuilder.makeProperties(basedir, data);
 			ByteBuffer propdata = convert(props);
 			resb = resdir.replaceResource(skel.getResourceCategory(), skel.getResourcePropsId(), 1033, propdata);
 			if (data.getIconLocation() != null)

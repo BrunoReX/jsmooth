@@ -49,9 +49,12 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
 		m_model = model;
                 m_executableNameField.setBaseDir(basedir);
                 if (m_model.getExecutableName() != null)
-        		m_executableNameField.setFile(new java.io.File(m_model.getExecutableName()));
+		    {
+			java.io.File exefile = new java.io.File(m_model.getExecutableName());
+        		m_executableNameField.setFile(exefile);
+			m_currentDirectory.setBaseDir(exefile.getParentFile());
+		    }
 
-                m_currentDirectory.setBaseDir(basedir);
                 if (m_model.getCurrentDirectory() != null)
                         m_currentDirectory.setFile(new java.io.File(m_model.getCurrentDirectory()));
                 
@@ -79,6 +82,7 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
         java.awt.GridBagConstraints gridBagConstraints;
 
         m_iconChooser = new javax.swing.JFileChooser();
+        jLabel4 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         m_executableNameField = new net.charabia.jsmoothgen.application.gui.util.FileSelectionTextField();
         jLabel3 = new javax.swing.JLabel();
@@ -89,6 +93,14 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
         m_buttonIconChooser = new javax.swing.JButton();
 
         setLayout(new java.awt.GridBagLayout());
+
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel4.setText("<html><small>Specify here the location of the executable binary that is created by the project.<p>You can optionnally specify the current directory of the executable. The default current directory is where the binary is located.</small></html>");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+        add(jLabel4, gridBagConstraints);
 
         jLabel1.setText("Executable Name");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -135,8 +147,8 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.insets = new java.awt.Insets(10, 5, 5, 5);
         gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 5, 5, 5);
         add(jPanel2, gridBagConstraints);
 
     }//GEN-END:initComponents
@@ -160,6 +172,7 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JButton m_buttonIconChooser;
     private net.charabia.jsmoothgen.application.gui.util.FileSelectionTextField m_currentDirectory;

@@ -26,6 +26,7 @@
 #include <vector>
 
 #include "common.h"
+#include "StringUtils.h"
 
 using namespace std;
 

@@ -476,8 +476,8 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 			
 		System.out.println("RUNNING " + cmd[0] + " @ " + basedir);
 			
-		CommandRunner.run(cmd, basedir);
-			
+		CommandRunner.run(cmd, f.getParentFile());
+
 	    } catch (Exception exc)
 		{
 		    //exc.printStackTrace();

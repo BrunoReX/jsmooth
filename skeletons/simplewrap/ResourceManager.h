@@ -54,6 +54,8 @@ public:
     static char * const KEY_MAXVERSION    = "maxversion";
     static char * const KEY_NOJVMMESSAGE  = "nojvmmessage";
     static char * const KEY_NOJVMURL      = "nojvmurl";
+    static char * const KEY_BUNDLEDVM     = "bundledvm";
+    static char * const KEY_CURRENTDIR    = "currentdir";
  
     ResourceManager(std::string category, int propsId, int jarId);
     ~ResourceManager();

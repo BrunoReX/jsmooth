@@ -285,8 +285,16 @@ public class JSmoothModelBean
 	m_jarLocation = checkRelativePath(filebase, m_jarLocation, result, "Jar location", toRelativePath);
 	m_bundledJVM = checkRelativePath(filebase, m_bundledJVM, result, "Bundle JVM location", toRelativePath);
         m_executableName = checkRelativePath(filebase, m_executableName, result, "Executable location", toRelativePath);
-        m_currentDirectory = checkRelativePath(filebase, m_currentDirectory, result, "Current directory", toRelativePath);
-        
+
+	if (m_executableName != null)
+	    {
+		File exebase = new File(m_executableName);
+		if (exebase.isAbsolute() == false)
+		    exebase = new File(filebase, exebase.toString()).getParentFile();
+		System.out.println("EXE FILEBASE: " + exebase.toString());
+		m_currentDirectory = checkRelativePath(exebase, m_currentDirectory, result, "Current directory", toRelativePath);
+	    }
+
         if (m_classPath != null)
 	    {
 		for (int i=0; i<m_classPath.length; i++)
