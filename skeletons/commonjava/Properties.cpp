@@ -34,13 +34,15 @@ Properties::Properties()
 void Properties::setData(const char* data, int datalen)
 {
     int cursor = 0;
+    DEBUG(string("Extracting properties from resource ") + data);
+
     while (cursor < datalen)
     {
         string key = getNextToken(data, datalen, cursor, '=');
         string value = getNextToken(data, datalen, cursor, '\n');
         m_data[key] = unescape(StringUtils::trim(value));
         
-        DEBUG("PROP <" + key + "> == <" + unescape(StringUtils::trim(value)) + ">");
+        DEBUG("  - <" + key + "> == <" + m_data[key] + ">");
     }
 }
 
