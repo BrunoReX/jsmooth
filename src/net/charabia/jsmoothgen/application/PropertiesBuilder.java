@@ -26,6 +26,15 @@ public class PropertiesBuilder
 
 	addPair("currentdir", obj.getCurrentDirectory(), out);
 
+	if (obj.getEmbeddedJar() && (obj.getJarLocation().trim().length() > 0))
+	    {
+		addPair("embedjar", "true", out);
+	    }
+	else
+	    {
+		addPair("embedjar", "false", out);
+	    }
+
 	if (obj.getMaximumMemoryHeap() > 1)
 	    {
 		addPair("maxheap", Integer.toString(obj.getMaximumMemoryHeap()), out);

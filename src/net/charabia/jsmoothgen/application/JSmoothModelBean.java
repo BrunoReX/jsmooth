@@ -37,6 +37,7 @@ public class JSmoothModelBean
     private String m_currentDirectory;
     
     private String m_iconLocation;
+    private boolean m_embedJar = false;
     private String m_jarLocation;
     private String m_mainClassName;
     private String m_arguments;
@@ -152,6 +153,17 @@ public class JSmoothModelBean
     public String getIconLocation()
     {
 	return m_iconLocation;
+    }
+
+    public boolean getEmbeddedJar()
+    {
+	return m_embedJar;
+    }
+
+    public void setEmbeddedJar(boolean b)
+    {
+	m_embedJar = b;
+	fireChanged();
     }
 
     public void setJarLocation(String name)

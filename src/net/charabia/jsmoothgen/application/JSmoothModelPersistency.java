@@ -58,6 +58,12 @@ public class JSmoothModelPersistency
 		    {
 			throw new Exception("Not a JOX File");
 		    }
+		System.out.println("Loaded jobj " + jobj + " = " + jobj.getJarLocation());
+		if ((jobj.getJarLocation() != null) && (jobj.getJarLocation().length()>0))
+		    {
+			jobj.setEmbeddedJar(true);
+			System.out.println("Set embeddedjar to " + jobj.getEmbeddedJar());
+		    }
 
 		return jobj;
 
@@ -68,6 +74,10 @@ public class JSmoothModelPersistency
 			XMLDecoder dec = new XMLDecoder(fis);
 			JSmoothModelBean xobj = (JSmoothModelBean)dec.readObject();
 			fis.close();
+
+			if ((xobj.getJarLocation() != null) && (xobj.getJarLocation().length()>0))
+			    xobj.setEmbeddedJar(true);
+
 			return xobj;
 			
 
@@ -87,11 +97,17 @@ public class JSmoothModelPersistency
 		// 		enc.writeObject(obj);
 		// 		enc.close();
 		
+		String jarloc = obj.getJarLocation();
+		if (obj.getEmbeddedJar() == false)
+		    obj.setJarLocation(null);
+
 		FileWriter fw = new FileWriter(fout);
 		JOXBeanWriter jbw = new JOXBeanWriter(fw);
 		jbw.writeObject("jsmoothproject", obj);
 		jbw.close();
 		fw.close();
+
+		obj.setJarLocation(jarloc);
 
 	    } catch (Exception ex)
 		{

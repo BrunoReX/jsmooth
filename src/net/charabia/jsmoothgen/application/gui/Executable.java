@@ -199,12 +199,12 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
 
         m_buttonIconChooser.setText("...");
         m_buttonIconChooser.addActionListener(new java.awt.event.ActionListener()
-	    {
-		public void actionPerformed(java.awt.event.ActionEvent evt)
-		{
-		    buttonIconChooserActionPerformed(evt);
-		}
-	    });
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                buttonIconChooserActionPerformed(evt);
+            }
+        });
 
         jPanel3.add(m_buttonIconChooser, new java.awt.GridBagConstraints());
 

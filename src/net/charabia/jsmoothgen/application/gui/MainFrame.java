@@ -114,7 +114,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
         jMenu2 = new javax.swing.JMenu();
         m_menuAbout = new javax.swing.JMenuItem();
 
-        setTitle("JSmooth " + VERSION);
+        setTitle("JSmooth");
         addWindowListener(new java.awt.event.WindowAdapter()
         {
             public void windowClosing(java.awt.event.WindowEvent evt)
