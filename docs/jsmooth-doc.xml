@@ -647,7 +647,7 @@
 	      <colspec colwidth='3.0in'/>
 	      <tbody>
 	        <row><entry><para>Form</para></entry><entry><para>Meaning</para></entry></row>
-	        <row><entry><para>${EXECUTABLEPATH}</para></entry>
+	        <row><entry><para><function>${EXECUTABLEPATH}</function></para></entry>
 
 			<entry><para> Replaced by the path to the
 			  executable binary. For instance, if the
@@ -657,7 +657,7 @@
 
                   </entry></row>
 
-		<row><entry><para>${EXECUTABLENAME}</para></entry>
+		<row><entry><para><function>${EXECUTABLENAME}</function></para></entry>
 
 		    <entry><para>Replaced by the name of the
 			  executable binary. For instance, if the
@@ -667,7 +667,45 @@
 
 		  </entry></row>
 
-		<row><entry><para>${COMPUTERNAME}</para></entry><entry><para>Replaced by the name of the computer.</para></entry></row>
+		<row><entry><para><function>${COMPUTERNAME}</function></para></entry><entry><para>Replaced by the name of the computer.</para></entry></row>
+
+		<row><entry><para><function>${VMSELECTION}</function></para></entry><entry>
+
+		        <para>Replaced by the name of the selection
+		        method used to spawn the JVM. The value
+		        replaced is typically one of the following
+		        values:
+
+			 <itemizedlist>
+			   <listitem><para><function>registry</function>, when the VM location is found in the registry</para></listitem>
+			   <listitem><para><function>jdkpath</function>, when the VM if found in the %JDK_HOME% variable </para></listitem>
+			   <listitem><para><function>jrepath</function>, when the VM if found in the %JRE_HOME% variable</para></listitem>
+			   <listitem><para><function>javahome</function>, when the VM if found in the %JAVA_HOME% variable</para></listitem>
+			   <listitem><para><function>jview</function>, if the VM is JView</para></listitem>
+			   <listitem><para><function>exepath</function>, if the VM was found in the windows path</para></listitem>
+			   <listitem><para><function>bundled</function>, if the VM bundled with the application is used</para></listitem>
+			</itemizedlist>
+		  </para></entry></row>
+
+
+		<row><entry><para><function>${VMSPAWNTYPE}</function></para></entry><entry>
+
+		        <para>This variable is replaced by one of the following values:
+
+			 <itemizedlist>
+
+			   <listitem><para><function>JVMDLL</function>
+			   if the JVM is spawned using a DLL loading
+			   and instanciation</para></listitem>
+
+			   <listitem><para><function>PROC</function>
+			   if the JVM is spawned in a new process
+			   using the Windows' CreateProcess function
+			   </para></listitem>
+
+			</itemizedlist>
+		  </para></entry></row>
+
 	      </tbody>
 	      </tgroup>
 	    </informaltable>
@@ -706,9 +744,92 @@
 </sect1>
 
 <sect1><title>Command Line </title>
+  <sect2><title>Running <application>jsmoothcmd.exe</application></title>
+
+    <para>
+
+      You can build a wrapped java application using the
+      <application>jsmoothcmd.exe</application> command. However, note
+      that it only takes as argument a project file created by the
+      JSmoothGen graphical application. In other words, you can't
+      create a project from scratch using only the jsmoothcmd program,
+      which is provided only as a convenience for scripting purposes.
+
+    </para>
+
+    <sect3>Usage</sect3>
+    <para>
+
+     <programlisting>jsmoothcmd.exe [myproject.jsmooth]</programlisting>
+
+    </para>
+
+    <para>
+     
+      The .jsmooth suffix may be ommited. The application
+      either creates the executable binary successfully, or returns an
+      error message.
+
+    </para>
+  </sect2>
 </sect1>
 
 <sect1><title>Using JSmooth as an Ant Task</title>
+
+   <para> JSmooth can also be used as an ant task. This permits using
+   it as a tool integrated in a standard ant deployment chain.</para>
+
+ <sect2><title>Defining the ant task</title>
+
+   <para>
+     This is the first step to be able to use jsmooth in your ant
+     scripts. You need to add a <function>taskdef</function> tag that
+     provides to ant the information required to create the
+     <function>jsmoothgen</function> task.
+    </para>
+
+   <para>
+<programlisting>
+&lt;taskdef name="jsmoothgen"
+     classname="net.charabia.jsmoothgen.ant.JSmoothGen"
+     classpath="path/to/jsmoothgen-ant.jar"/&gt;
+</programlisting>
+   </para>
+
+   <para>
+     If your jsmooth project uses the Sun's JIMI library to recognize
+   .ico files, you must add it to the classpath as well.
+   </para>
+
+ </sect2>
+
+ <sect2><title>Using the <function>jsmoothgen</function> task</title>
+
+   <para>
+    The task takes two mandatory parameters:
+    <itemizedlist>
+
+     <listitem><para> <function>project</function>: a reference to the project file.
+       </para></listitem>
+
+     <listitem><para> <function>skeletonroot</function>: a reference
+       to a directory where the skeletons can be found. Be careful,
+       this is not the directory where the skeleton used by the
+       project can be found, be rather the directory
+       one level up.</para></listitem>
+
+   </itemizedlist>
+    
+   </para>
+
+   <para>
+       Here is a sample, extracted from the jsmooth build.xml file:
+<programlisting>
+&lt;jsmoothgen project="jsprj/jsmoothgen.jsmooth" 
+      skeletonroot="${dist}/skeletons"/&gt;
+</programlisting>
+   </para>
+ </sect2>
 </sect1>
 
 
@@ -773,6 +894,38 @@
 
 	</answer>
       </qandaentry>
+
+      <qandaentry>
+        <question>
+	  <para>
+
+	   Jsmooth allows only one embedded jar in the executable
+	   binary. Does it mean that all the java application must be
+	   exhaustively set up in this jar ?
+
+	  </para>
+	</question>
+	<answer>
+	 <para>
+	  
+	   No. While the jsmooth wrappers require a jar to bootstrap
+	   the java application, you can reference other jar files in
+	   a jsmooth project. Those jar files will be accessible to
+	   your executable binary, provided the path specified is
+	   found at runtime. 
+	 </para><para>
+	   It is often convenient to put the main
+	   jar in the executable, but you can just put a small jar
+	   which purpose is just to bootstrap the application (for
+	   instance by displaying a splash screen with specific
+	   information and calling another class).
+
+	 </para>
+	</answer>
+      </qandaentry>
+
+
+
     </qandaset>
     </sect2>
 
@@ -811,6 +964,30 @@
 
 
   </sect2>
+
+</sect1>
+
+<sect1><title>License</title>
+
+ <para>
+All the JSmooth project is distributed under the terms of the GNU
+General Public License. Please read the License.txt file that comes
+with the package. Alternatively, you can find additional information
+on the GNU GPL license on the <ulink url="http://www.gnu.org">GNU Web
+Site</ulink></para>
+
+ <para>
+This license applies to all the files of the project, but not on the
+generated executable. This means that you are free to generate
+executable wrappers for proprietary software and distribute them
+without applying the terms of the GPL to them.
+ </para>
+
+ <para>
+Of course, this is the one and only exception. All other kind of
+distribution of any file of the JSmooth package must conform with the
+terms of the GNU General Public License.
+ </para>
 
 </sect1>
 

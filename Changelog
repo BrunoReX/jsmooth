@@ -9,6 +9,7 @@
 	directory than the executable built.
 	- Fixed a bug corrupting the value part when edition java
 	properties
+	- Added small set of testing suit
 	
 0.9.3
 	- Added Java Properties management in JSmoothGen
