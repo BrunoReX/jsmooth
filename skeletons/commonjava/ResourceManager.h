@@ -75,6 +75,7 @@ class ResourceManager
   static char * const KEY_NOJVMURL;
   static char * const KEY_BUNDLEDVM;
   static char * const KEY_CURRENTDIR;
+  static char * const KEY_EMBEDJAR;
 
   /** 
    * Constructs a ResourceManager which extract the jar and property
@@ -100,6 +101,9 @@ class ResourceManager
   /** Saves the jar in a temporary folder.  Extract the jar file
    * from the resource defined in the consructor, and saves it in
    * the temporary directory defined by the operating system.
+   *
+   * NOTE: if the KEY_EMBEDJAR key does not return "true", this method
+   * does not save the jar, and returns an empty string ("").
    *
    * @return the filename of the temp file where the Jar can be found.
    */
@@ -153,6 +157,8 @@ class ResourceManager
   const vector<JavaProperty>& getJavaProperties();
     
   std::string getCurrentDirectory() const;
+
+  bool useEmbeddedJar() const;
   
  private:
   void saveTemp(std::string tempname);

@@ -30,6 +30,7 @@ char * const ResourceManager::KEY_NOJVMMESSAGE  = "nojvmmessage";
 char * const ResourceManager::KEY_NOJVMURL      = "nojvmurl";
 char * const ResourceManager::KEY_BUNDLEDVM     = "bundledvm";
 char * const ResourceManager::KEY_CURRENTDIR    = "currentdir";
+char * const ResourceManager::KEY_EMBEDJAR      = "embedjar";
 
 ResourceManager::ResourceManager(std::string category, int propsId, int jarId)
 {
@@ -179,6 +180,9 @@ std::string ResourceManager::getProperty(const std::string& key)  const
 
 std::string ResourceManager::saveJarInTempFile()
 {
+  if (useEmbeddedJar() == false)
+    return "";
+
   std::string tempfilename = FileUtils::createTempFileName(".jar");
   DEBUG("Created tempfilename " + tempfilename);
   saveTemp(tempfilename);
@@ -219,4 +223,12 @@ std::string ResourceManager::getNormalizedClassPath() const
 std::string ResourceManager::getCurrentDirectory() const
 {
     return m_currentDirectory;
+}
+
+bool ResourceManager::useEmbeddedJar() const
+{
+  std::string value = m_props.get(ResourceManager::KEY_EMBEDJAR);
+  if (value == "true")
+    return true;
+  return false;
 }
