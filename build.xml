@@ -1,9 +1,48 @@
-<project name="jsmoothgen" default="dist" basedir=".">
+<project name="jsmoothgen" default="jar" basedir=".">
 
 
   <!-- set global properties for this build -->
+
+  <property environment="env"/>
   <property name="src" value="src"/>
+  <property name="tmp" value="tmp"/>
+  <property name="docs" value="docs"/>
+
+  <property name="anttask-src" value="ant"/>
   <property name="classes" value="classes"/>
+  <property name="jsmoothjar" value="jsmoothgen.jar"/>
+  <property name="jsmoothjar-ant" value="jsmoothgen-ant.jar"/>
+  <property name="ant.jar" value="${env.ANT_HOME}/lib/ant.jar"/>
+
+  <property name="FOP" value="C:\Programs\fop-0.20.5\fop.bat"/>
+  <property name="DOCBOOKBASE" value="c:/Programs/docbook-xsl-1.62.0"/>
+
+  <property name="VERSION" value="0.9.4"/>
+
+  <property name="distbase" value="dist"/>
+  <property name="dist" value="${distbase}/jsmooth-${VERSION}"/>
+
+  <path id="anttask-compile.class.path">
+    <pathelement path="${ant.jar}"/>
+    <pathelement path="${jsmoothjar}/"/>
+    <pathelement path="lib/JimiProClasses.zip"/>
+    <pathelement path="lib/jox116.jar"/>
+    <pathelement path="lib/dtdparser113.jar"/>
+  </path>
+
+  <path id="anttask.class.path">
+    <pathelement path="${ant.jar}"/>
+    <pathelement path="${jsmoothjar-ant}/"/>
+    <pathelement path="lib/JimiProClasses.zip"/>
+    <pathelement path="lib/jox116.jar"/>
+    <pathelement path="lib/dtdparser113.jar"/>
+  </path>
+
+  <path id="jsmooth.class.path">
+    <pathelement path="lib/JimiProClasses.zip"/>
+    <pathelement path="lib/jox116.jar"/>
+    <pathelement path="lib/dtdparser113.jar"/>
+  </path>
 
   <target name="init">
     <!-- Create the time stamp -->
@@ -14,47 +53,248 @@
 
   <target depends="init" name="compile">
     <!-- Compile the java code from ${src} into ${classes} -->
-    <javac deprecation="yes" destdir="${classes}" srcdir="${src}" target="1.1" classpath="lib/JimiProClasses.zip"/>
+    <echo>Compiling the application from ${src}</echo>
+    <javac deprecation="yes" destdir="${classes}" srcdir="${src}">
+       <classpath refid="jsmooth.class.path"/>
+    </javac>
   </target>
 
-  <target depends="init" name="doc">
+  <target depends="init" name="docs">
     <!-- Compile the java code from ${src} into ${classes} -->
 
-    <xslt basedir="docs" destdir="docs"
-       in="docs/jsmooth-doc.xml"
-       out="docs/jsmooth-doc.html"
-       style="c:/Programs/docbook-xsl-1.62.0/html/chunk.xsl" >
+    <xslt basedir="${docs}" destdir="${docs}"
+       in="${docs}/jsmooth-doc.xml"
+       out="${docs}/jsmooth-doc.html"
+       style="${DOCBOOKBASE}/html/chunk.xsl" >
  
-          <param name="admon.graphics" expression="1"/>
-          <param name="section.autolabel" expression="1"/>
-         <param name="section.label.includes.component.label" expression="1"/>
-         <param name="chunk.section.depth" expression="2"/>
+        <param name="admon.graphics" expression="1"/>
+        <param name="section.autolabel" expression="1"/>
+        <param name="section.label.includes.component.label" expression="1"/>
+        <param name="chunk.section.depth" expression="2"/>
   
     </xslt>
 
-    <xslt basedir="docs" destdir="docs"
-       in="docs/jsmooth-doc.xml"
-       out="docs/jsmooth-doc.fo"
-       style="c:/Programs/docbook-xsl-1.62.0/fo/docbook.xsl" >
- 
+    <xslt basedir="${docs}" destdir="${docs}"
+       in="${docs}/jsmooth-doc.xml"
+       out="${docs}/jsmooth-doc.fo"
+       style="${DOCBOOKBASE}/fo/docbook.xsl" >
           <param name="admon.graphics" expression="1"/>
           <param name="section.autolabel" expression="1"/>
          <param name="section.label.includes.component.label" expression="1"/>
-
     </xslt>
+
+    <exec executable="${FOP}" dir="${docs}">
+        <arg value="jsmooth-doc.fo"/>
+        <arg value="jsmooth-doc.pdf"/>
+    </exec>
 
   </target>
 
-  <target depends="compile" name="dist">
+  <target depends="compile" name="jar">
     <!-- Compile the java code from ${src} into ${classes} -->
     <copy todir="classes/icons">
-    <fileset dir="src/icons"/>
-  </copy>
-    <jar basedir="classes" jarfile="jsmoothgen.jar" manifest="src\MANIFEST.txt"/>
-    </target>
+      <fileset dir="src/icons"/>
+    </copy>
+    <jar basedir="classes" jarfile="${jsmoothjar}" manifest="src\MANIFEST.txt"/>
+  </target>
+
+  <target depends="compile" name="anttask">
+    <!-- Compile the java code from ${src} into ${classes} -->
+    <javac deprecation="yes" destdir="${classes}" srcdir="${anttask-src}">
+       <classpath refid="anttask-compile.class.path"/>
+    </javac>
+    <unjar src="lib/jox116.jar" dest="${classes}"/>
+    <unjar src="lib/dtdparser113.jar" dest="${classes}"/>
+    <jar basedir="classes" jarfile="${jsmoothjar-ant}" manifest="src\MANIFEST.txt"/>
+  </target>
+
+    <!-- 
+         Builds the distribution file for jsmooth.
+       
+      -->
+
+  <target depends="" name="dist">
+    
+    <tstamp/>
+    <buildnumber/>
+    <property name="RELEASEINFO" value="Build ${DSTAMP}-${build.number}"/>
+
+    <echo>Building release ${VERSION} - ${RELEASEINFO}</echo>
+
+    <!-- Clean up the directories -->
+    <antcall target="clean"/>
+
+    <!-- Clean up the distribution directory  -->
+
+    <delete dir="${distbase}"/>
+    <mkdir dir="${dist}"/>
+    <mkdir dir="${dist}/docs"/>
+    <mkdir dir="${dist}/lib"/>
+    <mkdir dir="${dist}/sample"/>
+    <mkdir dir="${dist}/skeletons"/>
+
+    
+    <!-- Compile the classes and create the jars           -->
+    <!-- The sources are copied in a temp dir, so that     -->
+    <!-- the VERSION and RELEASEINFO data can be replaced  -->
+
+    <delete dir="${tmp}"/>
+    <mkdir dir="${tmp}"/>
+    <copy todir="${tmp}/src">
+      <fileset dir="src"/>
+    </copy>
+    <replace token="@{VERSION}@" dir="${tmp}/src" value="${VERSION}">
+      <include name="**/*.java"/>
+    </replace>
+    <replace token="@{RELEASEINFO}@" dir="${tmp}/src" value="${RELEASEINFO}">
+      <include name="**/*.java"/>
+    </replace>
+
+    <antcall target="jar">
+      <param name="src" value="${tmp}/src"/>
+    </antcall>
+
+    <antcall target="anttask">
+      <param name="src" value="${tmp}/src"/>
+    </antcall>
+
+    <!-- Copy the jsmooth ant library -->
+    <copy todir="${dist}/lib" file="jsmoothgen-ant.jar"/>
+    <copy todir="${dist}/lib" file="lib/jox116.jar"/>
+    <copy todir="${dist}/lib" file="lib/dtdparser113.jar"/>
+
+    <!-- Now that the ANT task is available, register it  -->
+
+    <taskdef name="jsmoothgen"
+        classname="net.charabia.jsmoothgen.ant.JSmoothGen"
+        classpathref="anttask.class.path"/>
+
+    <!-- Builds the documentation -->
+    <copy todir="${tmp}/docs">
+      <fileset dir="docs"/>
+    </copy>
+    <replace token="@{VERSION}@" dir="${tmp}/docs" value="${VERSION}">
+      <include name="**/*.xml"/>
+      <include name="**/*.txt"/>
+    </replace>
+    <replace token="@{RELEASEINFO}@" dir="${tmp}/docs" value="${RELEASEINFO}">
+      <include name="**/*.xml"/>
+      <include name="**/*.txt"/>
+    </replace>
+
+    <antcall target="docs">
+      <param name="docs" value="${tmp}/docs"/>
+    </antcall>
+
+    <copy todir="${dist}/docs">
+      <fileset dir="${tmp}/docs">
+        <include name="**/*.pdf"/>
+      </fileset>
+      <fileset dir="${tmp}/docs">
+        <include name="**/*.html"/>
+      </fileset>
+    </copy>
+    <copy todir="${dist}/docs/images">
+      <fileset dir="${tmp}/docs/images"/>
+    </copy>
+    <copy todir="${dist}" file="${tmp}/docs/readme.txt"/>
+    <copy todir="${dist}" file="${tmp}/docs/license.txt"/>
+
+    <!-- Compile the normal wrappers -->
+    <mkdir dir="${dist}/skeletons/windowed-wrapper"/>
+    <mkdir dir="${dist}/skeletons/console-wrapper"/>
+    <antcall target="compileskels">
+      <param name="skelflags" value=""/>
+    </antcall>
+    <copy todir="${dist}/skeletons/windowed-wrapper" file="skeletons/simplewrap/jwrap.exe"/>
+    <copy todir="${dist}/skeletons/windowed-wrapper" file="skeletons/simplewrap/description-normal.skel"/>
+    <copy todir="${dist}/skeletons/console-wrapper" file="skeletons/consolewrapper/consolewrapper.exe"/>
+    <copy todir="${dist}/skeletons/console-wrapper" file="skeletons/consolewrapper/description-normal.skel"/>
+    <exec executable="strip.exe" dir="${dist}/skeletons/console-wrapper">
+        <arg value="consolewrapper.exe"/>
+    </exec>
+    <exec executable="strip.exe" dir="${dist}/skeletons/windowed-wrapper">
+        <arg value="jwrap.exe"/>
+    </exec>
+
+    <!-- Compile the windowed wrapper in debug mode -->
+    <mkdir dir="${dist}/skeletons/windowed-wrapper-debug"/>
+    <antcall target="compileskels">
+      <param name="skelflags" value="-DDEBUGMODE=1"/>
+    </antcall>
+    <copy todir="${dist}/skeletons/windowed-wrapper-debug" file="skeletons/simplewrap/jwrap.exe"/>
+    <copy todir="${dist}/skeletons/windowed-wrapper-debug" file="skeletons/simplewrap/description-debug.skel"/>
+    <exec executable="strip.exe" dir="${dist}/skeletons/windowed-wrapper">
+        <arg value="jwrap.exe"/>
+    </exec>
+
+    <!-- Compile the console wrapper in debug mode -->
+    <mkdir dir="${dist}/skeletons/console-wrapper-debug"/>
+    <antcall target="compileskels">
+      <param name="skelflags" value="-DDEBUGMODE=2"/>
+    </antcall>
+    <copy todir="${dist}/skeletons/console-wrapper-debug" file="skeletons/consolewrapper/consolewrapper.exe"/>
+    <copy todir="${dist}/skeletons/console-wrapper-debug" file="skeletons/consolewrapper/description-debug.skel"/>
+    <exec executable="strip.exe" dir="${dist}/skeletons/console-wrapper">
+        <arg value="consolewrapper.exe"/>
+    </exec>
+
+    <jsmoothgen project="jsprj/jsmoothgen.jsmooth" skeletonroot="${dist}/skeletons"/>
+    <jsmoothgen project="jsprj/jsmoothcmd.jsmooth" skeletonroot="${dist}/skeletons"/>
+
+    <copy todir="${dist}" file="jsmoothgen.exe"/>
+    <copy todir="${dist}" file="jsmoothgen-debug.exe"/>
+    <copy todir="${dist}/sample">
+      <fileset dir="sample"/>
+    </copy>
+
+  </target>
+
+   <target name="compileskel" depends="">
+     <exec executable="make.exe" dir="skeletons/${skelname}">
+       <arg value="-f"/>
+       <arg value="Makefile.win"/>
+       <arg value="clean"/>
+       <arg value="all"/>
+       <arg value="CUSTOMFLAGS=${skelflags}"/>
+     </exec>
+   </target>
+
+   <target name="compileskels" depends="">
+     <!-- clean -->
+
+    <antcall target="compileskel">
+      <param name="skelname" value="commonjava"/>
+      <param name="skelflags" value="${skelflags}"/>
+    </antcall>
+    <antcall target="compileskel">
+      <param name="skelname" value="consolewrapper"/>
+      <param name="skelflags" value="${skelflags}"/>
+    </antcall>
+    <antcall target="compileskel">
+      <param name="skelname" value="simplewrap"/>
+      <param name="skelflags" value="${skelflags}"/>
+    </antcall>
+
+   </target>
+
+  <target name="skeleton-debug">
+    <antcall target="compileskels">
+      <param name="skelflags" value="-DDEBUGMODE=1"/>
+    </antcall>
+  </target>
 
   <target name="clean">
     <delete dir="${classes}"/>
+  </target>
+
+  <target name="run" depends="jar">
+     <java classname="net.charabia.jsmoothgen.application.gui.MainFrame" fork="yes" >
+       <classpath refid="jsmooth.class.path"/>
+       <classpath>
+          <pathelement path="${jsmoothjar}"/>
+       </classpath>
+     </java>
   </target>
 
 </project>

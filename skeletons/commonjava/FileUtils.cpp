@@ -125,3 +125,14 @@ std::string FileUtils::getComputerName()
     return buffer;
 }
 
+std::string FileUtils::concFile(std::string path, std::string file)
+{
+  if (path.length() > 0)
+    {
+      if (path[path.length()-1] != '\\')
+	path += '\\';
+    }
+  path += file;
+  
+  return path;
+}

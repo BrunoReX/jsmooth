@@ -105,6 +105,9 @@ class FileUtils
    * @return a std::string that holds the computer name.
    */
   static std::string getComputerName();
+
+  static std::string concFile(std::string path, std::string file);
+
 };
 
 #endif

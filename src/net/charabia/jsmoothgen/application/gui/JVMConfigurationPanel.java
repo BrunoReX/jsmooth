@@ -55,7 +55,7 @@ public class JVMConfigurationPanel extends javax.swing.JPanel implements ModelUp
 	    if (m_editionCanceled == false)
 		{
 		    jpp.setName(m_name.getText());
-		    jpp.setValue(m_name.getText());
+		    jpp.setValue(m_value.getText());
 		}
 	    return item;
 	}

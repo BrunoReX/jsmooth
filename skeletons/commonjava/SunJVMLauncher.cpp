@@ -181,6 +181,7 @@ bool SunJVMLauncher::runVM12DLL(ResourceManager& resource)
                 JavaVMOption options[1 + jpropstrv.size()];
                 std::string cpoption = "-Djava.class.path=";
                 cpoption += jarpath;
+                cpoption += ";" + resource.getNormalizedClassPath();
 
                 DEBUG("Classpath: " + cpoption);
                 options[0].optionString =  (char*)cpoption.c_str();
@@ -276,7 +277,8 @@ bool SunJVMLauncher::runVM11DLL(ResourceManager& resource)
 {
     std::string jarpath = resource.saveJarInTempFile();
     std::string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));
-    std::string extracp = resource.getProperty(string(ResourceManager::KEY_CLASSPATH));
+ //   std::string extracp = resource.getProperty(string(ResourceManager::KEY_CLASSPATH));
+    std::string extracp = resource.getNormalizedClassPath();
 
     std::string args = resource.getProperty(ResourceManager::KEY_ARGUMENTS);
     vector<string> pargs = StringUtils::split(args, " \t\n\r", "\"\'");
@@ -495,7 +497,8 @@ bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, Reso
             classpath += string(";") + lcp;
       }
       
-      string addcp = resource.getProperty("classpath");
+      string addcp = resource.getNormalizedClassPath();
+      DEBUG("ADDCP= " + addcp);
       classpath += ";" + addcp;
       
       string addargs = resource.getProperty(ResourceManager::KEY_ARGUMENTS);

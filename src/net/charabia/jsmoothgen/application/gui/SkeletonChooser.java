@@ -47,14 +47,23 @@ public class SkeletonChooser extends javax.swing.JPanel implements ModelUpdater
 	
     public void setSkeletonList(SkeletonList list)
     {
+	System.out.println("Setskeletonlist " + m_model + " on " + list);
 	m_comboNames.removeAllItems();
 	m_list = list;
-	for (Iterator i=m_list.getIteratorName(); i.hasNext(); )
+        Iterator i = null;
+        SkeletonBean skel = list.getSkeleton(m_model.getSkeletonName());
+        if (((skel != null) && (skel.isDebug())) || (m_cbDebug.isSelected()))
+            i = m_list.getIteratorName();
+	else
+	    i = m_list.getIteratorNoDebugName();
+        
+	for (; i.hasNext(); )
 	    {
 		String name = (String)i.next();
 		m_comboNames.addItem(name);
 	    }
-	if ((m_model != null) && (m_model.getSkeletonName() != null))
+
+        if ((m_model != null) && (m_model.getSkeletonName() != null))
 	    {
 		m_comboNames.setSelectedItem(m_model.getSkeletonName());
 	    }
@@ -68,73 +77,100 @@ public class SkeletonChooser extends javax.swing.JPanel implements ModelUpdater
      */
     private void initComponents()//GEN-BEGIN:initComponents
     {
-	java.awt.GridBagConstraints gridBagConstraints;
-		
-	jLabel1 = new javax.swing.JLabel();
-	m_comboNames = new javax.swing.JComboBox();
-	jLabel2 = new javax.swing.JLabel();
-	jScrollPane2 = new javax.swing.JScrollPane();
-	m_skeletonDescription = new javax.swing.JTextPane();
-		
-	setLayout(new java.awt.GridBagLayout());
-		
-	jLabel1.setText("Executable Skeleton");
-	gridBagConstraints = new java.awt.GridBagConstraints();
-	gridBagConstraints.gridx = 1;
-	gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-	gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-	gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
-	add(jLabel1, gridBagConstraints);
-		
-	m_comboNames.addActionListener(new java.awt.event.ActionListener()
-	    {
-		public void actionPerformed(java.awt.event.ActionEvent evt)
-		{
-		    comboNamesActionPerformed(evt);
-		}
-	    });
-		
-	gridBagConstraints = new java.awt.GridBagConstraints();
-	gridBagConstraints.gridx = 2;
-	gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-	gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-	gridBagConstraints.weightx = 1.0;
-	add(m_comboNames, gridBagConstraints);
-		
-	jLabel2.setText("Description");
-	gridBagConstraints = new java.awt.GridBagConstraints();
-	gridBagConstraints.gridx = 1;
-	gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-	gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-	add(jLabel2, gridBagConstraints);
-		
-	m_skeletonDescription.setEditable(false);
-	m_skeletonDescription.setFocusable(false);
-	jScrollPane2.setViewportView(m_skeletonDescription);
-		
-	gridBagConstraints = new java.awt.GridBagConstraints();
-	gridBagConstraints.gridx = 1;
-	gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-	gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
-	gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-	gridBagConstraints.weighty = 0.5;
-	add(jScrollPane2, gridBagConstraints);
-		
+        java.awt.GridBagConstraints gridBagConstraints;
+
+        jLabel1 = new javax.swing.JLabel();
+        m_comboNames = new javax.swing.JComboBox();
+        jLabel2 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        m_skeletonDescription = new javax.swing.JTextPane();
+        m_cbDebug = new javax.swing.JCheckBox();
+
+        setLayout(new java.awt.GridBagLayout());
+
+        jLabel1.setText("Executable Skeleton");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 5);
+        add(jLabel1, gridBagConstraints);
+
+        m_comboNames.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                comboNamesActionPerformed(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        add(m_comboNames, gridBagConstraints);
+
+        jLabel2.setText("Description");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        add(jLabel2, gridBagConstraints);
+
+        m_skeletonDescription.setEditable(false);
+        m_skeletonDescription.setFocusable(false);
+        jScrollPane2.setViewportView(m_skeletonDescription);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weighty = 0.5;
+        add(jScrollPane2, gridBagConstraints);
+
+        m_cbDebug.setText("Display Debug Wrapper");
+        m_cbDebug.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                cbDebugActionPerformed(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        add(m_cbDebug, gridBagConstraints);
+
     }//GEN-END:initComponents
+
+    private void cbDebugActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_cbDebugActionPerformed
+    {//GEN-HEADEREND:event_cbDebugActionPerformed
+        // Add your handling code here:
+        if (m_list != null)
+        {
+            setSkeletonList(m_list);
+        }
+    }//GEN-LAST:event_cbDebugActionPerformed
 
     private void comboNamesActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_comboNamesActionPerformed
     {//GEN-HEADEREND:event_comboNamesActionPerformed
 	// Add your handling code here:
-	//		System.out.println("COMBO: " + m_comboNames.getSelectedItem().toString());
+	
 	String skelname = (String) m_comboNames.getSelectedItem();
 	if (skelname == null)
 	    return;
 		
 	SkeletonBean skel = m_list.getSkeleton(skelname);
+
+	System.out.println("SKEL: " + skel.toString());
 	if (skel != null)
 	    {
 		m_skeletonDescription.setText(skel.getDescription());
 	    }
+
     }//GEN-LAST:event_comboNamesActionPerformed
 
     public void updateModel()
@@ -152,6 +188,7 @@ public class SkeletonChooser extends javax.swing.JPanel implements ModelUpdater
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JCheckBox m_cbDebug;
     private javax.swing.JComboBox m_comboNames;
     private javax.swing.JTextPane m_skeletonDescription;
     // End of variables declaration//GEN-END:variables

@@ -22,76 +22,76 @@
 
 ResourceManager::ResourceManager(std::string category, int propsId, int jarId)
 {
-    m_resourceCategory = category;
-    m_resourcePropsId = propsId;
-    m_resourceJarId = jarId;
+  m_resourceCategory = category;
+  m_resourcePropsId = propsId;
+  m_resourceJarId = jarId;
 
-    //
-    // Load the Properties
-    //
-    std::string propsidstr = this->idToResourceName(propsId);
-    HRSRC resprop = FindResource(NULL, propsidstr.c_str(), category.c_str());
-    if (resprop != NULL)
+  //
+  // Load the Properties
+  //
+  std::string propsidstr = this->idToResourceName(propsId);
+  HRSRC resprop = FindResource(NULL, propsidstr.c_str(), category.c_str());
+  if (resprop != NULL)
     {
-        int mainsize = 0;
-        mainsize = SizeofResource(NULL, resprop);
-        // char mainbuf[mainsize+1];
+      int mainsize = 0;
+      mainsize = SizeofResource(NULL, resprop);
+      // char mainbuf[mainsize+1];
 
-        HGLOBAL main = LoadResource(NULL, resprop);
-        m_props.setData((const char*)main, mainsize);
+      HGLOBAL main = LoadResource(NULL, resprop);
+      m_props.setData((const char*)main, mainsize);
         
     }
-    else
+  else
     {
-        m_lastError = "Can't find resource 'main name'";
-        return;
+      m_lastError = "Can't find resource 'main name'";
+      return;
     }
     
-    //
-    // loads the jar information
-    // 
-    std::string jaridstr = this->idToResourceName(jarId);
-    HRSRC resjar = FindResource(NULL, jaridstr.c_str(), category.c_str());
-    if (resjar != NULL)
+  //
+  // loads the jar information
+  // 
+  std::string jaridstr = this->idToResourceName(jarId);
+  HRSRC resjar = FindResource(NULL, jaridstr.c_str(), category.c_str());
+  if (resjar != NULL)
     {
-        m_jarSize = SizeofResource(NULL, resjar);
-        m_jarHandler =  LoadResource(NULL, resjar);
+      m_jarSize = SizeofResource(NULL, resjar);
+      m_jarHandler =  LoadResource(NULL, resjar);
     }
-    else
+  else
     {
-        m_lastError = "Can't find JAR resource!";
-        return;
+      m_lastError = "Can't find JAR resource!";
+      return;
     }
 
-    //
-    // Extract the java properties from the Property
-    //
-    std::string jpropcountstr = m_props.get("javapropertiescount");
-    DEBUG("JAVA PROPERTIES COUNT = " + jpropcountstr);
+  //
+  // Extract the java properties from the Property
+  //
+  std::string jpropcountstr = m_props.get("javapropertiescount");
+  DEBUG("JAVA PROPERTIES COUNT = " + jpropcountstr);
     
-    string exepath = FileUtils::getExecutablePath();
-    string exename = FileUtils::getExecutableFileName();
-    string computername = FileUtils::getComputerName();
+  string exepath = FileUtils::getExecutablePath();
+  string exename = FileUtils::getExecutableFileName();
+  string computername = FileUtils::getComputerName();
     
-    int jpropcount = StringUtils::parseInt(jpropcountstr);
-    for (int i=0; i<jpropcount; i++)
+  int jpropcount = StringUtils::parseInt(jpropcountstr);
+  for (int i=0; i<jpropcount; i++)
     {
-        string namekey = string("javaproperty_name_") + StringUtils::toString(i);
-        string valuekey = string("javaproperty_value_") + StringUtils::toString(i);
+      string namekey = string("javaproperty_name_") + StringUtils::toString(i);
+      string valuekey = string("javaproperty_value_") + StringUtils::toString(i);
     
-        DEBUG("JPROP: " + namekey + "=" + valuekey);
-        string name = m_props.get(namekey);
-        string value = m_props.get(valuekey);
+      DEBUG("JPROP: " + namekey + "=" + valuekey);
+      string name = m_props.get(namekey);
+      string value = m_props.get(valuekey);
 
-        DEBUG("JPROP: " + name + "=" + StringUtils::StringUtils::replaceEnvironmentVariable(value));
+      DEBUG("JPROP: " + name + "=" + StringUtils::StringUtils::replaceEnvironmentVariable(value));
         
-        value = StringUtils::replaceEnvironmentVariable(value);
-        value = StringUtils::replace(value, "${EXECUTABLEPATH}", exepath);
-        value = StringUtils::replace(value, "${EXECUTABLENAME}", exename);
-        value = StringUtils::replace(value, "${COMPUTERNAME}", computername);
+      value = StringUtils::replaceEnvironmentVariable(value);
+      value = StringUtils::replace(value, "${EXECUTABLEPATH}", exepath);
+      value = StringUtils::replace(value, "${EXECUTABLENAME}", exename);
+      value = StringUtils::replace(value, "${COMPUTERNAME}", computername);
         
-        JavaProperty jprop(name, value);
-        m_javaProperties.push_back(jprop);
+      JavaProperty jprop(name, value);
+      m_javaProperties.push_back(jprop);
     }
 }
 
@@ -130,47 +130,73 @@ void ResourceManager::setProperty(const std::string& key, const std::string& val
 
 void ResourceManager::saveTemp(std::string tempname)
 {
-    HANDLE temp = CreateFile(tempname.c_str(),
-                            GENERIC_WRITE,
-                            FILE_SHARE_WRITE,
-                            NULL, 
-                            CREATE_ALWAYS, 
-                            FILE_ATTRIBUTE_NORMAL,
-                            NULL);
+  HANDLE temp = CreateFile(tempname.c_str(),
+			   GENERIC_WRITE,
+			   FILE_SHARE_WRITE,
+			   NULL, 
+			   CREATE_ALWAYS, 
+			   FILE_ATTRIBUTE_NORMAL,
+			   NULL);
     
-    if (temp != NULL)
+  if (temp != NULL)
     {    
-        DWORD reallyWritten;
-        WriteFile(temp, m_jarHandler, m_jarSize, &reallyWritten, NULL);
+      DWORD reallyWritten;
+      WriteFile(temp, m_jarHandler, m_jarSize, &reallyWritten, NULL);
         
-        // TODO: check the reallyWritten value for errors
+      // TODO: check the reallyWritten value for errors
         
-        CloseHandle(temp);
-        string s = tempname;
-        m_deleteOnFinalize.push_back(s);
+      CloseHandle(temp);
+      string s = tempname;
+      m_deleteOnFinalize.push_back(s);
     }
     
 }
 
 std::string ResourceManager::getMainName()  const
 {
-    return getProperty(string("mainclassname"));
+  return getProperty(string("mainclassname"));
 }
 
 std::string ResourceManager::getProperty(const std::string& key)  const
 {
-    return m_props.get(key);
+  return m_props.get(key);
 }
 
 std::string ResourceManager::saveJarInTempFile()
 {
-    std::string tempfilename = FileUtils::createTempFileName(".jar");
-    DEBUG("Created tempfilename " + tempfilename);
-    saveTemp(tempfilename);
-    return tempfilename;
+  std::string tempfilename = FileUtils::createTempFileName(".jar");
+  DEBUG("Created tempfilename " + tempfilename);
+  saveTemp(tempfilename);
+  return tempfilename;
 }
 
 const vector<JavaProperty>& ResourceManager::getJavaProperties()
 {
-    return m_javaProperties;
+  return m_javaProperties;
+}
+
+std::vector<std::string> ResourceManager::getNormalizedClassPathVector() const
+{
+  std::string basepath = FileUtils::getExecutablePath();
+  std::string curdirmodifier = getProperty(string(ResourceManager::KEY_CURRENTDIR));
+  basepath = FileUtils::concFile(basepath, curdirmodifier);
+
+  DEBUG("basepath for classpath = " + basepath);
+
+  std::string cp = getProperty(string(ResourceManager::KEY_CLASSPATH));
+  vector<string>cps = StringUtils::split(cp, ";", "", false);
+  for (int i=0; i<cps.size(); i++)
+    {
+      string lib = cps[i];
+      cps[i] = FileUtils::concFile(basepath, cps[i]);
+      DEBUG("FOUND " + basepath + " :: " + lib + " -> " + cps[i]);
+    }
+
+  return cps;
+}
+
+std::string ResourceManager::getNormalizedClassPath() const
+{
+  vector<string> cps = getNormalizedClassPathVector();
+  return StringUtils::join(cps, ";");
 }

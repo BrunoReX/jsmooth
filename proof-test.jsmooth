@@ -26,6 +26,9 @@
   <void property="arguments"> 
    <string></string> 
   </void> 
+  <void property="bundledJVMPath"> 
+   <string>bin</string> 
+  </void> 
   <void property="classPath"> 
    <array class="java.lang.String" length="0"/> 
   </void> 

@@ -140,6 +140,9 @@ class ResourceManager
    */
   void setProperty(const std::string& key, const std::string& value);
 
+  std::vector<std::string> getNormalizedClassPathVector() const;
+  std::string getNormalizedClassPath() const;
+
   /**
    * Return the list of JavaProperty elements defined in the property
    * resource. 

@@ -1,3 +1,15 @@
+0.9.4
+	- Added Ant Task support 
+	- Changed default xml encoding of the project, due a flaw in the
+	Sun's XMLDecoder classes which prevented it to work with ant (this
+	is a classloader issue).
+	- Added command line launching support
+	- Added automatic dist creation
+	- Fixed corrupt classpath when project file not in the same
+	directory than the executable built.
+	- Fixed a bug corrupting the value part when edition java
+	properties
+	
 0.9.3
 	- Added Java Properties management in JSmoothGen
 	- Added variable management for java properties in wrappers 

@@ -38,16 +38,25 @@ public class PropertiesBuilder
 
 	// BundledVM & classpaths are changed to be accessible
 	// from the current directory
-	File curdir = null;
+	File curdir = new File(obj.getExecutableName()).getParentFile();
+	if (curdir.isAbsolute() == false)
+	    {
+		curdir = new File(basedir, curdir.toString());
+	    }
+	System.out.println("curdir =" + curdir.toString());
 
 	if (obj.getCurrentDirectory() != null)
 	    {
-		curdir = new File(obj.getCurrentDirectory());
-		if (curdir.isAbsolute() == false)
+		System.out.println("obj curdir =" + obj.getCurrentDirectory());
+		File newcurdir = new File(obj.getCurrentDirectory());
+		if (newcurdir.isAbsolute() == false)
 		    {
-			curdir = new File(basedir, obj.getCurrentDirectory()).getAbsoluteFile();
+			curdir = new File(curdir, newcurdir.toString());
 		    }
+		else
+		    curdir = newcurdir;
 	    }
+	System.out.println("relocating from " + basedir + " to " + curdir);
 		
 	addPair("bundledvm", getRenormalizedPathIfNeeded(obj.getBundledJVMPath(), basedir, curdir), out);
 
@@ -91,6 +100,7 @@ public class PropertiesBuilder
 		addPair("javaproperty_value_" + i, javapairs[i].getValue(), out);
 	    }
 
+	System.out.println("made properties:" + out.toString());
 	return out.toString();
     }
 	

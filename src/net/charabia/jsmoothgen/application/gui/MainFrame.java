@@ -35,7 +35,8 @@ public class MainFrame extends javax.swing.JFrame implements MainController
     private SkeletonList m_skelList;
     private File m_projectFile = null;
 	
-    final static public String VERSION = "0.9.3";
+    final static public String VERSION = "@{VERSION}@";
+    final static public String RELEASEINFO = "@{RELEASEINFO}@";
     private RecentFileMenu m_recentMenuManager;
     /** Creates new form MainFrame */
     public MainFrame()
@@ -88,9 +89,9 @@ public class MainFrame extends javax.swing.JFrame implements MainController
         m_buttonCompile = new javax.swing.JButton();
         m_buttonRunExe = new javax.swing.JButton();
         jSeparator5 = new javax.swing.JSeparator();
+        jButton1 = new javax.swing.JButton();
         jSeparator6 = new javax.swing.JSeparator();
         jSeparator7 = new javax.swing.JSeparator();
-        jButton1 = new javax.swing.JButton();
         jSeparator8 = new javax.swing.JSeparator();
         jPanel1 = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
@@ -115,54 +116,54 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 
         setTitle("JSmooth");
         addWindowListener(new java.awt.event.WindowAdapter()
-	    {
-		public void windowClosing(java.awt.event.WindowEvent evt)
-		{
-		    exitForm(evt);
-		}
-	    });
+        {
+            public void windowClosing(java.awt.event.WindowEvent evt)
+            {
+                exitForm(evt);
+            }
+        });
 
         m_buttonNew.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_new.png")));
         m_buttonNew.addActionListener(new java.awt.event.ActionListener()
-	    {
-		public void actionPerformed(java.awt.event.ActionEvent evt)
-		{
-		    buttonNewActionPerformed(evt);
-		}
-	    });
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                buttonNewActionPerformed(evt);
+            }
+        });
 
         jToolBar1.add(m_buttonNew);
 
         m_buttonOpen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_open.png")));
         m_buttonOpen.addActionListener(new java.awt.event.ActionListener()
-	    {
-		public void actionPerformed(java.awt.event.ActionEvent evt)
-		{
-		    buttonOpenActionPerformed(evt);
-		}
-	    });
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                buttonOpenActionPerformed(evt);
+            }
+        });
 
         jToolBar1.add(m_buttonOpen);
 
         m_buttonSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_save.png")));
         m_buttonSave.addActionListener(new java.awt.event.ActionListener()
-	    {
-		public void actionPerformed(java.awt.event.ActionEvent evt)
-		{
-		    buttonSaveActionPerformed(evt);
-		}
-	    });
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                buttonSaveActionPerformed(evt);
+            }
+        });
 
         jToolBar1.add(m_buttonSave);
 
         m_buttonSaveAs.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_save_as.png")));
         m_buttonSaveAs.addActionListener(new java.awt.event.ActionListener()
-	    {
-		public void actionPerformed(java.awt.event.ActionEvent evt)
-		{
-		    buttonSaveAsActionPerformed(evt);
-		}
-	    });
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                buttonSaveAsActionPerformed(evt);
+            }
+        });
 
         jToolBar1.add(m_buttonSaveAs);
 
@@ -170,42 +171,42 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 
         m_buttonCompile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_autopilot-24.png")));
         m_buttonCompile.addActionListener(new java.awt.event.ActionListener()
-	    {
-		public void actionPerformed(java.awt.event.ActionEvent evt)
-		{
-		    buttonCompileActionPerformed(evt);
-		}
-	    });
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                buttonCompileActionPerformed(evt);
+            }
+        });
 
         jToolBar1.add(m_buttonCompile);
 
         m_buttonRunExe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_next.png")));
         m_buttonRunExe.addActionListener(new java.awt.event.ActionListener()
-	    {
-		public void actionPerformed(java.awt.event.ActionEvent evt)
-		{
-		    buttonRunExeActionPerformed(evt);
-		}
-	    });
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                buttonRunExeActionPerformed(evt);
+            }
+        });
 
         jToolBar1.add(m_buttonRunExe);
 
         jToolBar1.add(jSeparator5);
 
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_about.png")));
+        jButton1.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                menuAboutActionPerformed(evt);
+            }
+        });
+
+        jToolBar1.add(jButton1);
+
         jToolBar1.add(jSeparator6);
 
         jToolBar1.add(jSeparator7);
-
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_about.png")));
-        jButton1.addActionListener(new java.awt.event.ActionListener()
-	    {
-		public void actionPerformed(java.awt.event.ActionEvent evt)
-		{
-		    menuAboutActionPerformed(evt);
-		}
-	    });
-
-        jToolBar1.add(jButton1);
 
         jToolBar1.add(jSeparator8);
 
@@ -233,12 +234,12 @@ public class MainFrame extends javax.swing.JFrame implements MainController
         m_menuNew.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_new-16.png")));
         m_menuNew.setText("New");
         m_menuNew.addActionListener(new java.awt.event.ActionListener()
-	    {
-		public void actionPerformed(java.awt.event.ActionEvent evt)
-		{
-		    menuNewActionPerformed(evt);
-		}
-	    });
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                menuNewActionPerformed(evt);
+            }
+        });
 
         jMenu1.add(m_menuNew);
 
@@ -248,12 +249,12 @@ public class MainFrame extends javax.swing.JFrame implements MainController
         m_menuLoad.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_open-16.png")));
         m_menuLoad.setText("Open project...");
         m_menuLoad.addActionListener(new java.awt.event.ActionListener()
-	    {
-		public void actionPerformed(java.awt.event.ActionEvent evt)
-		{
-		    menuLoadActionPerformed(evt);
-		}
-	    });
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                menuLoadActionPerformed(evt);
+            }
+        });
 
         jMenu1.add(m_menuLoad);
 
@@ -261,24 +262,24 @@ public class MainFrame extends javax.swing.JFrame implements MainController
         m_menuSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_save-16.png")));
         m_menuSave.setText("Save");
         m_menuSave.addActionListener(new java.awt.event.ActionListener()
-	    {
-		public void actionPerformed(java.awt.event.ActionEvent evt)
-		{
-		    menuSaveActionPerformed(evt);
-		}
-	    });
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                menuSaveActionPerformed(evt);
+            }
+        });
 
         jMenu1.add(m_menuSave);
 
         m_menuSaveAs.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_save_as-16.png")));
         m_menuSaveAs.setText("Save as...");
         m_menuSaveAs.addActionListener(new java.awt.event.ActionListener()
-	    {
-		public void actionPerformed(java.awt.event.ActionEvent evt)
-		{
-		    menuSaveAsActionPerformed(evt);
-		}
-	    });
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                menuSaveAsActionPerformed(evt);
+            }
+        });
 
         jMenu1.add(m_menuSaveAs);
 
@@ -292,12 +293,12 @@ public class MainFrame extends javax.swing.JFrame implements MainController
         m_menuExit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_exit-16.png")));
         m_menuExit.setText("Exit");
         m_menuExit.addActionListener(new java.awt.event.ActionListener()
-	    {
-		public void actionPerformed(java.awt.event.ActionEvent evt)
-		{
-		    menuExitActionPerformed(evt);
-		}
-	    });
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                menuExitActionPerformed(evt);
+            }
+        });
 
         jMenu1.add(m_menuExit);
 
@@ -307,24 +308,24 @@ public class MainFrame extends javax.swing.JFrame implements MainController
         m_menuCompile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_autopilot-16.png")));
         m_menuCompile.setText("Create Exe");
         m_menuCompile.addActionListener(new java.awt.event.ActionListener()
-	    {
-		public void actionPerformed(java.awt.event.ActionEvent evt)
-		{
-		    menuCompileActionPerformed(evt);
-		}
-	    });
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                menuCompileActionPerformed(evt);
+            }
+        });
 
         m_menuProject.add(m_menuCompile);
 
         m_menuRunExe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_next-16.png")));
         m_menuRunExe.setText("Run Exe");
         m_menuRunExe.addActionListener(new java.awt.event.ActionListener()
-	    {
-		public void actionPerformed(java.awt.event.ActionEvent evt)
-		{
-		    menuRunExeActionPerformed(evt);
-		}
-	    });
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                menuRunExeActionPerformed(evt);
+            }
+        });
 
         m_menuProject.add(m_menuRunExe);
 
@@ -334,12 +335,12 @@ public class MainFrame extends javax.swing.JFrame implements MainController
         m_menuAbout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_about-16.png")));
         m_menuAbout.setText("About");
         m_menuAbout.addActionListener(new java.awt.event.ActionListener()
-	    {
-		public void actionPerformed(java.awt.event.ActionEvent evt)
-		{
-		    menuAboutActionPerformed(evt);
-		}
-	    });
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                menuAboutActionPerformed(evt);
+            }
+        });
 
         jMenu2.add(m_menuAbout);
 
@@ -388,7 +389,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
     {//GEN-HEADEREND:event_menuAboutActionPerformed
 	// Add your handling code here:
 	AboutBox ab = new AboutBox(this, true);
-	ab.setVersion(VERSION);
+	ab.setVersion(VERSION + " (" + RELEASEINFO + ")");
 	ab.show();
     }//GEN-LAST:event_menuAboutActionPerformed
 	

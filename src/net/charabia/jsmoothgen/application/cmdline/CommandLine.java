@@ -54,10 +54,19 @@ public class CommandLine
 		System.err.println("Error: project file <" + args[0]+"> not found");
 		System.exit(10);
 	    }
+
+	String jsmoothbase = System.getProperty("jsmooth.basedir");
+
 	try {
 	    JSmoothModelBean model = JSmoothModelPersistency.load(prj);
 	    File basedir = prj.getParentFile();
-	    SkeletonList skelList = new SkeletonList(new File("skeletons"));
+	    File skelbase = new File("skeletons");
+	    if (jsmoothbase != null)
+		{
+		    skelbase = new File(new File(jsmoothbase), "skeletons");
+		}
+
+	    SkeletonList skelList = new SkeletonList(skelbase);
 
 	    File out = new File(basedir, model.getExecutableName());
 	    

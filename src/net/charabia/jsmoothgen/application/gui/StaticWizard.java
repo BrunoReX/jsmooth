@@ -214,27 +214,32 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
     private void buttonSkeletonPropertiesActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonSkeletonPropertiesActionPerformed
     {//GEN-HEADEREND:event_buttonSkeletonPropertiesActionPerformed
 	// Add your handling code here:
-	updateModel();
+	try { 
+	    updateModel();
 		
-	//		SkeletonPropertiesPanel skelpan = new SkeletonPropertiesPanel();
-	String skelname = m_model.getSkeletonName();
-	if (skelname != null)
-	    {
-		System.out.println("Seting skeleton " + skelname);
-		SkeletonBean skel = m_main.getSkeletonList().getSkeleton(skelname);
-		if (skel != null)
-		    {
-			System.out.println("Seting skeleton bean " + skel);
-			m_panelSkeletonProps.setSkeletonProperties(skel.getSkeletonProperties());
-		    }
-		else
-		    m_panelSkeletonProps.setSkeletonProperties(new SkeletonProperty[0]);
-	    }
-	else
-	    m_panelSkeletonProps.setSkeletonProperties(new SkeletonProperty[0]);
+	    //		SkeletonPropertiesPanel skelpan = new SkeletonPropertiesPanel();
+	    String skelname = m_model.getSkeletonName();
+	    if (skelname != null)
+		{
+		    System.out.println("Seting skeleton " + skelname);
+		    SkeletonBean skel = m_main.getSkeletonList().getSkeleton(skelname);
+		    if (skel != null)
+			{
+			    System.out.println("Seting skeleton bean " + skel);
+			    m_panelSkeletonProps.setSkeletonProperties(skel.getSkeletonProperties());
+			}
+		    else
+			m_panelSkeletonProps.setSkeletonProperties(new SkeletonProperty[0]);
+		}
+	    else
+		m_panelSkeletonProps.setSkeletonProperties(new SkeletonProperty[0]);
 	
-	m_panelSkeletonProps.setModel(m_basedir, m_model);
-	setNewCentralPanel(m_panelSkeletonProps, m_panelSkeletonProps);
+	    m_panelSkeletonProps.setModel(m_basedir, m_model);
+	    setNewCentralPanel(m_panelSkeletonProps, m_panelSkeletonProps);
+	} catch (Exception exc)
+	    {
+		exc.printStackTrace();
+	    }
     }//GEN-LAST:event_buttonSkeletonPropertiesActionPerformed
 
     private void buttonJVMConfigActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonJVMConfigActionPerformed

@@ -21,7 +21,8 @@
   </revision>
 </revhistory>
 
-  <title>JSmooth User Manual</title>
+  <title>JSmooth @{VERSION}@ User Manual</title>
+  <subtitle>@{RELEASEINFO}@</subtitle>
 </articleinfo>
 
 <sect1>
@@ -136,9 +137,9 @@
 
      Although Sun has recently introduced the Java Web Start
      mechanism, it does not address all the issues: users want
-     standard windows application, that install in the standard
-     "program files" directory, and they can launch by double-clicking
-     a standard .exe. 
+     standard windows applications, that install in the standard
+     "program files" directory, and which they can launch by
+     double-clicking a standard .exe.
 
    </para>
 
@@ -172,7 +173,7 @@
 
 </sect1>
 
-<sect1><title>Making a windows application</title>
+<sect1><title>JSmoothGen: Windows Project Editor</title>
 
  <sect2><title>Running the JSmoothGen project editor</title>
 
@@ -701,6 +702,115 @@
       </mediaobject>
     </para>
  </sect2>
+
+</sect1>
+
+<sect1><title>Command Line </title>
+</sect1>
+
+<sect1><title>Using JSmooth as an Ant Task</title>
+</sect1>
+
+
+<sect1><title>Frequently Asked Question</title>
+
+  <sect2><title>Wrappers Behaviour</title>
+
+    <qandaset>
+      <qandaentry>
+        <question>
+	  <para>
+	   How does a wrapper extract the jar file?
+	  </para>
+	</question>
+	<answer>
+	 <para>
+	  
+	  The jar file extraction is wrapper-specific. However, all
+	  the wrapper provided with JSmooth as of version 0.9.3
+	  extract it in the default temporary directory. This is the
+	  standard behaviour expected by Windows application.
+
+	 </para>
+	</answer>
+      </qandaentry>
+
+
+      <qandaentry>
+        <question>
+	  <para>
+	   What happens to the extracted jar file when the java application exits?
+	  </para>
+	</question>
+	<answer>
+	 <para>
+
+	  Whenever possible, the wrappers delete the file on
+	  exit. Note however that this is not always possible. For
+	  example, an instance of a JVM created using the JVM DLL does
+	  not unload cleanly. This behaviour is documented by Sun, and
+	  there is no known work-around for it.
+
+	 </para>
+
+	 <para>
+
+	  Both Windowed and Console wrapper always prefer the JVM
+	  instanciation methods that allow them to delete the temp jar
+	  after the application exits.
+
+	 </para>
+
+	 <para>
+
+  	  Note however that deleting the files in the windows TEMP
+	  directory is not required for Windows applications, and most
+	  application just leave them, letting the operating system
+	  manage it. However, MS Windows deletes those temp files only
+	  when the disks are running low in available space.
+
+	 </para>
+
+	</answer>
+      </qandaentry>
+    </qandaset>
+    </sect2>
+
+    <sect2><title>Trouble &amp; issues with wrappers</title>
+
+    <qandaset>
+      <qandaentry>
+        <question>
+	  <para>
+	   The wrapped applications complain about a "MSVCRT.DLL not found" on Windows 95?
+	  </para>
+	</question>
+	<answer>
+	 <para>
+
+	   The MSVCRT.DLL file is required by the wrapped application
+	   but may be missing on some Windows 95 computers that have
+	   never been upgraded. This file is often installed by
+	   third-party application, but it may happen that your users
+	   do not have it installed.
+
+	 </para>
+
+	 <para>
+      
+           To solve this issue, either ask your user to upgrade to a
+	   decent OS, or just bundle this MSVCRT.DLL along with your
+	   application.
+
+         </para>
+
+	</answer>
+      </qandaentry>
+
+    </qandaset>
+
+
+  </sect2>
 
 </sect1>
 

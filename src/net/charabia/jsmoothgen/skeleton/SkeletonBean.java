@@ -35,7 +35,8 @@ public class SkeletonBean
 	private int m_resourceJarId;
 	private int m_resourcePropsId;
 	private SkeletonProperty[] m_skelproperties ;
-	
+	private boolean m_debug = false;
+        
 	/** Creates a new instance of SkeletonBean */
 	public SkeletonBean()
 	{
@@ -113,6 +114,14 @@ public class SkeletonBean
 		return m_shortName;
 	}
 
-	
+	public void setDebug(boolean isForDebugging)
+        {
+            m_debug = isForDebugging;
+        }
+        
+        public boolean isDebug()
+        {
+            return m_debug;
+        }
 	
 }

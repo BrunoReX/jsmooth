@@ -20,71 +20,71 @@
 
 #include "StringUtils.h"
 
-vector<string> StringUtils::split(const string& str, const string& separators, const string& quotechars)
+vector<string> StringUtils::split(const string& str, const string& separators, const string& quotechars, bool handleEscape)
 {
-    vector<string> result;
-    string buf = "";
+  vector<string> result;
+  string buf = "";
 
-    for (int i=0; i<str.length(); i++)
+  for (int i=0; i<str.length(); i++)
     {
-        if (str[i] == '\\')
+      if ( handleEscape && (str[i] == '\\'))
         {
-                i++;
-                if (i<str.length())
-                {
-                    switch(str[i])
-                    {
-                       case '\'':
-                       case '\"':
-                          buf += str[i];
-                          break;
+	  i++;
+	  if (i<str.length())
+	    {
+	      switch(str[i])
+		{
+		case '\'':
+		case '\"':
+		  buf += str[i];
+		  break;
                        
-                       case 'n':
-                          buf += '\n';
-                          break;
-                       case 'r':
-                          buf += '\r';
-                          break;
-                       case 't':
-                          buf += '\t';
-                          break;
-                    }
-                }
+		case 'n':
+		  buf += '\n';
+		  break;
+		case 'r':
+		  buf += '\r';
+		  break;
+		case 't':
+		  buf += '\t';
+		  break;
+		}
+	    }
         }
-        else if (separators.find(str[i], 0) != separators.npos)
+      else if (separators.find(str[i], 0) != separators.npos)
         {
-                if (buf.length() > 0)
-                {
-                                result.push_back(buf);
-                                buf = "";
-                }
+	  if (buf.length() > 0)
+	    {
+	      result.push_back(buf);
+	      buf = "";
+	    }
         }
-        else if (quotechars.find(str[i], 0) != separators.npos)
+      else if (quotechars.find(str[i], 0) != separators.npos)
         {
-                if (buf.length() > 0)
-                {
-                      result.push_back(buf);
-                      buf = "";
-                }
+	  if (buf.length() > 0)
+	    {
+	      result.push_back(buf);
+	      buf = "";
+	    }
                         
-                char qc = quotechars[ quotechars.find(str[i], 0) ];
-                i++;
-                while ( (i<str.length()) && (str[i] != qc) )
-                {
-                    buf += str[i++];
-                }
+	  char qc = quotechars[ quotechars.find(str[i], 0) ];
+	  i++;
+	  while ( (i<str.length()) && (str[i] != qc) )
+	    {
+	      buf += str[i++];
+	    }
         }
-        else
+      else
         {
-                buf += str[i];
+	  buf += str[i];
         }
     }
-    if (buf.length() > 0)
+  if (buf.length() > 0)
     {
-        result.push_back(buf);
+      result.push_back(buf);
     }
 
-    return result;
+  return result;
 }
 
 

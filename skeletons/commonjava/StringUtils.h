@@ -71,7 +71,7 @@ class StringUtils
    * @param separators a string that contains all the characters to be used as separators.
    * @param quotechars a string that contains all the characters that are used as quote chars.
    */
-  static vector<string> split(const string& str, const string& separators, const string& quotechars);
+  static vector<string> split(const string& str, const string& separators, const string& quotechars, bool handleEscape = true);
 
   /**
    * Converts a string to an int. If the string is not a valid
