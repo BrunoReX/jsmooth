@@ -453,12 +453,12 @@ public class ExeCompiler
 	for (int i=0; i<orgimages.length; i++)
 	    checkImageLoaded(orgimages[i]);
 
-	System.out.println("Loaded " + orgimages.length + " images");
+	//	System.out.println("Loaded " + orgimages.length + " images");
 	for (int i=0; (i<orgimages.length); i++)
 	    {
 		int w = orgimages[i].getWidth(null);
 		int h = orgimages[i].getHeight(null);
-		System.out.println("Size of " + i + " = " + w + "," + h);
+		//		System.out.println("Size of " + i + " = " + w + "," + h);
 	    }	
 
 	//

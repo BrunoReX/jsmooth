@@ -58,11 +58,11 @@ public class JSmoothModelPersistency
 		    {
 			throw new Exception("Not a JOX File");
 		    }
-		System.out.println("Loaded jobj " + jobj + " = " + jobj.getJarLocation());
+		//		System.out.println("Loaded jobj " + jobj + " = " + jobj.getJarLocation());
 		if ((jobj.getJarLocation() != null) && (jobj.getJarLocation().length()>0))
 		    {
 			jobj.setEmbeddedJar(true);
-			System.out.println("Set embeddedjar to " + jobj.getEmbeddedJar());
+			//			System.out.println("Set embeddedjar to " + jobj.getEmbeddedJar());
 		    }
 
 		return jobj;

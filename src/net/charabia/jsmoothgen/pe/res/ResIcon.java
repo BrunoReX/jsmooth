@@ -163,7 +163,7 @@ public class ResIcon
 	//		System.out.println("FOUND WIDTH " + width + " (was " + img.getWidth(null) + ")");
 	//		System.out.println("FOUND HEIGHT " + height + " (was " + img.getHeight(null) + ")");
 
-	System.out.println("RESICON...");
+	//	System.out.println("RESICON...");
 	if (img instanceof BufferedImage)
 	    {
 		BufferedImage result = (BufferedImage)img;
@@ -175,12 +175,12 @@ public class ResIcon
 				int rgb = result.getRGB(x, y);
 				if (((rgb>>24)&0xFF)>0)
 				    {
-					System.out.print(".");
+					//					System.out.print(".");
 				    }
-				else
-				    System.out.print("*");
+				//				else
+				//				    System.out.print("*");
 			    }
-			System.out.println("");
+			//			System.out.println("");
 		    }
 
 	    }
@@ -202,13 +202,13 @@ public class ResIcon
 	this.BitsPerPixel = 8;
 		
 	Palette = new ResIcon.PaletteElement[1 << BitsPerPixel];
-	System.out.println("Creating palette of " + Palette.length + " colors (" + colors.size() + ")");
+	//	System.out.println("Creating palette of " + Palette.length + " colors (" + colors.size() + ")");
 	for (Enumeration e=colors.keys(); e.hasMoreElements(); )
 	    {
 		Integer pixi = (Integer)e.nextElement();
 		int pix = pixi.intValue();
 		int index = ((Integer)colors.get(pixi)).intValue();
-		System.out.println("set pixel " + index);
+		//		System.out.println("set pixel " + index);
 	
 		Palette[index] = new ResIcon.PaletteElement();
 		Palette[index].Blue = pix & 0xFF;

@@ -338,7 +338,7 @@ public class JSmoothModelBean
 		File exebase = new File(m_executableName);
 		if (exebase.isAbsolute() == false)
 		    exebase = new File(filebase, exebase.toString()).getParentFile();
-		System.out.println("EXE FILEBASE: " + exebase.toString());
+		//		System.out.println("EXE FILEBASE: " + exebase.toString());
 		m_currentDirectory = checkRelativePath(exebase, m_currentDirectory, result, "Current directory", toRelativePath);
 	    }
 
