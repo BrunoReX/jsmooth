@@ -38,6 +38,7 @@ public class SkeletonChooser extends javax.swing.JPanel implements ModelUpdater
 	public void setModel(JSmoothModelBean model)
 	{
 		m_model = model;
+		m_comboNames.removeAllItems();
 		if ((m_list != null) && (m_model.getSkeletonName() != null))
 		{
 			m_comboNames.setSelectedItem(m_model.getSkeletonName());
