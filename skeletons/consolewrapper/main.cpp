@@ -31,6 +31,16 @@
 
 using namespace std;
 
+
+void _debugOutput(const std::string& text)
+{
+  std::cerr << text << "\r\n";
+}
+
+void _debugWaitKey()
+{
+}
+
 int main(int argc, char *argv[])
 {    
     ResourceManager* globalResMan = new ResourceManager("JAVA", PROPID, JARID);

@@ -45,6 +45,25 @@ void lastExit()
   globalResMan = 0;
 }
 
+// void debug(std::string text)
+// {
+// }
+
+// void _debugOutputCheck(std::string text)
+// {
+//   debug(text);
+// }
+DebugConsole DEBUGCONSOLE("JSmooth Debug");
+
+void _debugOutput(const std::string& text)
+{
+  DEBUGCONSOLE.writeline(text);
+}
+
+void _debugWaitKey()
+{
+  DEBUGCONSOLE.waitKey();
+}
                           
 int WINAPI WinMain (HINSTANCE hThisInstance,
                     HINSTANCE hPrevInstance,
@@ -58,6 +77,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 //    jlist->run();
     
     atexit(lastExit);
+    //    debugOutput = debug;
     
     /* The Window structure */
     wincl.hInstance = hThisInstance;
@@ -100,6 +120,14 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     globalResMan = new ResourceManager("JAVA", PROPID, JARID);
     DEBUG(string("Main class: ") + globalResMan->getMainName());
 
+    // sets up the command line arguments
+    // not sure if lpszArgument can be null on Windows...
+     if ((lpszArgument!=NULL) && (strlen(lpszArgument)>0))
+       {
+ 	// Note that this overwrites an existing KEY_ARGUMENTS
+ 	globalResMan->setProperty(string(ResourceManager::KEY_ARGUMENTS), lpszArgument);
+       }
+
     char curdir[256];
     GetCurrentDirectory(256, curdir);
     DEBUG(string("Currentdir: ") + curdir);
@@ -107,8 +135,14 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     string newcurdir = globalResMan->getProperty(ResourceManager::KEY_CURRENTDIR);
     SetCurrentDirectory(newcurdir.c_str());
 
+    ShowWindow(hwnd, SW_HIDE);
+    UpdateWindow(hwnd);
+
     JavaMachineManager man(*globalResMan);
     std::string preferDLLstr = globalResMan->getProperty("skel_SingleProcess");
+
+    MessageBox(hwnd, preferDLLstr.c_str(), "preferDLL", MB_OKCANCEL|MB_ICONQUESTION|MB_APPLMODAL);
+
     bool preferDLL = false;
     if (StringUtils::parseInt(preferDLLstr) > 0)
         preferDLL = true;
@@ -122,21 +156,25 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
         }
     }
 
-    DEBUG("NORMAL EXIT");
-    DEBUGWAITKEY();
+    //    MessageBox(hwnd, "Launched java", "DEBUG", MB_OKCANCEL|MB_ICONQUESTION|MB_APPLMODAL);
+
+    //    DEBUG("NORMAL EXIT");
+    //    DEBUGWAITKEY();
 
     /* Make the window visible on the screen */
 
 //        ShowWindow (hwnd, nFunsterStil);
 //        UpdateWindow(hwnd);
     /* Run the message loop. It will run until GetMessage() returns 0 */
-//    while (GetMessage (&messages, NULL, 0, 0))
-    {
-        /* Translate virtual-key messages into character messages */
-//        TranslateMessage(&messages);
-        /* Send message to WindowProcedure */
-//        DispatchMessage(&messages);
-    }
+//     while (GetMessage (&messages, NULL, 0, 0) > 0)
+//     {
+//         /* Translate virtual-key messages into character messages */
+//         TranslateMessage(&messages);
+//         /* Send message to WindowProcedure */
+//         DispatchMessage(&messages);
+//     }
+
+//    MessageBox(hwnd, "AFTER GETMESSAGE", "DEBUG", MB_OKCANCEL|MB_ICONQUESTION|MB_APPLMODAL);
 
     /* The program return-value is 0 - The value that PostQuitMessage() gave */
     return messages.wParam;
@@ -174,4 +212,3 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 
     return 0;
 }
-
