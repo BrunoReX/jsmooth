@@ -52,10 +52,10 @@ public class SkeletonChooser extends javax.swing.JPanel implements ModelUpdater
 	m_list = list;
         Iterator i = null;
         SkeletonBean skel = list.getSkeleton(m_model.getSkeletonName());
-        if (((skel != null) && (skel.isDebug())) || (m_cbDebug.isSelected()))
-            i = m_list.getIteratorName();
-	else
-	    i = m_list.getIteratorNoDebugName();
+//         if (((skel != null) && (skel.isDebug())) || (m_cbDebug.isSelected()))
+//             i = m_list.getIteratorName();
+// 	else
+	i = m_list.getIteratorNoDebugName();
         
 	for (; i.hasNext(); )
 	    {
@@ -84,7 +84,6 @@ public class SkeletonChooser extends javax.swing.JPanel implements ModelUpdater
         jLabel2 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         m_skeletonDescription = new javax.swing.JTextPane();
-        m_cbDebug = new javax.swing.JCheckBox();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -130,30 +129,7 @@ public class SkeletonChooser extends javax.swing.JPanel implements ModelUpdater
         gridBagConstraints.weighty = 0.5;
         add(jScrollPane2, gridBagConstraints);
 
-        m_cbDebug.setText("Display Debug Wrapper");
-        m_cbDebug.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                cbDebugActionPerformed(evt);
-            }
-        });
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        add(m_cbDebug, gridBagConstraints);
-
     }//GEN-END:initComponents
-
-    private void cbDebugActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_cbDebugActionPerformed
-    {//GEN-HEADEREND:event_cbDebugActionPerformed
-        // Add your handling code here:
-        if (m_list != null)
-        {
-            setSkeletonList(m_list);
-        }
-    }//GEN-LAST:event_cbDebugActionPerformed
 
     private void comboNamesActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_comboNamesActionPerformed
     {//GEN-HEADEREND:event_comboNamesActionPerformed
@@ -188,7 +164,6 @@ public class SkeletonChooser extends javax.swing.JPanel implements ModelUpdater
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JCheckBox m_cbDebug;
     private javax.swing.JComboBox m_comboNames;
     private javax.swing.JTextPane m_skeletonDescription;
     // End of variables declaration//GEN-END:variables
