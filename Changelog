@@ -1,3 +1,13 @@
+0.9.7
+	- Changed the GUI: now it uses l2f-common and does not rely on the
+	netbeans' form editor to build the interfaces. This is a major
+	change, which experiments with an inline help system and an
+	automatic GUI construction.
+	- Fixes a bug preventing the skeletons to update correctly when a
+	new project is created or opened.
+	- Adds additional debug information for the wrappers, when
+	launched in debug mode.
+	
 0.9.6
 	- Now the JVM look-up method also takes the installed JDK into
 	account (not only the installed JRE)
