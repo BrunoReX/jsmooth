@@ -64,7 +64,8 @@ int main(int argc, char *argv[])
         args += string("\"") + argv[i] + "\" ";
     }
 
-    globalResMan->setProperty(string(ResourceManager::KEY_ARGUMENTS), args);
+    if (args.length() > 0)
+      globalResMan->setProperty(string(ResourceManager::KEY_ARGUMENTS), args);
     
     JavaMachineManager man(*globalResMan);
     if (man.run(false, false) == false)

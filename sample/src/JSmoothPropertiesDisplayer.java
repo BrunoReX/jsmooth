@@ -13,10 +13,11 @@ import java.util.*;
  */
 public class JSmoothPropertiesDisplayer extends java.awt.Frame
 {
-	
+    private String[] m_args;
 	/** Creates new form Frame */
-	public JSmoothPropertiesDisplayer()
-	{
+	public JSmoothPropertiesDisplayer(String[] args)
+    {
+	m_args = args;
 		initComponents();
 		displayInformation();
 	}
@@ -90,13 +91,21 @@ public class JSmoothPropertiesDisplayer extends java.awt.Frame
 	 */
 	public static void main(String args[])
 	{
-		new JSmoothPropertiesDisplayer().show();
+		new JSmoothPropertiesDisplayer(args).show();
 	}
 
 	private void displayInformation()
 	{
 		StringBuffer out = new StringBuffer();
 		out.append("-- Sample --\n\n");
+
+		out.append("Arguments passed on the command line: " + m_args.length + " \n");
+		for (int i=0; i<m_args.length; i++)
+		    {
+			out.append("" + i + ". " + m_args[i]);
+			out.append("\n");
+		    }
+		out.append("\n");
 
 		out.append("Free Heap Memory: " + Runtime.getRuntime().freeMemory() + " bytes\n");
 		//		out.append("Max Heap Memory: " + Runtime.getRuntime().maxMemory() + " bytes\n");

@@ -6,6 +6,7 @@
 <JVMSearchPath>jdkpath</JVMSearchPath>
 <JVMSearchPath>exepath</JVMSearchPath>
 <JVMSearchPath>jview</JVMSearchPath>
+<arguments>simpleargument "multiple tokens"</arguments>
 <embeddedJar>true</embeddedJar>
 <executableName>..\proof-test.exe</executableName>
 <iconLocation>..\src\icons\stock_web-support.png</iconLocation>
