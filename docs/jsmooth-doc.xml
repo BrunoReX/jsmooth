@@ -4,7 +4,6 @@
 
 <article>
 <articleinfo>
-   "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"
 
   <author>
     <firstname>Rodrigo</firstname>
@@ -30,13 +29,12 @@
   <sect2><title>What is JSmooth?</title>
    <para>
 
-JSmooth is a Java Executable Wrapper that builds standard Windows
-executable binaries (.exe) that launch java applications. Such binaries
-contain all the information needed to launch your java application,
-i.e. the classpath, the java properties, the jvm version required, and
-so on. If Java is not installed, it helps the users by displaying them a
-notice before launching automatically a browser to a web site where they
-can download a JVM.
+JSmooth is a Java Executable Wrapper. It builds standard Windows
+executable binaries (.exe) that contain all the information needed to
+launch your java application, i.e. the classpath, the java properties,
+the jvm version required, and so on. If Java is not installed, it
+helps the users by displaying a notice and optionally launching a
+browser to a web site where they can download a JVM.
 
    </para>
    
@@ -69,69 +67,17 @@ can download a JVM.
 
    </para>
 
-   <para>
+   <para> The size of a JRE bundle gets bigger and bigger
+         as the Java language evolves.
+	   While it was reasonable to bundle the 2MB JRE 1.1 with the
+	   application, bundling the 14MB JRE 1.4 increases
+	   drastically the size of the bundle. This may not be an
+	   issue for vendors that are used to sell a packaged box with
+	   a CD, but stays an open issue for open-source developer and
+	   companies distributing their software product on the
+	   internet.
+    </para>
 
-    Let's examine a few facts:
-  
-   <itemizedlist>
-
-     <listitem><para> The size of a JRE bundle gets bigger and bigger
-         as the Java language evolves, as shown in the table below.
-
-	   <informaltable frame='all'>
-	    <tgroup cols='2'>
-	      <colspec colwidth='1.0in'/>
-	      <colspec colwidth='3.0in'/>
-	      <tbody>
-	        <row><entry>Version</entry><entry>Zipped JRE Bundle (approx.)</entry></row>
-	        <row><entry>JRE 1.1</entry><entry>2MB</entry></row>
-		<row><entry>JRE 1.2</entry><entry>11MB</entry></row>
-		<row><entry>JRE 1.3</entry><entry>14MB</entry></row>
-		<row><entry>JRE 1.4</entry><entry>30MB</entry></row>
-	      </tbody>
-	      </tgroup>
-	    </informaltable>
-
-	   </para><para>
-
-	   While it was reasonable to bundle the JRE 1.1 with the
-	   application, bundling the JRE 1.4 increases drastically the
-	   size of the bundle. This may not be an issue for vendors
-	   that are used to sell a packaged box with a CD, but stays
-	   an open issue for open-source developer and companies
-	   distributing their software product on the internet.
-
-	   </para></listitem>
-
-     <listitem><para>
-
-       Letting average Joe User manage the configuration of his system
-       is probably not a good idea either. Do not forget that the choice
-       of Java for your application is your choice, not Joe's, and he
-       probably don't even know what Java is. Should he really care
-       about it? No, for sure. If your software product targets
-       experienced users, you are a lucky developer and you may not need
-       to worry about the technical details of your application's
-       usage. But even for the experienced users, it is always worth it
-       making sure they won't loose their time installing and
-       configuring the application.
-
-       </para><para>
-
-       Image now that Joe was smart enough to be able to find a JVM on
-       his own, to download and install it. Fine. It'll work
-       seamlessly for your own application, you say. Wrong. What if
-       your application requires Java 1.4 and what he installed is
-       1.3, because he did a few months ago? The application may not
-       work at all, or even worse, partially work. Remember that any
-       software anomaly is called a bug, and you are the one
-       responsible for the bugs.
-
-       </para></listitem>
-
-   </itemizedlist>
-
-   </para>
 
    <para>
 
@@ -163,9 +109,8 @@ can download a JVM.
      configuration, how to manage the version constraints, and so on
      for every JVM version. This is the main difference between a
      simple .bat with "java -Xmx64m -jar myjar" which works only on
-     the developer's computer, and an smart wrapper which adapts
+     the developer's computer, and a smart wrapper which adapts
      itself to the end-user's configuration.
-
     </para>
 
   </sect2>
@@ -618,6 +563,50 @@ can download a JVM.
         and specify the directory location of the JRE.
 
       </para>
+
+      <warning>
+      <para>
+        What the "JVM Bundle" option really specifies, is a path (relative
+        to the generated EXE) where a JRE can be found. This is NOT an
+        option to bundle a JRE in the EXE, as many people may think.
+      </para>
+      </warning>
+
+      <para>
+       For the option to work correctly, you have to put a JRE in a
+       directory near the EXE (generally in a subdirectory called
+       "jre" or whatever). Once the exe is generated, it will FIRST
+       try to locate the JRE at the location mentionned. If it can't
+       be found there, then it will fallback in the normal jre look-up
+       mode (search for a jre or a jdk in the Windows registry or in
+       commonly-used environment variables).
+      </para>
+
+      <para>
+       Therefore, if you use the "Bundle JVM" option, you'll need to
+       install yourself the JRE at the same relative path to the EXE.
+      </para>
+
+      <para>
+        For instance, take the following example:
+       <codelisting>
++myprog/
+|- myjar.jar
+|- lib/
++ mylib1.jar
++ mylib2.jar
+|- jre/
++ [full jre stuff here]
+|- myexe.exe
+        </codelisting>
+      </para>
+
+     <para>
+        In this case, the generated myexe.exe will try to use first
+      the jre in the "jre" sub-dir. To deploy it, either simply zip
+      all the "myprog" directory, or tell your favorite installer to
+      set-up the jre directory in the same configuration as in your
+      original folder tree.  </para>
 
     </sect3>
 
