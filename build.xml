@@ -204,8 +204,8 @@
     <copy todir="${dist}" file="${tmp}/docs/license.txt"/>
 
     <!-- Compile the normal wrappers -->
-    <ant antfile="skeletons/simplewrap/samplejar/build.xml" dir="skeletons/simplewrap/samplejar/" target="jar"/>
-    <ant antfile="skeletons/consolewrapper/samplejar/build.xml" dir="skeletons/consolewrapper/samplejar/" target="jar"/>
+    <ant antfile="skeletons/simplewrap/samplejar/build.xml" target="jar"/>
+    <ant antfile="skeletons/consolewrapper/samplejar/build.xml" target="jar"/>
 
     <mkdir dir="${dist}/skeletons/windowed-wrapper"/>
     <mkdir dir="${dist}/skeletons/console-wrapper"/>
