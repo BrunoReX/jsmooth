@@ -1076,4 +1076,21 @@ terms of the GNU General Public License.
 
 </sect1>
 
+<sect1><title>Third-Party libraries used</title>
+
+ <para>
+This product includes software developed by L2FProd.com (<ulink url="http://www.L2FProd.com/">http://www.L2FProd.com/</ulink>). The l2fprod-common library is licensed under the terms of Apache Software License. Source code can be found at the following location: <ulink url="https://l2fprod-common.dev.java.net/">https://l2fprod-common.dev.java.net/</ulink>
+</para>
+
+ <para>
+JSmooth includes the JOX library. JOX is a set of Java libraries that
+make it easy to transfer data between XML documents and Java beans. It is distributed under the terms of the Lesser GPL. Source code for JOX is available at the library's web site: <ulink url="http://www.wutka.com/jox.html">http://www.wutka.com/jox.html</ulink>.
+</para>
+
+ <para>
+JSmooth includes the DTDParser library. It is distributed under the terms of either an Apache-style license or the Lesser GPL license. Source code for is available at the library's web site: <ulink url="http://www.wutka.com/dtdparser.html">http://www.wutka.com/dtdparser.html</ulink>.
+</para>
+
+</sect1>
+
 </article>

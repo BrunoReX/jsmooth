@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <jsmoothskeleton>
 <debug>false</debug>
-<description>This skeleton wraps GUI applications. 
-- No console I/O is displayed
-- If no Java VM is found, it is able to display a configurable URL (typically to a java download page).
+<description><![CDATA[
+This skeleton wraps <b>GUI applications</b>.<ul> 
+<li>No console I/O is displayed
+<li>If no Java VM is found, it is able to display a configurable URL (typically to a java download page).
+</ul>
+Arguments can be passed to the application (either use the JSmooth default argument mechanism, or create a shortcut with arguments).]]>
 </description>
 <executableName>jwrap.exe</executableName>
 <resourceCategory>JAVA</resourceCategory>
