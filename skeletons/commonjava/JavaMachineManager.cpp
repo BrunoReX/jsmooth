@@ -26,8 +26,8 @@ JavaMachineManager::JavaMachineManager(ResourceManager& resman): m_resman(resman
 
     m_registryVms = JVMRegistryLookup::lookupJVM();
     m_javahomeVm = JVMEnvVarLookup::lookupJVM("JAVA_HOME");
-    m_jrepathVm = JVMEnvVarLookup::lookupJVM("JRE_PATH");
-    m_jdkpathVm = JVMEnvVarLookup::lookupJVM("JDK_PATH");
+    m_jrepathVm = JVMEnvVarLookup::lookupJVM("JRE_HOME");
+    m_jdkpathVm = JVMEnvVarLookup::lookupJVM("JDK_HOME");
 
     if (resman.getProperty("bundledvm").length() > 0)
     {
@@ -154,26 +154,40 @@ bool JavaMachineManager::run(bool dontUseConsole, bool preferSingleProcess)
                 }
 	    } else if (*i == "jrepath")
 	      {
-                DEBUG("- Trying to use JREPATH");
+                DEBUG("- Trying to use JRE_HOME");
                 if (m_jrepathVm.size()>0)
 		  {
-                    if (m_jrepathVm[0].runProc(m_resman, dontUseConsole, "jrepath"))
+                    if (m_jrepathVm[0].runProc(m_resman, dontUseConsole, "jrehome"))
 		      {
                         return true;
 		      }
 		  }
 	      } else if (*i == "jdkpath")
 		{
-		  DEBUG("- Trying to use JDKPATH");
+		  DEBUG("- Trying to use JDK_HOME");
 		  if (m_jdkpathVm.size()>0)
 		    {
-		      if (m_jdkpathVm[0].runProc(m_resman, dontUseConsole, "jdkpath"))
+		      if (m_jdkpathVm[0].runProc(m_resman, dontUseConsole, "jdkhome"))
 			{
 			  return true;
 			}
 		    }
-		}
+		} else if (*i == "exepath")
+		  {
+		    DEBUG("- Trying to use PATH");
+		    string exename = dontUseConsole?"javaw.exe":"java.exe";
+		    SunJVMLauncher launcher;
+		    launcher.VmVersion = launcher.guessVersionByProcess(exename);
+		    if (launcher.VmVersion.isValid())
+		      {
+			DEBUG("Found valid java machine " + exename + " on PATH (" + launcher.VmVersion.toString() + ")");
+			Version v12("1.2.0");
+			if (launcher.runExe(exename, false, m_resman, dontUseConsole, (launcher.VmVersion<v12)?"1.1":"1.2", "path"))
+			  return true;
+		      }
+		  }
     }
+
   DEBUG("Couldn't run any suitable JVM!");
   return false;
 }

@@ -493,8 +493,6 @@ bool SunJVMLauncher::runVM12proc(ResourceManager& resource, bool noConsole, cons
 
 bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource, bool noConsole, const string& version, const string& origin)
 {    
-   if (FileUtils::fileExists(exepath))
-   {
       DEBUG("Running new proc for " + exepath);
 
       string classpath = resource.saveJarInTempFile();
@@ -598,7 +596,6 @@ bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, Reso
       {
             DEBUG("Can't run " + exeline);
       }
-   }
 
    return false;
 }

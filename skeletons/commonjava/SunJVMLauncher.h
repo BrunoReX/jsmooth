@@ -101,14 +101,14 @@ class SunJVMLauncher
 
 friend bool operator < (const SunJVMLauncher& v1, const SunJVMLauncher& v2);
 
+  bool runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource, bool noConsole, const std::string& version, const string& origin);
+
  private:
      
   bool runVM12DLL(ResourceManager& resource, const string& origin);
   bool runVM11DLL(ResourceManager& resource, const string& origin);
   bool runVM11proc(ResourceManager& resource, bool noConsole, const string& origin);
   bool runVM12proc(ResourceManager& resource, bool noConsole, const string& origin);
-
-  bool runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource, bool noConsole, const std::string& version, const string& origin);
        
   std::string sizeToString(int size);
 };
