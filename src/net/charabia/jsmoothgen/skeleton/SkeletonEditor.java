@@ -51,6 +51,8 @@ public class SkeletonEditor extends javax.swing.JFrame
 		
 		m_fileChooser = new javax.swing.JFileChooser();
 		jPanel1 = new javax.swing.JPanel();
+		jLabel5 = new javax.swing.JLabel();
+		m_exeName = new javax.swing.JTextField();
 		m_labelName = new javax.swing.JLabel();
 		m_name = new javax.swing.JTextField();
 		jLabel1 = new javax.swing.JLabel();
@@ -104,19 +106,29 @@ public class SkeletonEditor extends javax.swing.JFrame
 		jPanel1.setLayout(new java.awt.GridBagLayout());
 		
 		jPanel1.setBorder(new javax.swing.border.EtchedBorder());
+		jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+		jLabel5.setText("Executable Name");
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
+		jPanel1.add(jLabel5, gridBagConstraints);
+		
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.weightx = 0.5;
+		jPanel1.add(m_exeName, gridBagConstraints);
+		
 		m_labelName.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
 		m_labelName.setText("Short Name");
 		m_labelName.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
 		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 1;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
-		gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
 		jPanel1.add(m_labelName, gridBagConstraints);
 		
 		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridx = 2;
 		gridBagConstraints.gridy = 1;
 		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
@@ -142,7 +154,6 @@ public class SkeletonEditor extends javax.swing.JFrame
 		jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
 		jLabel2.setText("Category Name");
 		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridx = 1;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
 		jPanel1.add(jLabel2, gridBagConstraints);
@@ -150,12 +161,12 @@ public class SkeletonEditor extends javax.swing.JFrame
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.weightx = 0.5;
 		jPanel1.add(m_categoryName, gridBagConstraints);
 		
 		jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
 		jLabel3.setText("Resource Id for JAR");
 		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridx = 1;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
 		jPanel1.add(jLabel3, gridBagConstraints);
@@ -168,7 +179,6 @@ public class SkeletonEditor extends javax.swing.JFrame
 		jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
 		jLabel4.setText("Resource Id for Properties");
 		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridx = 1;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
 		jPanel1.add(jLabel4, gridBagConstraints);
@@ -205,7 +215,7 @@ public class SkeletonEditor extends javax.swing.JFrame
 		{
 			public void actionPerformed(java.awt.event.ActionEvent evt)
 			{
-				m_menuLoadActionPerformed(evt);
+				menuLoadActionPerformed(evt);
 			}
 		});
 		
@@ -258,8 +268,8 @@ public class SkeletonEditor extends javax.swing.JFrame
 		}
 	}//GEN-LAST:event_menuSaveActionPerformed
 
-	private void m_menuLoadActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_m_menuLoadActionPerformed
-	{//GEN-HEADEREND:event_m_menuLoadActionPerformed
+	private void menuLoadActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_menuLoadActionPerformed
+	{//GEN-HEADEREND:event_menuLoadActionPerformed
 		// Add your handling code here:
 		if ( m_fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
 		{
@@ -273,7 +283,7 @@ public class SkeletonEditor extends javax.swing.JFrame
 				iox.printStackTrace();
 			}
 		}
-	}//GEN-LAST:event_m_menuLoadActionPerformed
+	}//GEN-LAST:event_menuLoadActionPerformed
 
 	private void menuNewActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_menuNewActionPerformed
 	{//GEN-HEADEREND:event_menuNewActionPerformed
@@ -295,11 +305,13 @@ public class SkeletonEditor extends javax.swing.JFrame
 		m_categoryName.setText(skel.getResourceCategory());
 		m_jarId.setText(new Integer(skel.getResourceJarId()).toString());
 		m_propsId.setText(new Integer(skel.getResourcePropsId()).toString());
+		m_exeName.setText(skel.getExecutableName());
 	}
 	
 	public SkeletonBean getSkeleton()
 	{
 		SkeletonBean skel = new SkeletonBean();
+		skel.setExecutableName(m_exeName.getText());
 		skel.setShortName(m_name.getText());
 		skel.setDescription(m_description.getText());
 		skel.setResourceCategory(m_categoryName.getText());
@@ -323,6 +335,7 @@ public class SkeletonEditor extends javax.swing.JFrame
 	private javax.swing.JLabel jLabel2;
 	private javax.swing.JLabel jLabel3;
 	private javax.swing.JLabel jLabel4;
+	private javax.swing.JLabel jLabel5;
 	private javax.swing.JMenu jMenu1;
 	private javax.swing.JMenuBar jMenuBar1;
 	private javax.swing.JPanel jPanel1;
@@ -331,6 +344,7 @@ public class SkeletonEditor extends javax.swing.JFrame
 	private javax.swing.JSeparator jSeparator2;
 	private javax.swing.JTextField m_categoryName;
 	private javax.swing.JEditorPane m_description;
+	private javax.swing.JTextField m_exeName;
 	private javax.swing.JFileChooser m_fileChooser;
 	private javax.swing.JTextField m_jarId;
 	private javax.swing.JLabel m_labelName;

@@ -28,6 +28,7 @@ package net.charabia.jsmoothgen.skeleton;
 
 public class SkeletonBean
 {
+	private String m_executableName;
 	private String m_shortName;
 	private String m_description;
 	private String m_resourceCategory;
@@ -38,7 +39,16 @@ public class SkeletonBean
 	public SkeletonBean()
 	{
 	}
-	
+		
+	public void setExecutableName(String name)
+	{
+		m_executableName = name;
+	}
+	public String getExecutableName()
+	{
+		return m_executableName;
+	}	
+
 	public void setShortName(String name)
 	{
 		m_shortName = name;
