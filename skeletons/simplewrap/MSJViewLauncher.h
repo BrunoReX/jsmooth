@@ -29,7 +29,7 @@
 class MSJViewLauncher
 {
 public:
-    bool runProc(const ResourceManager& resource);
+    bool runProc(ResourceManager& resource);
 
 };
 

@@ -40,7 +40,7 @@ std::string SunJVMLauncher::toString() const
     return "<" + JavaHome + "><" + RuntimeLibPath + "><" + VmVersion.toString() + ">";
 }
 
-bool SunJVMLauncher::run(const ResourceManager& resource)
+bool SunJVMLauncher::run(ResourceManager& resource)
 {
     Version max(resource.getProperty(ResourceManager:: KEY_MAXVERSION));
     Version min(resource.getProperty(ResourceManager:: KEY_MINVERSION));
@@ -67,7 +67,7 @@ bool SunJVMLauncher::run(const ResourceManager& resource)
     return false;
 }
 
-bool SunJVMLauncher::runProc(const ResourceManager& resource)
+bool SunJVMLauncher::runProc(ResourceManager& resource)
 {
     Version max(resource.getProperty(ResourceManager:: KEY_MAXVERSION));
     Version min(resource.getProperty(ResourceManager:: KEY_MINVERSION));
@@ -93,7 +93,7 @@ bool SunJVMLauncher::runProc(const ResourceManager& resource)
     return false;
 }
 
-bool SunJVMLauncher::runVM12DLL(const ResourceManager& resource)
+bool SunJVMLauncher::runVM12DLL(ResourceManager& resource)
 {
 
     std::string jarpath = resource.saveJarInTempFile();
@@ -208,7 +208,7 @@ bool SunJVMLauncher::runVM12DLL(const ResourceManager& resource)
 
 
 
-bool SunJVMLauncher::runVM11DLL(const ResourceManager& resource)
+bool SunJVMLauncher::runVM11DLL(ResourceManager& resource)
 {
 
     std::string jarpath = resource.saveJarInTempFile();
@@ -319,7 +319,7 @@ bool SunJVMLauncher::runVM11DLL(const ResourceManager& resource)
     return false;
 }
 
-bool SunJVMLauncher::runVM11proc(const ResourceManager& resource)
+bool SunJVMLauncher::runVM11proc(ResourceManager& resource)
 {
     if (runExe(JavaHome + "\\bin\\jre.exe", false, resource))
         return true;
@@ -330,7 +330,7 @@ bool SunJVMLauncher::runVM11proc(const ResourceManager& resource)
     return false;    
 }
 
-bool SunJVMLauncher::runVM12proc(const ResourceManager& resource)
+bool SunJVMLauncher::runVM12proc(ResourceManager& resource)
 {
     if (runExe(JavaHome + "\\bin\\java.exe", false, resource))
         return true;
@@ -341,7 +341,7 @@ bool SunJVMLauncher::runVM12proc(const ResourceManager& resource)
     return false;
 }
 
-bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, const ResourceManager& resource)
+bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource)
 {
    if (FileUtils::fileExists(exepath))
    {

@@ -40,8 +40,8 @@ class SunJVMLauncher
         std::string JavaHome;
         Version VmVersion;
                
-        virtual bool run(const ResourceManager& resource);
-        virtual bool runProc(const ResourceManager& resource);
+        virtual bool run(ResourceManager& resource);
+        virtual bool runProc(ResourceManager& resource);
 
        std::string toString() const;
 
@@ -49,12 +49,12 @@ class SunJVMLauncher
 
      private:
      
-       bool runVM12DLL(const ResourceManager& resource);
-       bool runVM11DLL(const ResourceManager& resource);
-       bool runVM11proc(const ResourceManager& resource);
-       bool runVM12proc(const ResourceManager& resource);
+       bool runVM12DLL(ResourceManager& resource);
+       bool runVM11DLL(ResourceManager& resource);
+       bool runVM11proc(ResourceManager& resource);
+       bool runVM12proc(ResourceManager& resource);
 
-       bool runExe(const string& exepath, bool forceFullClasspath, const ResourceManager& resource);
+       bool runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource);
 };
 
 #endif

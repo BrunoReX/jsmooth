@@ -20,7 +20,7 @@
 
 #include "MSJViewLauncher.h"
 
-bool MSJViewLauncher::runProc(const ResourceManager& resource)
+bool MSJViewLauncher::runProc(ResourceManager& resource)
 {
       DEBUG("Running JVIEW new process");
     
@@ -40,7 +40,10 @@ bool MSJViewLauncher::runProc(const ResourceManager& resource)
 
     
       if (res != 0)
+      {
+            WaitForSingleObject(procinfo.hProcess, INFINITE);
             return true;
+      }
 
       DEBUG("ERROR JVIEW : " + StringUtils::toString(GetLastError()));
 

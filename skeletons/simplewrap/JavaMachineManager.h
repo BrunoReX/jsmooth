@@ -43,10 +43,10 @@ class JavaMachineManager
     
     MSJViewLauncher        m_jviewVm;
     
-    const ResourceManager& m_resman;
+    ResourceManager& m_resman;
 
     public:
-        JavaMachineManager(const ResourceManager& resman) ;
+        JavaMachineManager(ResourceManager& resman) ;
 
         bool run();
 };

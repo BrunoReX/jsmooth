@@ -135,53 +135,27 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
            NULL                 /* No Window Creation data */
            );
 
-   EnumResourceTypes(NULL, rsctypecallback, 0);
+    ResourceManager resman("JAVA", PROPID, JARID);
+    DEBUG(std::string("Main class: ") + resman.getMainName());
 
-//    jlist = new JavasoftRuntimeList();
-
-//    const JavasoftVM& bestVm = jlist->findVersionOrHigher(Version(std::string("1.4")));
-//    DEBUG(std::string("Found BESTVM: ") + bestVm.RuntimeLibPath + " / " + bestVm.VmVersion.Value);
-//     if (bestVm.Path != "")
-       {
-        ResourceManager resman("JAVA", PROPID, JARID);
-        DEBUG(std::string("Main class: ") + resman.getMainName());
-
-        JavaMachineManager man(resman);
-        if (man.run() == false)
-        {
-                std::string errmsg = resman.getProperty("skel_Message");
-                std::string url = resman.getProperty("skel_URL");
-                if (MessageBox(hwnd, errmsg.c_str(), "No Java?", MB_OKCANCEL|MB_ICONQUESTION|MB_APPLMODAL) == IDOK)
-                {
-                                ShellExecute(hwnd, "open", url.c_str(), NULL, "", 0);
-                }
-        }
-
-         if (MessageBox(hwnd, "TEST", "No Java?", MB_OKCANCEL|MB_ICONQUESTION|MB_APPLMODAL) == IDOK)
-         {
-         }
-
-//        MessageBox(hwnd, "YO", "TSE", MB_OK);
-
-        
-        DEBUGWAITKEY();
-        DEBUG("OK");
-        
-  //      jlist->run(bestVm, std::string("temp.jar"), resman.getMainName());
-  
-//          jlist->run(resman);
-  
-//        jlist->run(bestVm, std::string("temp.jar"), std::string("SampleApplication"));
-//        jlist->run(bestVm, std::string("temp.jar"), std::string("net.charabia.generation.application.Application"));
-    }
-//    else
+    JavaMachineManager man(resman);
+    if (man.run() == false)
     {
+        std::string errmsg = resman.getProperty("skel_Message");
+        std::string url = resman.getProperty("skel_URL");
+        if (MessageBox(hwnd, errmsg.c_str(), "No Java?", MB_OKCANCEL|MB_ICONQUESTION|MB_APPLMODAL) == IDOK)
+        {
+            ShellExecute(hwnd, "open", url.c_str(), NULL, "", 0);
+        }
+    }
+
+    DEBUGWAITKEY();
+    DEBUG("OK");
+
     /* Make the window visible on the screen */
 
 //        ShowWindow (hwnd, nFunsterStil);
 //        UpdateWindow(hwnd);
-    }
-    
     /* Run the message loop. It will run until GetMessage() returns 0 */
 //    while (GetMessage (&messages, NULL, 0, 0))
     {
@@ -204,7 +178,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 	PAINTSTRUCT ps;
 
     char buffer[255];    
-    char * mesg = "NOT!  !  ! !! ! ! !! ! ";
+    char * mesg = "............................";
     mesg = buffer;
 
     switch (message)                  /* handle the messages */
@@ -215,21 +189,10 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
 			RECT rt;
 			GetClientRect(hwnd, &rt);
 			DrawText(hdc, mesg, 10, &rt, DT_CENTER);
-			          
-            for (int i=0; i<LOG.size(); i++)
-            {
-                       std::string val = LOG[i];
-                        rt.top += 20;
-                     DrawText(hdc, val.c_str(), strlen(val.c_str()), &rt, DT_CENTER);
-            }
-              		
 			EndPaint(hwnd, &ps);
 			break;
 
         case WM_DESTROY:
-
-                                MessageBox(hwnd, "ALERT", "ICI", MB_OK);
-
             PostQuitMessage (0);       /* send a WM_QUIT to the message queue */
             break;
         default:                      /* for messages that we don't deal with */

@@ -41,8 +41,11 @@ private:
     std::string m_lastError;    
     HGLOBAL m_jarHandler;
     int m_jarSize;
+    
+    std::vector<std::string> m_deleteOnFinalize;
+    
 public:
- 
+
     static char * const KEY_MAINCLASSNAME = "mainclassname";
     static char * const KEY_ARGUMENTS     = "arguments";
     static char * const KEY_CLASSPATH     = "classpath";
@@ -53,7 +56,9 @@ public:
     static char * const KEY_NOJVMURL      = "nojvmurl";
  
     ResourceManager(std::string category, int propsId, int jarId);
-    std::string saveJarInTempFile() const;
+    ~ResourceManager();
+    
+    std::string saveJarInTempFile();
     std::string getMainName() const;
     std::string getLastErrorString()
     {
@@ -71,7 +76,7 @@ public:
         return result;
     }
 private:
-    void saveTemp(std::string tempname) const;
+    void saveTemp(std::string tempname);
     
 };
 

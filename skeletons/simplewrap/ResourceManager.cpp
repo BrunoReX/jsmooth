@@ -66,7 +66,15 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId)
     
 }
 
-void ResourceManager::saveTemp(std::string tempname) const
+ResourceManager::~ResourceManager()
+{
+    for (std::vector<std::string>::iterator i=m_deleteOnFinalize.begin(); i != m_deleteOnFinalize.end(); i++)
+    {
+        DeleteFile(i->c_str());
+    }
+}
+
+void ResourceManager::saveTemp(std::string tempname)
 {
     HANDLE temp = CreateFile(tempname.c_str(),
                             GENERIC_WRITE,
@@ -80,7 +88,12 @@ void ResourceManager::saveTemp(std::string tempname) const
     {    
         DWORD reallyWritten;
         WriteFile(temp, m_jarHandler, m_jarSize, &reallyWritten, NULL);
+        
+        // TODO: check the reallyWritten value for errors
+        
         CloseHandle(temp);
+        string s = tempname;
+        m_deleteOnFinalize.push_back(s);
     }
     
 }
@@ -95,10 +108,11 @@ std::string ResourceManager::getProperty(const std::string& key)  const
     return m_props.get(key);
 }
 
-std::string ResourceManager::saveJarInTempFile() const
+std::string ResourceManager::saveJarInTempFile()
 {
     std::string tempfilename = FileUtils::createTempFileName(".jar");
     DEBUG("Created tempfilename " + tempfilename);
     saveTemp(tempfilename);
     return tempfilename;
 }
+

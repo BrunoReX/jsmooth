@@ -20,7 +20,7 @@
 
 #include "JavaMachineManager.h"
 
-JavaMachineManager::JavaMachineManager(const ResourceManager& resman): m_resman(resman)
+JavaMachineManager::JavaMachineManager(ResourceManager& resman): m_resman(resman)
 {
     m_registryVms = JVMRegistryLookup::lookupJVM();
     m_javahomeVm = JVMEnvVarLookup::lookupJVM("JAVA_HOME");
@@ -53,6 +53,7 @@ bool JavaMachineManager::run()
     {
         vmorder = "registry,jdkpath,jrepath,javahome,jview,exepath";
     }
+    
     vector<string> jvmorder = StringUtils::split(vmorder, ',');
 
     for (vector<string>::const_iterator i = jvmorder.begin(); i != jvmorder.end(); i++)
