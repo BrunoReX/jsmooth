@@ -20,6 +20,17 @@
 
 #include "ResourceManager.h"
 
+char * const ResourceManager::KEY_MAINCLASSNAME = "mainclassname";
+char * const ResourceManager::KEY_ARGUMENTS     = "arguments";
+char * const ResourceManager::KEY_CLASSPATH     = "classpath";
+char * const ResourceManager::KEY_JVMSEARCH     = "jvmsearch";
+char * const ResourceManager::KEY_MINVERSION    = "minversion";
+char * const ResourceManager::KEY_MAXVERSION    = "maxversion";
+char * const ResourceManager::KEY_NOJVMMESSAGE  = "nojvmmessage";
+char * const ResourceManager::KEY_NOJVMURL      = "nojvmurl";
+char * const ResourceManager::KEY_BUNDLEDVM     = "bundledvm";
+char * const ResourceManager::KEY_CURRENTDIR    = "currentdir";
+
 ResourceManager::ResourceManager(std::string category, int propsId, int jarId)
 {
   m_resourceCategory = category;

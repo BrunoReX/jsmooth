@@ -65,16 +65,16 @@ class ResourceManager
     
  public:
 
-  static char * const KEY_MAINCLASSNAME = "mainclassname";
-  static char * const KEY_ARGUMENTS     = "arguments";
-  static char * const KEY_CLASSPATH     = "classpath";
-  static char * const KEY_JVMSEARCH     = "jvmsearch";
-  static char * const KEY_MINVERSION    = "minversion";
-  static char * const KEY_MAXVERSION    = "maxversion";
-  static char * const KEY_NOJVMMESSAGE  = "nojvmmessage";
-  static char * const KEY_NOJVMURL      = "nojvmurl";
-  static char * const KEY_BUNDLEDVM     = "bundledvm";
-  static char * const KEY_CURRENTDIR    = "currentdir";
+  static char * const KEY_MAINCLASSNAME;
+  static char * const KEY_ARGUMENTS;
+  static char * const KEY_CLASSPATH;
+  static char * const KEY_JVMSEARCH;
+  static char * const KEY_MINVERSION;
+  static char * const KEY_MAXVERSION;
+  static char * const KEY_NOJVMMESSAGE;
+  static char * const KEY_NOJVMURL;
+  static char * const KEY_BUNDLEDVM;
+  static char * const KEY_CURRENTDIR;
 
   /** 
    * Constructs a ResourceManager which extract the jar and property
