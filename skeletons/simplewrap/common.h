@@ -26,7 +26,8 @@
 #include "resource.h"
 #include "DebugConsole.h"
 
-#define DEBUGMODE 1
+#define DEBUGMODE
+//#undef DEBUGMODE
 
 extern std::vector< std::string > LOG;
 extern DebugConsole DEBUGCONSOLE;

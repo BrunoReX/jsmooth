@@ -49,9 +49,9 @@ bool JavaMachineManager::run()
                 return true;
     }
 
-    if (vmorder == "")
+   if (vmorder == "")
     {
-        vmorder = "jdkpath,jrepath,javahome,registry,jview,exepath";
+        vmorder = "registry,jdkpath,jrepath,javahome,jview,exepath";
     }
     vector<string> jvmorder = StringUtils::split(vmorder, ',');
 

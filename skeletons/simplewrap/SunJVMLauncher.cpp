@@ -370,7 +370,10 @@ bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, cons
       int res = CreateProcess(NULL, (char*)exeline.c_str(), NULL, NULL, TRUE, DETACHED_PROCESS, NULL, NULL, &info, &procinfo);
 
       if (res != 0)
+      {
+            WaitForSingleObject(procinfo.hProcess, INFINITE);
             return true;
+      }
    }
 
    return false;

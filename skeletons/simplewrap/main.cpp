@@ -157,6 +157,9 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
                 }
         }
 
+         if (MessageBox(hwnd, "TEST", "No Java?", MB_OKCANCEL|MB_ICONQUESTION|MB_APPLMODAL) == IDOK)
+         {
+         }
 
 //        MessageBox(hwnd, "YO", "TSE", MB_OK);
 
