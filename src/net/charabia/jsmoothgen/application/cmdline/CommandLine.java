@@ -59,13 +59,23 @@ public class CommandLine
 	    File basedir = prj.getParentFile();
 	    SkeletonList skelList = new SkeletonList(new File("skeletons"));
 
-	    //	    File out = new File(exedir, model.getExecutableName());
+	    File out = new File(basedir, model.getExecutableName());
 	    
+	    SkeletonBean skel = skelList.getSkeleton(model.getSkeletonName());
+	    File skelroot = skelList.getDirectory(skel);
 	    
+	    ExeCompiler compiler = new ExeCompiler();
+	    compiler.compile(skelroot, skel, basedir, model, out);
+
+	    System.exit(0);
+
 	} catch (Exception exc)
 	    {
-		exc.printStackTrace();
+		//	exc.printStackTrace();
+		System.err.println("Incorrect project file!");
 	    }
+
+	System.exit(20);
     }
 
 }

@@ -100,88 +100,83 @@ public class ExeCompiler
 	
     public boolean compile(File skelroot, SkeletonBean skel, File basedir ,JSmoothModelBean data, File out) throws Exception
     {
-	try
-	    {
-		//			File basedir = new File(data.getBaseDir());
-			
-		fireStepChange(0, "Starting compilation");
-			
-		File pattern = new File(skelroot, skel.getExecutableName());
-		if (pattern.exists() == false)
-		    {
-			m_errors.add("Error: Can't find any skeleton at " + skelroot);
-			fireFailedChange();
-			return false;
-		    }
-			
-		fireStepChange(10, "Scanning skeleton...");
-		PEFile pe = new PEFile(pattern);
-		pe.open();
-			
-		if (data.getJarLocation() == null)
-		    {
-			m_errors.add("Error: Jar is not specified!");
-			fireFailedChange();
-			return false;
-		    }
-			
-		fireStepChange(40, "Loading Jar...");
-		File jarloc = concFile(basedir, new File(data.getJarLocation()));
-		if (jarloc.exists() == false)
-		    {
-			m_errors.add("Error: Can't find jar at " + jarloc);
-			fireFailedChange();
-			return false;
-		    }
-		ByteBuffer jardata = load(jarloc);
-			
-		fireStepChange(60, "Adding Jar to Resources...");
-		PEResourceDirectory resdir = pe.getResourceDirectory();
-		boolean resb = resdir.replaceResource(skel.getResourceCategory(), skel.getResourceJarId(), 1033, jardata);
-		if (resb == false)
-		    {
-			m_errors.add("Error: Can't replace jar resource! It is probably missing from the skeleton.");
-			fireFailedChange();
-			return false;
-		    }
-			
-		fireStepChange(70, "Adding Properties to Resources...");
-		String props = PropertiesBuilder.makeProperties(basedir, data);
-		ByteBuffer propdata = convert(props);
-		resb = resdir.replaceResource(skel.getResourceCategory(), skel.getResourcePropsId(), 1033, propdata);
-		if (data.getIconLocation() != null)
-		    {
-			fireStepChange(80, "Loading icon...");
-			String iconpath;
-			if (new java.io.File(data.getIconLocation()).isAbsolute())
-			    iconpath = data.getIconLocation();
-			else
-			    iconpath = new java.io.File(basedir, data.getIconLocation()).getAbsolutePath();
-// 			javax.swing.ImageIcon icon = new javax.swing.ImageIcon(iconpath, "default icon");
-// 			if ((icon.getImage() != null) && (icon.getImage().getWidth(null)>0) && (icon.getImage().getHeight(null)>0))
-
-			Image img = getScaledImage(iconpath, 32, 32);
-			if (img != null)
-			    {
-				net.charabia.jsmoothgen.pe.res.ResIcon resicon = new net.charabia.jsmoothgen.pe.res.ResIcon(img);
-				pe.replaceDefaultIcon(resicon);
-			    }
-		    }
-
-		fireStepChange(90, "Saving exe...");
-		pe.dumpTo(out);
-			
-		System.out.println("PROPERTIES:\n" + props);
-			
-		fireCompleteChange();
-		return true;
-	    } catch (Exception exc)
+	try {
+	    fireStepChange(0, "Starting compilation");
+	    
+	    File pattern = new File(skelroot, skel.getExecutableName());
+	    if (pattern.exists() == false)
 		{
-		    m_errors.add("Error: " + exc.getMessage());
-		    exc.printStackTrace();
+		    m_errors.add("Error: Can't find any skeleton at " + skelroot);
 		    fireFailedChange();
 		    return false;
 		}
+			
+	    fireStepChange(10, "Scanning skeleton...");
+	    PEFile pe = new PEFile(pattern);
+	    pe.open();
+			
+	    if (data.getJarLocation() == null)
+		{
+		    m_errors.add("Error: Jar is not specified!");
+		    fireFailedChange();
+		    return false;
+		}
+			
+	    fireStepChange(40, "Loading Jar...");
+	    File jarloc = concFile(basedir, new File(data.getJarLocation()));
+	    if (jarloc.exists() == false)
+		{
+		    m_errors.add("Error: Can't find jar at " + jarloc);
+		    fireFailedChange();
+		    return false;
+		}
+	    ByteBuffer jardata = load(jarloc);
+			
+	    fireStepChange(60, "Adding Jar to Resources...");
+	    PEResourceDirectory resdir = pe.getResourceDirectory();
+	    boolean resb = resdir.replaceResource(skel.getResourceCategory(), skel.getResourceJarId(), 1033, jardata);
+	    if (resb == false)
+		{
+		    m_errors.add("Error: Can't replace jar resource! It is probably missing from the skeleton.");
+		    fireFailedChange();
+		    return false;
+		}
+			
+	    fireStepChange(70, "Adding Properties to Resources...");
+	    String props = PropertiesBuilder.makeProperties(basedir, data);
+	    ByteBuffer propdata = convert(props);
+	    resb = resdir.replaceResource(skel.getResourceCategory(), skel.getResourcePropsId(), 1033, propdata);
+	    if (data.getIconLocation() != null)
+		{
+		    fireStepChange(80, "Loading icon...");
+		    String iconpath;
+		    if (new java.io.File(data.getIconLocation()).isAbsolute())
+			iconpath = data.getIconLocation();
+		    else
+			iconpath = new java.io.File(basedir, data.getIconLocation()).getAbsolutePath();
+
+		    Image img = getScaledImage(iconpath, 32, 32);
+		    if (img != null)
+			{
+			    net.charabia.jsmoothgen.pe.res.ResIcon resicon = new net.charabia.jsmoothgen.pe.res.ResIcon(img);
+			    pe.replaceDefaultIcon(resicon);
+			}
+		}
+
+	    fireStepChange(90, "Saving exe...");
+	    pe.dumpTo(out);
+			
+	    //		System.out.println("PROPERTIES:\n" + props);
+			
+	    fireCompleteChange();
+	    return true;
+	} catch (Exception exc)
+	    {
+		m_errors.add("Error: " + exc.getMessage());
+		exc.printStackTrace();
+		fireFailedChange();
+		return false;
+	    }
     }
 	
     public Image getScaledImage(String path, int width, int height)

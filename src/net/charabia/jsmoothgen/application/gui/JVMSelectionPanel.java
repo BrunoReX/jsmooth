@@ -25,15 +25,17 @@ import net.charabia.jsmoothgen.*;
 import net.charabia.jsmoothgen.application.gui.util.*;
 import net.charabia.jsmoothgen.application.*;
 import java.util.*;
+import javax.swing.*;
 
 public class JVMSelectionPanel extends javax.swing.JPanel implements ModelUpdater
 {
 	private JSmoothModelBean m_model;
-	
+	private JFileChooser m_bundlefilechooser = new JFileChooser();
 	/** Creates new form BeanForm */
 	public JVMSelectionPanel()
 	{
 		initComponents();
+                m_bundlefilechooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 	}
 
 	public void updateModel()
@@ -56,7 +58,7 @@ public class JVMSelectionPanel extends javax.swing.JPanel implements ModelUpdate
 		{
 			m_model.setBundledJVMPath(null);
 		}
-	}	
+	}
 
 	public void setModel(java.io.File basedir, JSmoothModelBean model)
 	{
@@ -78,11 +80,14 @@ public class JVMSelectionPanel extends javax.swing.JPanel implements ModelUpdate
 			}
 			m_vmSearch.setData(v.toArray());
 		}
-		
+                
+                m_bundlefilechooser.setCurrentDirectory(basedir);
+                
 		if (m_model.getBundledJVMPath() == null) 
 		{
 			m_cbBundled.setSelected(false);
 			m_chooserBundled.setEnabled(false);
+                        m_chooserBundled.setFile(null);
 		} else
 		{
 			m_cbBundled.setSelected(true);
@@ -90,6 +95,8 @@ public class JVMSelectionPanel extends javax.swing.JPanel implements ModelUpdate
 			if (basedir != null)
 				m_chooserBundled.setBaseDir(basedir);
 			m_chooserBundled.setFile(new java.io.File(m_model.getBundledJVMPath()));
+                        System.out.println("set selected file: " + m_model.getBundledJVMPath());
+                        m_bundlefilechooser.setSelectedFile(new java.io.File(m_model.getBundledJVMPath()));
 		}
 	}
 
@@ -159,6 +166,14 @@ public class JVMSelectionPanel extends javax.swing.JPanel implements ModelUpdate
 
         jPanel3.setBorder(new javax.swing.border.TitledBorder("JVM Bundle"));
         m_cbBundled.setText("Use JVM Bundle");
+        m_cbBundled.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                cbBundledActionPerformed(evt);
+            }
+        });
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;

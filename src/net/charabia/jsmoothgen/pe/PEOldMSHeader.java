@@ -81,7 +81,7 @@ public class PEOldMSHeader implements Cloneable
 	byte z = mz.get();
 	if ((m == 77) && (z == 90))
 	    {
-		System.out.println("MZ found !");
+		//		System.out.println("MZ found !");
 	    }
 	
 	e_cblp = mz.getShort();          // Bytes on last page of file //  2
@@ -109,7 +109,7 @@ public class PEOldMSHeader implements Cloneable
 	
 	e_lfanew = mz.getInt();       // File address of new exe header // 3C
 	
-	System.out.println("exe header : " + e_lfanew);
+	//	System.out.println("exe header : " + e_lfanew);
     }
 
     

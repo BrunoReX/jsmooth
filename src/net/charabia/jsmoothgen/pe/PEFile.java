@@ -75,13 +75,13 @@ public class PEFile
 	// m_header.dump(System.out);
 
 	int seccount = m_header.NumberOfSections;
-	System.out.println("LOADING " + seccount + " sections...");
+	//	System.out.println("LOADING " + seccount + " sections...");
 
 	long offset = headoffset + (m_header.NumberOfRvaAndSizes * 8) + 24 + 96;
 		
 	for (int i=0; i<seccount; i++)
 	    {
-		System.out.println("Offset: " + offset + " (" + this.m_channel.position());
+		//		System.out.println("Offset: " + offset + " (" + this.m_channel.position());
 
 		PESection sect = new PESection(this, offset);
 		sect.read();
@@ -89,7 +89,7 @@ public class PEFile
 		m_sections.add(sect);
 		offset += 40;
 	    }
-	System.out.println("After sections: " + this.m_channel.position() + " (" + offset + ")");
+	//	System.out.println("After sections: " + this.m_channel.position() + " (" + offset + ")");
 
 	ByteBuffer resbuf = null;
 	long resourceoffset = m_header.ResourceDirectory_VA;
@@ -98,7 +98,7 @@ public class PEFile
 		PESection sect = (PESection)m_sections.get(i);
 		if (sect.VirtualAddress == resourceoffset)
 		    {
-			System.out.println("  Resource section found: " + resourceoffset);
+			//			System.out.println("  Resource section found: " + resourceoffset);
 			PEResourceDirectory prd = new PEResourceDirectory(this, sect);
 			resbuf = prd.buildResource(sect.VirtualAddress);
 			break;
@@ -113,8 +113,6 @@ public class PEFile
 	
     public static void main(String args[]) throws IOException, CloneNotSupportedException, Exception
     {
-	System.out.println("Here !");
-
 	//(no)PEFile pe = new PEFile(new File("F:/Program Files/LAN Search PRO/lansearch.exe"));
 		
 	PEFile pe = new PEFile(new File("F:/Documents and Settings/Rodrigo/Mes documents/projects/jsmooth/skeletons/simplewrap/JWrap.exe"));
@@ -122,10 +120,10 @@ public class PEFile
 	// PEFile pe = new PEFile(new File("c:/projects/jwrap/test.exe"));
 	// PEFile pe = new PEFile(new File("F:/Program Files/bQuery/bQuery.exe"));
 	// PEFile pe = new PEFile(new File("F:/Program Files/Server Query/query.exe"));
-	 // PEFile pe = new PEFile(new File("F:/Program Files/AvRack/rtlrack.exe"));
+	// PEFile pe = new PEFile(new File("F:/Program Files/AvRack/rtlrack.exe"));
 	pe.open();
 
-	System.out.println("===============\nADDING A RES");
+	//	System.out.println("===============\nADDING A RES");
 	File fout = new File("F:/Documents and Settings/Rodrigo/Mes documents/projects/jsmooth/skeletons/simplewrap/gen-application.jar");
 	FileInputStream fis = new FileInputStream(fout);
 	
@@ -137,88 +135,88 @@ public class PEFile
 	fis.close();
 	
 	PEResourceDirectory resdir = pe.getResourceDirectory();
-//	boolean resb = resdir.replaceResource("JAVA", 103, 1033, data);
+	//	boolean resb = resdir.replaceResource("JAVA", 103, 1033, data);
 	
-//	String mainclassname = "net.charabia.generation.application.Application";
-//	String mainclassname = "net/charabia/generation/application/Application";
-//	ByteBuffer bcn = ByteBuffer.allocate(mainclassname.length()+1);
-//	for (int i=0; i<mainclassname.length(); i++)
-//	{
-//		bcn.put( (byte) mainclassname.charAt(i));
-//	}
-//	bcn.put((byte)0);
-//	bcn.position(0);
-//	resb = resdir.replaceResource("JAVA", 102, 1033, bcn);
+	//	String mainclassname = "net.charabia.generation.application.Application";
+	//	String mainclassname = "net/charabia/generation/application/Application";
+	//	ByteBuffer bcn = ByteBuffer.allocate(mainclassname.length()+1);
+	//	for (int i=0; i<mainclassname.length(); i++)
+	//	{
+	//		bcn.put( (byte) mainclassname.charAt(i));
+	//	}
+	//	bcn.put((byte)0);
+	//	bcn.position(0);
+	//	resb = resdir.replaceResource("JAVA", 102, 1033, bcn);
 
-//	PEResourceDirectory.DataEntry entry = resdir.getData("#14", "A", "#1033");
-//	entry.Data.position(0);
-//	System.out.println("DataEntry found : " + entry + " (size=" + entry.Data.remaining() + ")");
-//	entry.Data.position(0);
-//	
-//	ResIconDir rid = new ResIconDir(entry.Data);
-//	System.out.println("ResIconDir :");
-//	System.out.println(rid.toString());
-//	int iconid = rid.getEntries()[0].dwImageOffset;
-//	System.out.println("Icon Index: " + iconid);
-//	
-//	PEResourceDirectory.DataEntry iconentry = resdir.getData("#3", "#"+iconid, "#1033");
-//	iconentry.Data.position(0);
-//	ResIcon icon = new ResIcon(iconentry.Data);
-//	System.out.println("Icon :");
-//	System.out.println(icon.toString());
+	//	PEResourceDirectory.DataEntry entry = resdir.getData("#14", "A", "#1033");
+	//	entry.Data.position(0);
+	//	System.out.println("DataEntry found : " + entry + " (size=" + entry.Data.remaining() + ")");
+	//	entry.Data.position(0);
+	//	
+	//	ResIconDir rid = new ResIconDir(entry.Data);
+	//	System.out.println("ResIconDir :");
+	//	System.out.println(rid.toString());
+	//	int iconid = rid.getEntries()[0].dwImageOffset;
+	//	System.out.println("Icon Index: " + iconid);
+	//	
+	//	PEResourceDirectory.DataEntry iconentry = resdir.getData("#3", "#"+iconid, "#1033");
+	//	iconentry.Data.position(0);
+	//	ResIcon icon = new ResIcon(iconentry.Data);
+	//	System.out.println("Icon :");
+	//	System.out.println(icon.toString());
 	
 	//java.awt.Image img = java.awt.Toolkit.getDefaultToolkit().getImage ("c:\\test.gif");
-	  // java.awt.Image img = java.awt.Toolkit.getDefaultToolkit().getImage ("c:\\gnome-day2.png");
-	  java.awt.Image img = java.awt.Toolkit.getDefaultToolkit().getImage ("c:\\gnome-color-browser2.png");
+	// java.awt.Image img = java.awt.Toolkit.getDefaultToolkit().getImage ("c:\\gnome-day2.png");
+	java.awt.Image img = java.awt.Toolkit.getDefaultToolkit().getImage ("c:\\gnome-color-browser2.png");
 	
 	java.awt.MediaTracker mt = new java.awt.MediaTracker(new javax.swing.JLabel("toto"));
 	mt.addImage (img, 1);
 	try {
-		mt.waitForAll();
+	    mt.waitForAll();
 	} catch (Exception exc)
-	{
+	    {
 		exc.printStackTrace();
-	}	
+	    }	
 	
 	ResIcon newicon = new ResIcon(img);
 	
 	pe.replaceDefaultIcon(newicon);
 	
-//	System.out.println("-----------------\nNEW ICON:");
-//	System.out.println(newicon.toString());
-//	
-//	rid.getEntries()[0].bWidth = (short)newicon.Width;
-//	rid.getEntries()[0].bHeight = (short)(newicon.Height/2);
-//	rid.getEntries()[0].bColorCount = (short)(1 <<newicon.BitsPerPixel);
-//	rid.getEntries()[0].wBitCount = newicon.BitsPerPixel;
-//	rid.getEntries()[0].dwBytesInRes = newicon.getData().remaining();
-//	
-//	iconentry.Data = newicon.getData();
-//	iconentry.Size = iconentry.Data.remaining();
-//
-//	entry.setData(rid.getData());
-//	System.out.println("POST CHANGE ResIconDir :");
-//	System.out.println(rid.toString());
+	//	System.out.println("-----------------\nNEW ICON:");
+	//	System.out.println(newicon.toString());
+	//	
+	//	rid.getEntries()[0].bWidth = (short)newicon.Width;
+	//	rid.getEntries()[0].bHeight = (short)(newicon.Height/2);
+	//	rid.getEntries()[0].bColorCount = (short)(1 <<newicon.BitsPerPixel);
+	//	rid.getEntries()[0].wBitCount = newicon.BitsPerPixel;
+	//	rid.getEntries()[0].dwBytesInRes = newicon.getData().remaining();
+	//	
+	//	iconentry.Data = newicon.getData();
+	//	iconentry.Size = iconentry.Data.remaining();
+	//
+	//	entry.setData(rid.getData());
+	//	System.out.println("POST CHANGE ResIconDir :");
+	//	System.out.println(rid.toString());
 
 	// ResIcon test = new ResIcon(icon.getData());
 	// System.out.println("PROOF-TEST:\n" + test.toString());
 	
 	/// BACK
-//	
-//	rid.getEntries()[0].bWidth = (short)icon.Width;
-//	rid.getEntries()[0].bHeight = (short)(icon.Height/2);
-//	rid.getEntries()[0].bColorCount = (short)(1 <<icon.BitsPerPixel);
-//	rid.getEntries()[0].wBitCount = icon.BitsPerPixel;
-//	iconentry.Data = icon.getData();
-//	iconentry.Size = iconentry.Data.remaining();
+	//	
+	//	rid.getEntries()[0].bWidth = (short)icon.Width;
+	//	rid.getEntries()[0].bHeight = (short)(icon.Height/2);
+	//	rid.getEntries()[0].bColorCount = (short)(1 <<icon.BitsPerPixel);
+	//	rid.getEntries()[0].wBitCount = icon.BitsPerPixel;
+	//	iconentry.Data = icon.getData();
+	//	iconentry.Size = iconentry.Data.remaining();
 
 	// resdir.addNewResource("POUET", "A666", "#1033", data);
 
 	
-//resdir.dump(System.out);
+	//resdir.dump(System.out);
 	
 	
-	System.out.println("New size = " + resdir.size());
+	//	System.out.println("New size = " + resdir.size());
 	File out = new File("F:/Documents and Settings/Rodrigo/Mes documents/projects/jsmooth/skeletons/simplewrap/COPIE.exe");
 	pe.dumpTo(out);
 
@@ -246,11 +244,9 @@ public class PEFile
 
     public void dumpTo(File destination) throws IOException, CloneNotSupportedException
     {
-	System.out.println("----------------\n\nDUMPING...");
 	int outputcount = 0;
 	FileOutputStream fos = new FileOutputStream(destination);
 	FileChannel out = fos.getChannel();
-		
 
 	//
 	// Make a copy of the Header, for safe modifications
@@ -291,7 +287,7 @@ public class PEFile
 	out.position(offset);
 	for (int i=0; i<sections.size(); i++)
 	    {
-		System.out.println("  offset: " + out.position());
+		// System.out.println("  offset: " + out.position());
 		PESection sect = (PESection) sections.get(i);
 		
 		ByteBuffer buf = sect.get();
@@ -320,7 +316,7 @@ public class PEFile
 		PESection sect = (PESection) sections.get(i);
 		if (resourceoffset == sect.VirtualAddress)
 		    {
-			System.out.println("Dumping RES section " + i + " at " + offset + " from " + sect.PointerToRawData + " (VA=" + virtualAddress + ")");
+			//			System.out.println("Dumping RES section " + i + " at " + offset + " from " + sect.PointerToRawData + " (VA=" + virtualAddress + ")");
 			out.position(offset);
 			long sectoffset = offset;
 			PEResourceDirectory prd = this.getResourceDirectory();
@@ -355,7 +351,7 @@ public class PEFile
 		    }
 		else if (sect.PointerToRawData > 0)
 		    {
-			System.out.println("Dumping section " + i + "/" + sect.getName() + " at " + offset + " from " + sect.PointerToRawData + " (VA=" + virtualAddress + ")");
+			//			System.out.println("Dumping section " + i + "/" + sect.getName() + " at " + offset + " from " + sect.PointerToRawData + " (VA=" + virtualAddress + ")");
 			out.position(offset);
 			this.m_channel.position(sect.PointerToRawData);
 			long sectoffset = offset;
@@ -366,18 +362,18 @@ public class PEFile
 				
 			long outted = out.transferFrom(this.m_channel, offset, sect.SizeOfRawData);
 			offset += sect.SizeOfRawData;
-			System.out.println("offset before alignment, " + offset);
+			//			System.out.println("offset before alignment, " + offset);
 
 			long rem = offset % this.m_header.FileAlignment;
 			if (rem != 0)
 			    {
 				offset += this.m_header.FileAlignment - rem;
 			    }
-			System.out.println("offset after alignment, " + offset);
+			//			System.out.println("offset after alignment, " + offset);
 			
-// 			long virtualSize = sect.SizeOfRawData;
-// 			if ((virtualSize % peheader.SectionAlignment)>0)
-// 			    virtualSize += peheader.SectionAlignment - (virtualSize%peheader.SectionAlignment);
+			// 			long virtualSize = sect.SizeOfRawData;
+			// 			if ((virtualSize % peheader.SectionAlignment)>0)
+			// 			    virtualSize += peheader.SectionAlignment - (virtualSize%peheader.SectionAlignment);
 			
 			sect.PointerToRawData = sectoffset;
 			//			sect.SizeOfRawData = 
@@ -393,7 +389,7 @@ public class PEFile
 		    {
 			// generally a BSS, with a virtual size but no
 			// data in the file...
-			System.out.println("Dumping section " + i + " at " + offset + " from " + sect.PointerToRawData + " (VA=" + virtualAddress + ")");
+			//			System.out.println("Dumping section " + i + " at " + offset + " from " + sect.PointerToRawData + " (VA=" + virtualAddress + ")");
 			long virtualSize = sect.VirtualSize;
 			if ((virtualSize % peheader.SectionAlignment)>0)
 			    virtualSize += peheader.SectionAlignment - (virtualSize%peheader.SectionAlignment);
@@ -416,12 +412,12 @@ public class PEFile
  	outputcount = out.write(headbuffer);
 
 	// peheader.dump(System.out);
-	System.out.println("Dumping the section again...");
+	///	System.out.println("Dumping the section again...");
  	offset = oldmsheader.e_lfanew + (m_header.NumberOfRvaAndSizes * 8) + 24 + 96;
  	out.position(offset);
 	for (int i=0; i<sections.size(); i++)
 	    {
-		System.out.println("  offset: " + out.position());
+		//		System.out.println("  offset: " + out.position());
 		PESection sect = (PESection) sections.get(i);
 		// sect.dump(System.out);
 		ByteBuffer buf = sect.get();
@@ -442,24 +438,24 @@ public class PEFile
 	
 	PEResourceDirectory.DataEntry entry = resdir.getData("#14", null, null);
 	if (entry == null)
-	{
+	    {
 		throw new Exception("Can't find any icon group in the file!");
-	}
+	    }
 	
 	entry.Data.position(0);
-	System.out.println("DataEntry found : " + entry + " (size=" + entry.Data.remaining() + ")");
+	//	System.out.println("DataEntry found : " + entry + " (size=" + entry.Data.remaining() + ")");
 	entry.Data.position(0);
 	
 	ResIconDir rid = new ResIconDir(entry.Data);
-	System.out.println("ResIconDir :");
-	System.out.println(rid.toString());
+	//	System.out.println("ResIconDir :");
+	//	System.out.println(rid.toString());
 	int iconid = rid.getEntries()[0].dwImageOffset;
-	System.out.println("Icon Index: " + iconid);
+	//	System.out.println("Icon Index: " + iconid);
 	
 	PEResourceDirectory.DataEntry iconentry = resdir.getData("#3", "#"+iconid, null);
 	iconentry.Data.position(0);
-	System.out.println("Icon :");
-	System.out.println(icon.toString());
+	//	System.out.println("Icon :");
+	//	System.out.println(icon.toString());
 	
 	rid.getEntries()[0].bWidth = (short)icon.Width;
 	rid.getEntries()[0].bHeight = (short)(icon.Height/2);

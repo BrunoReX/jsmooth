@@ -547,22 +547,22 @@ public class PEResourceDirectory
 		m_offsetBase = sect.PointerToRawData;
 		init();
 		
-		System.out.println("--------\nTOTAL SIZE: " + m_root.diskSize());
+		//		System.out.println("--------\nTOTAL SIZE: " + m_root.diskSize());
 		
-		System.out.println("\n\n");
+		//		System.out.println("\n\n");
 	}
 	
 	public void init() throws IOException
 	{
-		System.out.println("RESOURCE INIT");
-		System.out.println("   Offset: " + m_master.PointerToRawData);
+	    ///		System.out.println("RESOURCE INIT");
+	    //		System.out.println("   Offset: " + m_master.PointerToRawData);
 		FileChannel chan = m_file.getChannel();
 		chan.position(m_master.PointerToRawData);
 		PEResourceDirectory.ImageResourceDirectory dir = new PEResourceDirectory.ImageResourceDirectory(chan);
-		System.out.println("-----------------\nDUMP\n---------------");
+		//		System.out.println("-----------------\nDUMP\n---------------");
 		m_root = dir;
 		
-		dir.dump(System.out, 0);
+		//		dir.dump(System.out, 0);
 	}
 	
 	public void dump(PrintStream out)
@@ -577,7 +577,7 @@ public class PEResourceDirectory
 	
 	public ByteBuffer buildResource(long virtualBaseOffset)
 	{
-		System.out.println("BUILDING RESOURCE / VIRTUAL: " + virtualBaseOffset);
+	    //		System.out.println("BUILDING RESOURCE / VIRTUAL: " + virtualBaseOffset);
 		int resourceSize = m_root.diskSize();
 		ByteBuffer resbuf = ByteBuffer.allocate(resourceSize);
 		resbuf.order(ByteOrder.LITTLE_ENDIAN);

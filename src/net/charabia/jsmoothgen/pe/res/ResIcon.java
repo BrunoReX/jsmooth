@@ -104,7 +104,7 @@ public class ResIcon
 
 		// int xorbytes = (((int)Height/2) * (int)Width * (int)BitsPerPixel) / 8;
 		int xorbytes = (((int)Height/2) * (int)Width);
-		System.out.println("POSITION " + in.position() + " : xorbitmap = " + xorbytes + " bytes");
+		//		System.out.println("POSITION " + in.position() + " : xorbitmap = " + xorbytes + " bytes");
 		
 		BitmapXOR = new short[xorbytes];
 		for (int i=0; i<BitmapXOR.length; i++)
@@ -129,7 +129,7 @@ public class ResIcon
 		
 		int andbytes = (((int)Height/2) * (int)Width) / 8;
 		
-		System.out.println("POSITION " + in.position() + " : andbitmap = " + andbytes + " bytes");
+		//		System.out.println("POSITION " + in.position() + " : andbitmap = " + andbytes + " bytes");
 				
 		BitmapAND = new short[andbytes];
 		for (int i=0; i<BitmapAND.length; i++)
@@ -153,8 +153,8 @@ public class ResIcon
 		if ((height % 8) != 0)
 			height += (7-(height%8));
 		
-		System.out.println("FOUND WIDTH " + width + " (was " + img.getWidth(null) + ")");
-		System.out.println("FOUND HEIGHT " + height + " (was " + img.getHeight(null) + ")");
+		//		System.out.println("FOUND WIDTH " + width + " (was " + img.getWidth(null) + ")");
+		//		System.out.println("FOUND HEIGHT " + height + " (was " + img.getHeight(null) + ")");
 		
 		int[] pixelbuffer = new int[width*height];
 		PixelGrabber grabber = new PixelGrabber(img, 0, 0, width, height, pixelbuffer, 0, width);
@@ -314,7 +314,7 @@ public class ResIcon
 		buf.putInt((int)ColorsUsed);
 		buf.putInt((int)ColorsImportant);
 
-		System.out.println("GET DATA :: Palette.size= "+Palette.length + " // position=" + buf.position());
+		//		System.out.println("GET DATA :: Palette.size= "+Palette.length + " // position=" + buf.position());
 		for (int i=0; i<Palette.length; i++)
 		{
 			PaletteElement el = Palette[i];
@@ -339,7 +339,7 @@ public class ResIcon
 			
 			case 8:
 			{
-				System.out.println("GET DATA :: XORBitmap.size= "+BitmapXOR.length + " // position=" + buf.position());
+			    //				System.out.println("GET DATA :: XORBitmap.size= "+BitmapXOR.length + " // position=" + buf.position());
 				for (int i=0; i<BitmapXOR.length; i++)
 				{
 					buf.put((byte)BitmapXOR[i]);
@@ -351,13 +351,13 @@ public class ResIcon
 				throw new RuntimeException("BitRes " + BitsPerPixel + " not supported!");
 		}
 		
-		System.out.println("GET DATA :: AndBitmap.size= "+BitmapAND.length + " // position=" + buf.position());
+		//		System.out.println("GET DATA :: AndBitmap.size= "+BitmapAND.length + " // position=" + buf.position());
 		for (int i=0; i<BitmapAND.length; i++)
 		{
 			buf.put((byte)BitmapAND[i]);
 		}
 		
-		System.out.println("GET DATA END AT " + buf.position());
+		//		System.out.println("GET DATA END AT " + buf.position());
 		buf.position(0);
 		return buf;
 	}

@@ -133,7 +133,7 @@ public class PEHeader implements Cloneable
 	head.position(0);
 
 	int pemagic = head.getInt();
-	System.out.println("MAGIC::: " + pemagic);
+	//	System.out.println("MAGIC::: " + pemagic);
 	Machine = head.getShort(); //  4
 	NumberOfSections = head.getShort();     //  6
 	TimeDateStamp = head.getInt(); //  8
@@ -371,7 +371,7 @@ public class PEHeader implements Cloneable
     {
 	long codebase = findNewVA(this.BaseOfCode, oldsections, newsections);
 	long codesize = findNewSize(this.BaseOfCode, oldsections, newsections);
-	System.out.println("New BaseOfCode=" + codebase + " (size=" + codesize + ")");
+	//	System.out.println("New BaseOfCode=" + codebase + " (size=" + codesize + ")");
 	this.BaseOfCode = codebase;
 	this.SizeOfCode = codesize;
 
@@ -379,7 +379,7 @@ public class PEHeader implements Cloneable
 	
 	long database = findNewVA(this.BaseOfData, oldsections, newsections);
 	long datasize = findNewSize(this.BaseOfData, oldsections, newsections);
-	System.out.println("New BaseOfData=" + database + " (size=" + datasize + ")");
+	//	System.out.println("New BaseOfData=" + database + " (size=" + datasize + ")");
 	this.BaseOfData = database;
 
 	long imagesize = 0;
@@ -435,14 +435,14 @@ public class PEHeader implements Cloneable
 		    {
 			PESection newsect = (PESection)newsections.get(i);
 
-			System.out.println("Translation VA found for " + current + " = " + i + " (" +newsect.VirtualAddress + ")=" + newsect.getName());
+			//			System.out.println("Translation VA found for " + current + " = " + i + " (" +newsect.VirtualAddress + ")=" + newsect.getName());
 			return newsect.VirtualAddress;
 		    }
 		else if ((current > sect.VirtualAddress) && (current < (sect.VirtualAddress + sect.VirtualSize)))
 		    {
 			long diff = current - sect.VirtualAddress;
 			PESection newsect = (PESection)newsections.get(i);
-			System.out.println("Translation VA found INSIDE " + current + " = " + i + " (" +newsect.VirtualAddress + ")=" + newsect.getName());
+			//			System.out.println("Translation VA found INSIDE " + current + " = " + i + " (" +newsect.VirtualAddress + ")=" + newsect.getName());
 			return newsect.VirtualAddress + diff;
 		    }
 	    }
@@ -460,8 +460,8 @@ public class PEHeader implements Cloneable
 		if (sect.VirtualAddress == current)
 		    {
 			PESection newsect = (PESection)newsections.get(i);
-			System.out.println("Translation Size found for " + current + " = " + i + " (" +newsect.VirtualAddress + ")=" + newsect.getName());
-			System.out.println("         Old size " + sect.VirtualSize + " vs new size " + newsect.VirtualSize);
+			//			System.out.println("Translation Size found for " + current + " = " + i + " (" +newsect.VirtualAddress + ")=" + newsect.getName());
+			//			System.out.println("         Old size " + sect.VirtualSize + " vs new size " + newsect.VirtualSize);
 			return newsect.VirtualSize;
 		    }
 	    }
