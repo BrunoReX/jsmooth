@@ -97,4 +97,9 @@ public class SkeletonBean
 		return m_resourcePropsId;
 	}	
 
+	public String toString()
+	{
+		return m_shortName;
+	}
+	
 }
