@@ -38,7 +38,7 @@ std::string SunJVMLauncher::toString() const
     return "<" + JavaHome + "><" + RuntimeLibPath + "><" + VmVersion.toString() + ">";
 }
 
-bool SunJVMLauncher::run(ResourceManager& resource)
+bool SunJVMLauncher::run(ResourceManager& resource, const string& origin)
 {
     if ( ! VmVersion.isValid())
         return false;
@@ -57,17 +57,17 @@ bool SunJVMLauncher::run(ResourceManager& resource)
     if (Version("1.2") <= VmVersion)
     {
         DEBUG("RUNNING L VM " + VmVersion.toString());
-        return runVM12DLL(resource);
+        return runVM12DLL(resource, origin);
     } else if (Version("1.1") <= VmVersion)
     {
         DEBUG("RUNNING L VM11 = " + VmVersion.toString());
-        return runVM11DLL(resource);
+        return runVM11DLL(resource, origin);
     }
     
     return false;
 }
 
-bool SunJVMLauncher::runProc(ResourceManager& resource, bool noConsole)
+bool SunJVMLauncher::runProc(ResourceManager& resource, bool noConsole, const string& origin)
 {
     Version max(resource.getProperty(ResourceManager:: KEY_MAXVERSION));
     Version min(resource.getProperty(ResourceManager:: KEY_MINVERSION));
@@ -81,20 +81,25 @@ bool SunJVMLauncher::runProc(ResourceManager& resource, bool noConsole)
         jrepath = "\\bin\\jrew.exe";
     }
 
-    DEBUG("RUN PROC... " + min.toString() + " <= " + VmVersion.toString() + "<= " + max.toString());
+    DEBUG("RUN PROC AS " + VmVersion.toString() + " ... " + min.toString() + " <= " + VmVersion.toString() + "<= " + max.toString());
     Version curver = VmVersion;
+
 
     if (curver.isValid() == false)
     {
         Version vjava = guessVersionByProcess(JavaHome + javapath);
         DEBUG("JAVA VERSION = " + vjava.toString());
         if (vjava.isValid())
+	  {
                 curver = vjava;
+                VmVersion = vjava;
+	  }
         else
         {
              Version vjre = guessVersionByProcess(JavaHome + jrepath);
              DEBUG("JRE VERSION = " + vjre.toString());    
              curver = vjre;
+             VmVersion = vjre;
         }
     }
     
@@ -112,17 +117,17 @@ bool SunJVMLauncher::runProc(ResourceManager& resource, bool noConsole)
     if (Version("1.2") <= VmVersion)
     {
         DEBUG("RUNVM12PROC");
-        return runVM12proc(resource, noConsole);
+        return runVM12proc(resource, noConsole, origin);
     } else if (Version("1.1") <= VmVersion)
     {
         DEBUG("RUNVM11PROC");
-        return runVM11proc(resource, noConsole);
+        return runVM11proc(resource, noConsole, origin);
     }
     
     return false;
 }
 
-bool SunJVMLauncher::runVM12DLL(ResourceManager& resource)
+bool SunJVMLauncher::runVM12DLL(ResourceManager& resource, const string& origin)
 {
     std::string jarpath = resource.saveJarInTempFile();
     std::string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));
@@ -163,7 +168,12 @@ bool SunJVMLauncher::runVM12DLL(ResourceManager& resource)
       for (int i=0; i<jprops.size(); i++)
       {
             const JavaProperty& jp = jprops[i];
-            jpropstrv.push_back("-D" + jp.getName() + "=" + jp.getValue());
+	    string value = jp.getValue();
+
+	    value = StringUtils::replace(value, "${VMSELECTION}", origin);
+	    value = StringUtils::replace(value, "${VMSPAWNTYPE}", "JVMDLL");
+
+            jpropstrv.push_back("-D" + jp.getName() + "=" + value);
       }
 
       if (resource.getProperty("maxheap") != "")
@@ -273,7 +283,7 @@ bool SunJVMLauncher::runVM12DLL(ResourceManager& resource)
 
 
 
-bool SunJVMLauncher::runVM11DLL(ResourceManager& resource)
+bool SunJVMLauncher::runVM11DLL(ResourceManager& resource, const string& origin)
 {
     std::string jarpath = resource.saveJarInTempFile();
     std::string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));
@@ -337,7 +347,12 @@ bool SunJVMLauncher::runVM11DLL(ResourceManager& resource)
       for (int i=0; i<jprops.size(); i++)
       {
             const JavaProperty& jp = jprops[i];
-            jpropstrv.push_back(jp.getName() + "=" + jp.getValue());
+	    string value = jp.getValue();
+
+	    value = StringUtils::replace(value, "${VMSELECTION}", origin);
+	    value = StringUtils::replace(value, "${VMSPAWNTYPE}", "JVMDLL");
+
+            jpropstrv.push_back(jp.getName() + "=" + value);
       }
       
       char  const  * props[jprops.size()+1];
@@ -433,7 +448,7 @@ bool SunJVMLauncher::runVM11DLL(ResourceManager& resource)
     return false;
 }
 
-bool SunJVMLauncher::runVM11proc(ResourceManager& resource, bool noConsole)
+bool SunJVMLauncher::runVM11proc(ResourceManager& resource, bool noConsole, const string& origin)
 {
     string javapath = "\\bin\\java.exe";
     string jrepath = "\\bin\\jre.exe";
@@ -443,16 +458,16 @@ bool SunJVMLauncher::runVM11proc(ResourceManager& resource, bool noConsole)
         jrepath = "\\bin\\jrew.exe";
     }
 
-    if (runExe(JavaHome + jrepath, true, resource, noConsole, "1.1"))
+    if (runExe(JavaHome + jrepath, true, resource, noConsole, "1.1", origin))
         return true;
 
-    if (runExe(JavaHome + javapath, true, resource, noConsole, "1.1"))
+    if (runExe(JavaHome + javapath, true, resource, noConsole, "1.1", origin))
         return true;
         
     return false;    
 }
 
-bool SunJVMLauncher::runVM12proc(ResourceManager& resource, bool noConsole)
+bool SunJVMLauncher::runVM12proc(ResourceManager& resource, bool noConsole, const string& origin)
 {
     string javapath = "\\bin\\java.exe";
     string jrepath = "\\bin\\jre.exe";
@@ -462,16 +477,16 @@ bool SunJVMLauncher::runVM12proc(ResourceManager& resource, bool noConsole)
         jrepath = "\\bin\\jrew.exe";
     }
 
-    if (runExe(JavaHome + javapath, false, resource, noConsole, "1.2+"))
+    if (runExe(JavaHome + javapath, false, resource, noConsole, "1.2+", origin))
         return true;
 
-    if (runExe(JavaHome + jrepath, false, resource, noConsole, "1.2+"))
+    if (runExe(JavaHome + jrepath, false, resource, noConsole, "1.2+", origin))
         return true;
         
     return false;
 }
 
-bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource, bool noConsole, const string& version)
+bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource, bool noConsole, const string& version, const string& origin)
 {    
    if (FileUtils::fileExists(exepath))
    {
@@ -509,6 +524,10 @@ bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, Reso
       {
             JavaProperty jp = *i;
             string v = jp.getValue();
+
+	    v = StringUtils::replace(v, "${VMSELECTION}", origin);
+	    v = StringUtils::replace(v, "${VMSPAWNTYPE}", "PROC");
+
             string::iterator t = v.end();
             if (*(--t) == '\\')
                         v += "\\";

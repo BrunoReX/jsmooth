@@ -72,7 +72,7 @@ class SunJVMLauncher
    * @return true if the java application was successfully launched,
    * false otherwise.
    */ 
-  virtual bool run(ResourceManager& resource);
+  virtual bool run(ResourceManager& resource, const string& origin);
 
 
   /**
@@ -91,7 +91,7 @@ class SunJVMLauncher
    * @return true if the java application was successfully launched,
    * false otherwise.
    */ 
-  virtual bool runProc(ResourceManager& resource, bool noConsole);
+  virtual bool runProc(ResourceManager& resource, bool noConsole, const string& origin);
 
   std::string toString() const;
 
@@ -99,12 +99,12 @@ class SunJVMLauncher
 
  private:
      
-  bool runVM12DLL(ResourceManager& resource);
-  bool runVM11DLL(ResourceManager& resource);
-  bool runVM11proc(ResourceManager& resource, bool noConsole);
-  bool runVM12proc(ResourceManager& resource, bool noConsole);
+  bool runVM12DLL(ResourceManager& resource, const string& origin);
+  bool runVM11DLL(ResourceManager& resource, const string& origin);
+  bool runVM11proc(ResourceManager& resource, bool noConsole, const string& origin);
+  bool runVM12proc(ResourceManager& resource, bool noConsole, const string& origin);
 
-  bool runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource, bool noConsole, const std::string& version);
+  bool runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource, bool noConsole, const std::string& version, const string& origin);
        
   std::string sizeToString(int size);
 };

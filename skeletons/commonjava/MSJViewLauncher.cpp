@@ -43,10 +43,17 @@ bool MSJViewLauncher::runProc(ResourceManager& resource, bool noConsole)
       for (vector<JavaProperty>::const_iterator i=jprops.begin(); i != jprops.end(); i++)
       {
             JavaProperty jp = *i;
-            javaproperties += " \"/d:" + jp.getName() + "=" + jp.getValue() + "\"";
+	    string value = jp.getValue();
+
+	    value = StringUtils::replace(value, "${VMSELECTION}", "jview");
+	    value = StringUtils::replace(value, "${VMSPAWNTYPE}", "PROC");
+
+            javaproperties += " \"/d:" + jp.getName() + "=" + value + "\"";
       }
     
       string classpath = resource.saveJarInTempFile();
+      string cpext = resource.getNormalizedClassPath();
+      classpath += cpext;
 
       string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));
       string arguments = javaproperties + " /cp:p \"" + classpath + "\" " + classname;

@@ -38,130 +38,131 @@ JavaMachineManager::JavaMachineManager(ResourceManager& resman): m_resman(resman
 
 bool JavaMachineManager::run(bool dontUseConsole, bool preferSingleProcess)
 {
-    string vmorder = m_resman.getProperty(ResourceManager::KEY_JVMSEARCH);
+  string vmorder = m_resman.getProperty(ResourceManager::KEY_JVMSEARCH);
 
-    if (m_localVMenabled)
+  if (m_localVMenabled)
     {
-        if (m_localVM.run(m_resman))
-                return true;
+      if (m_localVM.run(m_resman, "bundled"))
+	return true;
         
-        if (m_localVM.runProc(m_resman, dontUseConsole))
-                return true;
+      if (m_localVM.runProc(m_resman, dontUseConsole, "bundled"))
+	return true;
     }
 
-    if (vmorder == "")
+  if (vmorder == "")
     {
-        vmorder = "registry;jdkpath;jrepath;javahome;jview;exepath";
+      vmorder = "registry;jdkpath;jrepath;javahome;jview;exepath";
     }
     
-    DEBUG("VMORDER == " + vmorder);
+  DEBUG("VMORDER == " + vmorder);
     
-    vector<string> jvmorder = StringUtils::split(vmorder, ";,", "");
+  vector<string> jvmorder = StringUtils::split(vmorder, ";,", "");
 
-    for (vector<string>::const_iterator i = jvmorder.begin(); i != jvmorder.end(); i++)
+  for (vector<string>::const_iterator i = jvmorder.begin(); i != jvmorder.end(); i++)
     {
-        if (*i == "registry")
+      if (*i == "registry")
         {
-            DEBUG("Lookup " + *i + " :: " + StringUtils::toString(m_registryVms.size()));
-            for (int i=0; i<m_registryVms.size(); i++)
+	  DEBUG("Lookup " + *i + " :: " + StringUtils::toString(m_registryVms.size()));
+	  for (int i=0; i<m_registryVms.size(); i++)
             {
-                DEBUG("trying registry: " + m_registryVms[i].toString());
+	      DEBUG("trying registry: " + m_registryVms[i].toString());
 
-                if (dontUseConsole)
+	      if (dontUseConsole)
                 {
-                     //
-                     // If we are here, then we prefer to launch the java
-                     // application detached from any console. Typically
-                     // for a Windows app.
-                     //
+		  //
+		  // If we are here, then we prefer to launch the java
+		  // application detached from any console. Typically
+		  // for a Windows app.
+		  //
                      
-                     if (preferSingleProcess)
-                     {
-                        if (m_registryVms[i].run(m_resman))
+		  if (preferSingleProcess)
+		    {
+		      if (m_registryVms[i].run(m_resman, "registry"))
                         {
-                           return true;
-                        } else if (m_registryVms[i].runProc(m_resman, dontUseConsole))
-                        {
-                           return true;
-                        }
-                     }
-                     else
-                     {
-                          DEBUG("DONT USE CONSOLE == TRUE");
-                          if (m_registryVms[i].runProc(m_resman, dontUseConsole))
+			  return true;
+                        } else if (m_registryVms[i].runProc(m_resman, dontUseConsole, "registry"))
+			  {
+			    return true;
+			  }
+		    }
+		  else
+		    {
+		      DEBUG("DONT USE CONSOLE == TRUE");
+		      if (m_registryVms[i].runProc(m_resman, dontUseConsole, "registry"))
+			{
+			  return true;
+			} else if (m_registryVms[i].run(m_resman, "registry"))
                           {
-                              return true;
-                          } else if (m_registryVms[i].run(m_resman))
-                          {
-                              return true;
+			    return true;
                           }
                      
-                     }
+		    }
                           
                 }
-                else
+	      else
                 {
-                     DEBUG("DONT USE CONSOLE == FALSE");
-                     if (m_registryVms[i].runProc(m_resman, dontUseConsole))
-                     {
+		  DEBUG("DONT USE CONSOLE == FALSE");
+		  if (m_registryVms[i].runProc(m_resman, dontUseConsole, "registry"))
+		    {
+		      return true;
+		    } else if (m_registryVms[i].run(m_resman, "registry"))
+		      {
                         return true;
-                     } else if (m_registryVms[i].run(m_resman))
-                     {
-                        return true;
-                     }
+		      }
                 }
             }
         } else if (*i == "jview")
-        {
-                DEBUG("trying JVIEW");
-                if (m_jviewVm.runProc(m_resman, dontUseConsole))
-                {
-                    return true;
-                }
+	  {
+	    DEBUG("trying JVIEW");
+	    if (m_jviewVm.runProc(m_resman, dontUseConsole))
+	      {
+		return true;
+	      }
 
-        } else if (*i == "javahome")
-        {
-                DEBUG("trying JAVAHOME");
-                if (m_javahomeVm.size()>0)
+	  } else if (*i == "javahome")
+	    {
+	      DEBUG("trying JAVAHOME");
+	      if (m_javahomeVm.size()>0)
                 {
-                DEBUG("JAVAHOME exists..." + m_javahomeVm[0].toString());
+		  DEBUG("JAVAHOME exists..." + m_javahomeVm[0].toString());
                                 
-                    if (m_javahomeVm[0].runProc(m_resman, dontUseConsole))
+		  if (m_javahomeVm[0].runProc(m_resman, dontUseConsole, "javahome"))
                     {
-                        return true;
+		      return true;
                     }
                 }
                 
-            for (int i=0; i<m_registryVms.size(); i++)
-            {
-                DEBUG("trying registry PROC: " + m_registryVms[i].toString());
-                if (m_registryVms[i].runProc(m_resman, dontUseConsole))
-                {
-                        return true;
-                }
-            }                
-        } else if (*i == "jrepath")
-        {
+	      // 	      for (int i=0; i<m_registryVms.size(); i++)
+	      // 		{
+	      // 		  DEBUG("trying registry PROC: " + m_registryVms[i].toString());
+	      // 		  if (m_registryVms[i].runProc(m_resman, dontUseConsole, "javahome"))
+	      // 		    {
+	      // 		      return true;
+	      // 		    }
+	      // 		}                
+
+	    } else if (*i == "jrepath")
+	      {
                 DEBUG("trying JREPATH");
                 if (m_jrepathVm.size()>0)
-                {
-                    if (m_jrepathVm[0].runProc(m_resman, dontUseConsole))
-                    {
+		  {
+                    if (m_jrepathVm[0].runProc(m_resman, dontUseConsole, "jrepath"))
+		      {
                         return true;
-                    }
-                }
-        } else if (*i == "jdkpath")
-        {
-                DEBUG("trying JDKPATH");
-                if (m_jdkpathVm.size()>0)
-                {
-                    if (m_jdkpathVm[0].runProc(m_resman, dontUseConsole))
-                    {
-                        return true;
-                    }
-                }
-        }
+		      }
+		  }
+	      } else if (*i == "jdkpath")
+		{
+		  DEBUG("trying JDKPATH");
+		  if (m_jdkpathVm.size()>0)
+		    {
+		      if (m_jdkpathVm[0].runProc(m_resman, dontUseConsole, "jdkpath"))
+			{
+			  return true;
+			}
+		    }
+		}
     }
 
-    return false;
+  return false;
 }
