@@ -1,150 +1,52 @@
-<?xml version="1.0" encoding="UTF-8"?> 
-<java version="1.4.2" class="java.beans.XMLDecoder"> 
- <object class="net.charabia.jsmoothgen.application.JSmoothModelBean"> 
-  <void property="JVMSearchPath"> 
-   <array class="java.lang.String" length="6"> 
-    <void index="0"> 
-     <string>registry</string> 
-    </void> 
-    <void index="1"> 
-     <string>javahome</string> 
-    </void> 
-    <void index="2"> 
-     <string>jrepath</string> 
-    </void> 
-    <void index="3"> 
-     <string>jdkpath</string> 
-    </void> 
-    <void index="4"> 
-     <string>exepath</string> 
-    </void> 
-    <void index="5"> 
-     <string>jview</string> 
-    </void> 
-   </array> 
-  </void> 
-  <void property="arguments"> 
-   <string></string> 
-  </void> 
-  <void property="classPath"> 
-   <array class="java.lang.String" length="1"> 
-    <void index="0"> 
-     <string>Z:\jlfgr-1_0.jar</string> 
-    </void> 
-   </array> 
-  </void> 
-  <void property="executableName"> 
-   <string>Sample.exe</string> 
-  </void> 
-  <void property="iconLocation"> 
-   <string>.</string> 
-  </void> 
-  <void property="initialMemoryHeap"> 
-   <int>50331648</int> 
-  </void> 
-  <void property="jarLocation"> 
-   <string>sample.jar</string> 
-  </void> 
-  <void property="javaProperties"> 
-   <array class="net.charabia.jsmoothgen.application.JavaPropertyPair" length="6"> 
-    <void index="0"> 
-     <object class="net.charabia.jsmoothgen.application.JavaPropertyPair"> 
-      <void property="name"> 
-       <string>nom1</string> 
-      </void> 
-      <void property="value"> 
-       <string>valeur1</string> 
-      </void> 
-     </object> 
-    </void> 
-    <void index="1"> 
-     <object class="net.charabia.jsmoothgen.application.JavaPropertyPair"> 
-      <void property="name"> 
-       <string>MONPATH</string> 
-      </void> 
-      <void property="value"> 
-       <string>%PATH%</string> 
-      </void> 
-     </object> 
-    </void> 
-    <void index="2"> 
-     <object class="net.charabia.jsmoothgen.application.JavaPropertyPair"> 
-      <void property="name"> 
-       <string>MONHOME</string> 
-      </void> 
-      <void property="value"> 
-       <string>%JAVA_HOME%</string> 
-      </void> 
-     </object> 
-    </void> 
-    <void index="3"> 
-     <object class="net.charabia.jsmoothgen.application.JavaPropertyPair"> 
-      <void property="name"> 
-       <string>COMPUTERNAME</string> 
-      </void> 
-      <void property="value"> 
-       <string>${COMPUTERNAME}</string> 
-      </void> 
-     </object> 
-    </void> 
-    <void index="4"> 
-     <object class="net.charabia.jsmoothgen.application.JavaPropertyPair"> 
-      <void property="name"> 
-       <string>EXEPATH</string> 
-      </void> 
-      <void property="value"> 
-       <string>${EXECUTABLEPATH}</string> 
-      </void> 
-     </object> 
-    </void> 
-    <void index="5"> 
-     <object class="net.charabia.jsmoothgen.application.JavaPropertyPair"> 
-      <void property="name"> 
-       <string>EXENAME</string> 
-      </void> 
-      <void property="value"> 
-       <string>${EXECUTABLENAME}</string> 
-      </void> 
-     </object> 
-    </void> 
-   </array> 
-  </void> 
-  <void property="mainClassName"> 
-   <string>JSmoothPropertiesDisplayer</string> 
-  </void> 
-  <void property="maximumMemoryHeap"> 
-   <int>67108864</int> 
-  </void> 
-  <void property="minimumVersion"> 
-   <string>1.1</string> 
-  </void> 
-  <void property="skeletonName"> 
-   <string>Console Wrapper</string> 
-  </void> 
-  <void property="skeletonProperties"> 
-   <array class="net.charabia.jsmoothgen.application.JSmoothModelBean$Property" length="2"> 
-    <void index="0"> 
-     <object class="net.charabia.jsmoothgen.application.JSmoothModelBean$Property"> 
-      <void property="key"> 
-       <string>Message</string> 
-      </void> 
-      <void property="value"> 
-       <string>Java has not been found on your computer.
-Do you want to download it?</string> 
-      </void> 
-     </object> 
-    </void> 
-    <void index="1"> 
-     <object class="net.charabia.jsmoothgen.application.JSmoothModelBean$Property"> 
-      <void property="key"> 
-       <string>URL</string> 
-      </void> 
-      <void property="value"> 
-       <string>http://www.java.com</string> 
-      </void> 
-     </object> 
-    </void> 
-   </array> 
-  </void> 
- </object> 
-</java> 
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<jsmoothproject>
+<JVMSearchPath>registry</JVMSearchPath>
+<JVMSearchPath>javahome</JVMSearchPath>
+<JVMSearchPath>jrepath</JVMSearchPath>
+<JVMSearchPath>jdkpath</JVMSearchPath>
+<JVMSearchPath>exepath</JVMSearchPath>
+<JVMSearchPath>jview</JVMSearchPath>
+<arguments></arguments>
+<executableName>Sample.exe</executableName>
+<iconLocation>.</iconLocation>
+<initialMemoryHeap>50331648</initialMemoryHeap>
+<jarLocation>sample.jar</jarLocation>
+<javaProperties>
+<name>nom1</name>
+<value>valeur1</value>
+</javaProperties>
+<javaProperties>
+<name>MONPATH</name>
+<value>%PATH%</value>
+</javaProperties>
+<javaProperties>
+<name>MONHOME</name>
+<value>%JAVA_HOME%</value>
+</javaProperties>
+<javaProperties>
+<name>COMPUTERNAME</name>
+<value>${COMPUTERNAME}</value>
+</javaProperties>
+<javaProperties>
+<name>EXEPATH</name>
+<value>${EXECUTABLEPATH}</value>
+</javaProperties>
+<javaProperties>
+<name>EXENAME</name>
+<value>${EXECUTABLENAME}</value>
+</javaProperties>
+<mainClassName>JSmoothPropertiesDisplayer</mainClassName>
+<maximumMemoryHeap>67108864</maximumMemoryHeap>
+<maximumVersion></maximumVersion>
+<minimumVersion>1.1</minimumVersion>
+<skeletonName>Console Wrapper</skeletonName>
+<skeletonProperties>
+<key>Message</key>
+<value>Java has not been found on your computer.
+Do you want to download it?</value>
+</skeletonProperties>
+<skeletonProperties>
+<key>URL</key>
+<value>http://www.java.com</value>
+</skeletonProperties>
+</jsmoothproject>
