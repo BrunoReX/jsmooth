@@ -26,12 +26,68 @@
 
 package net.charabia.jsmoothgen.skeleton;
 
+import java.io.*;
+import java.util.*;
+
 public class SkeletonList
 {
+	Hashtable m_skelsToDirs = new Hashtable();
+	Hashtable m_nameToSkel = new Hashtable();
 	
 	/** Creates a new instance of SkeletonList */
-	public SkeletonList()
+	public SkeletonList(File directoryToScan)
 	{
+		File[] subdirs = directoryToScan.listFiles();
+		for (int i=0; i<subdirs.length; i++)
+		{
+			if (subdirs[i].isDirectory())
+			{
+				File desc = new File(subdirs[i], "description.skel");
+				if (desc.exists())
+				{
+					addSkeletonDirectory(subdirs[i], desc);
+				}	
+			}
+		}
 	}
+	
+	public void addSkeletonDirectory(File dir, File desc)
+	{
+		try {
+			SkeletonBean skel = SkeletonPersistency.load(desc);
+			m_skelsToDirs.put(skel, dir);
+			m_nameToSkel.put(skel.getShortName(), skel);
+
+		} catch (IOException iox)
+		{
+			iox.printStackTrace();
+		}
+	}
+	
+	public String toString()
+	{
+		return m_skelsToDirs.toString();
+	}
+	
+	public Iterator getIteratorSkel()
+	{
+		return m_skelsToDirs.keySet().iterator();
+	}
+
+	public File getDirectory(SkeletonBean skel)
+	{
+		return (File) m_skelsToDirs.get(skel);
+	}
+	
+	public Iterator getIteratorName()
+	{
+		return m_nameToSkel.keySet().iterator();
+	}
+
+	public SkeletonBean getSkeleton(String name)
+	{
+		return (SkeletonBean)m_nameToSkel.get(name);
+	}
+	
 	
 }
