@@ -62,15 +62,17 @@ public class SkeletonPropertiesPanel extends javax.swing.JPanel  implements Mode
 	{
 		GridBagLayout layout = (GridBagLayout)this.getLayout();
 
+		JLabel desc = null;
+		GridBagConstraints descconst = null;
 		if ((prop.getDescription() != null) && (prop.getDescription().trim().length() > 0))
 		{
-			JLabel desc = new JLabel("<html><small>" + prop.getDescription() + "</small></html>");
-			GridBagConstraints descconst = new GridBagConstraints();
+			desc = new JLabel("<html><small>" + prop.getDescription() + "</small></html>");
+			descconst = new GridBagConstraints();
 			descconst.fill = GridBagConstraints.BOTH;
 			descconst.gridwidth = GridBagConstraints.REMAINDER;
 			descconst.weightx = 1.0;
-			layout.setConstraints(desc, descconst);
-			this.add(desc);
+			// layout.setConstraints(desc, descconst);
+			//			this.add(desc);
 		}
 		
 		System.out.println("creating gui " + prop.getLabel());
@@ -93,6 +95,12 @@ public class SkeletonPropertiesPanel extends javax.swing.JPanel  implements Mode
 			compconst.fill = GridBagConstraints.HORIZONTAL;
 			compconst.gridwidth = GridBagConstraints.REMAINDER;
 			layout.setConstraints(tf, compconst);
+
+			if (desc != null)
+			    {
+				layout.setConstraints(desc, descconst);
+				this.add(desc);
+			    }
 			
 			this.add(lab);
 			this.add(tf);
@@ -113,11 +121,42 @@ public class SkeletonPropertiesPanel extends javax.swing.JPanel  implements Mode
 			compconst.weighty = 1.0;
 			compconst.fill = GridBagConstraints.BOTH;
 			compconst.gridwidth = GridBagConstraints.REMAINDER;
+
+			if (desc != null)
+			    {
+				layout.setConstraints(desc, descconst);
+				this.add(desc);
+			    }
 			
 			JScrollPane jsp = new JScrollPane(area);
 			layout.setConstraints(jsp, compconst);
 			this.add(lab);
 			this.add(jsp);
+		} else if (prop.getType().equals(SkeletonProperty.TYPE_BOOLEAN))
+		{
+			String val = prop.getValue();
+			if ((val == null) || (val.length() == 0))
+				val = "0";
+			int ival = Integer.parseInt(val);
+			System.out.println("BOOLEAN JCB : " + prop.getDescription());
+			String label = "";
+
+			if (prop.getDescription() != null)
+			    label = "<html><small>" + prop.getDescription() + "</small></html>";
+			else if (prop.getLabel() != null)
+			    label = prop.getLabel();
+
+			JCheckBox jcb = new JCheckBox(label, ival!=0);
+			m_propIdToGUI.put(prop.getIdName(), jcb);
+			
+			GridBagConstraints compconst = new GridBagConstraints();
+			compconst.weightx = 1.0;
+			compconst.weighty = 1.0;
+			compconst.fill = GridBagConstraints.BOTH;
+			compconst.gridwidth = GridBagConstraints.REMAINDER;
+			
+			layout.setConstraints(jcb, compconst);
+			this.add(jcb);
 		}
 	}
 	
@@ -150,7 +189,10 @@ public class SkeletonPropertiesPanel extends javax.swing.JPanel  implements Mode
 					if (props[i].Value == null)
 						props[i].Value = "";
 					((JTextComponent)comp).setText(props[i].Value);
-				}
+				} else if (comp instanceof JCheckBox)
+				    {
+					((JCheckBox)comp).setSelected("1".equals(props[i].Value));
+				    }
 			}
 		}
 	}	
@@ -168,7 +210,13 @@ public class SkeletonPropertiesPanel extends javax.swing.JPanel  implements Mode
 				p.Key = sp.getIdName();
 				p.Value = ((JTextComponent)comp).getText();
 				result.add(p);
-			}
+			} else if (comp instanceof JCheckBox)
+			    {
+				JSmoothModelBean.Property p = new JSmoothModelBean.Property();
+				p.Key = sp.getIdName();
+				p.Value = ((JCheckBox)comp).isSelected()?"1":"0";
+				result.add(p);
+			    }
 		}
 		JSmoothModelBean.Property[] ra = new JSmoothModelBean.Property[result.size()];
 		for (int i=0; i<result.size(); i++)
