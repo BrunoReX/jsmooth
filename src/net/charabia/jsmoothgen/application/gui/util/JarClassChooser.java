@@ -106,26 +106,36 @@ public class JarClassChooser extends javax.swing.JDialog
         super(parent, modal);
         initComponents();
     }
+
+    public void clear()
+    {
+        JarEntryTreeNode root = new JarEntryTreeNode("Available Classes");
+        m_root = root;	
+        m_tree.setModel(new DefaultTreeModel(m_root));
+    }
+
+    public void addJar(JarFile jf)
+    {
+        for (Enumeration e=jf.entries(); e.hasMoreElements(); )
+        {
+            JarEntry entry = (JarEntry)e.nextElement();
+            String[] res = entry.toString().split("/");
+	    //            System.out.println("JarEntry: " + entry);
+            if ((res.length > 0) && (res[res.length-1].toLowerCase().endsWith(".class")))
+            {
+                String rs = res[res.length-1];
+                rs = rs.substring(0, rs.length()-6);
+                res[res.length-1] = rs;
+                m_root.add(res);
+            }
+        }
+    }
     
     public void setJar(JarFile jf)
     {
         JarEntryTreeNode root = new JarEntryTreeNode(jf.getName());
         m_root = root;
 
-        for (Enumeration e=jf.entries(); e.hasMoreElements(); )
-        {
-            
-            JarEntry entry = (JarEntry)e.nextElement();
-            String[] res = entry.toString().split("/");
-            System.out.println("JarEntry: " + entry);
-            if ((res.length > 0) && (res[res.length-1].toLowerCase().endsWith(".class")))
-            {
-                String rs = res[res.length-1];
-                rs = rs.substring(0, rs.length()-6);
-                res[res.length-1] = rs;
-                root.add(res);
-            }
-        }
         m_tree.setModel(new DefaultTreeModel(root));
     }
 

@@ -201,18 +201,33 @@ public class JavaApp extends javax.swing.JPanel implements ModelUpdater
     private void jarChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jarChooserActionPerformed
         // Add your handling code here:
         try {
-            File jar = m_jarLocation.getFile();
-            if (jar.isAbsolute() == false)
-		{
-		    jar = new File(m_basedir, jar.toString());
-		}
-            JarFile jf = new JarFile(jar);
-            if (m_classchooser == null)
+	    if (m_classchooser == null)
 		{
 		    m_classchooser = new JarClassChooser(JOptionPane.getFrameForComponent(this), true);
 		    m_classchooser.setLocationRelativeTo(this);
 		}
-            m_classchooser.setJar(jf);
+	    m_classchooser.clear();
+
+	    if (m_embedJar.isSelected() && (m_jarLocation.getFile() != null))
+		{
+		    File jar = m_jarLocation.getFile();
+		    if (jar.isAbsolute() == false)
+			{
+			    jar = new File(m_basedir, jar.toString());
+			}
+		    JarFile jf = new JarFile(jar);	    
+		    m_classchooser.addJar(jf);
+		}
+
+	    Object[] cpels = m_classPathList.getData();
+	    for (int i=0; i<cpels.length; i++)
+		{
+		    File f = (File)cpels[i];
+		    if (f.isAbsolute() == false)
+			f = new File(m_basedir, f.toString());
+		    m_classchooser.addJar(new JarFile(f));
+		}
+
             System.out.println("Classname to set: " + m_mainClassName.getText());
             m_classchooser.setClassName((m_mainClassName.getText()!=null)?m_mainClassName.getText():"");
             m_classchooser.show();
