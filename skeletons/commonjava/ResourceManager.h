@@ -159,6 +159,8 @@ class ResourceManager
   std::string getCurrentDirectory() const;
 
   bool useEmbeddedJar() const;
+
+  void printDebug() const;
   
  private:
   void saveTemp(std::string tempname);

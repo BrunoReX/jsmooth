@@ -50,6 +50,7 @@ int main(int argc, char *argv[])
     if (StringUtils::parseInt(dodebug) != 0)
       {
 	enableDebug = true;
+	globalResMan->printDebug();
       }
 
     char curdir[256];
@@ -75,7 +76,7 @@ int main(int argc, char *argv[])
         cerr << "\r\n";
     }
 
-  int waitkey = atoi(globalResMan->getProperty("skel_KeyPress").c_str());
+  int waitkey = atoi(globalResMan->getProperty("skel_PressKey").c_str());
   if (waitkey != 0)
   {
     system("PAUSE");

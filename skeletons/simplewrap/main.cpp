@@ -63,6 +63,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     if (StringUtils::parseInt(dodebug) != 0)
       {
 	DEBUGCONSOLE = new DebugConsole("JSmooth Debug");
+	globalResMan->printDebug();
       }
 
     DEBUG(string("Main class: ") + globalResMan->getMainName());

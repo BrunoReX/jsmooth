@@ -85,6 +85,9 @@ class Properties
    * @param value the value associated to the property
    */
   void set(const string& key, const string& value);
+
+  map<string, string> getDataCopy() const;
+
         
  private:
   string getNextToken(const char* data, int datalen, int& cursor, char stopchar);    

@@ -115,3 +115,8 @@ string Properties::unescape(const string& val)
     }
     return result;
 }
+
+map<string, string> Properties::getDataCopy() const
+{
+  return m_data;
+}

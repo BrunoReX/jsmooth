@@ -209,3 +209,17 @@ bool ResourceManager::useEmbeddedJar() const
     return true;
   return false;
 }
+
+void ResourceManager::printDebug() const
+{
+  DEBUG("ResourceManager resource configuration:");
+  DEBUG(" - Resource category: " + m_resourceCategory);
+  DEBUG(" - Current directory: " + m_currentDirectory);
+
+  map<string, string>  props = m_props.getDataCopy();
+  DEBUG(" - Property count: " + StringUtils::toString(props.size()));
+  for (map<string, string>::iterator i = props.begin(); i != props.end(); i++)
+    {
+      DEBUG(" - Property: "  + i->first + "=" + i->second);
+    }
+}
