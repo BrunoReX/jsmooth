@@ -97,7 +97,12 @@ public class JSmoothPropertiesDisplayer extends java.awt.Frame
 	{
 		StringBuffer out = new StringBuffer();
 		out.append("-- Sample --\n\n");
-		
+
+		out.append("Free Heap Memory: " + Runtime.getRuntime().freeMemory() + " bytes\n");
+		//		out.append("Max Heap Memory: " + Runtime.getRuntime().maxMemory() + " bytes\n");
+		out.append("Total Heap Memory: " + Runtime.getRuntime().totalMemory() + " bytes\n");
+		out.append("\n");
+
 		out.append("System Properties:\n\n");
 		Properties props = System.getProperties();
 		for (Enumeration e = props.propertyNames(); e.hasMoreElements(); )

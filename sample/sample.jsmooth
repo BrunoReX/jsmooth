@@ -39,6 +39,9 @@
   <void property="iconLocation"> 
    <string>.</string> 
   </void> 
+  <void property="initialMemoryHeap"> 
+   <int>50331648</int> 
+  </void> 
   <void property="jarLocation"> 
    <string>sample.jar</string> 
   </void> 
@@ -108,6 +111,9 @@
   </void> 
   <void property="mainClassName"> 
    <string>JSmoothPropertiesDisplayer</string> 
+  </void> 
+  <void property="maximumMemoryHeap"> 
+   <int>67108864</int> 
   </void> 
   <void property="minimumVersion"> 
    <string>1.1</string> 

@@ -45,6 +45,9 @@ public class JSmoothModelBean
     private String m_maximumVersion = "";
     private String[] m_jvmSearch = null;
 
+    public int m_maxHeap = -1;
+    public int m_initialHeap = -1;
+
     private String m_noJvmMessage;
     private String m_noJvmURL;
 
@@ -282,6 +285,27 @@ public class JSmoothModelBean
     {
 	return m_javaprops;
     }
+
+    public void setMaximumMemoryHeap(int size)
+    {
+	m_maxHeap = size;
+    }
+
+    public int getMaximumMemoryHeap()
+    {
+	return m_maxHeap;
+    }
+
+    public void setInitialMemoryHeap(int size)
+    {
+	m_initialHeap = size;
+    }
+
+    public int getInitialMemoryHeap()
+    {
+	return m_initialHeap;
+    }
+
 	
     public String[] normalizePaths(java.io.File filebase)
     {

@@ -55,7 +55,9 @@ class SunJVMLauncher
        bool runVM11proc(ResourceManager& resource, bool noConsole);
        bool runVM12proc(ResourceManager& resource, bool noConsole);
 
-       bool runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource, bool noConsole);
+       bool runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource, bool noConsole, const std::string& version);
+       
+       std::string sizeToString(int size);
 };
 
 #endif

@@ -166,6 +166,16 @@ bool SunJVMLauncher::runVM12DLL(ResourceManager& resource)
             jpropstrv.push_back("-D" + jp.getName() + "=" + jp.getValue());
       }
 
+      if (resource.getProperty("maxheap") != "")
+      {
+            jpropstrv.push_back("-Xmx" + sizeToString(StringUtils::parseInt(resource.getProperty("maxheap"))) + " ");
+      }
+      if (resource.getProperty("initialheap") != "")
+      {
+            jpropstrv.push_back("-Xms" + sizeToString(StringUtils::parseInt(resource.getProperty("initialheap"))) + " ");
+      }
+
+
                 
                 JavaVMInitArgs vm_args;
                 JavaVMOption options[1 + jpropstrv.size()];
@@ -304,9 +314,18 @@ bool SunJVMLauncher::runVM11DLL(ResourceManager& resource)
                 jobjectArray args;
               
                   JDK1_1InitArgs vm_args;
-                  vm_args.exit = myexit;
+                  //vm_args.exit = myexit;
                   vm_args.version = 0x00010001;
                   GetDefaultJavaVMInitArgs(&vm_args);
+                  
+      if (resource.getProperty("maxheap") != "")
+      {
+            vm_args.maxHeapSize = StringUtils::parseInt(resource.getProperty("maxheap"));
+      }
+      if (resource.getProperty("initialheap") != "")
+      {
+            vm_args.minHeapSize = StringUtils::parseInt(resource.getProperty("initialheap"));
+      }
                   
         //
         // create the properties array
@@ -422,10 +441,10 @@ bool SunJVMLauncher::runVM11proc(ResourceManager& resource, bool noConsole)
         jrepath = "\\bin\\jrew.exe";
     }
 
-    if (runExe(JavaHome + jrepath, true, resource, noConsole))
+    if (runExe(JavaHome + jrepath, true, resource, noConsole, "1.1"))
         return true;
 
-    if (runExe(JavaHome + javapath, true, resource, noConsole))
+    if (runExe(JavaHome + javapath, true, resource, noConsole, "1.1"))
         return true;
         
     return false;    
@@ -441,16 +460,16 @@ bool SunJVMLauncher::runVM12proc(ResourceManager& resource, bool noConsole)
         jrepath = "\\bin\\jrew.exe";
     }
 
-    if (runExe(JavaHome + javapath, false, resource, noConsole))
+    if (runExe(JavaHome + javapath, false, resource, noConsole, "1.2+"))
         return true;
 
-    if (runExe(JavaHome + jrepath, false, resource, noConsole))
+    if (runExe(JavaHome + jrepath, false, resource, noConsole, "1.2+"))
         return true;
         
     return false;
 }
 
-bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource, bool noConsole)
+bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource, bool noConsole, const string& version)
 {    
    if (FileUtils::fileExists(exepath))
    {
@@ -489,6 +508,21 @@ bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, Reso
             javaproperties += " \"-D" + jp.getName() + "=" + jp.getValue() + "\"";
       }
       
+      if (resource.getProperty("maxheap") != "")
+      {
+            if (version == "1.1")
+                        javaproperties += " -mx" + sizeToString(StringUtils::parseInt(resource.getProperty("maxheap"))) + " ";
+            else
+                        javaproperties += " -Xmx" + sizeToString(StringUtils::parseInt(resource.getProperty("maxheap"))) + " ";
+      }
+      if (resource.getProperty("initialheap") != "")
+      {
+            if (version == "1.1")
+                        javaproperties += " -ms" + sizeToString(StringUtils::parseInt(resource.getProperty("initialheap"))) + " ";
+            else
+                        javaproperties += " -Xms" + sizeToString(StringUtils::parseInt(resource.getProperty("initialheap"))) + " ";
+      }
+ 
       string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));
 
       string arguments = javaproperties + " -classpath \"" + classpath + "\" " + classname + " " + addargs;
@@ -604,3 +638,16 @@ Version SunJVMLauncher::guessVersionByProcess(const string& exepath)
     return result;
 }
 
+std::string SunJVMLauncher::sizeToString(int size)
+{
+    if (size > (1024*1024))
+    {
+        return StringUtils::toString(size / (1024*1024)) + "m";
+    } else if (size > 1024)
+    {
+        return StringUtils::toString(size / 1024) + "k";
+    } else
+    {
+        return StringUtils::toString(size);
+    }
+}

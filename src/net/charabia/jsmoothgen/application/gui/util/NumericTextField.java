@@ -83,6 +83,11 @@ public class NumericTextField extends javax.swing.JPanel
 		m_data.setText("");
 	}
 	
+    public boolean isSet()
+    {
+	return m_data.getText().trim().length() > 0;
+    }
+
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private javax.swing.JTextField m_data;
 	// End of variables declaration//GEN-END:variables

@@ -26,6 +26,16 @@ public class PropertiesBuilder
 
 	addPair("currentdir", obj.getCurrentDirectory(), out);
 
+	if (obj.getMaximumMemoryHeap() > 1)
+	    {
+		addPair("maxheap", Integer.toString(obj.getMaximumMemoryHeap()), out);
+	    }
+
+	if (obj.getInitialMemoryHeap() > 1)
+	    {
+		addPair("initialheap", Integer.toString(obj.getInitialMemoryHeap()), out);
+	    }
+
 	// BundledVM & classpaths are changed to be accessible
 	// from the current directory
 	File curdir = null;
