@@ -30,14 +30,76 @@ JavaMachineManager::JavaMachineManager(const ResourceManager& resman): m_resman(
 
 bool JavaMachineManager::run()
 {
-    DEBUG("RUNNING!");
-    for (int i=0; i<m_registryVms.size(); i++)
+    string vmorder = m_resman.getProperty(ResourceManager::KEY_JVMSEARCH);
+//    if (vmorder == "")
     {
-        DEBUG("trying: " + m_registryVms[i].toString());
-        if (m_registryVms[i].run(m_resman))
+        vmorder = "jdkpath,jrepath,javahome,registry,jview,exepath";
+    }
+    vector<string> jvmorder = StringUtils::split(vmorder, ',');
+
+    for (vector<string>::const_iterator i = jvmorder.begin(); i != jvmorder.end(); i++)
+    {
+        if (*i == "registry")
         {
-                return true;
+            for (int i=0; i<m_registryVms.size(); i++)
+            {
+                DEBUG("trying registry: " + m_registryVms[i].toString());
+                if (m_registryVms[i].run(m_resman))
+                {
+                        return true;
+                }
+            }
+        } else if (*i == "jview")
+        {
+                DEBUG("trying JVIEW");
+                if (m_jviewVm.runProc(m_resman))
+                {
+                    return true;
+                }
+                
+        } else if (*i == "javahome")
+        {
+                DEBUG("trying JAVAHOME");
+                if (m_javahomeVm.size()>0)
+                {
+                DEBUG("JAVAHOME exists..." + m_javahomeVm[0].toString());
+                                
+                    if (m_javahomeVm[0].runProc(m_resman))
+                    {
+                        return true;
+                    }
+                }
+                
+            for (int i=0; i<m_registryVms.size(); i++)
+            {
+                DEBUG("trying registry PROC: " + m_registryVms[i].toString());
+                if (m_registryVms[i].runProc(m_resman))
+                {
+                        return true;
+                }
+            }                
+        } else if (*i == "jrepath")
+        {
+                DEBUG("trying JREPATH");
+                if (m_jrepathVm.size()>0)
+                {
+                    if (m_jrepathVm[0].runProc(m_resman))
+                    {
+                        return true;
+                    }
+                }
+        } else if (*i == "jdkpath")
+        {
+                DEBUG("trying JDKPATH");
+                if (m_jdkpathVm.size()>0)
+                {
+                    if (m_jdkpathVm[0].runProc(m_resman))
+                    {
+                        return true;
+                    }
+                }
         }
     }
+
     return false;
 }

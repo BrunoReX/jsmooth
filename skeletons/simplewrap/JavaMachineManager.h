@@ -29,6 +29,7 @@
 #include "SunJVMLauncher.h"
 #include "JVMRegistryLookup.h"
 #include "JVMEnvVarLookup.h"
+#include "MSJViewLauncher.h"
 
 class JavaMachineManager
 {
@@ -36,6 +37,8 @@ class JavaMachineManager
     vector<SunJVMLauncher> m_javahomeVm;
     vector<SunJVMLauncher> m_jrepathVm;
     vector<SunJVMLauncher> m_jdkpathVm;
+    MSJViewLauncher        m_jviewVm;
+    
     const ResourceManager& m_resman;
 
     public:

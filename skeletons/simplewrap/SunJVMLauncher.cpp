@@ -76,10 +76,15 @@ bool SunJVMLauncher::runProc(const ResourceManager& resource)
     Version max(resource.getProperty(ResourceManager:: KEY_MAXVERSION));
     Version min(resource.getProperty(ResourceManager:: KEY_MINVERSION));
     
-    if ((VmVersion < min) || (max < VmVersion))
+    DEBUG("RUN PROC... " + min.toString() + " / " + VmVersion.toString() + " / " + max.toString());
+    
+    
+    if ( VmVersion.isValid() && ((VmVersion < min) || (max < VmVersion)))
     {
         return false;
     }
+
+    DEBUG("RUN PROC... version OK");
     
     if (Version("1.2") <= VmVersion)
     {
@@ -344,7 +349,7 @@ bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, cons
 {
    if (FileUtils::fileExists(exepath))
    {
-      DEBUG("Running new process for " + exepath);
+      DEBUG("Running new proc for " + exepath);
 
       string classpath = resource.saveJarInTempFile();
       if (forceFullClasspath && (JavaHome != ""))
@@ -359,13 +364,14 @@ bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, cons
       }
       
       string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));
-      string arguments = "java -cp \"" + classpath + "\" " + classname;
+      string arguments = "-cp \"" + classpath + "\" " + classname;
       
       STARTUPINFO info;
       GetStartupInfo(&info);
       PROCESS_INFORMATION procinfo;
-
-      int res = CreateProcess((char*)exepath.c_str(), (char*)arguments.c_str(), NULL, NULL, TRUE, DETACHED_PROCESS, NULL, NULL, &info, &procinfo);
+      string exeline = exepath + " " + arguments;
+//      int res = CreateProcess((char*)exepath.c_str(), (char*)arguments.c_str(), NULL, NULL, TRUE, DETACHED_PROCESS, NULL, NULL, &info, &procinfo);
+      int res = CreateProcess(NULL, (char*)exeline.c_str(), NULL, NULL, TRUE, DETACHED_PROCESS, NULL, NULL, &info, &procinfo);
 
       if (res != 0)
             return true;

@@ -25,13 +25,18 @@ vector<SunJVMLauncher> JVMEnvVarLookup::lookupJVM(const string& envvar)
     vector<SunJVMLauncher> result;
     char buffer[512];
     DWORD res = GetEnvironmentVariable(envvar.c_str(), buffer, 512);
+    
     if (res != 0)
     {
         SunJVMLauncher jvm;
         jvm.JavaHome = buffer;
-
+        DEBUG("ENVVAR " + envvar + " FOUND = " + buffer);
         result.push_back(jvm);
     } 
+    else
+    {
+        DEBUG("ENVVAR " + envvar + " NOT FOUND");
+    }
 
     return result;
 }

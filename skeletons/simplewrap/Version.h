@@ -48,6 +48,9 @@ public:
 
     friend bool operator < (const Version& v1, const Version& v2);
     friend bool operator <= (const Version& v1, const Version& v2);
+    
+    bool isValid() const;
+    
 private:
     void parseValue(const std::string& val);
 
