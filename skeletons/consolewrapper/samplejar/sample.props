@@ -1,0 +1,10 @@
+arguments=arg1 arg2 arg3
+mainclassname=Sample
+classpath=sample.jar;..\\jsmoothgen.jar
+jvmsearch=registry;javahome;jrepath;jdkpath;exepath;jview
+minversion=1.4
+maxversion=
+currentdir=..\\..\\..
+bundledvm=jre
+skel_Message=Java has not been found on your computer. Do you want to download it?
+skel_URL=http://www.java.com

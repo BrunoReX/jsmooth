@@ -1,0 +1,32 @@
+# Project: ConsoleWrapper
+# Makefile created by Dev-C++ 4.9.8.0
+
+CPP  = g++.exe
+CC   = gcc.exe
+WINDRES = windres.exe
+RES  = ConsoleWrapper_private.res
+OBJ  = main.o $(RES)
+LINKOBJ  = main.o $(RES)
+LIBS =  -L"C:/Programs/Dev-Cpp-4.9.8.0/lib" -L"../commonjava" ../commonjava/CommonJava.a 
+INCS =  -I"C:/Programs/Dev-Cpp-4.9.8.0/include"  -I"../commonjava"  -I"C:/Program Files/j2sdk_nb/j2sdk1.4.2/include"  -I"C:/Program Files/j2sdk_nb/j2sdk1.4.2/include/win32" 
+CXXINCS =  -I"C:/Programs/Dev-Cpp-4.9.8.0/include/c++"  -I"C:/Programs/Dev-Cpp-4.9.8.0/include/c++/mingw32"  -I"C:/Programs/Dev-Cpp-4.9.8.0/include/c++/backward"  -I"C:/Programs/Dev-Cpp-4.9.8.0/include"  -I"../commonjava"  -I"C:/Program Files/j2sdk_nb/j2sdk1.4.2/include"  -I"C:/Program Files/j2sdk_nb/j2sdk1.4.2/include/win32" 
+BIN  = ConsoleWrapper.exe
+CXXFLAGS = $(CXXINCS) 
+CFLAGS = $(INCS) 
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before ConsoleWrapper.exe all-after
+
+
+clean: clean-custom
+	rm -f $(OBJ) $(BIN)
+
+$(BIN): $(LINKOBJ)
+	$(CPP) $(LINKOBJ) -o "ConsoleWrapper.exe" $(LIBS)
+
+main.o: main.cpp
+	$(CPP) -c main.cpp -o main.o $(CXXFLAGS)
+
+ConsoleWrapper_private.res: ConsoleWrapper_private.rc mainres.rc 
+	$(WINDRES) -i ConsoleWrapper_private.rc -I rc -o ConsoleWrapper_private.res -O coff 
