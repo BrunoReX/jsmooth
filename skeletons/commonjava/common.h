@@ -34,25 +34,31 @@
 extern std::vector< std::string > LOG;
 extern DebugConsole DEBUGCONSOLE;
 
-class ResourceManager;
+void _debugOutput(const std::string& text);
+void _debugWaitKey();
 
+class ResourceManager;
 extern ResourceManager* globalResMan;
 
-#ifndef DEBUGMODE
-#    define DEBUG(x)
-#    define DEBUGWAITKEY()
-#else
-#  if DEBUGMODE == 1
-#    define DEBUG(x) DEBUGCONSOLE.writeline(x)
-#    define DEBUGWAITKEY() DEBUGCONSOLE.waitKey()
-#  elif DEBUGMODE == 2
-#    include <iostream>
-#    define DEBUG(x) std::cerr << x << "\r\n"
-#    define DEBUGWAITKEY()
-#  else
-#    error Unknown DEBUGMODE value, it should be 1 for CONSOLE, 2 for STDIO
-#  endif
-#endif
+/* #ifndef DEBUGMODE */
+/* #    define DEBUG(x) */
+/* #    define DEBUGWAITKEY() */
+/* #else */
+/* #  if DEBUGMODE == 1 */
+/* #    define DEBUG(x) DEBUGCONSOLE.writeline(x) */
+/* #    define DEBUGWAITKEY() DEBUGCONSOLE.waitKey() */
+/* #  elif DEBUGMODE == 2 */
+/* #    include <iostream> */
+/* #    define DEBUG(x) std::cerr << x << "\r\n" */
+/* #    define DEBUGWAITKEY() */
+/* #  else */
+/* #    error Unknown DEBUGMODE value, it should be 1 for CONSOLE, 2 for STDIO */
+/* #  endif */
+/* #endif */
 
+// #define DEBUG(x) MessageBox(NULL, std::string(x).c_str(), "DEBUG", MB_OKCANCEL|MB_ICONQUESTION|MB_APPLMODAL)
+
+#define DEBUG(x) _debugOutput(x)
+#define DEBUGWAITKEY() _debugWaitKey()
 
 #endif
