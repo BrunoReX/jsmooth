@@ -136,15 +136,18 @@ public class SkeletonProperties extends Editor implements JSmoothModelBean.Skele
 	    }
 	
 	JSmoothModelBean.Property[] jsprop = m_model.getSkeletonProperties();
-	for (int i=0; i<jsprop.length; i++)
+	if (jsprop != null)
 	    {
-		// search for the proxy and set the value
-		for (int j=0; j<proxy.length; j++)
+		for (int i=0; i<jsprop.length; i++)
 		    {
-			if (proxy[j].getName().equals(jsprop[i].getKey()))
+			// search for the proxy and set the value
+			for (int j=0; j<proxy.length; j++)
 			    {
-				proxy[j].setValue(jsprop[i].getValue());
-				break;
+				if (proxy[j].getName().equals(jsprop[i].getKey()))
+				    {
+					proxy[j].setValue(jsprop[i].getValue());
+					break;
+				    }
 			    }
 		    }
 	    }
