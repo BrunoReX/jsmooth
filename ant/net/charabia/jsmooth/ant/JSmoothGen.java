@@ -29,6 +29,7 @@ public class JSmoothGen extends org.apache.tools.ant.Task
 {
     private java.io.File m_prjfile;
     private java.io.File m_skeletonRoot;
+    private boolean verbose;
     
     public void setProject(java.io.File prjfile)
     {
@@ -38,6 +39,11 @@ public class JSmoothGen extends org.apache.tools.ant.Task
     public void setSkeletonRoot(java.io.File skeletonRoot)
     {
 	m_skeletonRoot = skeletonRoot;
+    }
+
+    public void setVerbose(boolean val) 
+    {
+        verbose = val;
     }
 
     public void execute() throws org.apache.tools.ant.BuildException
@@ -63,17 +69,29 @@ public class JSmoothGen extends org.apache.tools.ant.Task
 
 	    File basedir = prj.getParentFile();
 
-
 	    SkeletonList skelList = new SkeletonList(m_skeletonRoot);
 
 	    File out = new File(basedir, model.getExecutableName());
 	    SkeletonBean skel = skelList.getSkeleton(model.getSkeletonName());
 	    File skelroot = skelList.getDirectory(skel);
 	    
-	    ExeCompiler compiler = new ExeCompiler();
-	    compiler.compile(skelroot, skel, basedir, model, out);
+	    final ExeCompiler compiler = new ExeCompiler();
+	    if (verbose) {
+                compiler.addListener(new ExeCompiler.StepListener() {
+			public void complete() {}
+			public void failed() {}
+			
+			public void setNewState(int percentComplete, String state) {
+			    log("jsmooth: " + state + " ( " + percentComplete + "%)");
+			}
+		    });
+            }
+	    
+	    if (compiler.compile(skelroot, skel, basedir, model, out))
+		log("Java application wrapped in " + model.getExecutableName());
+	    else
+		log("jsmoothgen failed: " + compiler.getErrors());
 
-	    log("Java application wrapped in " + model.getExecutableName());
 	} catch (Exception exc)
 	    {
 		throw new org.apache.tools.ant.BuildException("Error building the jsmooth wrapper", exc);
