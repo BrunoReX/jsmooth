@@ -17,7 +17,7 @@
 
  <!-- set here the properties specific the release --> 
 
-  <property name="VERSION" value="0.9.5"/>
+  <property name="VERSION" value="0.9.6"/>
 
   <!-- You should need to modify the properties below -->
 
@@ -217,31 +217,7 @@
     <copy todir="${dist}" file="${tmp}/docs/readme.txt"/>
     <copy todir="${dist}" file="${tmp}/docs/license.txt"/>
 
-
-    <!-- Compile the windowed wrapper in debug mode -->
-
-    <mkdir dir="${dist}/skeletons/windowed-wrapper-debug"/>
-    <antcall target="compileskels">
-      <param name="skelflags" value="-DDEBUGMODE=1"/>
-    </antcall>
-    <copy todir="${dist}/skeletons/windowed-wrapper-debug" file="skeletons/simplewrap/jwrap.exe"/>
-    <copy todir="${dist}/skeletons/windowed-wrapper-debug" file="skeletons/simplewrap/description-debug.skel"/>
-    <exec executable="strip.exe" dir="${dist}/skeletons/windowed-wrapper-debug">
-        <arg value="jwrap.exe"/>
-    </exec>
-
-    <!-- Compile the console wrapper in debug mode -->
-    <mkdir dir="${dist}/skeletons/console-wrapper-debug"/>
-    <antcall target="compileskels">
-      <param name="skelflags" value="-DDEBUGMODE=2"/>
-    </antcall>
-    <copy todir="${dist}/skeletons/console-wrapper-debug" file="skeletons/consolewrapper/consolewrapper.exe"/>
-    <copy todir="${dist}/skeletons/console-wrapper-debug" file="skeletons/consolewrapper/description-debug.skel"/>
-    <exec executable="strip.exe" dir="${dist}/skeletons/console-wrapper-debug">
-        <arg value="consolewrapper.exe"/>
-    </exec>
-
-    <!-- Compile the normal wrappers -->
+    <!-- Compile the wrappers -->
     <ant antfile="build.xml" dir="skeletons/simplewrap/samplejar/" target="dist"/>
     <ant antfile="build.xml" dir="skeletons/consolewrapper/samplejar/" target="dist"/>
 
@@ -251,13 +227,13 @@
       <param name="skelflags" value=""/>
     </antcall>
     <copy todir="${dist}/skeletons/windowed-wrapper" file="skeletons/simplewrap/jwrap.exe"/>
-    <copy todir="${dist}/skeletons/windowed-wrapper" file="skeletons/simplewrap/description-normal.skel"/>
+    <copy todir="${dist}/skeletons/windowed-wrapper" file="skeletons/simplewrap/description.skel"/>
     <copy todir="${dist}/skeletons/console-wrapper" file="skeletons/consolewrapper/consolewrapper.exe"/>
-    <copy todir="${dist}/skeletons/console-wrapper" file="skeletons/consolewrapper/description-normal.skel"/>
-    <exec executable="strip.exe" dir="${dist}/skeletons/console-wrapper">
+    <copy todir="${dist}/skeletons/console-wrapper" file="skeletons/consolewrapper/description.skel"/>
+    <exec executable="${mingw-strip}" dir="${dist}/skeletons/console-wrapper">
         <arg value="consolewrapper.exe"/>
     </exec>
-    <exec executable="strip.exe" dir="${dist}/skeletons/windowed-wrapper">
+    <exec executable="${mingw-strip}" dir="${dist}/skeletons/windowed-wrapper">
         <arg value="jwrap.exe"/>
     </exec>
 
@@ -289,7 +265,6 @@
    </target>
 
    <target name="compileskels" depends="">
-     <!-- clean -->
      <ant dir="skeletons/simplewrap/samplejar" /> 
      <ant dir="skeletons/consolewrapper/samplejar" /> 
 
@@ -305,14 +280,7 @@
       <param name="skelname" value="simplewrap"/>
       <param name="skelflags" value="${skelflags}"/>
     </antcall>
-
    </target>
-
-  <target name="skeleton-debug">
-    <antcall target="compileskels">
-      <param name="skelflags" value="-DDEBUGMODE=1"/>
-    </antcall>
-  </target>
 
   <target name="clean">
     <delete dir="${classes}"/>
@@ -320,6 +288,15 @@
 
   <target name="run" depends="jar">
      <java classname="net.charabia.jsmoothgen.application.gui.MainFrame" fork="yes" >
+       <classpath refid="jsmooth.class.path"/>
+       <classpath>
+          <pathelement path="${jsmoothjar}"/>
+       </classpath>
+     </java>
+  </target>
+
+  <target name="runskeletoneditor" depends="jar">
+     <java classname="net.charabia.jsmoothgen.skeleton.SkeletonEditor" fork="yes" >
        <classpath refid="jsmooth.class.path"/>
        <classpath>
           <pathelement path="${jsmoothjar}"/>
