@@ -27,16 +27,17 @@
    <string></string> 
   </void> 
   <void property="classPath"> 
-   <array class="java.lang.String" length="0"/> 
-  </void> 
-  <void property="currentDirectory"> 
-   <string>..</string> 
+   <array class="java.lang.String" length="1"> 
+    <void index="0"> 
+     <string>lib\JimiProClasses.zip</string> 
+    </void> 
+   </array> 
   </void> 
   <void property="executableName"> 
-   <string>bin\JSmoothGen.exe</string> 
+   <string>JSmoothGen.exe</string> 
   </void> 
   <void property="iconLocation"> 
-   <string>..\..\aa</string> 
+   <string>src\icons\gnome-application-x-jar-bm.gif</string> 
   </void> 
   <void property="jarLocation"> 
    <string>jsmoothgen.jar</string> 
@@ -45,7 +46,7 @@
    <string>net.charabia.jsmoothgen.application.gui.MainFrame</string> 
   </void> 
   <void property="minimumVersion"> 
-   <string>1.4</string> 
+   <string>1.4.0</string> 
   </void> 
   <void property="skeletonName"> 
    <string>Windowed Wrapper</string> 
@@ -58,8 +59,8 @@
        <string>Message</string> 
       </void> 
       <void property="value"> 
-       <string>You need Java 1.4 or higher to run JSmooth.
-Do you want to download it now?</string> 
+       <string>This program needs Java 1.4 or higher to run.
+Do you wish to download it at http://www.java.com?</string> 
       </void> 
      </object> 
     </void> 
