@@ -4,8 +4,9 @@ Copyright (C) 2003 Rodrigo Reyes <reyes@charabia.net>
 JSmooth is a Java Executable Wrapper that makes a standard Windows
 executable binary (.exe) from a jar file. It makes java deployment
 much smoother and user-friendly, as it is able to find a Java VM by
-itself, and give feed-back to the user when no VM is available.
-
+itself. When no VM is available, it provides feed-back to the users, 
+and can launch the default web browser to an URL that explains how 
+to download a Java VM.
 
 1. Status of the project
 
