@@ -27,7 +27,7 @@
 
 #include "DebugConsole.h"
 
-#define DEBUGMODE
+//#define DEBUGMODE
 //#undef DEBUGMODE
 
 extern std::vector< std::string > LOG;
@@ -37,12 +37,21 @@ class ResourceManager;
 
 extern ResourceManager* globalResMan;
 
-#ifdef DEBUGMODE
-#    define DEBUG(x) DEBUGCONSOLE.writeline(x)
-#    define DEBUGWAITKEY() DEBUGCONSOLE.waitKey()
-#else
+#ifndef DEBUGMODE
 #    define DEBUG(x)
 #    define DEBUGWAITKEY()
+#else
+#  if DEBUGMODE == 1
+#    define DEBUG(x) DEBUGCONSOLE.writeline(x)
+#    define DEBUGWAITKEY() DEBUGCONSOLE.waitKey()
+#  elif DEBUGMODE == 2
+#    include <iostream>
+#    define DEBUG(x) std::cerr << x
+#    define DEBUGWAITKEY()
+#  else
+#    error Unknown DEBUGMODE value, it should be 1 for CONSOLE, 2 for STDIO
+#  endif
 #endif
+
 
 #endif

@@ -1,8 +1,10 @@
 
 #include "common.h"
 
-#ifdef DEBUGMODE
-DebugConsole DEBUGCONSOLE("JSmooth Debug");
+#if DEBUGMODE == 1
+  DebugConsole DEBUGCONSOLE("JSmooth Debug");
+#elif DEBUGMODE == 2
+
 #endif
 
 
