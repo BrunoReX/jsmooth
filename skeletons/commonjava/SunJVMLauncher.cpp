@@ -77,8 +77,6 @@ std::string SunJVMLauncher::toString() const
 
 bool SunJVMLauncher::run(ResourceManager& resource, const string& origin)
 {
-  MessageBox(NULL, "Doing DLL call", "debug", MB_OKCANCEL|MB_ICONQUESTION|MB_APPLMODAL);
-
     if ( ! VmVersion.isValid())
         return false;
 
@@ -92,8 +90,6 @@ bool SunJVMLauncher::run(ResourceManager& resource, const string& origin)
         return false;
 
     DEBUG("Launching " + toString());
-
-    MessageBox(NULL, "Launching", "debug", MB_OKCANCEL|MB_ICONQUESTION|MB_APPLMODAL);
 
     if (Version("1.2") <= VmVersion)
     {

@@ -30,12 +30,12 @@ vector<SunJVMLauncher> JVMEnvVarLookup::lookupJVM(const string& envvar)
     {
         SunJVMLauncher jvm;
         jvm.JavaHome = buffer;
-        DEBUG("ENVVAR " + envvar + " FOUND = " + buffer);
+        DEBUG("JVM Lookup: Env-Var " + envvar + " defined (" + buffer + ")!");
         result.push_back(jvm);
     } 
     else
     {
-        DEBUG("ENVVAR " + envvar + " NOT FOUND");
+        DEBUG("JVM Lookup: Env-Var " + envvar + " not defined on this system.");
     }
 
     return result;

@@ -34,8 +34,6 @@ string FileUtils::createTempFileName(const string& suffix)
        
       } while (GetFileAttributes(temp.c_str()) !=  0xFFFFFFFF);
 
-      DEBUG("TEMPFILE: " + temp);
-    
     return temp;
 }
 
@@ -52,16 +50,12 @@ vector<string> FileUtils::recursiveSearch(const string& path, const string& patt
     WIN32_FIND_DATA data;
     string file = path + ((path[path.length()-1]=='\\')?"":"\\") + pattern;
     
-    DEBUG("scanning " + file);
-    
     HANDLE handle = FindFirstFile(file.c_str(), &data);
     if (handle != INVALID_HANDLE_VALUE)
     {
-        DEBUG(string("Found first file ") + data.cFileName);
         result.push_back(path + ((path[path.length()-1]=='\\')?"":"\\") + data.cFileName);
         for ( ; FindNextFile(handle, &data) == TRUE ; )
         {
-              DEBUG(string("ADDED ") + data.cFileName);
               result.push_back(path + ((path[path.length()-1]=='\\')?"":"\\") + data.cFileName);
         }    
     
@@ -76,7 +70,6 @@ vector<string> FileUtils::recursiveSearch(const string& path, const string& patt
         string foundpath(data.cFileName);
         if ((foundpath != ".") && (foundpath != "..") && ((data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0))
         {
-            DEBUG(string("REC DIR FOUND ") + data.cFileName  + " (attr: " + StringUtils::toString(data.dwFileAttributes) + ") / " + StringUtils::toString(FILE_ATTRIBUTE_DIRECTORY));
             string npath = path + ((path[path.length()-1]=='\\')?"":"\\") + data.cFileName;
             vector<string> tres = FileUtils::recursiveSearch(npath, pattern);
             result.insert(result.end(), tres.begin(), tres.end());

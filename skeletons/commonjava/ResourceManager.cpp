@@ -89,12 +89,9 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId)
     {
       string namekey = string("javaproperty_name_") + StringUtils::toString(i);
       string valuekey = string("javaproperty_value_") + StringUtils::toString(i);
-    
       string name = m_props.get(namekey);
       string value = m_props.get(valuekey);
 
-      DEBUG("JPROP: " + name + "=" + StringUtils::StringUtils::replaceEnvironmentVariable(value));
-        
       value = StringUtils::replaceEnvironmentVariable(value);
       value = StringUtils::replace(value, "${EXECUTABLEPATH}", exepath);
       value = StringUtils::replace(value, "${EXECUTABLENAME}", exename);
@@ -102,6 +99,8 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId)
         
       JavaProperty jprop(name, value);
       m_javaProperties.push_back(jprop);
+
+      DEBUG("Setting up java properties: " + name + "=" + value);
     }
 
     std::string curdirmodifier = m_props.get(ResourceManager::KEY_CURRENTDIR);
@@ -115,30 +114,10 @@ ResourceManager::~ResourceManager()
 {
     for (std::vector<std::string>::iterator i=m_deleteOnFinalize.begin(); i != m_deleteOnFinalize.end(); i++)
     {
-//        MessageBox(NULL, i->c_str(), "ERASING", MB_OK);
         int res = DeleteFile(i->c_str());
-//        MessageBox(NULL, ("DONE " + StringUtils::toString(res) + " / " + StringUtils::toString(GetLastError())).c_str(), "ERASING", MB_OK);
-    
-//    LPVOID lpMsgBuf;
-// 
-//FormatMessage( 
-//    FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-//    NULL,
-//    GetLastError(),
-//    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-//    (LPTSTR) &lpMsgBuf,
-//    0,
-//    NULL 
-//);
-//
-//// Display the string.
-//MessageBox( NULL, (const CHAR*)lpMsgBuf, "GetLastError", MB_OK|MB_ICONINFORMATION );
-//
-//// Free the buffer.
-//LocalFree( lpMsgBuf );
-
     }
 }
+
 void ResourceManager::setProperty(const std::string& key, const std::string& value)
 {
      m_props.set(key, value);
@@ -184,7 +163,7 @@ std::string ResourceManager::saveJarInTempFile()
     return "";
 
   std::string tempfilename = FileUtils::createTempFileName(".jar");
-  DEBUG("Created tempfilename " + tempfilename);
+  DEBUG("Created temporary filename to hold the jar (" + tempfilename + ")");
   saveTemp(tempfilename);
   return tempfilename;
 }
@@ -200,15 +179,13 @@ std::vector<std::string> ResourceManager::getNormalizedClassPathVector() const
   std::string curdirmodifier = getProperty(string(ResourceManager::KEY_CURRENTDIR));
   basepath = FileUtils::concFile(basepath, curdirmodifier);
 
-  DEBUG("basepath for classpath = " + basepath);
-
   std::string cp = getProperty(string(ResourceManager::KEY_CLASSPATH));
   vector<string>cps = StringUtils::split(cp, ";", "", false);
   for (int i=0; i<cps.size(); i++)
     {
       string lib = cps[i];
       cps[i] = FileUtils::concFile(basepath, cps[i]);
-      DEBUG("FOUND " + basepath + " :: " + lib + " -> " + cps[i]);
+      DEBUG("ClassPath element " + StringUtils::toString(i)+ "=" + cps[i]);
     }
 
   return cps;

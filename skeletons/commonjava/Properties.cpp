@@ -34,7 +34,7 @@ Properties::Properties()
 void Properties::setData(const char* data, int datalen)
 {
     int cursor = 0;
-    DEBUG(string("Extracting properties from resource ") + data);
+    DEBUG("Extracting properties from resource:");
 
     while (cursor < datalen)
     {

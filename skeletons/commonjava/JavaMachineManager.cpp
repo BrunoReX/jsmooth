@@ -22,22 +22,24 @@
 
 JavaMachineManager::JavaMachineManager(ResourceManager& resman): m_resman(resman)
 {
+  DEBUG("Now searching the JVM installed on the system...");
+
     m_registryVms = JVMRegistryLookup::lookupJVM();
     m_javahomeVm = JVMEnvVarLookup::lookupJVM("JAVA_HOME");
     m_jrepathVm = JVMEnvVarLookup::lookupJVM("JRE_PATH");
     m_jdkpathVm = JVMEnvVarLookup::lookupJVM("JDK_PATH");
+
     if (resman.getProperty("bundledvm").length() > 0)
     {
         string bjvm = resman.getProperty("bundledvm");
-        DEBUG("Found bundled vm <" + bjvm + ">");
+        DEBUG("Found a vm bundled with the application: (" + bjvm + ")");
         m_localVMenabled = true;
         m_localVM.JavaHome = FileUtils::concFile(resman.getCurrentDirectory(), bjvm);
-        DEBUG("Curdir is " + resman.getCurrentDirectory());
-        DEBUG("Stored as " + m_localVM.JavaHome);
     } else
     {
         m_localVMenabled = false;
     }
+    DEBUG("Current directory is " + resman.getCurrentDirectory());
 }
 
 bool JavaMachineManager::run(bool dontUseConsole, bool preferSingleProcess)
@@ -46,7 +48,7 @@ bool JavaMachineManager::run(bool dontUseConsole, bool preferSingleProcess)
 
   if (m_localVMenabled)
     {
-        DEBUG("Trying bundled VM " + m_localVM.JavaHome);        
+        DEBUG("Trying to use bundled VM " + m_localVM.JavaHome);        
         if (m_localVM.runProc(m_resman, dontUseConsole, "bundled"))
 	        return true;
         
@@ -59,18 +61,21 @@ bool JavaMachineManager::run(bool dontUseConsole, bool preferSingleProcess)
       vmorder = "registry;jdkpath;jrepath;javahome;jview;exepath";
     }
     
-  DEBUG("VMORDER == " + vmorder);
+  DEBUG("JSmooth will now try to use the VM in the following order: " + vmorder);
     
   vector<string> jvmorder = StringUtils::split(vmorder, ";,", "");
 
   for (vector<string>::const_iterator i = jvmorder.begin(); i != jvmorder.end(); i++)
     {
+      DEBUG("------------------------------");
+
       if (*i == "registry")
         {
-	  DEBUG("Lookup " + *i + " :: " + StringUtils::toString(m_registryVms.size()));
+	  DEBUG("Trying to use a JVM defined in the registry (" + StringUtils::toString(m_registryVms.size()) + " available)");
+
 	  for (int i=0; i<m_registryVms.size(); i++)
             {
-	      DEBUG("trying registry: " + m_registryVms[i].toString());
+	      DEBUG("- Trying registry: " + m_registryVms[i].toString());
 
 	      if (dontUseConsole)
                 {
@@ -82,17 +87,20 @@ bool JavaMachineManager::run(bool dontUseConsole, bool preferSingleProcess)
                      
 		  if (preferSingleProcess)
 		    {
+		      DEBUG("Trying to run the JVM as a DLL call (executing in this process)...");
 		      if (m_registryVms[i].run(m_resman, "registry"))
                         {
 			  return true;
-                        } else if (m_registryVms[i].runProc(m_resman, dontUseConsole, "registry"))
-			  {
-			    return true;
-			  }
+                        }
+		      DEBUG("Well, couldn't use a DLL (see traces above), so falling back into normal process creation mode");
+
+		      if (m_registryVms[i].runProc(m_resman, dontUseConsole, "registry"))
+			{
+			  return true;
+			}
 		    }
 		  else
 		    {
-		      DEBUG("DONT USE CONSOLE == TRUE");
 		      if (m_registryVms[i].runProc(m_resman, dontUseConsole, "registry"))
 			{
 			  return true;
@@ -115,10 +123,11 @@ bool JavaMachineManager::run(bool dontUseConsole, bool preferSingleProcess)
                         return true;
 		      }
                 }
+	      DEBUG("Couldn't use this VM, now trying something else");
             }
         } else if (*i == "jview")
 	  {
-	    DEBUG("trying JVIEW");
+	    DEBUG("- Trying to launch the application with JVIEW");
 	    if (m_jviewVm.runProc(m_resman, dontUseConsole))
 	      {
 		return true;
@@ -126,7 +135,7 @@ bool JavaMachineManager::run(bool dontUseConsole, bool preferSingleProcess)
 
 	  } else if (*i == "javahome")
 	    {
-	      DEBUG("trying JAVAHOME");
+	      DEBUG("- Trying to use JAVAHOME");
 	      if (m_javahomeVm.size()>0)
                 {
 		  DEBUG("JAVAHOME exists..." + m_javahomeVm[0].toString());
@@ -136,19 +145,9 @@ bool JavaMachineManager::run(bool dontUseConsole, bool preferSingleProcess)
 		      return true;
                     }
                 }
-                
-	      // 	      for (int i=0; i<m_registryVms.size(); i++)
-	      // 		{
-	      // 		  DEBUG("trying registry PROC: " + m_registryVms[i].toString());
-	      // 		  if (m_registryVms[i].runProc(m_resman, dontUseConsole, "javahome"))
-	      // 		    {
-	      // 		      return true;
-	      // 		    }
-	      // 		}                
-
 	    } else if (*i == "jrepath")
 	      {
-                DEBUG("trying JREPATH");
+                DEBUG("- Trying to use JREPATH");
                 if (m_jrepathVm.size()>0)
 		  {
                     if (m_jrepathVm[0].runProc(m_resman, dontUseConsole, "jrepath"))
@@ -158,7 +157,7 @@ bool JavaMachineManager::run(bool dontUseConsole, bool preferSingleProcess)
 		  }
 	      } else if (*i == "jdkpath")
 		{
-		  DEBUG("trying JDKPATH");
+		  DEBUG("- Trying to use JDKPATH");
 		  if (m_jdkpathVm.size()>0)
 		    {
 		      if (m_jdkpathVm[0].runProc(m_resman, dontUseConsole, "jdkpath"))

@@ -92,7 +92,7 @@ vector<SunJVMLauncher> JVMRegistryLookup::lookup(HKEY key, const string& path)
 				    
 				    char buffer[244];
 				    sprintf(buffer, "V(%d)(%d)(%d)", vm.VmVersion.getMajor(), vm.VmVersion.getMinor(), vm.VmVersion.getSubMinor());
-				    DEBUG(std::string("Found new VM: ") + vm.RuntimeLibPath + " : " + vm.JavaHome + " : "+ vm.VmVersion.Value + " :: " + buffer);				    
+				    DEBUG(std::string("JVM Lookup: found VM (") + buffer + ") in registry.");
 			} 
 		}
 
