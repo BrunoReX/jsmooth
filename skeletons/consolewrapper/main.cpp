@@ -41,6 +41,14 @@ int main(int argc, char *argv[])
     string newcurdir = globalResMan->getProperty(ResourceManager::KEY_CURRENTDIR);
     SetCurrentDirectory(newcurdir.c_str());
 
+    std::string args = "";
+    for (int i=1; i<argc; i++)
+    {
+        args += string("\"") + argv[i] + "\" ";
+    }
+
+    globalResMan->setProperty(string(ResourceManager::KEY_ARGUMENTS), args);
+    
     JavaMachineManager man(*globalResMan);
     if (man.run(false) == false)
     {
@@ -49,6 +57,12 @@ int main(int argc, char *argv[])
         cerr << "\r\n";
     }  
 
-  system("PAUSE");	
+  int waitkey = atoi(globalResMan->getProperty("skel_KeyPress").c_str());
+  if (waitkey != 0)
+  {
+    system("PAUSE");
+  }
+  
+  delete globalResMan;  
   return 0;
 }

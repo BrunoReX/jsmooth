@@ -25,7 +25,7 @@ Although it is designed for console application (i.e. launched from the command.
    <string>Console Wrapper</string> 
   </void> 
   <void property="skeletonProperties"> 
-   <array class="net.charabia.jsmoothgen.skeleton.SkeletonProperty" length="1"> 
+   <array class="net.charabia.jsmoothgen.skeleton.SkeletonProperty" length="2"> 
     <void index="0"> 
      <object class="net.charabia.jsmoothgen.skeleton.SkeletonProperty"> 
       <void property="description"> 
@@ -43,6 +43,25 @@ Although it is designed for console application (i.e. launched from the command.
       <void property="value"> 
        <string>This program needs Java to run.
 Please download it at http://www.java.com</string> 
+      </void> 
+     </object> 
+    </void> 
+    <void index="1"> 
+     <object class="net.charabia.jsmoothgen.skeleton.SkeletonProperty"> 
+      <void property="description"> 
+       <string>The wrapper waits a keypress on the console when the application exits.</string> 
+      </void> 
+      <void property="idName"> 
+       <string>PressKey</string> 
+      </void> 
+      <void property="label"> 
+       <string>PressKey</string> 
+      </void> 
+      <void property="type"> 
+       <string>boolean</string> 
+      </void> 
+      <void property="value"> 
+       <string>0</string> 
       </void> 
      </object> 
     </void> 

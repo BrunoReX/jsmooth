@@ -7,4 +7,4 @@ maxversion=
 currentdir=..\\..\\..
 bundledvm=jre
 skel_Message=Java has not been found on your computer. Do you want to download it?
-skel_URL=http://www.java.com
+skel_KeyPress=0
