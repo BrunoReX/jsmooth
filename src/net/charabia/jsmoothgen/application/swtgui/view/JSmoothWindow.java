@@ -272,7 +272,12 @@ public final class JSmoothWindow implements Observer {
         }
 	
         public static void main(String[] args) {
-                new JSmoothWindow(new JSmoothApplication()).open();
+                try {
+                    new JSmoothWindow(new JSmoothApplication()).open();
+                } finally {
+                    // FIXME: Hack, hack, and once again, HACK !
+                    Display.getCurrent().dispose();
+                }
 	}
         
         private void createControls() {
@@ -320,7 +325,6 @@ public final class JSmoothWindow implements Observer {
         }
 
         public void open() {
-                
                 if(shell == null) {
                         createControls();
                 }
