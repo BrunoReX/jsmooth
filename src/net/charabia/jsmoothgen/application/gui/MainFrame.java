@@ -399,7 +399,14 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 	public boolean compile()
 	{	
 		m_wizard.updateModel();
-		m_wizard.getModel().normalizePaths();		
+		
+		if (m_projectFile ==  null)
+		{
+			JOptionPane.showMessageDialog(this, "Save the project first!");
+			return false;			
+		}
+		
+		m_wizard.getModel().normalizePaths(m_projectFile.getParentFile());		
 		
 		if (m_wizard.getModel().getBaseDir() == null)
 		{
@@ -550,11 +557,15 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 				}
 				
 			}
+			else
+			{
+				return;
+			}
 			this.setTitle("JSmooth: " + m_projectFile.toString());
 		}
 		try
 		{
-			String[]res = m_wizard.getModel().normalizePaths();
+			String[]res = m_wizard.getModel().normalizePaths(m_projectFile.getParentFile());
 			
 			if (res != null)
 			{

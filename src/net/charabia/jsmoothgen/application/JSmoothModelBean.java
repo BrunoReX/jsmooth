@@ -218,9 +218,8 @@ public class JSmoothModelBean
 	public void setBaseDir(String basedir)
 	{
 		if (m_basedir != null)
-			normalizePaths(new File(m_basedir), false);
+			normalizePaths(null, new File(m_basedir), false);
 		m_basedir = basedir;
-		// normalizePaths(new File(m_basedir));
 		fireChanged();
 	}
 	
@@ -273,19 +272,19 @@ public class JSmoothModelBean
 		fireChanged();
 	}
 	
-	public String[] normalizePaths()
+	public String[] normalizePaths(java.io.File prjfile)
 	{
 		if (m_basedir == null)
 			return new String[0];
-		return normalizePaths(new File(m_basedir), true);
+		return normalizePaths(prjfile, new File(m_basedir), true);
 	}
 
-	public String[] normalizePaths(java.io.File root)
+	private String[] normalizePaths(java.io.File prjfile, java.io.File root)
 	{
-		return normalizePaths(root, true);
+		return normalizePaths(prjfile, root, true);
 	}
 
-	public String[] normalizePaths(java.io.File root, boolean toRelativePath)
+	private String[] normalizePaths(java.io.File prjfile, java.io.File root, boolean toRelativePath)
 	{
 		if (getBaseDir() == null)
 			return new String[0];
@@ -305,7 +304,14 @@ public class JSmoothModelBean
 				m_classPath[i] = checkRelativePath(exeroot, m_classPath[i], result, "Classpath entry (" + i + ")", toRelativePath);
 			}
 		}
-		
+	
+		if (prjfile != null)
+		{
+			System.out.println("Normalizing " + m_basedir + " % " + prjfile);
+			m_basedir = checkRelativePath(prjfile, m_basedir, result, "Basedir location", toRelativePath);
+			System.out.println("Result=" + m_basedir);
+			
+		}
 		if (result.size() == 0)
 			return null;
 		
