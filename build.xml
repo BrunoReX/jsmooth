@@ -116,6 +116,11 @@
        
       -->
 
+  <target depends="" name="test">
+    <ant antfile="build.xml" dir="skeletons/simplewrap/samplejar/" target="dist"/>
+    <ant antfile="build.xml" dir="skeletons/consolewrapper/samplejar/" target="dist"/>
+  </target>
+
   <target depends="" name="dist">
     
     <tstamp/>
@@ -204,8 +209,8 @@
     <copy todir="${dist}" file="${tmp}/docs/license.txt"/>
 
     <!-- Compile the normal wrappers -->
-    <ant antfile="skeletons/simplewrap/samplejar/build.xml" target="dist"/>
-    <ant antfile="skeletons/consolewrapper/samplejar/build.xml" target="dist"/>
+    <ant antfile="build.xml" dir="skeletons/simplewrap/samplejar/" target="dist"/>
+    <ant antfile="build.xml" dir="skeletons/consolewrapper/samplejar/" target="dist"/>
 
     <mkdir dir="${dist}/skeletons/windowed-wrapper"/>
     <mkdir dir="${dist}/skeletons/console-wrapper"/>
