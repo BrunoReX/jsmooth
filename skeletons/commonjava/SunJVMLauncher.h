@@ -97,6 +97,10 @@ class SunJVMLauncher
 
   Version guessVersionByProcess(const string& exepath);
 
+  //  int operator<(const SunJVMLauncher& other) const;
+
+friend bool operator < (const SunJVMLauncher& v1, const SunJVMLauncher& v2);
+
  private:
      
   bool runVM12DLL(ResourceManager& resource, const string& origin);
@@ -108,5 +112,6 @@ class SunJVMLauncher
        
   std::string sizeToString(int size);
 };
+
 
 #endif

@@ -72,6 +72,13 @@ bool JavaMachineManager::run(bool dontUseConsole, bool preferSingleProcess)
       if (*i == "registry")
         {
 	  DEBUG("Trying to use a JVM defined in the registry (" + StringUtils::toString(m_registryVms.size()) + " available)");
+	  string vms = "VM will be tried in the following order: ";
+	  for (int i=0; i<m_registryVms.size(); i++)
+	    {
+	      vms += m_registryVms[i].VmVersion.toString();
+	      vms += ";";
+	    }
+	  DEBUG(vms);
 
 	  for (int i=0; i<m_registryVms.size(); i++)
             {

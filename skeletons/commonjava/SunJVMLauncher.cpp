@@ -723,3 +723,8 @@ std::string SunJVMLauncher::sizeToString(int size)
         return StringUtils::toString(size);
     }
 }
+
+bool operator < (const SunJVMLauncher& v1, const SunJVMLauncher& v2)
+{
+  return v1.VmVersion < v2.VmVersion;
+}

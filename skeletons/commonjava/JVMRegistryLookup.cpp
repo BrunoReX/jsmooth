@@ -20,15 +20,26 @@
 
 #include "JVMRegistryLookup.h"
 
+struct jvmsorter_dec : public binary_function<const SunJVMLauncher&, const SunJVMLauncher&, bool>
+{
+  bool operator()(const SunJVMLauncher& s1, const SunJVMLauncher& s2)
+  {
+    return s2 < s1;
+  }
+};
+
 vector<SunJVMLauncher> JVMRegistryLookup::lookupJVM()
 {
   vector<SunJVMLauncher> res = JVMRegistryLookup::lookup(HKEY_LOCAL_MACHINE, "SOFTWARE\\JavaSoft\\Java Runtime Environment");
+
   vector<SunJVMLauncher> res2 = JVMRegistryLookup::lookup(HKEY_LOCAL_MACHINE, "SOFTWARE\\JavaSoft\\Java Development Kit");
 
   for (vector<SunJVMLauncher>::iterator i = res2.begin(); i != res2.end(); i++)
     {
       res.insert(res.end(), *i);
     }
+
+  std::sort(res.begin(), res.end(), jvmsorter_dec() );
 
   return res;
 }
