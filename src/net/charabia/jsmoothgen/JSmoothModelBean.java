@@ -30,10 +30,11 @@ import java.util.*;
 
 public class JSmoothModelBean
 {
-	private String m_executableName = "";
-	private String m_iconLocation = "";
-	private String m_jarLocation = "";
-	private String m_mainClassName = "";
+	private String m_skeletonName;
+	private String m_executableName;
+	private String m_iconLocation;
+	private String m_jarLocation;
+	private String m_mainClassName;
 	private String[] m_arguments;
 	private String[] m_classPath;
 	
@@ -66,6 +67,16 @@ public class JSmoothModelBean
 			JSmoothModelBean.Listener l = (JSmoothModelBean.Listener)i.next();
 			l.dataChanged();
 		}
+	}
+	
+	public void setSkeletonName(String name)
+	{
+		m_skeletonName = name;
+	}
+	
+	public String getSkeletonName()
+	{
+		return m_skeletonName;
 	}
 	
 	public void setExecutableName(String name)
