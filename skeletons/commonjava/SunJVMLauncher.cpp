@@ -227,9 +227,10 @@ bool SunJVMLauncher::runVM12DLL(ResourceManager& resource, const string& origin)
                 
                 JavaVMInitArgs vm_args;
                 JavaVMOption options[1 + jpropstrv.size()];
-                std::string cpoption = "-Djava.class.path=";
+                std::string cpoption = "-Djava.class.path=\"";
                 cpoption += jarpath;
                 cpoption += ";" + resource.getNormalizedClassPath();
+		cpoption += "\"";
 
                 DEBUG("Classpath: " + cpoption);
                 options[0].optionString =  (char*)cpoption.c_str();
@@ -267,7 +268,9 @@ bool SunJVMLauncher::runVM12DLL(ResourceManager& resource, const string& origin)
                                 DEBUG("java.lang.system NOT FOUND");
                                 return false;
                 }                
-                
+
+		classname = StringUtils::replace(classname,".", "/");
+                DEBUG("Look for " + classname);
                 cls = (env)->FindClass(classname.c_str());
                 if (cls == 0)
                 {
@@ -432,7 +435,8 @@ bool SunJVMLauncher::runVM11DLL(ResourceManager& resource, const string& origin)
                                 DEBUG("java.lang.system NOT FOUND");
                                 return false;
                 }                
-                
+
+		classname = StringUtils::replace(classname,".", "/");                
                 cls = (env)->FindClass(classname.c_str());
                 if (cls == 0)
                 {
@@ -443,7 +447,7 @@ bool SunJVMLauncher::runVM11DLL(ResourceManager& resource, const string& origin)
                                 return false;
                 }
                 else
-                            DEBUG("CLASS FOUND");
+                            DEBUG("CLASS "+ classname +" FOUND");
 
                 char strbuf[255];
                 sprintf(strbuf, "");
