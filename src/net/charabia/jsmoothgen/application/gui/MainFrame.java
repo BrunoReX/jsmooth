@@ -61,6 +61,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		m_buttonSaveAs = new javax.swing.JButton();
 		jSeparator4 = new javax.swing.JSeparator();
 		m_buttonCompile = new javax.swing.JButton();
+		m_buttonRunExe = new javax.swing.JButton();
 		jSeparator5 = new javax.swing.JSeparator();
 		jSeparator6 = new javax.swing.JSeparator();
 		jSeparator7 = new javax.swing.JSeparator();
@@ -139,6 +140,17 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		});
 		
 		jToolBar1.add(m_buttonCompile);
+		
+		m_buttonRunExe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_next.png")));
+		m_buttonRunExe.addActionListener(new java.awt.event.ActionListener()
+		{
+			public void actionPerformed(java.awt.event.ActionEvent evt)
+			{
+				buttonRunExeActionPerformed(evt);
+			}
+		});
+		
+		jToolBar1.add(m_buttonRunExe);
 		
 		jToolBar1.add(jSeparator5);
 		
@@ -243,6 +255,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		
 		m_menuProject.add(m_menuCompile);
 		
+		m_menuRunExe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_next-16.png")));
 		m_menuRunExe.setText("Run Exe");
 		m_menuRunExe.addActionListener(new java.awt.event.ActionListener()
 		{
@@ -276,6 +289,13 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 		setBounds((screenSize.width-550)/2, (screenSize.height-500)/2, 550, 500);
 	}//GEN-END:initComponents
+
+	private void buttonRunExeActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonRunExeActionPerformed
+	{//GEN-HEADEREND:event_buttonRunExeActionPerformed
+		// Add your handling code here:
+		compile();
+		runexe();
+	}//GEN-LAST:event_buttonRunExeActionPerformed
 	
 	private void menuRunExeActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_menuRunExeActionPerformed
 	{//GEN-HEADEREND:event_menuRunExeActionPerformed
@@ -502,6 +522,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 	private javax.swing.JToolBar jToolBar1;
 	private javax.swing.JButton m_buttonCompile;
 	private javax.swing.JButton m_buttonOpen;
+	private javax.swing.JButton m_buttonRunExe;
 	private javax.swing.JButton m_buttonSave;
 	private javax.swing.JButton m_buttonSaveAs;
 	private javax.swing.JPanel m_centralPane;

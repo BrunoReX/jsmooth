@@ -100,6 +100,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="m_menuRunExe">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.openide.explorer.propertysheet.editors.IconEditor">
+                  <Image iconType="3" name="/icons/stock_next-16.png"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Run Exe"/>
               </Properties>
               <Events>
@@ -199,6 +202,16 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonCompileActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="m_buttonRunExe">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.openide.explorer.propertysheet.editors.IconEditor">
+              <Image iconType="3" name="/icons/stock_next.png"/>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="buttonRunExeActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JSeparator" name="jSeparator5">
