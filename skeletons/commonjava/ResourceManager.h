@@ -68,7 +68,7 @@ public:
     }
     
     std::string getProperty(const std::string& key) const;
-    
+    void setProperty(const std::string& key, const std::string& value);
     std::string idToResourceName(int id) const
     {
         char buffer[32];

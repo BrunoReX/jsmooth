@@ -68,6 +68,11 @@ string Properties::get(const string& key) const
     return i->second;
 }
 
+void Properties::set(const string& key, const string& value)
+{
+    m_data[key] = value;
+}
+
 string Properties::unescape(const string& val)
 {
     string result;

@@ -88,6 +88,10 @@ ResourceManager::~ResourceManager()
 
     }
 }
+void ResourceManager::setProperty(const std::string& key, const std::string& value)
+{
+     m_props.set(key, value);
+}
 
 void ResourceManager::saveTemp(std::string tempname)
 {

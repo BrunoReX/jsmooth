@@ -40,6 +40,7 @@ class Properties
         string getNextToken(const char* data, int datalen, int& cursor, char stopchar);
         
         string get(const string& key) const;
+        void set(const string& key, const string& value);
         
     private:
     
