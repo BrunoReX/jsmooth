@@ -139,15 +139,16 @@ public class JavaApp extends javax.swing.JPanel implements ModelUpdater
 		m_model.setClassPath(data);
 	}
 	
-	public void setModel(JSmoothModelBean model)
+	public void setModel(java.io.File basedir, JSmoothModelBean model)
 	{
 		m_model = model;
-		if (m_model.getBaseDir() != null)
+		if (basedir != null)
 		{
-			m_jarLocation.setBaseDir(new File(m_model.getBaseDir()));
-			m_jarLocFileChooser.setCurrentDirectory(new File(m_model.getBaseDir()));
+		    System.out.println("basedir of jarlocation: " + basedir);
+			m_jarLocation.setBaseDir(basedir);
+			m_jarLocFileChooser.setCurrentDirectory(basedir);
 			
-			m_fileeditor.setRootDir(new File(m_model.getBaseDir()));
+			m_fileeditor.setRootDir(basedir);
 		}
 		else
 		{
@@ -157,9 +158,8 @@ public class JavaApp extends javax.swing.JPanel implements ModelUpdater
 		m_jarLocation.setFileChooser(m_jarLocFileChooser);
 		if (m_model.getJarLocation() != null)
 		{
-			System.out.println("basedir: " + m_model.getBaseDir());
+			System.out.println("basedir: " + basedir);
 			System.out.println("jarloc: " + m_model.getJarLocation());
-				
 			m_jarLocation.setFile(new File(m_model.getJarLocation()));
 		}
 		else
@@ -184,9 +184,9 @@ public class JavaApp extends javax.swing.JPanel implements ModelUpdater
 			for (int i=0; i<classpathstr.length; i++)
 			{
 				File f = new File(classpathstr[i]);
-				if (m_model.getBaseDir() != null)
+				if (basedir != null)
 				{
-					f = JSmoothModelPersistency.makePathRelativeIfPossible(new File(m_model.getBaseDir()), f);
+				    f = JSmoothModelPersistency.makePathRelativeIfPossible(basedir, f);
 				}
 				flist[i] = f;
 			}

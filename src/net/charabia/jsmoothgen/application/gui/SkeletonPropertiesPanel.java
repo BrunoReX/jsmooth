@@ -133,7 +133,7 @@ public class SkeletonPropertiesPanel extends javax.swing.JPanel  implements Mode
 		
 	}//GEN-END:initComponents
 
-	public void setModel(net.charabia.jsmoothgen.application.JSmoothModelBean model)
+	public void setModel(java.io.File basedir, net.charabia.jsmoothgen.application.JSmoothModelBean model)
 	{
 		m_model = model;
 		JSmoothModelBean.Property[] props = model.getSkeletonProperties();

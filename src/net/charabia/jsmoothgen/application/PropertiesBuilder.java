@@ -22,6 +22,10 @@ public class PropertiesBuilder
 		addPair("jvmsearch", makePathConc(obj.getJVMSearchPath()), out);
 		addPair("minversion", obj.getMinimumVersion(), out);
 		addPair("maxversion", obj.getMaximumVersion(), out);
+
+		addPair("currentdir", obj.getCurrentDirectory(), out);
+		addPair("bundledvm", obj.getBundledJVMPath(), out);
+
 		// addPair("nojvmmessage", obj.getNoJvmMessage(), out);
 		// addPair("nojvmurl", obj.getNoJvmURL(), out);
 		if (obj.getSkeletonProperties() != null)
@@ -51,6 +55,15 @@ public class PropertiesBuilder
 			{
 				case '\n':
 					out.append("\\n");
+					break;
+				case '\t':
+					out.append("\\t");
+					break;
+				case '\r':
+					out.append("\\r");
+					break;
+				case '\\':
+					out.append("\\\\");
 					break;
 				default:
 					out.append(c);

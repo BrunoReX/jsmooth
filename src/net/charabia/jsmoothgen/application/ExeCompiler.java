@@ -62,20 +62,22 @@ public class ExeCompiler
 		private SkeletonBean m_skel;
 		private JSmoothModelBean m_data;
 		private File m_out;
-		
-		public CompilerRunner(File skelroot, SkeletonBean skel, JSmoothModelBean data, File out)
+	    private File m_basedir;
+
+		public CompilerRunner(File skelroot, SkeletonBean skel, File basedir, JSmoothModelBean data, File out)
 		{
 			m_skelroot = skelroot;
 			m_skel = skel;
 			m_data = data;
 			m_out = out;
+			m_basedir = basedir;
 		}
 		
 		public void run()
 		{
 			try
 			{
-				compile(m_skelroot, m_skel, m_data, m_out);
+				compile(m_skelroot, m_skel, m_basedir, m_data, m_out);
 			} catch (Exception exc)
 			{
 				exc.printStackTrace();
@@ -83,22 +85,22 @@ public class ExeCompiler
 		}
 	}
 	
-	public ExeCompiler.CompilerRunner getRunnable(File skelroot, SkeletonBean skel, JSmoothModelBean data, File out)
+	public ExeCompiler.CompilerRunner getRunnable(File skelroot, SkeletonBean skel, File basedir, JSmoothModelBean data, File out)
 	{
-		return new CompilerRunner(skelroot, skel, data, out);
+		return new CompilerRunner(skelroot, skel, basedir, data, out);
 	}
 	
-	public void compileAsync(File skelroot, SkeletonBean skel, JSmoothModelBean data, File out)
+	public void compileAsync(File skelroot, SkeletonBean skel, File basedir, JSmoothModelBean data, File out)
 	{
-		Thread t = new Thread(new CompilerRunner(skelroot, skel, data, out));
+		Thread t = new Thread(new CompilerRunner(skelroot, skel, basedir, data, out));
 		t.start();
 	}
 	
-	public boolean compile(File skelroot, SkeletonBean skel, JSmoothModelBean data, File out) throws Exception
+	public boolean compile(File skelroot, SkeletonBean skel, File basedir ,JSmoothModelBean data, File out) throws Exception
 	{
 		try
 		{
-			File basedir = new File(data.getBaseDir());
+		    //			File basedir = new File(data.getBaseDir());
 			
 			fireStepChange(0, "Starting compilation");
 			
@@ -145,20 +147,22 @@ public class ExeCompiler
 			String props = PropertiesBuilder.makeProperties(data);
 			ByteBuffer propdata = convert(props);
 			resb = resdir.replaceResource(skel.getResourceCategory(), skel.getResourcePropsId(), 1033, propdata);
-			
-			fireStepChange(80, "Loading icon...");
-			String iconpath;
-			if (new java.io.File(data.getIconLocation()).isAbsolute())
-				iconpath = data.getIconLocation();
-			else
-				iconpath = new java.io.File(new java.io.File(data.getBaseDir()), data.getIconLocation()).getAbsolutePath();
-			javax.swing.ImageIcon icon = new javax.swing.ImageIcon(iconpath, "default icon");
-			if ((icon.getImage() != null) && (icon.getImage().getWidth(null)>0) && (icon.getImage().getHeight(null)>0))
-			{
-				net.charabia.jsmoothgen.pe.res.ResIcon resicon = new net.charabia.jsmoothgen.pe.res.ResIcon(icon.getImage());
-				pe.replaceDefaultIcon(resicon);
-			}
-			
+			if (data.getIconLocation() != null)
+			    {
+				fireStepChange(80, "Loading icon...");
+				String iconpath;
+				if (new java.io.File(data.getIconLocation()).isAbsolute())
+				    iconpath = data.getIconLocation();
+				else
+				    iconpath = new java.io.File(basedir, data.getIconLocation()).getAbsolutePath();
+				javax.swing.ImageIcon icon = new javax.swing.ImageIcon(iconpath, "default icon");
+				if ((icon.getImage() != null) && (icon.getImage().getWidth(null)>0) && (icon.getImage().getHeight(null)>0))
+				    {
+					net.charabia.jsmoothgen.pe.res.ResIcon resicon = new net.charabia.jsmoothgen.pe.res.ResIcon(icon.getImage());
+					pe.replaceDefaultIcon(resicon);
+				    }
+			    }
+
 			fireStepChange(90, "Saving exe...");
 			pe.dumpTo(out);
 			

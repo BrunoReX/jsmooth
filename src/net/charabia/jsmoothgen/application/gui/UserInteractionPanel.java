@@ -93,7 +93,7 @@ public class UserInteractionPanel extends javax.swing.JPanel  implements ModelUp
 		
 	}//GEN-END:initComponents
 
-	public void setModel(JSmoothModelBean model)
+	public void setModel(java.io.File basedir, JSmoothModelBean model)
 	{
 		m_model = model;
 		if (model.getNoJvmMessage() != null)

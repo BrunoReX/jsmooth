@@ -25,5 +25,5 @@ import net.charabia.jsmoothgen.application.*;
 public interface ModelUpdater
 {
 	public void updateModel();
-	public void setModel(JSmoothModelBean model);
+	public void setModel(java.io.File basedir, JSmoothModelBean model);
 }

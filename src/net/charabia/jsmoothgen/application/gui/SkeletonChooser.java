@@ -35,7 +35,7 @@ public class SkeletonChooser extends javax.swing.JPanel implements ModelUpdater
 		initComponents();
 	}
 	
-	public void setModel(JSmoothModelBean model)
+	public void setModel(java.io.File basedir, JSmoothModelBean model)
 	{
 		m_model = model;
 		m_comboNames.removeAllItems();

@@ -57,9 +57,9 @@ public class JVMSelectionPanel extends javax.swing.JPanel implements ModelUpdate
 		}
 	}	
 
-	public void setModel(JSmoothModelBean model)
+	public void setModel(java.io.File basedir, JSmoothModelBean model)
 	{
-		m_model = model;
+	    m_model = model;
 		m_minimumVersion.setVersion(m_model.getMinimumVersion());
 		m_maximumVersion.setVersion(m_model.getMaximumVersion());
 		if (m_model.getJVMSearchPath() == null)
@@ -86,8 +86,8 @@ public class JVMSelectionPanel extends javax.swing.JPanel implements ModelUpdate
 		{
 			m_cbBundled.setSelected(true);
 			m_chooserBundled.setEnabled(true);
-			if (m_model.getBaseDir() != null)
-				m_chooserBundled.setBaseDir(new java.io.File(m_model.getBaseDir()));
+			if (basedir != null)
+				m_chooserBundled.setBaseDir(basedir);
 			m_chooserBundled.setFile(new java.io.File(m_model.getBundledJVMPath()));
 		}
 	}

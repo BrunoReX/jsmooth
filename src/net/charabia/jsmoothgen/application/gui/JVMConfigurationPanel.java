@@ -48,7 +48,7 @@ public class JVMConfigurationPanel extends javax.swing.JPanel implements ModelUp
 		
 	}//GEN-END:initComponents
 
-	public void setModel(JSmoothModelBean model)
+	public void setModel(java.io.File basedir, JSmoothModelBean model)
 	{
 	}	
 	

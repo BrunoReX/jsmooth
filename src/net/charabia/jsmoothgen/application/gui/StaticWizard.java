@@ -29,6 +29,8 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 	private ModelUpdater m_currentEditor;
 	private MainController m_main;
 	private JSmoothModelBean m_model;
+
+    java.io.File m_basedir;
 	
 	private Executable m_panelExecutable = new Executable();
 	private JVMConfigurationPanel m_panelJVMConfiguration = new JVMConfigurationPanel();
@@ -45,20 +47,18 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 		initComponents();
 	}
 	
-	/**
-	 * @see
-	 */	
 	public void setMainController(MainController main)
 	{
 		m_main = main;
 	}
 	
-	public void setModel(JSmoothModelBean model)
+	public void setModel(java.io.File basedir, JSmoothModelBean model)
 	{
+	    m_basedir = basedir;
 		m_model = model;
 		if (m_currentEditor != null)
 		{
-			m_currentEditor.setModel(model);
+			m_currentEditor.setModel(basedir, model);
 		}
 	}
 	
@@ -234,7 +234,7 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 		else
 			m_panelSkeletonProps.setSkeletonProperties(new SkeletonProperty[0]);
 	
-		m_panelSkeletonProps.setModel(m_model);
+		m_panelSkeletonProps.setModel(m_basedir, m_model);
 		setNewCentralPanel(m_panelSkeletonProps, m_panelSkeletonProps);
 	}//GEN-LAST:event_buttonSkeletonPropertiesActionPerformed
 
@@ -243,7 +243,7 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 		// Add your handling code here:
 		updateModel();
 //		JVMConfigurationPanel jconf = new JVMConfigurationPanel();
-		m_panelJVMConfiguration.setModel(m_model);
+		m_panelJVMConfiguration.setModel(m_basedir, m_model);
 		setNewCentralPanel(m_panelJVMConfiguration, m_panelJVMConfiguration);
 	}//GEN-LAST:event_buttonJVMConfigActionPerformed
 
@@ -252,7 +252,7 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 		// Add your handling code here:
 		updateModel();
 //		JVMSelectionPanel jvmsel = new JVMSelectionPanel();
-		m_panelSelection.setModel(m_model);
+		m_panelSelection.setModel(m_basedir, m_model);
 		setNewCentralPanel(m_panelSelection,m_panelSelection);
 	}//GEN-LAST:event_buttonJVMSelectionActionPerformed
 
@@ -261,7 +261,7 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 		// Add your handling code here:
 		updateModel();
 //		JavaApp japp = new JavaApp();
-		m_panelJavaApp.setModel(m_model);
+		m_panelJavaApp.setModel(m_basedir, m_model);
 		setNewCentralPanel(m_panelJavaApp, m_panelJavaApp);
 	}//GEN-LAST:event_buttonJavaAppActionPerformed
 
@@ -270,7 +270,7 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 		// Add your handling code here:
 		updateModel();
 //		Executable exec = new Executable();
-		m_panelExecutable.setModel(m_model);
+		m_panelExecutable.setModel(m_basedir, m_model);
 		setNewCentralPanel(m_panelExecutable, m_panelExecutable);
 	}//GEN-LAST:event_buttonExecutableActionPerformed
 
@@ -279,7 +279,7 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 		// Add your handling code here:
 		updateModel();
 //		SkeletonChooser sc = new SkeletonChooser();
-		m_panelSkeletonChooser.setModel(m_model);
+		m_panelSkeletonChooser.setModel(m_basedir, m_model);
 		m_panelSkeletonChooser.setSkeletonList(m_main.getSkeletonList());
 		setNewCentralPanel(m_panelSkeletonChooser, m_panelSkeletonChooser);
 	}//GEN-LAST:event_buttonSkeletonActionPerformed
