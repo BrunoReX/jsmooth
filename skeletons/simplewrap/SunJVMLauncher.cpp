@@ -24,10 +24,6 @@ extern "C" {
 
   static jint JNICALL  myvprintf(FILE *fp, const char *format, va_list args)
   {
-      char buffer[2048];
-//      sprintf(buffer, format, args);
-      
-//      DEBUG(buffer);
         DEBUG("MYPRINTF");
   }
   void JNICALL myexit(jint code)

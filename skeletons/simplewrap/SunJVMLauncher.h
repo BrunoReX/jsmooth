@@ -24,10 +24,11 @@
 #include <string>
 #include <jni.h>
 
-#include "JVMLauncher.h"
+
 #include "Version.h"
 #include "StringUtils.h"
 #include "FileUtils.h"
+#include "ResourceManager.h"
 
 typedef jint (JNICALL *CreateJavaVM_t)(JavaVM **pvm, JNIEnv **env, void *args);
 typedef jint (JNICALL *GetDefaultJavaVMInitArgs_t)(void *args);

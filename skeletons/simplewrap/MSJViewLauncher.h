@@ -21,10 +21,10 @@
 #ifndef _MSJVIEWLAUNCHER_H
 #define _MSJVIEWLAUNCHER_H
 
-#include "JVMLauncher.h"
 #include "Version.h"
 #include "StringUtils.h"
 #include "FileUtils.h"
+#include "ResourceManager.h"
 
 class MSJViewLauncher
 {
