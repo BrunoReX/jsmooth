@@ -30,6 +30,9 @@ package net.charabia.jsmoothgen.skeleton;
 
 import java.io.*;
 
+import java.beans.XMLEncoder;
+import java.beans.XMLDecoder;
+
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
@@ -44,11 +47,11 @@ public class SkeletonPersistency
 {
 	public static SkeletonBean load(File fin) throws IOException
 	{
-		FileReader fr = new FileReader(fin);
+		FileInputStream fis = new FileInputStream(fin);
 		try {
-			ObjectTransformer trans = ObjectTransformerFactory.getInstance().getImplementation();
-			SkeletonBean obj = (SkeletonBean) trans.deserialize(new StreamSource(fr));
-			fr.close();
+			XMLDecoder dec = new XMLDecoder(fis);
+			SkeletonBean obj = (SkeletonBean)dec.readObject();
+			fis.close();
 			return obj;
 		} catch (Exception exc)
 		{
@@ -58,18 +61,18 @@ public class SkeletonPersistency
 	
 	public static void save(File fout, SkeletonBean obj) throws IOException
 	{
-		FileWriter fw = new FileWriter(fout);
+		FileOutputStream fos = new FileOutputStream(fout);
 		try {
-			ObjectTransformer trans = ObjectTransformerFactory.getInstance().getImplementation();
-			trans.setProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
-			trans.serialize(obj, new StreamResult(fw));
+			XMLEncoder enc = new XMLEncoder(fos);
+			enc.writeObject(obj);
+			enc.close();
 		} catch (Exception ex)
 		{
 			throw new IOException(ex.toString());
 		}
 		finally
 		{
-			fw.close();
+			fos.close();
 		}
 	}
 

@@ -1,22 +1,22 @@
 /*
   JSmooth: a VM wrapper toolkit for Windows
   Copyright (C) 2003 Rodrigo Reyes <reyes@charabia.net>
-
+ 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
-
+ 
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-
+ 
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-*/
+ 
+ */
 
 package net.charabia.jsmoothgen.application.gui;
 
@@ -58,9 +58,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		
 		m_projectFileChooser = new javax.swing.JFileChooser();
 		jToolBar1 = new javax.swing.JToolBar();
-		jButton1 = new javax.swing.JButton();
-		jButton2 = new javax.swing.JButton();
-		jButton3 = new javax.swing.JButton();
+		m_buttonCompile = new javax.swing.JButton();
 		jPanel1 = new javax.swing.JPanel();
 		jSeparator1 = new javax.swing.JSeparator();
 		jTextField1 = new javax.swing.JTextField();
@@ -86,14 +84,16 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 			}
 		});
 		
-		jButton1.setText("jButton1");
-		jToolBar1.add(jButton1);
+		m_buttonCompile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_autopilot.png")));
+		m_buttonCompile.addActionListener(new java.awt.event.ActionListener()
+		{
+			public void actionPerformed(java.awt.event.ActionEvent evt)
+			{
+				buttonCompileActionPerformed(evt);
+			}
+		});
 		
-		jButton2.setText("jButton2");
-		jToolBar1.add(jButton2);
-		
-		jButton3.setText("jButton3");
-		jToolBar1.add(jButton3);
+		jToolBar1.add(m_buttonCompile);
 		
 		getContentPane().add(jToolBar1, java.awt.BorderLayout.NORTH);
 		
@@ -182,6 +182,26 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		
 		pack();
 	}//GEN-END:initComponents
+	
+	private void buttonCompileActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonCompileActionPerformed
+	{//GEN-HEADEREND:event_buttonCompileActionPerformed
+		// Add your handling code here:
+		JSmoothModelBean model = m_wizard.getModel();
+		SkeletonBean skel = m_skelList.getSkeleton(model.getSkeletonName());
+		File skelroot = m_skelList.getDirectory(skel);
+		File exedir = new File(".");
+		if (m_projectFile != null)
+		{
+			exedir = m_projectFile.getParentFile();
+		}
+		try
+		{
+			ExeCompiler.compile(skelroot, skel, model, new File(exedir, model.getExecutableName()));
+		} catch (Exception exc)
+		{
+			exc.printStackTrace();
+		}
+	}//GEN-LAST:event_buttonCompileActionPerformed
 	
 	private void menuLoadActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_menuLoadActionPerformed
 	{//GEN-HEADEREND:event_menuLoadActionPerformed
@@ -306,9 +326,6 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 	}
 	
 	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JButton jButton1;
-	private javax.swing.JButton jButton2;
-	private javax.swing.JButton jButton3;
 	private javax.swing.JMenu jMenu2;
 	private javax.swing.JMenuBar jMenuBar1;
 	private javax.swing.JMenuItem jMenuItem1;
@@ -318,6 +335,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 	private javax.swing.JSeparator jSeparator3;
 	private javax.swing.JTextField jTextField1;
 	private javax.swing.JToolBar jToolBar1;
+	private javax.swing.JButton m_buttonCompile;
 	private javax.swing.JPanel m_centralPane;
 	private javax.swing.JMenuItem m_menuExit;
 	private javax.swing.JMenuItem m_menuLoad;
