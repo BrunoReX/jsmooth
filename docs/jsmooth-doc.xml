@@ -250,7 +250,7 @@
 
  </para>
 
- <note>
+ <warning>
  <para>
   You can modify the location of the every file in the
   project, but you must always keep this simple rule in mind:
@@ -264,7 +264,7 @@
 
  </itemizedlist>
  </para>
- </note>
+ </warning>
  </sect3>
  </sect2>
 

@@ -25,7 +25,7 @@ to download a Java VM.
  3.1 Get the source
 
  You can get the source code at sourceforge's:
- http://sourceforge.net/project/jsmooth
+http://sourceforge.net/projects/jsmooth
 
  3.2 MINGW for Windows (required)
 
