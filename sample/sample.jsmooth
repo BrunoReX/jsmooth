@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.4.2" class="java.beans.XMLDecoder"> 
+ <object class="net.charabia.jsmoothgen.application.JSmoothModelBean"> 
+  <void property="JVMSearchPath"> 
+   <array class="java.lang.String" length="6"> 
+    <void index="0"> 
+     <string>registry</string> 
+    </void> 
+    <void index="1"> 
+     <string>javahome</string> 
+    </void> 
+    <void index="2"> 
+     <string>jrepath</string> 
+    </void> 
+    <void index="3"> 
+     <string>jdkpath</string> 
+    </void> 
+    <void index="4"> 
+     <string>exepath</string> 
+    </void> 
+    <void index="5"> 
+     <string>jview</string> 
+    </void> 
+   </array> 
+  </void> 
+  <void property="arguments"> 
+   <string></string> 
+  </void> 
+  <void property="baseDir"> 
+   <string>F:\Documents and Settings\Rodrigo\Mes documents\projects\jsmooth\sample</string> 
+  </void> 
+  <void property="classPath"> 
+   <array class="java.lang.String" length="0"/> 
+  </void> 
+  <void property="executableName"> 
+   <string>Sample.exe</string> 
+  </void> 
+  <void property="iconLocation"> 
+   <string>.</string> 
+  </void> 
+  <void property="jarLocation"> 
+   <string>sample.jar</string> 
+  </void> 
+  <void property="mainClassName"> 
+   <string>JSmoothPropertiesDisplayer</string> 
+  </void> 
+  <void property="minimumVersion"> 
+   <string>1.1</string> 
+  </void> 
+  <void property="skeletonName"> 
+   <string>Windowed Wrapper</string> 
+  </void> 
+  <void property="skeletonProperties"> 
+   <array class="net.charabia.jsmoothgen.application.JSmoothModelBean$Property" length="2"> 
+    <void index="0"> 
+     <object class="net.charabia.jsmoothgen.application.JSmoothModelBean$Property"> 
+      <void property="key"> 
+       <string>Message</string> 
+      </void> 
+      <void property="value"> 
+       <string>Java has not been found on your computer.
+Do you want to download it?</string> 
+      </void> 
+     </object> 
+    </void> 
+    <void index="1"> 
+     <object class="net.charabia.jsmoothgen.application.JSmoothModelBean$Property"> 
+      <void property="key"> 
+       <string>URL</string> 
+      </void> 
+      <void property="value"> 
+       <string>http://www.java.com</string> 
+      </void> 
+     </object> 
+    </void> 
+   </array> 
+  </void> 
+ </object> 
+</java> 
