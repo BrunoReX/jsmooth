@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-    <classpathentry kind="src" path="src"/>
-    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-    <classpathentry kind="lib" path="lib/dtdparser113.jar"/>
-    <classpathentry kind="lib" path="lib/jox116.jar"/>
-    <classpathentry kind="lib" path="lib/boot.jar"/>
-    <classpathentry kind="lib" path="lib/jface.jar"/>
-    <classpathentry kind="lib" path="lib/runtime.jar"/>
-    <classpathentry kind="lib" path="lib/swt.jar"/>
-    <classpathentry kind="lib" path="lib/junit.jar"/>
-    <classpathentry kind="output" path="classes"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/dtdparser113.jar"/>
+	<classpathentry kind="lib" path="lib/jox116.jar"/>
+	<classpathentry kind="lib" path="lib/boot.jar"/>
+	<classpathentry kind="lib" path="lib/jface.jar"/>
+	<classpathentry kind="lib" path="lib/runtime.jar"/>
+	<classpathentry kind="lib" path="lib/swt.jar"/>
+	<classpathentry kind="lib" path="lib/l2fprod-common.jar"/>
+	<classpathentry kind="lib" path="lib/osgi.jar"/>
+	<classpathentry kind="output" path="classes"/>
 </classpath>
