@@ -31,10 +31,12 @@
 
 using namespace std;
 
+bool enableDebug = false;
 
 void _debugOutput(const std::string& text)
 {
-  std::cerr << text << "\r\n";
+  if (enableDebug)
+    std::cerr << text << "\r\n";
 }
 
 void _debugWaitKey()
@@ -44,6 +46,12 @@ void _debugWaitKey()
 int main(int argc, char *argv[])
 {    
     ResourceManager* globalResMan = new ResourceManager("JAVA", PROPID, JARID);
+    std::string dodebug = globalResMan->getProperty("skel_Debug");
+    if (StringUtils::parseInt(dodebug) != 0)
+      {
+	enableDebug = true;
+      }
+
     char curdir[256];
     GetCurrentDirectory(256, curdir);
 

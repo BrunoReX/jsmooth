@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <jsmoothskeleton>
+<debug>false</debug>
 <description>This skeleton wraps console applications. 
 - Standard Input/Output and Error streams are available
 - If no Java VM is found, it displays a default message.
@@ -23,6 +24,13 @@ Please download it at http://www.java.com</value>
 <description>The wrapper waits a keypress on the console when the application exits.</description>
 <idName>PressKey</idName>
 <label>PressKey</label>
+<type>boolean</type>
+<value>0</value>
+</skeletonProperties>
+<skeletonProperties>
+<description>Enable the jsmooth debug traces</description>
+<idName>Debug</idName>
+<label>Debug traces</label>
 <type>boolean</type>
 <value>0</value>
 </skeletonProperties>
