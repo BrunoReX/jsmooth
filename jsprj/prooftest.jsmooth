@@ -6,6 +6,7 @@
 <JVMSearchPath>jdkpath</JVMSearchPath>
 <JVMSearchPath>exepath</JVMSearchPath>
 <JVMSearchPath>jview</JVMSearchPath>
+<embeddedJar>true</embeddedJar>
 <executableName>..\proof-test.exe</executableName>
 <iconLocation>..\src\icons\stock_web-support.png</iconLocation>
 <initialMemoryHeap>-1</initialMemoryHeap>
@@ -14,14 +15,22 @@
 <maximumMemoryHeap>-1</maximumMemoryHeap>
 <maximumVersion></maximumVersion>
 <minimumVersion></minimumVersion>
-<skeletonName>Windowed Wrapper (Debug)</skeletonName>
+<skeletonName>Windowed Wrapper</skeletonName>
 <skeletonProperties>
 <key>Message</key>
 <value>This program needs Java 1.4 or higher to run.
 Please download it at http://www.java.com</value>
 </skeletonProperties>
 <skeletonProperties>
-<key>PressKey</key>
+<key>URL</key>
+<value>http://www.java.com</value>
+</skeletonProperties>
+<skeletonProperties>
+<key>SingleProcess</key>
 <value>0</value>
+</skeletonProperties>
+<skeletonProperties>
+<key>Debug</key>
+<value>1</value>
 </skeletonProperties>
 </jsmoothproject>

@@ -10,6 +10,7 @@
 <classPath>..\lib\jox116.jar</classPath>
 <classPath>..\lib\dtdparser113.jar</classPath>
 <classPath>..\lib\jsmoothgen.jar</classPath>
+<classPath>..\jsmoothgen.jar</classPath>
 <embeddedJar>false</embeddedJar>
 <executableName>..\JSmoothGen.exe</executableName>
 <iconLocation>..\src\icons\gnome-application-x-jar-bm.gif</iconLocation>
@@ -30,6 +31,10 @@ Please download it at http://www.java.com</value>
 </skeletonProperties>
 <skeletonProperties>
 <key>SingleProcess</key>
+<value>1</value>
+</skeletonProperties>
+<skeletonProperties>
+<key>Debug</key>
 <value>0</value>
 </skeletonProperties>
 </jsmoothproject>
