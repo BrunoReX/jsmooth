@@ -505,7 +505,11 @@ bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, Reso
       for (vector<JavaProperty>::const_iterator i=jprops.begin(); i != jprops.end(); i++)
       {
             JavaProperty jp = *i;
-            javaproperties += " \"-D" + jp.getName() + "=" + jp.getValue() + "\"";
+            string v = jp.getValue();
+            string::iterator t = v.end();
+            if (*(--t) == '\\')
+                        v += "\\";
+            javaproperties += " \"-D" + jp.getName() + "=" + v + "\"";
       }
       
       if (resource.getProperty("maxheap") != "")
