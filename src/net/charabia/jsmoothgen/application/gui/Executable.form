@@ -74,7 +74,7 @@
         <Component class="javax.swing.JLabel" name="m_iconDisplay">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.openide.explorer.propertysheet.editors.IconEditor">
-              <Image iconType="3" name="/classes/gnome-application-x-gzip.png"/>
+              <Image iconType="2" name=""/>
             </Property>
           </Properties>
         </Component>

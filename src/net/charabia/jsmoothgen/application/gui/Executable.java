@@ -116,7 +116,7 @@ public class Executable extends javax.swing.JPanel implements ModelUpdater
 		add(jLabel2, new java.awt.GridBagConstraints());
 		
 		jPanel2.setBorder(new javax.swing.border.EtchedBorder());
-		m_iconDisplay.setIcon(new javax.swing.ImageIcon(getClass().getResource("/classes/gnome-application-x-gzip.png")));
+		m_iconDisplay.setIcon(new javax.swing.ImageIcon(""));
 		jPanel2.add(m_iconDisplay);
 		
 		m_buttonIconChooser.setText("...");

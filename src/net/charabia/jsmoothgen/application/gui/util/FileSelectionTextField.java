@@ -132,6 +132,13 @@ public class FileSelectionTextField extends javax.swing.JPanel
 		return m_basedir;
 	}
 	
+	public void setEnabled(boolean b)
+	{
+		System.out.println("set enabled to " + b);
+		m_buttonFileSelection.setEnabled(b);
+		m_filename.setEnabled(b);
+	}
+	
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private javax.swing.JButton m_buttonFileSelection;
 	private javax.swing.JFileChooser m_fileChooser;

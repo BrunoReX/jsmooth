@@ -152,7 +152,7 @@
                     <EtchetBorder/>
                   </Border>
                   <Border PropertyName="inside" info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
-                    <EmptyBorder bottom="20" left="20" right="20" top="20"/>
+                    <EmptyBorder bottom="5" left="5" right="5" top="5"/>
                   </Border>
                 </CompundBorder>
               </Border>

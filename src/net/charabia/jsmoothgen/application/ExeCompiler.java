@@ -153,8 +153,11 @@ public class ExeCompiler
 			else
 				iconpath = new java.io.File(new java.io.File(data.getBaseDir()), data.getIconLocation()).getAbsolutePath();
 			javax.swing.ImageIcon icon = new javax.swing.ImageIcon(iconpath, "default icon");
-			net.charabia.jsmoothgen.pe.res.ResIcon resicon = new net.charabia.jsmoothgen.pe.res.ResIcon(icon.getImage());
-			pe.replaceDefaultIcon(resicon);
+			if ((icon.getImage() != null) && (icon.getImage().getWidth(null)>0) && (icon.getImage().getHeight(null)>0))
+			{
+				net.charabia.jsmoothgen.pe.res.ResIcon resicon = new net.charabia.jsmoothgen.pe.res.ResIcon(icon.getImage());
+				pe.replaceDefaultIcon(resicon);
+			}
 			
 			fireStepChange(90, "Saving exe...");
 			pe.dumpTo(out);
@@ -166,6 +169,7 @@ public class ExeCompiler
 		} catch (Exception exc)
 		{
 			m_errors.add("Error: " + exc.getMessage());
+			exc.printStackTrace();
 			fireFailedChange();
 			return false;
 		}

@@ -47,6 +47,8 @@ public class JSmoothModelBean
 	private String m_noJvmMessage;
 	private String m_noJvmURL;
 
+	private String m_bundledJVM = null;
+	
 	private JSmoothModelBean.Property[] m_skelproperties;
 
 	static public class Property
@@ -219,6 +221,7 @@ public class JSmoothModelBean
 			normalizePaths(new File(m_basedir), false);
 		m_basedir = basedir;
 		// normalizePaths(new File(m_basedir));
+		fireChanged();
 	}
 	
 	public String getBaseDir()
@@ -229,6 +232,7 @@ public class JSmoothModelBean
 	public void setSkeletonProperties(JSmoothModelBean.Property[] props)
 	{
 		m_skelproperties = props;
+		fireChanged();
 	}
 	
 	public JSmoothModelBean.Property[] getSkeletonProperties()
@@ -239,6 +243,7 @@ public class JSmoothModelBean
 	public void setNoJvmMessage(String msg)
 	{
 		m_noJvmMessage = msg;
+		fireChanged();
 	}
 	
 	public String getNoJvmMessage()
@@ -249,11 +254,23 @@ public class JSmoothModelBean
 	public void setNoJvmURL(String url)
 	{
 		m_noJvmURL = url;
+		fireChanged();
 	}
 	
 	public String getNoJvmURL()
 	{
 		return m_noJvmURL;
+	}
+
+	public String getBundledJVMPath()
+	{
+		return m_bundledJVM;
+	}
+	
+	public void setBundledJVMPath(String path)
+	{
+		m_bundledJVM = path;
+		fireChanged();
 	}
 	
 	public String[] normalizePaths()
@@ -275,8 +292,11 @@ public class JSmoothModelBean
 		
 		Vector result = new Vector();
 		File exeroot = new File(getBaseDir());
+		
 		m_iconLocation = checkRelativePath(root, m_iconLocation, result, "Icon location", toRelativePath);
 		m_jarLocation = checkRelativePath(root, m_jarLocation, result, "Jar location", toRelativePath);
+		if (m_bundledJVM != null)
+			m_bundledJVM = checkRelativePath(root, m_bundledJVM, result, "Bundle JVM location", toRelativePath);
 		
 		if (m_classPath != null)
 		{

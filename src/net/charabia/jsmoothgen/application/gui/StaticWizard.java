@@ -199,7 +199,7 @@ public class StaticWizard extends javax.swing.JPanel implements ModelUpdater
 		jPanel1.setBorder(new javax.swing.border.EmptyBorder(new java.awt.Insets(10, 0, 10, 10)));
 		m_centerPane.setLayout(new java.awt.GridLayout(1, 1, 10, 10));
 		
-		m_centerPane.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.EtchedBorder(), new javax.swing.border.EmptyBorder(new java.awt.Insets(20, 20, 20, 20))));
+		m_centerPane.setBorder(new javax.swing.border.CompoundBorder(new javax.swing.border.EtchedBorder(), new javax.swing.border.EmptyBorder(new java.awt.Insets(5, 5, 5, 5))));
 		m_centerPane.add(jScrollPane1);
 		
 		jPanel1.add(m_centerPane);

@@ -126,6 +126,12 @@ public class RecentFileMenu
 	
 	public void add(String rec)
 	{
+		for (int i=m_recent.length-1; i>=0; i--)
+		{
+			if (rec.equals(m_recent[i]))
+				return;
+		}
+		
 		for (int i=m_recent.length-1; i>0; i--)
 		{
 			m_recent[i] = m_recent[i-1];

@@ -25,12 +25,12 @@
  */
 
 package net.charabia.jsmoothgen;
+import net.charabia.jsmoothgen.application.*;
 
 import java.io.File;
 
 public class Test
 {
-
 	/**
 	 * @param args the command line arguments
 	 */

@@ -54,7 +54,7 @@ bool JavaMachineManager::run()
         vmorder = "registry,jdkpath,jrepath,javahome,jview,exepath";
     }
     
-    vector<string> jvmorder = StringUtils::split(vmorder, ',');
+    vector<string> jvmorder = StringUtils::split(vmorder, ';');
 
     for (vector<string>::const_iterator i = jvmorder.begin(); i != jvmorder.end(); i++)
     {

@@ -47,7 +47,14 @@ public class JVMSelectionPanel extends javax.swing.JPanel implements ModelUpdate
 			ids[i] = ((JVMSearchElement)data[i]).getId();
 		}
 		m_model.setJVMSearchPath(ids);
-		
+		if (m_cbBundled.isSelected())
+		{
+			if (m_chooserBundled.getFile() != null)
+				m_model.setBundledJVMPath(m_chooserBundled.getFile().toString());
+		} else
+		{
+			m_model.setBundledJVMPath(null);
+		}
 	}	
 
 	public void setModel(JSmoothModelBean model)
@@ -70,6 +77,19 @@ public class JVMSelectionPanel extends javax.swing.JPanel implements ModelUpdate
 			}
 			m_vmSearch.setData(v.toArray());
 		}
+		
+		if (m_model.getBundledJVMPath() == null) 
+		{
+			m_cbBundled.setSelected(false);
+			m_chooserBundled.setEnabled(false);
+		} else
+		{
+			m_cbBundled.setSelected(true);
+			m_chooserBundled.setEnabled(true);
+			if (m_model.getBaseDir() != null)
+				m_chooserBundled.setBaseDir(new java.io.File(m_model.getBaseDir()));
+			m_chooserBundled.setFile(new java.io.File(m_model.getBundledJVMPath()));
+		}
 	}
 	
 
@@ -82,15 +102,24 @@ public class JVMSelectionPanel extends javax.swing.JPanel implements ModelUpdate
 	{
 		java.awt.GridBagConstraints gridBagConstraints;
 		
+		jScrollPane1 = new javax.swing.JScrollPane();
+		jPanel4 = new javax.swing.JPanel();
 		jPanel1 = new javax.swing.JPanel();
 		jLabel1 = new javax.swing.JLabel();
 		m_minimumVersion = new net.charabia.jsmoothgen.application.gui.util.VersionEditor();
 		jLabel2 = new javax.swing.JLabel();
 		m_maximumVersion = new net.charabia.jsmoothgen.application.gui.util.VersionEditor();
+		jPanel3 = new javax.swing.JPanel();
+		jLabel3 = new javax.swing.JLabel();
+		m_cbBundled = new javax.swing.JCheckBox();
+		m_chooserBundled = new net.charabia.jsmoothgen.application.gui.util.FileSelectionTextField();
 		jPanel2 = new javax.swing.JPanel();
 		m_vmSearch = new net.charabia.jsmoothgen.application.gui.util.SortedEditableList();
+		jLabel4 = new javax.swing.JLabel();
 		
-		setLayout(new java.awt.GridBagLayout());
+		setLayout(new java.awt.BorderLayout());
+		
+		jPanel4.setLayout(new java.awt.GridBagLayout());
 		
 		jPanel1.setLayout(new java.awt.GridBagLayout());
 		
@@ -125,7 +154,45 @@ public class JVMSelectionPanel extends javax.swing.JPanel implements ModelUpdate
 		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
 		gridBagConstraints.weightx = 1.0;
-		add(jPanel1, gridBagConstraints);
+		gridBagConstraints.weighty = 0.5;
+		jPanel4.add(jPanel1, gridBagConstraints);
+		
+		jPanel3.setLayout(new java.awt.GridBagLayout());
+		
+		jPanel3.setBorder(new javax.swing.border.TitledBorder("Locale JVM"));
+		jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		jLabel3.setText("<html><small>If you wish to bundle a JVM with your application,<br>specify here the directory where the launcher should look for a JVM</small></html>");
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		jPanel3.add(jLabel3, gridBagConstraints);
+		
+		m_cbBundled.setText("Use a bundled JVM");
+		m_cbBundled.addActionListener(new java.awt.event.ActionListener()
+		{
+			public void actionPerformed(java.awt.event.ActionEvent evt)
+			{
+				cbBundledActionPerformed(evt);
+			}
+		});
+		
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		jPanel3.add(m_cbBundled, gridBagConstraints);
+		
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.weightx = 1.0;
+		jPanel3.add(m_chooserBundled, gridBagConstraints);
+		
+		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
+		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+		gridBagConstraints.weightx = 1.0;
+		gridBagConstraints.weighty = 0.5;
+		jPanel4.add(jPanel3, gridBagConstraints);
 		
 		jPanel2.setLayout(new java.awt.BorderLayout());
 		
@@ -133,19 +200,48 @@ public class JVMSelectionPanel extends javax.swing.JPanel implements ModelUpdate
 		m_vmSearch.setEditableItems(false);
 		jPanel2.add(m_vmSearch, java.awt.BorderLayout.CENTER);
 		
+		jLabel4.setText("<html><small>The launcher will search a valid JVM in the following order</small></html>");
+		jLabel4.setToolTipText("");
+		jPanel2.add(jLabel4, java.awt.BorderLayout.NORTH);
+		
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridwidth = java.awt.GridBagConstraints.REMAINDER;
 		gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-		add(jPanel2, gridBagConstraints);
+		gridBagConstraints.weighty = 0.5;
+		jPanel4.add(jPanel2, gridBagConstraints);
+		
+		jScrollPane1.setViewportView(jPanel4);
+		
+		add(jScrollPane1, java.awt.BorderLayout.CENTER);
 		
 	}//GEN-END:initComponents
+
+	private void cbBundledActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_cbBundledActionPerformed
+	{//GEN-HEADEREND:event_cbBundledActionPerformed
+		// Add your handling code here:
+		System.out.println("chooser enabled: "+m_cbBundled.isSelected());
+		if (m_cbBundled.isSelected())
+		{
+			m_chooserBundled.setEnabled(true);
+		} else
+		{
+			m_chooserBundled.setEnabled(false);
+		}
+	}//GEN-LAST:event_cbBundledActionPerformed
 
 	
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	private javax.swing.JLabel jLabel1;
 	private javax.swing.JLabel jLabel2;
+	private javax.swing.JLabel jLabel3;
+	private javax.swing.JLabel jLabel4;
 	private javax.swing.JPanel jPanel1;
 	private javax.swing.JPanel jPanel2;
+	private javax.swing.JPanel jPanel3;
+	private javax.swing.JPanel jPanel4;
+	private javax.swing.JScrollPane jScrollPane1;
+	private javax.swing.JCheckBox m_cbBundled;
+	private net.charabia.jsmoothgen.application.gui.util.FileSelectionTextField m_chooserBundled;
 	private net.charabia.jsmoothgen.application.gui.util.VersionEditor m_maximumVersion;
 	private net.charabia.jsmoothgen.application.gui.util.VersionEditor m_minimumVersion;
 	private net.charabia.jsmoothgen.application.gui.util.SortedEditableList m_vmSearch;

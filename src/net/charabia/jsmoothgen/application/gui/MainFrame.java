@@ -270,6 +270,14 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		
 		m_menuExit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/stock_exit-16.png")));
 		m_menuExit.setText("Exit");
+		m_menuExit.addActionListener(new java.awt.event.ActionListener()
+		{
+			public void actionPerformed(java.awt.event.ActionEvent evt)
+			{
+				menuExitActionPerformed(evt);
+			}
+		});
+		
 		jMenu1.add(m_menuExit);
 		
 		jMenuBar1.add(jMenu1);
@@ -322,6 +330,12 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		setBounds((screenSize.width-578)/2, (screenSize.height-462)/2, 578, 462);
 	}//GEN-END:initComponents
 
+	private void menuExitActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_menuExitActionPerformed
+	{//GEN-HEADEREND:event_menuExitActionPerformed
+		// Add your handling code here:
+		exitForm(null);
+	}//GEN-LAST:event_menuExitActionPerformed
+
 	private void buttonNewActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonNewActionPerformed
 	{//GEN-HEADEREND:event_buttonNewActionPerformed
 		// Add your handling code here:
@@ -334,15 +348,13 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 	private void buttonRunExeActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonRunExeActionPerformed
 	{//GEN-HEADEREND:event_buttonRunExeActionPerformed
 		// Add your handling code here:
-		if (compile())
-			runexe();
+		runexe();
 	}//GEN-LAST:event_buttonRunExeActionPerformed
 	
 	private void menuRunExeActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_menuRunExeActionPerformed
 	{//GEN-HEADEREND:event_menuRunExeActionPerformed
 		// Add your handling code here:
-		if (compile())
-			runexe();
+		runexe();
 	}//GEN-LAST:event_menuRunExeActionPerformed
 	
 	private void menuCompileActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_menuCompileActionPerformed
@@ -424,7 +436,6 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 			dia.compile(runner);
 			System.out.println("FINISH !!");			
 			return dia.getResult();
-			
 
 //			boolean res = compiler.compile(skelroot, skel, model, out);
 //			compiler.compileAsync(skelroot, skel, model, out);
@@ -457,19 +468,13 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		{
 			File f = new File(model.getBaseDir(), model.getExecutableName());
 			String[] cmd = new String[]{
-				"\"" + f.getAbsolutePath() + "\""
-			};
-			
-			String[] envs = new String[] {
-				"launcher=jsmooth"
+				f.getAbsolutePath()
 			};
 			
 			System.out.println("RUNNING " + cmd[0] + " @ " + model.getBaseDir());
-			Process p = Runtime.getRuntime().exec(cmd, null, new File(model.getBaseDir()));
-			// Process p = Runtime.getRuntime().exec(cmd);
 			
-			p.waitFor();
-			System.out.println("Process returned : " + p.exitValue());
+			CommandRunner.run(cmd, new File(model.getBaseDir()));
+			
 		} catch (Exception exc)
 		{
 			//exc.printStackTrace();
@@ -571,6 +576,8 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		{
 			iox.printStackTrace();
 		}
+		
+		m_recentMenuManager.add(m_projectFile.getAbsolutePath());
 	}
 	
 	private void menuNewActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_menuNewActionPerformed
