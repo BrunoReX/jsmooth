@@ -86,6 +86,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		m_menuAbout = new javax.swing.JMenuItem();
 		
 		
+		setTitle("JSmooth");
 		setLocationRelativeTo(null);
 		addWindowListener(new java.awt.event.WindowAdapter()
 		{
@@ -287,21 +288,21 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		setJMenuBar(jMenuBar1);
 		
 		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-		setBounds((screenSize.width-550)/2, (screenSize.height-500)/2, 550, 500);
+		setBounds((screenSize.width-550)/2, (screenSize.height-480)/2, 550, 480);
 	}//GEN-END:initComponents
 
 	private void buttonRunExeActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonRunExeActionPerformed
 	{//GEN-HEADEREND:event_buttonRunExeActionPerformed
 		// Add your handling code here:
-		compile();
-		runexe();
+		if (compile())
+			runexe();
 	}//GEN-LAST:event_buttonRunExeActionPerformed
 	
 	private void menuRunExeActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_menuRunExeActionPerformed
 	{//GEN-HEADEREND:event_menuRunExeActionPerformed
 		// Add your handling code here:
-		compile();
-		runexe();
+		if (compile())
+			runexe();
 	}//GEN-LAST:event_menuRunExeActionPerformed
 	
 	private void menuCompileActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_menuCompileActionPerformed
@@ -341,8 +342,14 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 	}//GEN-LAST:event_buttonCompileActionPerformed
 	
 	
-	public void compile()
-	{
+	public boolean compile()
+	{	
+		if (m_wizard.getModel().getBaseDir() == null)
+		{
+			JOptionPane.showMessageDialog(this, "The Output Directory has not been specified.");
+			return false;
+		}
+		
 		m_wizard.updateModel();
 		m_wizard.getModel().normalizePaths();
 		
@@ -360,7 +367,10 @@ public class MainFrame extends javax.swing.JFrame implements MainController
 		} catch (Exception exc)
 		{
 			exc.printStackTrace();
+			return false;
 		}
+		
+		return true;
 	}
 	
 	public void runexe()
