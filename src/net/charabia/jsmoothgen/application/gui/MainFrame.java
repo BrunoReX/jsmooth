@@ -35,7 +35,7 @@ public class MainFrame extends javax.swing.JFrame implements MainController
     private SkeletonList m_skelList;
     private File m_projectFile = null;
 	
-    final static public String VERSION = "0.9.2";
+    final static public String VERSION = "0.9.3";
     private RecentFileMenu m_recentMenuManager;
     /** Creates new form MainFrame */
     public MainFrame()
