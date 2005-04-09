@@ -311,15 +311,15 @@
      </java>
   </target>
 
-	<target name="swt-tests" depends="jar">
-		<java
-		 	classname="net.charabia.jsmoothgen.application.swtgui.tests.NewProjectWizardVisualTests"
-		 	fork="yes" >
+    <target name="swt-run" depends="jar">
+		<java classname="net.charabia.jsmoothgen.application.swtgui.JSmoothApplication"
+		 	  fork="yes" >
 		 	
 			<classpath refid="jsmooth.class.path"/>
 			<classpath>
 				<pathelement path="${jsmoothjar}"/>
 			</classpath>
+            <jvmarg value="-Djava.library.path=lib/os"/>
 		</java>
 	</target>
 
