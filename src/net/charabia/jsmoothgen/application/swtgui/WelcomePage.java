@@ -5,7 +5,6 @@ package net.charabia.jsmoothgen.application.swtgui;
 
 import java.util.Observable;
 
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -15,7 +14,7 @@ import org.eclipse.swt.widgets.Label;
 
 public class WelcomePage extends JSmoothPage {
 
-    public WelcomePage(JSmoothWindow jsmoothWnd, JSmoothApplication jsmoothApp) {
+    public WelcomePage(JSmoothApplication jsmoothWnd, __JSmoothApplication__ jsmoothApp) {
         super(jsmoothWnd, jsmoothApp);
     }
 
@@ -28,7 +27,7 @@ public class WelcomePage extends JSmoothPage {
         label.setLayoutData(layData);
 
         label = new Label(composite, SWT.NONE);
-        label.setFont(JFaceResources.getHeaderFont());
+//        label.setFont(JFaceResources.getHeaderFont());
         label.setText("Welcome to JSmooth !");
         label.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
 
@@ -43,9 +42,6 @@ public class WelcomePage extends JSmoothPage {
         // Do nothing
     }
 
-    /* (non-Javadoc)
-     * @see net.charabia.jsmoothgen.application.swtgui.JSmoothPage#apply()
-     */
     public boolean apply() {
         return false;
     }

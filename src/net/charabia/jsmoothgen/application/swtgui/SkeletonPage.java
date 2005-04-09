@@ -5,7 +5,6 @@ package net.charabia.jsmoothgen.application.swtgui;
 
 import java.util.Observable;
 
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -24,13 +23,13 @@ public final class SkeletonPage extends JSmoothPage {
 
     private Button chkDebugWrapper;
 
-    private Dialog skelProps;
+//    private Dialog skelProps;
 
-    private JSmoothApplication jsApp;
+    private __JSmoothApplication__ jsApp;
 
     private SkeletonModel skeletonMdl;
 
-    public SkeletonPage(JSmoothWindow jsmoothWnd, JSmoothApplication jsmoothApp) {
+    public SkeletonPage(JSmoothApplication jsmoothWnd, __JSmoothApplication__ jsmoothApp) {
         super(jsmoothWnd, jsmoothApp);
         (this.skeletonMdl) = jsmoothApp.getSkeletonModel();
     }
@@ -67,7 +66,7 @@ public final class SkeletonPage extends JSmoothPage {
         btnProps.setText("Properties...");
         btnProps.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                (new SkeletonPropertiesDialog(SkeletonPage.this, getApplication().getSkeletonModel())).open();
+//                (new SkeletonPropertiesDialog(SkeletonPage.this, getApplication().getSkeletonModel())).open();
             }
         });
 

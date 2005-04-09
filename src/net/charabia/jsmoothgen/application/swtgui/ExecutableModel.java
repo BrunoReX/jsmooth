@@ -7,9 +7,9 @@ import java.util.Observable;
 
 public class ExecutableModel extends Observable {
 
-    private JSmoothApplication jsthMdl;
+    private __JSmoothApplication__ jsthMdl;
 
-    public ExecutableModel(JSmoothApplication jsthMdl) {
+    public ExecutableModel(__JSmoothApplication__ jsthMdl) {
         this.jsthMdl = jsthMdl;
     }
 

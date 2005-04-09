@@ -32,7 +32,7 @@ public class ExecutablePage extends JSmoothPage implements Observer {
 
     private Label lblIcon;
 
-    public ExecutablePage(JSmoothWindow jsmoothWnd, JSmoothApplication jsmoothApp) {
+    public ExecutablePage(JSmoothApplication jsmoothWnd, __JSmoothApplication__ jsmoothApp) {
         super(jsmoothWnd, jsmoothApp);
     }
 
@@ -168,9 +168,9 @@ public class ExecutablePage extends JSmoothPage implements Observer {
             return false;
         }
 
-        getJSmoothWindow().getResources().doRegister(img); // Disposed of
-                                                           // automagically
-        lblIcon.setImage(img);
+//        getJSmoothWindow().getResources().doRegister(img); // Disposed of
+//                                                           // automagically
+//        lblIcon.setImage(img);
 
         return true;
     }

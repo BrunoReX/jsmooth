@@ -11,7 +11,6 @@ import java.util.Vector;
 
 import net.charabia.jsmoothgen.skeleton.SkeletonProperty;
 
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -21,7 +20,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
-public class SkeletonPropertiesDialog extends Dialog implements Observer {
+public class SkeletonPropertiesDialog implements Observer {
 
     private Text txt;
 
@@ -34,7 +33,7 @@ public class SkeletonPropertiesDialog extends Dialog implements Observer {
     private SkeletonModel skelMdl;
 
     public SkeletonPropertiesDialog(JSmoothPage jsPage, SkeletonModel skelMdl) {
-        super(jsPage.getShell());
+//        super(jsPage.getShell());
         this.skelMdl = skelMdl;
     }
 
@@ -137,7 +136,7 @@ public class SkeletonPropertiesDialog extends Dialog implements Observer {
             }
         }
 
-        super.okPressed();
+//        super.okPressed();
     }
 
     public void update(Observable o, Object arg) {

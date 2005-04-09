@@ -38,7 +38,7 @@ public class JavaAppPage extends JSmoothPage {
 
     private Button btnRemove;
 
-    public JavaAppPage(JSmoothWindow jsmoothWnd, JSmoothApplication jsmoothApp) {
+    public JavaAppPage(JSmoothApplication jsmoothWnd, __JSmoothApplication__ jsmoothApp) {
         super(jsmoothWnd, jsmoothApp);
     }
 
