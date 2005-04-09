@@ -49,20 +49,14 @@ public final class JSmoothApplication {
     // The layout of the page area composite
     private StackLayout stackLayout;
     
-    public static final String ID_MENU_ACTION = "Menu.Action";
-    
     // JSmooth Pages
-    public static final String ID_PAGE_SKELETON = "Page.Skeleton";
-    public static final String ID_PAGE_EXE = "Page.Executable";
-    public static final String ID_PAGE_WELCOME = "Page.Welcome";
-    public static final String ID_PAGE_JAVA_APP = "Page.JavaApplication";
+    public static final String ID_PAGE_SKELETON = "page.skeleton";
+    public static final String ID_PAGE_EXE = "page.executable";
+    public static final String ID_PAGE_WELCOME = "page.welcome";
+    public static final String ID_PAGE_JAVA_APP = "page.application";
     
     private List pages = new ArrayList();
     
-    // MVC Model
-    // FIXME: GET RID OF IT !!!
-    private __JSmoothApplication__ jsmoothApp;
-
     // Page area
     private Composite pageArea;
 
@@ -71,47 +65,51 @@ public final class JSmoothApplication {
 
     public JSmoothApplication(Display display, __JSmoothApplication__ jsmoothApp) {
         new JSmoothResources(this.display = display);
-        this.jsmoothApp = jsmoothApp;
         addPages();
     }
 
     private void addPages() {
-        JSmoothPage skeletonPage = new SkeletonPage(this, jsmoothApp);
-        skeletonPage.addPageModifyListener(new PageModifyListener() {
+        JSmoothPage page = new WelcomePage(this);
+        page.setImage(JSmoothResources.IMG_SWITCHER_WELCOME);
+        page.setToolTip("Welcome");
+        pages.add(page);
+        
+        page = new SkeletonPage(this);
+        page.addPageModifyListener(new PageModifyListener() {
             public void pageModified() {
 //                IMenuManager actionMenu = mainMenu.findMenuUsingPath(ID_MENU_ACTION);
 //                ActionContributionItem saveAction = (ActionContributionItem) actionMenu.find("net.charabia.jsmoothgen.application.swtgui.ACTION_SAVE_PROJECT");
 //                saveAction.getAction().setEnabled(true);
             }
         });
-        skeletonPage.setImage(JSmoothResources.IMG_SWITCHER_SKELETON_PAGE);
-        skeletonPage.setToolTip("Skeleton Page");
-        pages.add(skeletonPage);
+        page.setImage(JSmoothResources.IMG_SWITCHER_SKELETON_PAGE);
+        page.setToolTip("Skeleton");
+        pages.add(page);
 
-        JSmoothPage javaAppPage = new JavaAppPage(this, jsmoothApp);
-        javaAppPage.addPageModifyListener(new PageModifyListener() {
+        page = new JavaAppPage(this);
+        page.addPageModifyListener(new PageModifyListener() {
             public void pageModified() {
 //                IMenuManager actionMenu = mainMenu.findMenuUsingPath(ID_MENU_ACTION);
 //                ActionContributionItem saveAction = (ActionContributionItem) actionMenu.find(net.charabia.jsmoothgen.application.swtgui.ACTION_SAVE_PROJECT);
 //                saveAction.getAction().setEnabled(true);
             }
         });
-        javaAppPage.setImage(JSmoothResources.IMG_SWITCHER_APPLICATION);
-        javaAppPage.setToolTip("Java Application");
-        pages.add(javaAppPage);
+        page.setImage(JSmoothResources.IMG_SWITCHER_APPLICATION);
+        page.setToolTip("Java Application");
+        pages.add(page);
         
         
-        ExecutablePage exePage = new ExecutablePage(this, jsmoothApp);
-        exePage.addPageModifyListener(new PageModifyListener() {
+        page = new ExecutablePage(this);
+        page.addPageModifyListener(new PageModifyListener() {
             public void pageModified() {
 //                IMenuManager actionMenu = mainMenu.findMenuUsingPath(ID_MENU_ACTION);
 //                ActionContributionItem saveAction = (ActionContributionItem) actionMenu.find(net.charabia.jsmoothgen.application.swtgui.ACTION_SAVE_PROJECT);
 //                saveAction.getAction().setEnabled(true);
             }
         });
-        exePage.setImage(JSmoothResources.IMG_SWITCHER_EXECUTABLE);
-        exePage.setToolTip("Windows Executable");
-        pages.add(exePage);
+        page.setImage(JSmoothResources.IMG_SWITCHER_EXECUTABLE);
+        page.setToolTip("Windows Executable");
+        pages.add(page);
     }
 
     /**
@@ -189,7 +187,7 @@ public final class JSmoothApplication {
             createControls();
         }
 
-        jsmoothApp.loadProject(null);
+//        jsmoothApp.loadProject(null);
 
         // open the window
         shell.open();
@@ -207,8 +205,8 @@ public final class JSmoothApplication {
     }
     
     private void createControls() {
-        //Create the shell
-        shell = new Shell(display, SWT.TITLE | SWT.CLOSE | SWT.MIN);
+        // Create the shell
+        shell = new Shell(display, SWT.TITLE | SWT.CLOSE | SWT.MIN /* | SWT.RESIZE */);
 
         shell.setData(this);
 
@@ -229,11 +227,10 @@ public final class JSmoothApplication {
         createPages(shell);
 
         // The JSmooth layout
-        // NOTE: it should be set _after_ creating the controls
+        // NOTE: it should be set *after* creating the controls
         shell.setLayout(new JSmoothLayout());
 
-        //initialize the bounds of the shell to that appropriate for the
-        // contents
+        // Initialize the bounds of the shell to that appropriate for the contents
         initializeBounds();
     }
 
@@ -253,7 +250,7 @@ public final class JSmoothApplication {
     public Shell getShell() {
         return shell;
     }
-
+    
     /**
      * Special layout for the JSmooth window.
      */

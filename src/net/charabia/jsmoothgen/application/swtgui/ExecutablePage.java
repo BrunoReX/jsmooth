@@ -23,17 +23,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 public class ExecutablePage extends JSmoothPage implements Observer {
-
-    private ExecutableModel execMdl;
-
     private Text txtExecName;
-
     private Text txtCurrDir;
-
     private Label lblIcon;
 
-    public ExecutablePage(JSmoothApplication jsmoothWnd, __JSmoothApplication__ jsmoothApp) {
-        super(jsmoothWnd, jsmoothApp);
+    public ExecutablePage(JSmoothApplication js) {
+        super(js);
     }
 
     public Control createPageArea(Composite parent) {
@@ -41,7 +36,6 @@ public class ExecutablePage extends JSmoothPage implements Observer {
         composite.setLayout(new GridLayout(3, false));
 
         // Executable name
-        //{{
         Label label = new Label(composite, SWT.NONE);
         label.setText("Executable name:");
         GridData layoutData = new GridData(GridData.FILL);
@@ -70,10 +64,8 @@ public class ExecutablePage extends JSmoothPage implements Observer {
         layoutData = new GridData(GridData.FILL);
         layoutData.widthHint = button.getSize().x;
         button.setLayoutData(layoutData);
-        //}}
 
         // Current directory
-        //{{
         label = new Label(composite, SWT.NONE);
         label.setText("Current directory:");
         layoutData = new GridData(GridData.FILL);
@@ -102,7 +94,6 @@ public class ExecutablePage extends JSmoothPage implements Observer {
         layoutData = new GridData(GridData.FILL);
         layoutData.widthHint = button.getSize().x;
         button.setLayoutData(layoutData);
-        //}}
 
         label = new Label(composite, SWT.NONE);
         label.setText("Executable icon:");
@@ -168,22 +159,17 @@ public class ExecutablePage extends JSmoothPage implements Observer {
             return false;
         }
 
-//        getJSmoothWindow().getResources().doRegister(img); // Disposed of
-//                                                           // automagically
 //        lblIcon.setImage(img);
 
         return true;
     }
 
     public void update(Observable o, Object arg) {
-        txtExecName.setText(execMdl.getExecutableName());
-        txtCurrDir.setText(execMdl.getCurrentDirectory());
-        setIconImage(execMdl.getIconFile());
+//        txtExecName.setText(execMdl.getExecutableName());
+//        txtCurrDir.setText(execMdl.getCurrentDirectory());
+//        setIconImage(execMdl.getIconFile());
     }
 
-    /* (non-Javadoc)
-     * @see net.charabia.jsmoothgen.application.swtgui.JSmoothPage#apply()
-     */
     public boolean apply() {
         return false;
     }

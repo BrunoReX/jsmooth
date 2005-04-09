@@ -23,23 +23,16 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 
 public class JavaAppPage extends JSmoothPage {
-
     private Text jarLocation;
-
     private Text txtMainCls;
-
     private Text txtArgs;
-
     private List lstClspath;
-
     private Button btnAddJar;
-
     private Button btnAddFolder;
-
     private Button btnRemove;
 
-    public JavaAppPage(JSmoothApplication jsmoothWnd, __JSmoothApplication__ jsmoothApp) {
-        super(jsmoothWnd, jsmoothApp);
+    public JavaAppPage(JSmoothApplication js) {
+        super(js);
     }
 
     public Control createPageArea(Composite parent) {
@@ -220,25 +213,19 @@ public class JavaAppPage extends JSmoothPage {
     
     private ModifyListener getModifyListener() {
         return new ModifyListener() {
-            /* (non-Javadoc)
-             * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
-             */
             public void modifyText(ModifyEvent e) {
                 firePageModified();
             }
         };
     }
 
-    /* (non-Javadoc)
-     * @see net.charabia.jsmoothgen.application.swtgui.JSmoothPage#apply()
-     */
     public boolean apply() {
-        try {
-            getApplication().setJarLocation(jarLocation.getText());
-        } catch (InvalidPathException e) {
-            // FIXME:
-            return false;
-        }
+//        try {
+//            getApplication().setJarLocation(jarLocation.getText());
+//        } catch (InvalidPathException e) {
+//            // FIXME:
+//            return false;
+//        }
         return true;
     }
     

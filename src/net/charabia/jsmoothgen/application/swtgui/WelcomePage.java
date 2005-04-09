@@ -3,43 +3,61 @@
  */
 package net.charabia.jsmoothgen.application.swtgui;
 
-import java.util.Observable;
+import net.charabia.jsmoothgen.application.swtgui.resources.JSmoothResources;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.forms.HyperlinkGroup;
+import org.eclipse.ui.forms.widgets.Form;
+import org.eclipse.ui.forms.widgets.FormText;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.TableWrapData;
+import org.eclipse.ui.forms.widgets.TableWrapLayout;
 
 public class WelcomePage extends JSmoothPage {
 
-    public WelcomePage(JSmoothApplication jsmoothWnd, __JSmoothApplication__ jsmoothApp) {
-        super(jsmoothWnd, jsmoothApp);
+    public WelcomePage(JSmoothApplication js) {
+        super(js);
     }
 
     public Control createPageArea(Composite parent) {
-        Composite composite = new Composite(parent, SWT.NONE);
-        composite.setLayout(new GridLayout());
-
-        Label label = new Label(composite, SWT.NONE);
-        GridData layData = new GridData(GridData.FILL_HORIZONTAL);
-        label.setLayoutData(layData);
-
-        label = new Label(composite, SWT.NONE);
-//        label.setFont(JFaceResources.getHeaderFont());
-        label.setText("Welcome to JSmooth !");
-        label.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-
-        label = new Label(composite, SWT.NONE);
-        label.setText("The Java .EXE wrapper");
-        label.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
+        Display display = parent.getDisplay();
         
-        return composite;
-    }
-
-    public void update(Observable o, Object arg) {
-        // Do nothing
+        Composite top = new Composite(parent, SWT.NONE);
+        GridLayout layout = new GridLayout();
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        top.setLayout(layout);
+        
+        FormToolkit kit = new FormToolkit(parent.getDisplay());
+        Form form = kit.createForm(top);
+        GridData grid = new GridData(GridData.FILL_BOTH);
+        grid.widthHint = 400;
+        form.setLayoutData(grid);
+        form.setText("Welcome to JSmooth !");
+        TableWrapLayout wraplayout = new TableWrapLayout();
+        form.getBody().setLayout(wraplayout);
+        HyperlinkGroup hypergroup = kit.getHyperlinkGroup();
+        hypergroup.setActiveForeground(display.getSystemColor(SWT.COLOR_BLUE));
+        hypergroup.setForeground(display.getSystemColor(SWT.COLOR_BLUE));
+        hypergroup.setHyperlinkUnderlineMode(HyperlinkGroup.UNDERLINE_HOVER);
+        
+        Label label = kit.createSeparator(form.getBody(), SWT.HORIZONTAL);
+        TableWrapData wrapgrid = new TableWrapData(TableWrapData.FILL_GRAB);
+        label.setLayoutData(wrapgrid);
+        
+        FormText text = kit.createFormText(form.getBody(), true);
+        text.setWhitespaceNormalized(true);
+        wrapgrid = new TableWrapData(TableWrapData.FILL);
+        text.setLayoutData(wrapgrid);
+        text.setText(JSmoothResources.TEXT_HELP_WELCOME, true, false);
+        
+        return top;
     }
 
     public boolean apply() {

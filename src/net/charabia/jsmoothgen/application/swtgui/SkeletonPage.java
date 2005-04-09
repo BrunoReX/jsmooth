@@ -20,18 +20,15 @@ public final class SkeletonPage extends JSmoothPage {
 
     // Widgets
     private Combo cmboSkelSelec;
-
     private Button chkDebugWrapper;
 
 //    private Dialog skelProps;
 
     private __JSmoothApplication__ jsApp;
-
     private SkeletonModel skeletonMdl;
 
-    public SkeletonPage(JSmoothApplication jsmoothWnd, __JSmoothApplication__ jsmoothApp) {
-        super(jsmoothWnd, jsmoothApp);
-        (this.skeletonMdl) = jsmoothApp.getSkeletonModel();
+    public SkeletonPage(JSmoothApplication js) {
+        super(js);
     }
 
     private int getItemIndex(String[] array, String str) {
@@ -95,11 +92,7 @@ public final class SkeletonPage extends JSmoothPage {
         }
     }
 
-    /* (non-Javadoc)
-     * @see net.charabia.jsmoothgen.application.swtgui.JSmoothPage#apply()
-     */
     public boolean apply() {
         return false;
     }
-
 }

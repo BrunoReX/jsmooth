@@ -16,13 +16,11 @@ public abstract class JSmoothPage {
     private Control control;
     private JSmoothApplication js;
     private Set modifyListeners;
-    private __JSmoothApplication__ jsmoothApp;
     private String toolTip;
     private Image image;
     
-    public JSmoothPage(JSmoothApplication js, __JSmoothApplication__ jsmoothApp) {
+    public JSmoothPage(JSmoothApplication js) {
         this.js = js;
-        this.jsmoothApp = jsmoothApp;
     }
     
     public Control createControl(Composite parent) {
@@ -60,10 +58,6 @@ public abstract class JSmoothPage {
         }
     }
     
-    protected __JSmoothApplication__ getApplication() {
-        return jsmoothApp;
-    }
-    
     public abstract boolean apply();
     
     public void setToolTip(String toolTip) {
@@ -84,5 +78,9 @@ public abstract class JSmoothPage {
     
     public void setImage(Image image) {
         this.image = image;
+    }
+    
+    protected JSmoothApplication getApplication() {
+        return js;
     }
 }
