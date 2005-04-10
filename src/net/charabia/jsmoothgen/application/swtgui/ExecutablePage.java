@@ -61,7 +61,7 @@ public class ExecutablePage extends JSmoothPage {
                 FileDialog dialog = new FileDialog(getShell(), SWT.SAVE);
                 dialog.setText("Executable Name");
                 String file = dialog.open();
-                if (file != null) setModelExename(exe.getText());
+                if (file != null) ExecutablePage.this.exe.setText(file);
             }
         });
         grid = new GridData(GridData.FILL);
@@ -135,13 +135,13 @@ public class ExecutablePage extends JSmoothPage {
 
     private void setModelCurrentdir(String dir) {
         System.out.println("[DEBUG] Setting exe name to: " + dir);
-        JSmoothModelBean jsmodel = getApplication().getJSmoothModelBean();
+        JSmoothModelBean jsmodel = getApplication().getModelBean();
         jsmodel.setCurrentDirectory(dir);
     }
 
     private void setModelExename(String exename) {
         System.out.println("[DEBUG] Setting exe name to: " + exename);
-        JSmoothModelBean jsmodel = getApplication().getJSmoothModelBean();
+        JSmoothModelBean jsmodel = getApplication().getModelBean();
         jsmodel.setExecutableName(exename);
     }
 
@@ -155,7 +155,7 @@ public class ExecutablePage extends JSmoothPage {
             img.dispose();
         }
         
-        if (file == null) return true;
+        if (file == null || file.equals("")) return true;
 
         try {
             img = new Image(getShell().getDisplay(), file);
@@ -177,12 +177,26 @@ public class ExecutablePage extends JSmoothPage {
     
     private void setModelIcon(String iconfile) {
         System.out.println("[DEBUG] Setting icon file to: " + iconfile);
-        JSmoothModelBean jsmodel = getApplication().getJSmoothModelBean();
+        JSmoothModelBean jsmodel = getApplication().getModelBean();
         jsmodel.setIconLocation(iconfile);
     }
 
-    protected void configurePage() {
+    protected void configureResources() {
         setImage(JSmoothResources.IMG_SWITCHER_EXECUTABLE);
         setToolTip("Windows Executable");
+    }
+
+    public void load() {
+        JSmoothModelBean jsmodel = getApplication().getModelBean();
+        String exename = jsmodel.getExecutableName();
+        if (exename.equals("<NONE>") || exename == null) exename = "";
+        this.exe.setText(exename);
+        
+        String iconfile = jsmodel.getIconLocation();
+        setIcon(iconfile);
+        
+        String dirname = jsmodel.getCurrentDirectory();
+        if (dirname == null) dirname = "";
+        this.dir.setText(dirname);
     }
 }

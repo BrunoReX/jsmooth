@@ -13,6 +13,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -29,6 +30,13 @@ import org.eclipse.swt.widgets.Text;
  * @author Dumon
  */
 public class JavaAppPage extends JSmoothPage {
+    protected SelectionListener LISTENER_USEJAR = new SelectionAdapter() {
+        public void widgetSelected(SelectionEvent e) {
+            setModelUsejar(usejar.getSelection());
+            updateUsejarWidgets();
+        }
+    };
+    
     private Text jar;
     private Text mainclass;
     private Text args;
@@ -56,12 +64,7 @@ public class JavaAppPage extends JSmoothPage {
         
         usejar = new Button(composite, SWT.CHECK);
         usejar.setText("Use embedded JAR");
-        usejar.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                setModelUsejar(usejar.getSelection());
-                updateUsejarWidgets();
-            }
-        });
+        usejar.addSelectionListener(LISTENER_USEJAR);
         GridData grid = new GridData(GridData.FILL);
         grid.horizontalSpan = 3;
         usejar.setLayoutData(grid);
@@ -170,7 +173,10 @@ public class JavaAppPage extends JSmoothPage {
         addjar.setText("Add JAR File...");
         addjar.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                addClasspathJar();
+                FileDialog dialog = new FileDialog(getShell(), SWT.OPEN);
+                dialog.setText("JAR File");
+                String file = dialog.open();
+                if (file != null) addClasspathItem(file);
             }
         });
         grid = new GridData(GridData.FILL_HORIZONTAL);
@@ -181,7 +187,10 @@ public class JavaAppPage extends JSmoothPage {
         addfolder.setText("Add Class Folder...");
         addfolder.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                addClassFolder();
+                DirectoryDialog dialog = new DirectoryDialog(getShell(), SWT.SAVE);
+                dialog.setText("Current Directory");
+                String file = dialog.open();
+                if (file != null) addClasspathItem(file);
             }
         });
         grid = new GridData(GridData.FILL_HORIZONTAL);
@@ -207,15 +216,8 @@ public class JavaAppPage extends JSmoothPage {
     
     private void setModelMainclass(String mainclass) {
         System.out.println("[DEBUG] Setting mainclass to: " + mainclass);
-        JSmoothModelBean jsmodel = getApplication().getJSmoothModelBean();
+        JSmoothModelBean jsmodel = getApplication().getModelBean();
         jsmodel.setMainClassName(mainclass);
-    }
-
-    private void addClasspathJar() {
-        FileDialog dialog = new FileDialog(getShell(), SWT.OPEN);
-        dialog.setText("JAR File");
-        String file = dialog.open();
-        if (file != null) addClasspathItem(file);
     }
 
     private void removeItem() {
@@ -227,17 +229,10 @@ public class JavaAppPage extends JSmoothPage {
     private void setModelClasspath(String[] classpath) {
         String classpathString = Arrays.asList(classpath).toString();
         System.out.println("[DEBUG] Setting classpath to: " + classpathString);
-        JSmoothModelBean jsmodel = getApplication().getJSmoothModelBean();
+        JSmoothModelBean jsmodel = getApplication().getModelBean();
         jsmodel.setClassPath(classpath);
     }
     
-    private void addClassFolder() {
-        DirectoryDialog dialog = new DirectoryDialog(getShell(), SWT.SAVE);
-        dialog.setText("Current Directory");
-        String file = dialog.open();
-        if (file != null) addClasspathItem(file);
-    }
-
     private void updateRemoveButton() {
         int i = classpath.getItemCount();
         boolean enable = true;
@@ -269,24 +264,43 @@ public class JavaAppPage extends JSmoothPage {
     
     private void setModelJar(String jarfile) {
         System.out.println("[DEBUG] Setting jarfile to: " + jarfile);
-        JSmoothModelBean jsmodel = getApplication().getJSmoothModelBean();
+        JSmoothModelBean jsmodel = getApplication().getModelBean();
         jsmodel.setJarLocation(jarfile);
     }
     
     private void setModelUsejar(boolean b) {
         System.out.println("[DEBUG] Setting use embedded jar to: " + b);
-        JSmoothModelBean jsmodel = getApplication().getJSmoothModelBean();
+        JSmoothModelBean jsmodel = getApplication().getModelBean();
         jsmodel.setEmbeddedJar(b);
     }
     
     private void setModelArguments(String args) {
         System.out.println("[DEBUG] Setting argument to: " + args);
-        JSmoothModelBean jsmodel = getApplication().getJSmoothModelBean();
+        JSmoothModelBean jsmodel = getApplication().getModelBean();
         jsmodel.setArguments(args);
     }
 
-    protected void configurePage() {
+    protected void configureResources() {
         setImage(JSmoothResources.IMG_SWITCHER_APPLICATION);
         setToolTip("Java Application");
+    }
+
+    public void load() {
+        JSmoothModelBean jsmodel = getApplication().getModelBean();
+        String[] classpath = jsmodel.getClassPath();
+        if (classpath == null) classpath = new String[0];
+        this.classpath.setItems(classpath);
+        
+        boolean usejar = jsmodel.getEmbeddedJar();
+        this.usejar.setSelection(usejar);
+        LISTENER_USEJAR.widgetSelected(null);
+        
+        String mainclass = jsmodel.getMainClassName();
+        if (mainclass == null) mainclass = "";
+        this.mainclass.setText(mainclass);
+        
+        String jar = jsmodel.getJarLocation();
+        if (jar == null) jar = "";
+        this.jar.setText(jar);
     }
 }

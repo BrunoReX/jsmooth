@@ -67,9 +67,13 @@ public class WelcomePage extends JSmoothPage {
         return false;
     }
 
-    protected void configurePage() {
+    protected void configureResources() {
         setImage(JSmoothResources.IMG_SWITCHER_WELCOME);
         setToolTip("Welcome");
+    }
+
+    public void load() {
+        // Do nothing.
     }
 
 }

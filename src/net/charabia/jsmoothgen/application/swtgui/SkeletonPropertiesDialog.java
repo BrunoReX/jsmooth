@@ -39,7 +39,10 @@ public class SkeletonPropertiesDialog extends Dialog {
         cmpDlgArea.setLayout(new GridLayout());
 
         SkeletonProperty[] props = page.getApplication().getSkeletonProperties();
-
+        for (int i = 0; i < props.length; i++) {
+            System.out.println("[DEBUG] Loading skeleton property: " + props[i].getIdName() + "=" + props[i].getValue());
+        }
+        
         for (int i = 0; i < props.length; i++) {
             Control c = createPropertyControl(cmpDlgArea, props[i]);
             c.setData(props[i]);

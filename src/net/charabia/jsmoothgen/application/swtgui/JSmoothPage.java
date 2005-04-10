@@ -33,11 +33,12 @@ public abstract class JSmoothPage {
         this.js = js;
     }
     
-    public Control createControl(Composite parent) {
-        return control= createPageArea(parent);
+    public final Control createControl(Composite parent) {
+        return control = createPageArea(parent);
     }
     
     public ToolItem createToolItem(final ToolBar toolbar) {
+        configureResources();
         item = new ToolItem(toolbar, SWT.RADIO);
         item.setImage(getImage());
         item.setToolTipText(getToolTip());
@@ -58,7 +59,7 @@ public abstract class JSmoothPage {
     }
     
     protected abstract Control createPageArea(Composite parent);
-    protected abstract void configurePage();
+    protected abstract void configureResources();
     
     public Control getControl() {
         return control;
@@ -68,19 +69,15 @@ public abstract class JSmoothPage {
         control = cmp;
     }
 
-    protected JSmoothApplication getJSmoothWindow() {
-        return js;
-    }
-
     protected Shell getShell() {
         return js.getShell();
     }
     
-    public void setToolTip(String toolTip) {
+    protected void setToolTip(String toolTip) {
         this.toolTip = toolTip;
     }
     
-    public String getToolTip() {
+    protected String getToolTip() {
         return toolTip;
     }
     
@@ -88,15 +85,15 @@ public abstract class JSmoothPage {
         return id;
     }
     
-    public void setId(String id) {
+    protected void setId(String id) {
         this.id = id;
     }
     
-    public Image getImage() {
+    protected Image getImage() {
         return image;
     }
     
-    public void setImage(Image image) {
+    protected void setImage(Image image) {
         this.image = image;
     }
     
@@ -111,4 +108,6 @@ public abstract class JSmoothPage {
     public boolean isHidden() {
         return hidden;
     }
+    
+    public abstract void load();
 }

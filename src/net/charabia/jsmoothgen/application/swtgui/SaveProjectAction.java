@@ -3,7 +3,7 @@
  */
 package net.charabia.jsmoothgen.application.swtgui;
 
-import java.util.Observable;
+
 
 public class SaveProjectAction extends JSmoothAction {
     private JSmoothApplication js;
@@ -13,12 +13,11 @@ public class SaveProjectAction extends JSmoothAction {
     }
 
     public void run() {
-//        getApplication().saveProject();
+        if (getApplication().hasProjectFile()) {
+            getApplication().saveProject();
+        }
+        else {
+            getApplication().ACTION_SAVE_AS.run();
+        }
     }
-
-    public void update(Observable o, Object arg) {
-//        setEnabled(getApplication().isDirty()
-//                && getApplication().hasProjectFile());
-    }
-
 }

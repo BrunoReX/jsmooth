@@ -4,12 +4,14 @@
 package net.charabia.jsmoothgen.application.swtgui;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
 import net.charabia.jsmoothgen.application.ExeCompiler;
 import net.charabia.jsmoothgen.application.JSmoothModelBean;
+import net.charabia.jsmoothgen.application.JSmoothModelPersistency;
 import net.charabia.jsmoothgen.application.JavaPropertyPair;
 import net.charabia.jsmoothgen.application.swtgui.resources.JSmoothResources;
 import net.charabia.jsmoothgen.skeleton.SkeletonBean;
@@ -38,6 +40,10 @@ import org.eclipse.swt.widgets.ToolItem;
  */
 public final class JSmoothApplication {
     public final JSmoothAction ACTION_OPEN = new OpenAction(JSmoothApplication.this);
+    public final JSmoothAction ACTION_EXIT = new ExitAction(JSmoothApplication.this);
+    public final JSmoothAction ACTION_SAVE = new SaveProjectAction(JSmoothApplication.this);
+    public final JSmoothAction ACTION_SAVE_AS = new SaveAsProjectAction(JSmoothApplication.this);
+    public final JSmoothAction ACTION_NEW = new NewAction(JSmoothApplication.this);
     
     private Shell shell;
     private Display display;
@@ -69,7 +75,7 @@ public final class JSmoothApplication {
     // JSmooth related fields
     private boolean dirty = false;
     private JSmoothModelBean jsmodel;
-    private File projFile;
+    private File projectfile;
     private ExeCompiler compiler;
     private SkeletonList skeletonList;
     
@@ -81,7 +87,9 @@ public final class JSmoothApplication {
         
         // FIXME: Hardcoded skeletons dir.
         this.skeletonList = new SkeletonList(new File("skeletons"));
-        
+    }
+    
+    public void newProject() {
         // Create a new empty JSmoothModelBean
         jsmodel = new JSmoothModelBean();
         jsmodel.setSkeletonName(getInitialSkeletonName());
@@ -101,9 +109,20 @@ public final class JSmoothApplication {
         jsmodel.setNoJvmMessage("");
         jsmodel.setNoJvmURL("");
         
+        projectfile = null;
+        
         for (int i = 0; i < PAGES.length; i++) {
-            PAGES[i].configurePage();
+            PAGES[i].load();
         }
+        
+        getShell().setText(getProjectName());
+    }
+    
+    public String getProjectName() {
+        if (projectfile == null) {
+            return "[NEW PROJECT]";
+        }
+        return projectfile.getName();
     }
     
     public void setSkeletonProperty(SkeletonProperty property) {
@@ -168,10 +187,44 @@ public final class JSmoothApplication {
         topItem.setMenu(menu);
         
         MenuItem item = new MenuItem(menu, SWT.NULL);
+        item.setText("New");
+        item.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                ACTION_NEW.run();
+            }
+        });
+        
+        item = new MenuItem(menu, SWT.NULL);
         item.setText("Open...");
         item.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 ACTION_OPEN.run();
+            }
+        });
+        
+        item = new MenuItem(menu, SWT.NULL);
+        item.setText("Save");
+        item.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                ACTION_SAVE.run();
+            }
+        });
+        
+        item = new MenuItem(menu, SWT.NULL);
+        item.setText("Save As...");
+        item.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                ACTION_SAVE_AS.run();
+            }
+        });
+        
+        item = new MenuItem(menu, SWT.SEPARATOR);
+        
+        item = new MenuItem(menu, SWT.NULL);
+        item.setText("Exit");
+        item.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                ACTION_EXIT.run();
             }
         });
         
@@ -199,13 +252,12 @@ public final class JSmoothApplication {
     }
     
     public void run() {
-        if (shell == null) {
-            createControls();
-        }
+        if (shell == null) createControls();
 
         // open the window
         shell.open();
         
+        newProject();
         showPage(PAGE_WELCOME);
         
         try {
@@ -305,14 +357,59 @@ public final class JSmoothApplication {
         }
     }
 
-    public void setSkeletonName(String name) {
-        System.out.println("[DEBUG] Setting skeleton name: " + name);
-        jsmodel.setSkeletonName(name);
-        setSkeletonProperties(getInititalSkeletonProperties());
+    public JSmoothModelBean getModelBean() {
+        return jsmodel;
     }
     
-    public JSmoothModelBean getJSmoothModelBean() {
-        return jsmodel;
+    public boolean saveProjectAs(String projectfile) {
+        System.out.println("[DEBUG] Saving project to file: " + projectfile);
+        this.projectfile = new File(projectfile);
+        try {
+            JSmoothModelPersistency.save(this.projectfile, jsmodel);
+        } catch (IOException e) {
+            System.out.println("[ERROR] Failed saving project : " + e.getMessage());
+            return false;
+        }
+        getShell().setText(getProjectName());
+        return true;
+    }
+    
+    public void saveProject() {
+        saveProjectAs(projectfile.getAbsolutePath());
+    }
+    
+    public File getProjectFile() {
+        return projectfile;
+    }
+    
+    public boolean hasProjectFile() {
+        return projectfile != null;
+    }
+    
+    public void exit() {
+        getShell().close();
+    }
+    
+    public boolean openProject(String projectfile) {
+        System.out.println("[DEBUG] Opening project : " + projectfile);
+        File file = new File(projectfile);
+        JSmoothModelBean jsmodel = null;
+        try {
+            jsmodel = JSmoothModelPersistency.load(file);
+        } catch (IOException e) {
+            System.out.println("[ERROR] Failed opening project : " + e.getMessage());
+            return false;
+        }
+        
+        this.projectfile = file;
+        this.jsmodel = jsmodel;
+        
+        for (int i = 0; i < PAGES.length; i++) {
+            PAGES[i].load();
+        }
+        
+        getShell().setText(getProjectName());
+        return true;
     }
     
     /**

@@ -5,6 +5,7 @@ package net.charabia.jsmoothgen.application.swtgui;
 
 import java.util.Arrays;
 
+import net.charabia.jsmoothgen.application.JSmoothModelBean;
 import net.charabia.jsmoothgen.application.swtgui.resources.JSmoothResources;
 
 import org.eclipse.jface.dialogs.Dialog;
@@ -25,7 +26,8 @@ import org.eclipse.swt.widgets.Label;
 public final class SkeletonPage extends JSmoothPage {
     // Widgets
     private Dialog propsDialog;
-
+    private Combo skelcombo;
+    
     private JSmoothApplication js;
     private String[] skeletons;
     
@@ -40,20 +42,15 @@ public final class SkeletonPage extends JSmoothPage {
         Label label = new Label(top, SWT.NONE);
         label.setText("Skeleton:");
 
-        // The Skeleton selection combo
-        final Combo combo = new Combo(top, SWT.READ_ONLY);
+        skelcombo = new Combo(top, SWT.READ_ONLY);
         GridData grid = new GridData(GridData.FILL);
         grid.widthHint = 120;
-        combo.setLayoutData(grid);
+        skelcombo.setLayoutData(grid);
         
-        String[] skeletons = getApplication().getAllSkeletonNames();
-        String defaultSkeleton = getApplication().getInitialSkeletonName();
-        combo.setItems(skeletons);
-        int index = Arrays.binarySearch(skeletons, defaultSkeleton);
-        combo.select(index);
-        combo.addSelectionListener(new SelectionAdapter() {
+        loadSkeleton(getApplication().getInitialSkeletonName());
+        skelcombo.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                getApplication().setSkeletonName(combo.getText());
+                setSkeletonName(skelcombo.getText());
             }
         });
 
@@ -71,12 +68,27 @@ public final class SkeletonPage extends JSmoothPage {
         return top;
     }
     
-    public boolean apply() {
-        return false;
+    public void setSkeletonName(String name) {
+        System.out.println("[DEBUG] Setting skeleton name: " + name);
+        JSmoothModelBean jsmodel = getApplication().getModelBean();
+        jsmodel.setSkeletonName(name);
+        getApplication().setSkeletonProperties(getApplication().getInititalSkeletonProperties());
     }
-
-    protected void configurePage() {
+    
+    protected void configureResources() {
         setImage(JSmoothResources.IMG_SWITCHER_SKELETON_PAGE);
         setToolTip("Skeleton");
+    }
+    
+    private void loadSkeleton(String skelname) {
+        String[] skeletons = getApplication().getAllSkeletonNames();
+        skelcombo.setItems(skeletons);
+        System.out.println("[DEBUG] Loading skeleton : " + skelname);
+        int index = Arrays.binarySearch(skeletons, skelname);
+        skelcombo.select(index);
+    }
+    
+    public void load() {
+        loadSkeleton(getApplication().getModelBean().getSkeletonName());
     }
 }
