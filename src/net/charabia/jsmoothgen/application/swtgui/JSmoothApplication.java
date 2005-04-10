@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
@@ -49,6 +48,7 @@ public final class JSmoothApplication {
     public final JSmoothAction ACTION_SAVE_AS = new SaveAsProjectAction(JSmoothApplication.this);
     public final JSmoothAction ACTION_NEW = new NewAction(JSmoothApplication.this);
     public final JSmoothAction ACTION_COMPILE = new CompileAction(JSmoothApplication.this);
+    public final JSmoothAction ACTION_CONSOLE_CLEAR = new ClearConsoleAction(JSmoothApplication.this);
     
     private Shell shell;
     private Display display;
@@ -119,6 +119,7 @@ public final class JSmoothApplication {
         
         projectfile = null;
         compiler = new ExeCompiler();
+        compiler.addListener(new SWTCompileListener());
         
         for (int i = 0; i < PAGES.length; i++) {
             PAGES[i].load();
@@ -254,6 +255,21 @@ public final class JSmoothApplication {
             }
         });
         
+        /* ==== CONSOLE ACTIONS ==== */
+        
+        topItem = new MenuItem(mainmenu, SWT.CASCADE);
+        topItem.setText("Console");
+        menu = new Menu(shell, SWT.DROP_DOWN);
+        topItem.setMenu(menu);
+        
+        item = new MenuItem(menu, SWT.NULL);
+        item.setText("Clear");
+        item.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                ACTION_CONSOLE_CLEAR.run();
+            }
+        });
+        
         shell.setMenuBar(mainmenu);
     }
 
@@ -335,8 +351,40 @@ public final class JSmoothApplication {
         
         console = new Text(consolearea, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.READ_ONLY | SWT.BORDER);
         console.setBackground(shell.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+        console.setForeground(shell.getDisplay().getSystemColor(SWT.COLOR_BLUE));
         GridData gridata = new GridData(GridData.FILL_BOTH);
         console.setLayoutData(gridata);
+        
+        /* ==== CONSOLE MENU ==== */
+        
+        Menu menu = new Menu(shell, SWT.NULL);
+        
+        MenuItem item = new MenuItem(menu, SWT.NULL);
+        item.setText("Clear");
+        item.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                ACTION_CONSOLE_CLEAR.run();
+            }
+        });
+        
+        item = new MenuItem(menu, SWT.NULL);
+        item.setText("Copy");
+        item.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                console.copy();
+            }
+        });
+        
+        item = new MenuItem(menu, SWT.NULL);
+        item.setText("Copy All");
+        item.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                console.selectAll();
+                console.copy();
+            }
+        });
+        
+        console.setMenu(menu);
     }
 
     private void initializeBounds() {
@@ -450,6 +498,7 @@ public final class JSmoothApplication {
     }
     
     public boolean compileProject() {
+        showConsoleMessage("Compiling...");
         File basedir = projectfile.getParentFile();
         jsmodel.normalizePaths(basedir);
         String skeletonName = jsmodel.getSkeletonName();
@@ -484,6 +533,10 @@ public final class JSmoothApplication {
         for (int i = 0; i < msg.length; i++) {
             showConsoleMessage(msg[i]);
         }
+    }
+    
+    public void clearConsole() {
+        console.setText("");
     }
     
     /**
@@ -572,6 +625,20 @@ public final class JSmoothApplication {
 
             // Resize to fit all child controls
             if (flushCache) cmp.setSize(cmp.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+        }
+    }
+    
+    class SWTCompileListener implements ExeCompiler.StepListener {
+        public void setNewState(int percent, String state) {
+            showConsoleMessage(state);
+        }
+
+        public void failed() {
+            showConsoleMessage("Compile failed.");
+        }
+
+        public void complete() {
+            showConsoleMessage("Compile successfull.");
         }
     }
 }

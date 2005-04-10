@@ -14,12 +14,13 @@ public class CompileAction extends JSmoothAction {
     public boolean run() {
         System.out.println("[DEBUG] Compiling, stand by...");
         JSmoothApplication app = getApplication();
-        boolean hasproject = app.hasProjectFile();
-        if (!hasproject) {
+        if (!app.hasProjectFile()) {
             app.showConsoleMessage("Cannot compile without a project file. Please save the project or load a new one, then try again.");
             return false;
         }
-        app.showConsoleMessage("Compiling...");
+        else {
+            app.saveProject();
+        }
         return app.compileProject();
     }
 }
