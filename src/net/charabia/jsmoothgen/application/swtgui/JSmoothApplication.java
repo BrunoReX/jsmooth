@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
@@ -47,6 +48,7 @@ public final class JSmoothApplication {
     public final JSmoothAction ACTION_SAVE = new SaveProjectAction(JSmoothApplication.this);
     public final JSmoothAction ACTION_SAVE_AS = new SaveAsProjectAction(JSmoothApplication.this);
     public final JSmoothAction ACTION_NEW = new NewAction(JSmoothApplication.this);
+    public final JSmoothAction ACTION_COMPILE = new CompileAction(JSmoothApplication.this);
     
     private Shell shell;
     private Display display;
@@ -116,6 +118,7 @@ public final class JSmoothApplication {
         jsmodel.setNoJvmURL("");
         
         projectfile = null;
+        compiler = new ExeCompiler();
         
         for (int i = 0; i < PAGES.length; i++) {
             PAGES[i].load();
@@ -187,6 +190,8 @@ public final class JSmoothApplication {
     private void createMainMenu(Shell shell) {
         mainmenu = new Menu(shell, SWT.BAR);
         
+        /* ==== FILE ACTIONS ==== */
+        
         MenuItem topItem = new MenuItem(mainmenu, SWT.CASCADE);
         topItem.setText("File");
         Menu menu = new Menu(shell, SWT.DROP_DOWN);
@@ -231,6 +236,21 @@ public final class JSmoothApplication {
         item.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 ACTION_EXIT.run();
+            }
+        });
+        
+        /* ==== PROJECT ACTIONS ==== */
+        
+        topItem = new MenuItem(mainmenu, SWT.CASCADE);
+        topItem.setText("Project");
+        menu = new Menu(shell, SWT.DROP_DOWN);
+        topItem.setMenu(menu);
+        
+        item = new MenuItem(menu, SWT.NULL);
+        item.setText("Compile");
+        item.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                ACTION_COMPILE.run();
             }
         });
         
@@ -391,8 +411,8 @@ public final class JSmoothApplication {
         return true;
     }
     
-    public void saveProject() {
-        saveProjectAs(projectfile.getAbsolutePath());
+    public boolean saveProject() {
+        return saveProjectAs(projectfile.getAbsolutePath());
     }
     
     public File getProjectFile() {
@@ -427,6 +447,43 @@ public final class JSmoothApplication {
         
         getShell().setText(getProjectName());
         return true;
+    }
+    
+    public boolean compileProject() {
+        File basedir = projectfile.getParentFile();
+        jsmodel.normalizePaths(basedir);
+        String skeletonName = jsmodel.getSkeletonName();
+        SkeletonBean skeletonBean = skeletonList.getSkeleton(skeletonName);
+        File skeletonRoot = skeletonList.getDirectory(skeletonBean);
+        
+        // NOTE: We assume the exe name is always relative
+        File exename = new File(jsmodel.getExecutableName());
+        if (!exename.isAbsolute()) {
+            exename = new File(basedir, jsmodel.getExecutableName());
+        }
+        
+        boolean success = false;
+        try {
+            success = compiler.compile(skeletonRoot, skeletonBean, basedir, jsmodel, exename);
+        } catch (Exception e) {
+            // Do nothing, bellow we the errors anyway (see bellow).
+        }
+        
+        showConsoleMessages((String[]) compiler.getErrors().toArray(new String[0]));
+        compiler.cleanErrors();
+        
+        return success;
+    }
+    
+    public void showConsoleMessage(String msg) {
+        if (console.getText().length() != 0) console.append("\r\n"); // New line ?
+        console.append(msg);
+    }
+    
+    public void showConsoleMessages(String[] msg) {
+        for (int i = 0; i < msg.length; i++) {
+            showConsoleMessage(msg[i]);
+        }
     }
     
     /**

@@ -12,12 +12,12 @@ public class SaveProjectAction extends JSmoothAction {
         super(js);
     }
 
-    public void run() {
+    public boolean run() {
         if (getApplication().hasProjectFile()) {
-            getApplication().saveProject();
+            return getApplication().saveProject();
         }
         else {
-            getApplication().ACTION_SAVE_AS.run();
+            return getApplication().ACTION_SAVE_AS.run();
         }
     }
 }

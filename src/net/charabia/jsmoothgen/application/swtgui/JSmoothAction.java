@@ -17,5 +17,5 @@ public abstract class JSmoothAction {
         return js;
     }
     
-    public abstract void run();
+    public abstract boolean run();
 }

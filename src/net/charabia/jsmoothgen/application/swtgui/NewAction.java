@@ -10,8 +10,9 @@ public class NewAction extends JSmoothAction {
         super(js);
     }
 
-    public void run() {
+    public boolean run() {
         System.out.println("[DEBUG] New default project.");
         getApplication().newProject();
+        return true;
     }
 }

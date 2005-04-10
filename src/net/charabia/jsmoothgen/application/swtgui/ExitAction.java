@@ -10,8 +10,9 @@ public class ExitAction extends JSmoothAction {
         super(js);
     }
 
-    public void run() {
+    public boolean run() {
         System.out.println("[DEBUG] Bye");
         getApplication().exit();
+        return true;
     }
 }

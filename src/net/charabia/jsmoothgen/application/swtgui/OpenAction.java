@@ -13,10 +13,17 @@ public class OpenAction extends JSmoothAction {
         super(js);
     }
 
-    public void run() {
+    public boolean run() {
         FileDialog dialog = new FileDialog(getApplication().getShell(), SWT.OPEN);
         dialog.setText("Open Project");
         String file = dialog.open();
-        if (file != null) getApplication().openProject(file);
+        if (file != null) {
+            boolean ok = getApplication().openProject(file);
+            if (ok) getApplication().showConsoleMessage("Opened the project file " + file);
+            return ok;
+        }
+        else {
+            return false;
+        }
     }
 }

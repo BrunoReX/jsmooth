@@ -3,6 +3,8 @@
  */
 package net.charabia.jsmoothgen.application.swtgui;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import net.charabia.jsmoothgen.application.JSmoothModelBean;
@@ -173,10 +175,18 @@ public class JavaAppPage extends JSmoothPage {
         addjar.setText("Add JAR File...");
         addjar.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                FileDialog dialog = new FileDialog(getShell(), SWT.OPEN);
+                FileDialog dialog = new FileDialog(getShell(), SWT.OPEN | SWT.MULTI);
                 dialog.setText("JAR File");
-                String file = dialog.open();
-                if (file != null) addClasspathItem(file);
+                String choice = dialog.open();
+                if (choice != null) {
+                    String path = dialog.getFilterPath();
+                    String[] filenames = dialog.getFileNames();
+                    ArrayList files = new ArrayList();
+                    for (int i = 0; i < filenames.length; i++) {
+                        files.add(path + File.separator + filenames[i]);
+                    }
+                    addClasspathItems((String[]) files.toArray(new String[0]));
+                }
             }
         });
         grid = new GridData(GridData.FILL_HORIZONTAL);
@@ -188,9 +198,9 @@ public class JavaAppPage extends JSmoothPage {
         addfolder.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 DirectoryDialog dialog = new DirectoryDialog(getShell(), SWT.SAVE);
-                dialog.setText("Current Directory");
-                String file = dialog.open();
-                if (file != null) addClasspathItem(file);
+                dialog.setText("Class Folder");
+                String folder = dialog.open();
+                if (folder != null) addClasspathItems(new String[]{folder});
             }
         });
         grid = new GridData(GridData.FILL_HORIZONTAL);
@@ -246,13 +256,13 @@ public class JavaAppPage extends JSmoothPage {
         remove.setEnabled(enable);
     }
 
-    private void addClasspathItem(String item) {
-        String[] items = classpath.getItems();
-        
-        // Check for duplicates
-        if (Arrays.binarySearch(items, item) >= 0) return;
-        classpath.add(item);
-        
+    private void addClasspathItems(String[] items) {
+        String[] olditems = classpath.getItems();
+        for (int i = 0; i < items.length; i++) {
+            // Check for duplicates
+            if (Arrays.binarySearch(olditems, items[i]) >= 0) continue;
+            classpath.add(items[i]);
+        }
         setModelClasspath(classpath.getItems());
     }
     

@@ -14,10 +14,15 @@ public class SaveAsProjectAction extends JSmoothAction {
         super(js);
     }
 
-    public void run() {
+    public boolean run() {
         FileDialog dialog = new FileDialog(getApplication().getShell(), SWT.SAVE);
         dialog.setText("Save Project");
         String file = dialog.open();
-        if (file != null) getApplication().saveProjectAs(file);
+        if (file != null) {
+            return getApplication().saveProjectAs(file);
+        }
+        else {
+            return false;
+        }
     }
 }
