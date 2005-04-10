@@ -55,7 +55,6 @@ public class WelcomePage extends JSmoothPage {
         label.setLayoutData(wrapgrid);
         
         FormText text = kit.createFormText(form.getBody(), true);
-        text.setWhitespaceNormalized(true);
         wrapgrid = new TableWrapData(TableWrapData.FILL);
         text.setLayoutData(wrapgrid);
         text.setText(JSmoothResources.TEXT_HELP_WELCOME, true, false);

@@ -24,6 +24,8 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -32,6 +34,7 @@ import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
@@ -49,8 +52,8 @@ public final class JSmoothApplication {
     private Display display;
 
     // Separators
-    private Label menuSeparator;
-    private Label switcherSeparator;
+    private Label menusep;
+    private Label switchersep;
 
     // The layout of the page area composite
     private StackLayout stack;
@@ -69,8 +72,11 @@ public final class JSmoothApplication {
     // Page area
     private Composite pagearea;
 
-    private Menu mainMenu;
+    private Menu mainmenu;
     private ToolBar switcher;
+    private Composite consolearea;
+    private Text console;
+    private static final int DIM_CONSOLE_HEIGHT = 150;
     
     // JSmooth related fields
     private boolean dirty = false;
@@ -120,7 +126,7 @@ public final class JSmoothApplication {
     
     public String getProjectName() {
         if (projectfile == null) {
-            return "[NEW PROJECT]";
+            return "";
         }
         return projectfile.getName();
     }
@@ -179,9 +185,9 @@ public final class JSmoothApplication {
     }
     
     private void createMainMenu(Shell shell) {
-        mainMenu = new Menu(shell, SWT.BAR);
+        mainmenu = new Menu(shell, SWT.BAR);
         
-        MenuItem topItem = new MenuItem(mainMenu, SWT.CASCADE);
+        MenuItem topItem = new MenuItem(mainmenu, SWT.CASCADE);
         topItem.setText("File");
         Menu menu = new Menu(shell, SWT.DROP_DOWN);
         topItem.setMenu(menu);
@@ -228,7 +234,7 @@ public final class JSmoothApplication {
             }
         });
         
-        shell.setMenuBar(mainMenu);
+        shell.setMenuBar(mainmenu);
     }
 
     private void createPages(Shell shell) {
@@ -274,32 +280,43 @@ public final class JSmoothApplication {
     
     private void createControls() {
         // Create the shell
-        shell = new Shell(display, SWT.TITLE | SWT.CLOSE | SWT.MIN /* | SWT.RESIZE */);
-
-        shell.setData(this);
+        shell = new Shell(display, SWT.TITLE | SWT.CLOSE | SWT.MIN | SWT.RESIZE);
 
         // The application's menu bar
         createMainMenu(shell);
 
         // Horizontal separator label.
         // Separes the menu bar from the rest.
-        menuSeparator = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
+        menusep = new Label(shell, SWT.SEPARATOR | SWT.HORIZONTAL);
 
+        createConsole(shell);
+        
         // The page switcher toolbar
         createSwitcherControl(shell);
 
         // Vertical separator label.
         // Separes the switcher toolbar from the rest.
-        switcherSeparator = new Label(shell, SWT.SEPARATOR | SWT.VERTICAL);
+        switchersep = new Label(shell, SWT.SEPARATOR | SWT.VERTICAL);
 
         createPages(shell);
-
+        
         // The JSmooth layout
         // NOTE: it should be set *after* creating the controls
         shell.setLayout(new JSmoothLayout());
 
         // Initialize the bounds of the shell to that appropriate for the contents
         initializeBounds();
+    }
+
+    private void createConsole(Shell shell) {
+        consolearea = new Composite(shell, SWT.NULL);
+        GridLayout gridlayout = new GridLayout();
+        consolearea.setLayout(gridlayout);
+        
+        console = new Text(consolearea, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.READ_ONLY | SWT.BORDER);
+        console.setBackground(shell.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+        GridData gridata = new GridData(GridData.FILL_BOTH);
+        console.setLayoutData(gridata);
     }
 
     private void initializeBounds() {
@@ -426,20 +443,27 @@ public final class JSmoothApplication {
             Point p = null;
             for (int i = 0; i < ctrls.length; i++) {
                 Control w = ctrls[i];
-                if (menuSeparator == w) {
+                if (menusep == w) {
                     p = w.computeSize(wHint, hHint, flushCache);
                     result.y += p.y;
-                } else if (switcher == w) {
+                }
+                else if (switcher == w) {
                     p = w.computeSize(wHint, hHint, flushCache);
                     result.x += p.x;
                     result.y += p.y;
-                } else if (switcherSeparator == w) {
+                }
+                else if (switchersep == w) {
                     p = w.computeSize(wHint, hHint, flushCache);
                     result.x += p.x;
-                } else if (pagearea == w) {
+                }
+                else if (consolearea == w) {
+                    p = w.computeSize(wHint, hHint, flushCache);
+                    result.y += DIM_CONSOLE_HEIGHT;
+                }
+                else if (pagearea == w) {
                     p = w.computeSize(wHint, hHint, flushCache);
                     result.x += p.x;
-                    result.y = Math.max(result.y, p.y);
+                    result.y = p.y + DIM_CONSOLE_HEIGHT;
                 }
             }
 
@@ -456,28 +480,36 @@ public final class JSmoothApplication {
                 }
             }
 
-            Rectangle clientArea = cmp.getClientArea();
+            Rectangle clientarea = cmp.getClientArea();
             Control[] wgs = cmp.getChildren();
             Point p = null;
             for (int i = 0; i < wgs.length; i++) {
                 Control w = wgs[i];
-                if (menuSeparator == w) {
+                if (menusep == w) {
                     p = w.computeSize(SWT.DEFAULT, SWT.DEFAULT, flushCache);
-                    w.setBounds(clientArea.x, clientArea.y, clientArea.width, p.y);
-                    clientArea.y += p.y;
-                    clientArea.height += p.y;
-                } else if (switcher == w) {
+                    w.setBounds(clientarea.x, clientarea.y, clientarea.width, p.y);
+                    clientarea.y += p.y;
+                    clientarea.height += p.y;
+                }
+                else if (switcher == w) {
                     p = w.computeSize(SWT.DEFAULT, SWT.DEFAULT, flushCache);
-                    w.setBounds(clientArea.x, clientArea.y, p.x, p.y);
-                    clientArea.x += p.x;
-                    clientArea.width -= p.x;
-                } else if (switcherSeparator == w) {
+                    w.setBounds(clientarea.x, clientarea.y, p.x, p.y);
+                    clientarea.x += p.x;
+                    clientarea.width -= p.x;
+                }
+                else if (switchersep == w) {
                     p = w.computeSize(SWT.DEFAULT, SWT.DEFAULT, flushCache);
-                    w.setBounds(clientArea.x, clientArea.y, p.x, clientArea.height);
-                    clientArea.x += p.x;
-                    clientArea.width -= p.x;
-                } else if (pagearea == w) {
-                    w.setBounds(clientArea.x, clientArea.y, clientArea.width, clientArea.height);
+                    w.setBounds(clientarea.x, clientarea.y, p.x, clientarea.height);
+                    clientarea.x += p.x;
+                    clientarea.width -= p.x;
+                }
+                else if (consolearea == w) {
+                    p = w.computeSize(SWT.DEFAULT, DIM_CONSOLE_HEIGHT, flushCache);
+                    w.setBounds(clientarea.x, clientarea.height - DIM_CONSOLE_HEIGHT, clientarea.width, p.y);
+                    clientarea.height -= DIM_CONSOLE_HEIGHT;
+                }
+                else if (pagearea == w) {
+                    w.setBounds(clientarea.x, clientarea.y, clientarea.width, clientarea.height);
                 }
             }
 

@@ -101,7 +101,7 @@ public class ExecutablePage extends JSmoothPage {
         Group group = new Group(top, SWT.NONE);
         GridLayout layout = new GridLayout();
         group.setLayout(layout);
-        grid = new GridData(GridData.FILL);
+        grid = new GridData(GridData.FILL | GridData.HORIZONTAL_ALIGN_CENTER);
         grid.horizontalSpan = 3;
         group.setLayoutData(grid);
         group.setText("Executable icon");
@@ -134,7 +134,7 @@ public class ExecutablePage extends JSmoothPage {
     }
 
     private void setModelCurrentdir(String dir) {
-        System.out.println("[DEBUG] Setting exe name to: " + dir);
+        System.out.println("[DEBUG] Setting current directory to: " + dir);
         JSmoothModelBean jsmodel = getApplication().getModelBean();
         jsmodel.setCurrentDirectory(dir);
     }

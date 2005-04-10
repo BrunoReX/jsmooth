@@ -302,5 +302,9 @@ public class JavaAppPage extends JSmoothPage {
         String jar = jsmodel.getJarLocation();
         if (jar == null) jar = "";
         this.jar.setText(jar);
+        
+        String args = jsmodel.getArguments();
+        if (args == null) args = "";
+        this.args.setText(args);
     }
 }
