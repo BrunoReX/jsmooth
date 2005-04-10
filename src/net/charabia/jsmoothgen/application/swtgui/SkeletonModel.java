@@ -14,25 +14,18 @@ import net.charabia.jsmoothgen.skeleton.SkeletonList;
 import net.charabia.jsmoothgen.skeleton.SkeletonProperty;
 
 public class SkeletonModel extends Observable {
-
     public static final int TYPE_NONE = -1;
-
     public static final int TYPE_TEXT_SINGLE = 1;
-
     public static final int TYPE_TEXT_MULTI = 2;
-
     public static final int TYPE_CHECK = 3;
 
     private SkeletonList skeletonList;
-
-    private __JSmoothApplication__ jsmoothApp;
-
+    
     // Cached list of skeleton names
     private List skelNames;
 
     public SkeletonModel(__JSmoothApplication__ jsmoothApp) {
         this.skeletonList = new SkeletonList(new File("skeletons"));
-        this.jsmoothApp = jsmoothApp;
     }
 
     private List getSkeletonList(boolean flush) {
@@ -62,8 +55,9 @@ public class SkeletonModel extends Observable {
     }
 
     public SkeletonProperty[] getProperties() {
-        SkeletonBean skelBean = skeletonList.getSkeleton(jsmoothApp.getSkeletonName());
-        return skelBean.getSkeletonProperties();
+//        SkeletonBean skelBean = skeletonList.getSkeleton(jsmoothApp.getSkeletonName());
+//        return skelBean.getSkeletonProperties();
+        return null;
     }
 
     public int getPropertyType(SkeletonProperty prop) {
@@ -89,15 +83,16 @@ public class SkeletonModel extends Observable {
         // The JSmooth API is a little bit inconsistent
         // and the SkeletonProperty value is not used actually.
         // Instead, we return the JSmoothModelBean.Property value
-        return jsmoothApp.getPropertyValue(prop.getIdName());
+//        return jsmoothApp.getModelSkeletonProperty(prop.getIdName());
+        return null;
     }
 
     public void setPropertyValue(SkeletonProperty prop, String value) {
-        System.out.println("[DEBUG] Setting property \""
-                + ((SkeletonProperty) prop).getIdName() + "\" to value \""
-                + value + "\"");
+        System.out.println(
+                "[DEBUG] Setting property \"" + ((SkeletonProperty) prop).getIdName() +
+                "\" to value \"" + value + "\"");
 
-        jsmoothApp.setPropertyValue(((SkeletonProperty) prop).getIdName(), value);
+//        jsmoothApp.setModelSkeletonProperty(((SkeletonProperty) prop).getIdName(), value);
     }
     
     public SkeletonList getSkeletonList() {

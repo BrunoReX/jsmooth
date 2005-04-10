@@ -3,22 +3,15 @@
  */
 package net.charabia.jsmoothgen.application.swtgui;
 
-import java.util.Observable;
 
-public class CompileAction extends JSmoothAction {
-    private JSmoothApplication js;
+public class OpenAction extends JSmoothAction {
     
-    public CompileAction(JSmoothApplication js) {
+    public OpenAction(JSmoothApplication js) {
         super(js);
     }
-    
-    public void update(Observable o, Object arg) {
-//        setEnabled(!getApplication().isDirty()
-//                && getApplication().hasProjectFile());
-    }
-    
+
     public void run() {
-        System.out.println("Run Compile !");
+        System.out.println("Open fire.");
 //        try {
 //            new ProgressMonitorDialog(getWindow().getShell()).run(true, false, new CompileOperation());
 //        } catch (InvocationTargetException ex) {

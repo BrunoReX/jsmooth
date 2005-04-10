@@ -19,6 +19,9 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 
+/**
+ * @author Dumon
+ */
 public class WelcomePage extends JSmoothPage {
 
     public WelcomePage(JSmoothApplication js) {
@@ -62,6 +65,11 @@ public class WelcomePage extends JSmoothPage {
 
     public boolean apply() {
         return false;
+    }
+
+    protected void configurePage() {
+        setImage(JSmoothResources.IMG_SWITCHER_WELCOME);
+        setToolTip("Welcome");
     }
 
 }

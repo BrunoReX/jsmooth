@@ -3,6 +3,19 @@
  */
 package net.charabia.jsmoothgen.application.swtgui;
 
-public interface JSmoothAction {
-    public void run();
+/**
+ * @author Dumon
+ */
+public abstract class JSmoothAction {
+    private JSmoothApplication js;
+    
+    public JSmoothAction(JSmoothApplication js) {
+        this.js = js;
+    }
+    
+    protected JSmoothApplication getApplication() {
+        return js;
+    }
+    
+    public abstract void run();
 }

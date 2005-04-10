@@ -5,11 +5,11 @@ package net.charabia.jsmoothgen.application.swtgui;
 
 import java.util.Observable;
 
-public class SaveProjectAction implements JSmoothAction {
+public class SaveProjectAction extends JSmoothAction {
     private JSmoothApplication js;
     
     public SaveProjectAction(JSmoothApplication js) {
-        this.js = js;
+        super(js);
     }
 
     public void run() {

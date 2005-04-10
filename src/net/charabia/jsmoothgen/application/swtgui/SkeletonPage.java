@@ -3,8 +3,11 @@
  */
 package net.charabia.jsmoothgen.application.swtgui;
 
-import java.util.Observable;
+import java.util.Arrays;
 
+import net.charabia.jsmoothgen.application.swtgui.resources.JSmoothResources;
+
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -16,83 +19,64 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 
+/**
+ * @author Dumon
+ */
 public final class SkeletonPage extends JSmoothPage {
-
     // Widgets
-    private Combo cmboSkelSelec;
-    private Button chkDebugWrapper;
+    private Dialog propsDialog;
 
-//    private Dialog skelProps;
-
-    private __JSmoothApplication__ jsApp;
-    private SkeletonModel skeletonMdl;
-
+    private JSmoothApplication js;
+    private String[] skeletons;
+    
     public SkeletonPage(JSmoothApplication js) {
         super(js);
     }
 
-    private int getItemIndex(String[] array, String str) {
-        int i = array.length - 1;
-        for (; i > 0; i--) {
-            if (array[i].equals(str))
-                break;
-        }
-        return i;
-    }
-
     public Control createPageArea(Composite parent) {
-        Composite composite = new Composite(parent, SWT.NONE);
-        composite.setLayout(new GridLayout(3, false));
+        Composite top = new Composite(parent, SWT.NONE);
+        top.setLayout(new GridLayout(3, false));
 
-        Label label = new Label(composite, SWT.NONE);
+        Label label = new Label(top, SWT.NONE);
         label.setText("Skeleton:");
 
         // The Skeleton selection combo
-        cmboSkelSelec = new Combo(composite, SWT.READ_ONLY);
-        cmboSkelSelec.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                jsApp.setSkeletonName(cmboSkelSelec.getText());
-            }
-        });
-
-        Button btnProps = new Button(composite, SWT.PUSH);
-        GridData layData = new GridData(GridData.FILL);
-        layData.widthHint = JSmoothUtils
-                .computeButtonWidth(btnProps, "Properties...");
-        btnProps.setLayoutData(layData);
-        btnProps.setText("Properties...");
-        btnProps.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-//                (new SkeletonPropertiesDialog(SkeletonPage.this, getApplication().getSkeletonModel())).open();
-            }
-        });
-
-        /*
-         * TODO
-         * 
-         * chkDebugWrapper = new Button(cmpContents, SWT.CHECK); layData = new
-         * GridData(GridData.FILL); layData.horizontalSpan = 3;
-         * chkDebugWrapper.setLayoutData(layData);
-         * chkDebugWrapper.setText("Display debug wrapper");
-         */
+        final Combo combo = new Combo(top, SWT.READ_ONLY);
+        GridData grid = new GridData(GridData.FILL);
+        grid.widthHint = 120;
+        combo.setLayoutData(grid);
         
-        return composite;
+        String[] skeletons = getApplication().getAllSkeletonNames();
+        String defaultSkeleton = getApplication().getInitialSkeletonName();
+        combo.setItems(skeletons);
+        int index = Arrays.binarySearch(skeletons, defaultSkeleton);
+        combo.select(index);
+        combo.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                getApplication().setSkeletonName(combo.getText());
+            }
+        });
+
+        Button button = new Button(top, SWT.PUSH);
+        grid = new GridData(GridData.FILL);
+        grid.widthHint = 120;
+        button.setLayoutData(grid);
+        button.setText("Properties...");
+        button.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                (new SkeletonPropertiesDialog(SkeletonPage.this)).open();
+            }
+        });
+
+        return top;
     }
-
-    public void update(Observable o, Object arg) {
-        String[] skelNames = skeletonMdl.getSkeletonNames();
-
-        cmboSkelSelec.setItems(skelNames);
-        getJSmoothWindow().getShell().layout();
-
-        // Select the right skeleton name
-        if (!arg.equals(UpdateMessage.MSGUPD_NULL_PROJECT)) {
-            cmboSkelSelec.select(getItemIndex(skelNames, jsApp
-                    .getSkeletonName()));
-        }
-    }
-
+    
     public boolean apply() {
         return false;
+    }
+
+    protected void configurePage() {
+        setImage(JSmoothResources.IMG_SWITCHER_SKELETON_PAGE);
+        setToolTip("Skeleton");
     }
 }

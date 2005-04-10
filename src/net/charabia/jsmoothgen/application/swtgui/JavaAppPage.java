@@ -3,7 +3,10 @@
  */
 package net.charabia.jsmoothgen.application.swtgui;
 
-import java.util.Observable;
+import java.util.Arrays;
+
+import net.charabia.jsmoothgen.application.JSmoothModelBean;
+import net.charabia.jsmoothgen.application.swtgui.resources.JSmoothResources;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -22,211 +25,268 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 
+/**
+ * @author Dumon
+ */
 public class JavaAppPage extends JSmoothPage {
-    private Text jarLocation;
-    private Text txtMainCls;
-    private Text txtArgs;
-    private List lstClspath;
-    private Button btnAddJar;
-    private Button btnAddFolder;
-    private Button btnRemove;
-
+    private Text jar;
+    private Text mainclass;
+    private Text args;
+    private List classpath;
+    private Button usejar;
+    private Button setjar;
+    private Button addjar;
+    private Button addfolder;
+    private Button remove;
+    
     public JavaAppPage(JSmoothApplication js) {
         super(js);
     }
 
     public Control createPageArea(Composite parent) {
-        Composite composite = new Composite(parent, SWT.NONE);
-        composite.setLayout(new GridLayout());
+        Composite top = new Composite(parent, SWT.NONE);
+        top.setLayout(new GridLayout());
 
-        Composite cmpJavaCmd = new Composite(composite, SWT.NONE);
+        Composite composite = new Composite(top, SWT.NONE);
         GridLayout layout = new GridLayout(3, false);
         layout.marginHeight = 0;
         layout.marginWidth = 0;
-        cmpJavaCmd.setLayout(layout);
-        cmpJavaCmd.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-        // Jar location
-        Label label = new Label(cmpJavaCmd, SWT.NONE);
-        label.setText("Jar location:");
-        GridData layData = new GridData(GridData.FILL);
-        label.setLayoutData(layData);
-
-        jarLocation = new Text(cmpJavaCmd, SWT.BORDER);
-        layData = new GridData(GridData.FILL_HORIZONTAL);
-        layData.widthHint = 250;
-        jarLocation.setLayoutData(layData);
-        jarLocation.addModifyListener(getModifyListener());
+        composite.setLayout(layout);
+        composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         
-        Button button = new Button(cmpJavaCmd, SWT.NONE);
-        button.setText("Browse...");
-        button.addSelectionListener(new SelectionAdapter() {
+        usejar = new Button(composite, SWT.CHECK);
+        usejar.setText("Use embedded JAR");
+        usejar.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                FileDialog dialog = new FileDialog(getShell(), SWT.SAVE);
-                dialog.setText("Jar Location");
-                String file = dialog.open();
-                if (file != null) {
-                    jarLocation.setText(file);
-                }
+                setModelUsejar(usejar.getSelection());
+                updateUsejarWidgets();
             }
         });
-        layData = new GridData(GridData.FILL);
-        layData.widthHint = JSmoothUtils.computeButtonWidth(button, "Browse...");
-        button.setLayoutData(layData);
-
-        // Main class
-        label = new Label(cmpJavaCmd, SWT.NONE);
-        label.setText("Main class:");
-        layData = new GridData(GridData.FILL);
-        label.setLayoutData(layData);
-
-        txtMainCls = new Text(cmpJavaCmd, SWT.BORDER);
-        layData = new GridData(GridData.FILL_HORIZONTAL);
-        layData.widthHint = 250;
-        txtMainCls.setLayoutData(layData);
-        txtMainCls.addModifyListener(getModifyListener());
+        GridData grid = new GridData(GridData.FILL);
+        grid.horizontalSpan = 3;
+        usejar.setLayoutData(grid);
         
-        new Label(cmpJavaCmd, SWT.NONE); // empty cell
+        // Jar location
+        Label label = new Label(composite, SWT.NONE);
+        label.setText("JAR location:");
+        grid = new GridData(GridData.FILL);
+        label.setLayoutData(grid);
+
+        jar = new Text(composite, SWT.BORDER);
+        grid = new GridData(GridData.FILL_HORIZONTAL);
+        grid.widthHint = 250;
+        jar.setLayoutData(grid);
+        jar.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                setModelJar(jar.getText());
+            }
+        });
+        
+        setjar = new Button(composite, SWT.NONE);
+        setjar.setText("Browse...");
+        setjar.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                FileDialog dialog = new FileDialog(getShell(), SWT.SAVE);
+                dialog.setText("JAR Location");
+                String file = dialog.open();
+                if (file != null) jar.setText(file);
+                setModelJar(file);
+            }
+        });
+        grid = new GridData(GridData.FILL);
+        grid.widthHint = 100;
+        setjar.setLayoutData(grid);
+        
+        label = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
+        grid = new GridData(GridData.FILL_HORIZONTAL);
+        grid.horizontalSpan = 3;
+        label.setLayoutData(grid);
+        
+        // Main class
+        label = new Label(composite, SWT.NONE);
+        label.setText("Main class:");
+        grid = new GridData(GridData.FILL);
+        label.setLayoutData(grid);
+
+        mainclass = new Text(composite, SWT.BORDER);
+        grid = new GridData(GridData.FILL_HORIZONTAL);
+        grid.widthHint = 250;
+        mainclass.setLayoutData(grid);
+        mainclass.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                setModelMainclass(mainclass.getText());
+            }
+        });
+        
+        new Label(composite, SWT.NONE); // empty cell
 
         // Arguments
-        label = new Label(cmpJavaCmd, SWT.NONE);
+        label = new Label(composite, SWT.NONE);
         label.setText("Arguments:");
-        layData = new GridData(GridData.FILL);
-        label.setLayoutData(layData);
+        grid = new GridData(GridData.FILL);
+        label.setLayoutData(grid);
 
-        txtArgs = new Text(cmpJavaCmd, SWT.BORDER);
-        layData = new GridData(GridData.FILL_HORIZONTAL);
-        layData.widthHint = 250;
-        txtArgs.setLayoutData(layData);
-        txtArgs.addModifyListener(getModifyListener());
+        args = new Text(composite, SWT.BORDER);
+        grid = new GridData(GridData.FILL_HORIZONTAL);
+        grid.widthHint = 250;
+        args.setLayoutData(grid);
+        args.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                setModelArguments(args.getText());
+            }
+        });
         
-        new Label(cmpJavaCmd, SWT.NONE); // empty cell
+        new Label(composite, SWT.NONE); // empty cell
 
         // Classpath list
-        Group grpClspath = new Group(composite, SWT.NONE);
-        grpClspath.setText("Classpath");
-        grpClspath.setLayout(new GridLayout());
-        layData = new GridData(GridData.FILL_HORIZONTAL);
-        layData.horizontalSpan = 3;
-        grpClspath.setLayoutData(layData);
-        grpClspath.setLayout(new GridLayout(2, false));
+        Group group = new Group(top, SWT.NONE);
+        group.setText("Classpath");
+        group.setLayout(new GridLayout());
+        grid = new GridData(GridData.FILL_HORIZONTAL);
+        grid.horizontalSpan = 3;
+        group.setLayoutData(grid);
+        group.setLayout(new GridLayout(2, false));
 
-        lstClspath = new List(grpClspath, SWT.BORDER | SWT.V_SCROLL
-                | SWT.H_SCROLL | SWT.MULTI);
-        layData = new GridData(GridData.FILL_BOTH);
-        layData.widthHint = 300; // TODO hard coded
-        layData.heightHint = lstClspath.getItemHeight() * 10; // TODO hard coded
-        lstClspath.setLayoutData(layData);
-        lstClspath.addSelectionListener(new SelectionAdapter() {
+        classpath = new List(group, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.MULTI);
+        grid = new GridData(GridData.FILL_BOTH);
+        grid.widthHint = 250; // TODO: Hardscoded
+        grid.heightHint = classpath.getItemHeight() * 10; // TODO: Hardcoded
+        classpath.setLayoutData(grid);
+        classpath.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 updateRemoveButton();
             }
         });
         
         // The classpath Button bar
-        Composite cmpButtonBar = new Composite(grpClspath, SWT.NONE);
-        cmpButtonBar.setLayoutData(new GridData(GridData.FILL_VERTICAL));
+        composite = new Composite(group, SWT.NONE);
+        composite.setLayoutData(new GridData(GridData.FILL_VERTICAL));
         layout = new GridLayout();
         layout.marginHeight = 0;
         layout.marginWidth = 2;
-        cmpButtonBar.setLayout(layout);
+        composite.setLayout(layout);
 
-        btnAddJar = new Button(cmpButtonBar, SWT.NONE);
-        btnAddJar.setText("Add JAR File...");
-        btnAddJar.addSelectionListener(new SelectionAdapter() {
+        addjar = new Button(composite, SWT.NONE);
+        addjar.setText("Add JAR File...");
+        addjar.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                FileDialog dialog = new FileDialog(getShell(), SWT.OPEN);
-                dialog.setText("JAR File");
-                String file = dialog.open();
-                if (file != null) {
-                    addClasspathItem(file);
-                    firePageModified();
-                }
+                addClasspathJar();
             }
         });
-        layData = new GridData(GridData.FILL_HORIZONTAL);
-        layData.widthHint = JSmoothUtils.computeButtonWidth(btnAddJar,
-                "Add JAR File...");
-        btnAddJar.setLayoutData(layData);
+        grid = new GridData(GridData.FILL_HORIZONTAL);
+        grid.widthHint = 130;
+        addjar.setLayoutData(grid);
 
-        btnAddFolder = new Button(cmpButtonBar, SWT.NONE);
-        btnAddFolder.setText("Add Class Folder...");
-        btnAddFolder.addSelectionListener(new SelectionAdapter() {
+        addfolder = new Button(composite, SWT.NONE);
+        addfolder.setText("Add Class Folder...");
+        addfolder.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                DirectoryDialog dialog = new DirectoryDialog(getShell(),
-                        SWT.SAVE);
-                dialog.setText("Current Directory");
-                String file = dialog.open();
-                if (file != null) {
-                    addClasspathItem(file);
-                    firePageModified();
-                }
+                addClassFolder();
             }
         });
-        layData = new GridData(GridData.FILL_HORIZONTAL);
-        layData.widthHint = JSmoothUtils.computeButtonWidth(btnAddFolder,
-                "Add Class Folder...");
-        btnAddFolder.setLayoutData(layData);
+        grid = new GridData(GridData.FILL_HORIZONTAL);
+        grid.widthHint = 130;
+        addfolder.setLayoutData(grid);
 
-        btnRemove = new Button(cmpButtonBar, SWT.NONE);
-        btnRemove.setText("Remove");
-        btnRemove.addSelectionListener(new SelectionAdapter() {
+        remove = new Button(composite, SWT.NONE);
+        remove.setText("Remove");
+        remove.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                lstClspath.remove(lstClspath.getSelectionIndices());
-                updateRemoveButton();
-                firePageModified();
+                removeItem();
             }
         });
-        layData = new GridData(GridData.FILL_HORIZONTAL);
-        layData.widthHint = JSmoothUtils.computeButtonWidth(btnRemove, "Remove");
-        btnRemove.setLayoutData(layData);
+        grid = new GridData(GridData.FILL_HORIZONTAL);
+        grid.widthHint = 130;
+        remove.setLayoutData(grid);
         
-        return composite;
+        updateRemoveButton();
+        updateUsejarWidgets();
+        
+        return top;
+    }
+    
+    private void setModelMainclass(String mainclass) {
+        System.out.println("[DEBUG] Setting mainclass to: " + mainclass);
+        JSmoothModelBean jsmodel = getApplication().getJSmoothModelBean();
+        jsmodel.setMainClassName(mainclass);
+    }
+
+    private void addClasspathJar() {
+        FileDialog dialog = new FileDialog(getShell(), SWT.OPEN);
+        dialog.setText("JAR File");
+        String file = dialog.open();
+        if (file != null) addClasspathItem(file);
+    }
+
+    private void removeItem() {
+        classpath.remove(classpath.getSelectionIndices());
+        updateRemoveButton();
+        setModelClasspath(classpath.getItems());
+    }
+    
+    private void setModelClasspath(String[] classpath) {
+        String classpathString = Arrays.asList(classpath).toString();
+        System.out.println("[DEBUG] Setting classpath to: " + classpathString);
+        JSmoothModelBean jsmodel = getApplication().getJSmoothModelBean();
+        jsmodel.setClassPath(classpath);
+    }
+    
+    private void addClassFolder() {
+        DirectoryDialog dialog = new DirectoryDialog(getShell(), SWT.SAVE);
+        dialog.setText("Current Directory");
+        String file = dialog.open();
+        if (file != null) addClasspathItem(file);
     }
 
     private void updateRemoveButton() {
-        int i = lstClspath.getItemCount();
+        int i = classpath.getItemCount();
         boolean enable = true;
         if (i == 0) {
             enable = false;
         } else {
-            int s = lstClspath.getSelectionCount();
+            int s = classpath.getSelectionCount();
             if (s == 0)
                 enable = false;
         }
-        btnRemove.setEnabled(enable);
+        remove.setEnabled(enable);
     }
 
     private void addClasspathItem(String item) {
+        String[] items = classpath.getItems();
+        
         // Check for duplicates
-        String[] items = lstClspath.getItems();
-        for (int i = 0; i < items.length; i++) {
-            if (items[i].equals(item))
-                return;
-        }
-
-        lstClspath.add(item);
-    }
-
-    public void update(Observable o, Object arg) {
+        if (Arrays.binarySearch(items, item) >= 0) return;
+        classpath.add(item);
+        
+        setModelClasspath(classpath.getItems());
     }
     
-    private ModifyListener getModifyListener() {
-        return new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                firePageModified();
-            }
-        };
-    }
-
-    public boolean apply() {
-//        try {
-//            getApplication().setJarLocation(jarLocation.getText());
-//        } catch (InvalidPathException e) {
-//            // FIXME:
-//            return false;
-//        }
-        return true;
+    private void updateUsejarWidgets() {
+        boolean b = usejar.getSelection();
+        setjar.setEnabled(b);
+        jar.setEnabled(b);
     }
     
+    private void setModelJar(String jarfile) {
+        System.out.println("[DEBUG] Setting jarfile to: " + jarfile);
+        JSmoothModelBean jsmodel = getApplication().getJSmoothModelBean();
+        jsmodel.setJarLocation(jarfile);
+    }
+    
+    private void setModelUsejar(boolean b) {
+        System.out.println("[DEBUG] Setting use embedded jar to: " + b);
+        JSmoothModelBean jsmodel = getApplication().getJSmoothModelBean();
+        jsmodel.setEmbeddedJar(b);
+    }
+    
+    private void setModelArguments(String args) {
+        System.out.println("[DEBUG] Setting argument to: " + args);
+        JSmoothModelBean jsmodel = getApplication().getJSmoothModelBean();
+        jsmodel.setArguments(args);
+    }
+
+    protected void configurePage() {
+        setImage(JSmoothResources.IMG_SWITCHER_APPLICATION);
+        setToolTip("Java Application");
+    }
 }

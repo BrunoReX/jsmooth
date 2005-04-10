@@ -3,15 +3,17 @@
  */
 package net.charabia.jsmoothgen.application.swtgui;
 
-import java.util.Observable;
-import java.util.Observer;
-
+import net.charabia.jsmoothgen.application.JSmoothModelBean;
+import net.charabia.jsmoothgen.application.swtgui.resources.JSmoothResources;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -19,159 +21,168 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-public class ExecutablePage extends JSmoothPage implements Observer {
-    private Text txtExecName;
-    private Text txtCurrDir;
-    private Label lblIcon;
+public class ExecutablePage extends JSmoothPage {
+    private Text exe;
+    private Text dir;
+    private Label icon;
 
     public ExecutablePage(JSmoothApplication js) {
         super(js);
     }
 
     public Control createPageArea(Composite parent) {
-        Composite composite = new Composite(parent, SWT.NONE);
-        composite.setLayout(new GridLayout(3, false));
+        Composite top = new Composite(parent, SWT.NONE);
+        top.setLayout(new GridLayout(3, false));
 
         // Executable name
-        Label label = new Label(composite, SWT.NONE);
+        Label label = new Label(top, SWT.NONE);
         label.setText("Executable name:");
-        GridData layoutData = new GridData(GridData.FILL);
-        label.setLayoutData(layoutData);
+        GridData grid = new GridData(GridData.FILL);
+        label.setLayoutData(grid);
 
-        txtExecName = new Text(composite, SWT.BORDER);
-        layoutData = new GridData(GridData.FILL_HORIZONTAL);
-        layoutData.widthHint = 250;
-        txtExecName.setLayoutData(layoutData);
+        exe = new Text(top, SWT.BORDER);
+        grid = new GridData(GridData.FILL_HORIZONTAL);
+        grid.widthHint = 250;
+        exe.setLayoutData(grid);
+        exe.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                setModelExename(exe.getText());
+            }
+        });
 
-        Button button = new Button(composite, SWT.NONE);
-        button.setSize(JSmoothUtils.computeButtonWidth(button, "Browse..."),
-                SWT.DEFAULT);
+        Button button = new Button(top, SWT.NONE);
         button.setText("Browse...");
         button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 FileDialog dialog = new FileDialog(getShell(), SWT.SAVE);
                 dialog.setText("Executable Name");
                 String file = dialog.open();
-                if (file != null) {
-                    // txtExecName.setText(file);
-                    // adapter.setExecutableFile(file);
-                }
+                if (file != null) setModelExename(exe.getText());
             }
         });
-        layoutData = new GridData(GridData.FILL);
-        layoutData.widthHint = button.getSize().x;
-        button.setLayoutData(layoutData);
+        grid = new GridData(GridData.FILL);
+        grid.widthHint = 100;
+        button.setLayoutData(grid);
 
         // Current directory
-        label = new Label(composite, SWT.NONE);
+        label = new Label(top, SWT.NONE);
         label.setText("Current directory:");
-        layoutData = new GridData(GridData.FILL);
-        label.setLayoutData(layoutData);
+        grid = new GridData(GridData.FILL);
+        label.setLayoutData(grid);
 
-        txtCurrDir = new Text(composite, SWT.BORDER);
-        layoutData = new GridData(GridData.FILL_HORIZONTAL);
-        layoutData.widthHint = 250;
-        txtCurrDir.setLayoutData(layoutData);
-
-        button = new Button(composite, SWT.NONE);
-        button.setSize(JSmoothUtils.computeButtonWidth(button, "Browse..."),
-                SWT.DEFAULT);
+        dir = new Text(top, SWT.BORDER);
+        grid = new GridData(GridData.FILL_HORIZONTAL);
+        grid.widthHint = 250;
+        dir.setLayoutData(grid);
+        dir.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                setModelCurrentdir(dir.getText());
+            }
+        });
+        
+        button = new Button(top, SWT.NONE);
         button.setText("Browse...");
         button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                DirectoryDialog dialog = new DirectoryDialog(getShell(),
-                        SWT.SAVE);
+                DirectoryDialog dialog = new DirectoryDialog(getShell(), SWT.SAVE);
                 dialog.setText("Current Directory");
                 String dir = dialog.open();
-                if (dir != null) {
-                    txtCurrDir.setText(dir);
-                }
+                if (dir != null) ExecutablePage.this.dir.setText(dir);
             }
         });
-        layoutData = new GridData(GridData.FILL);
-        layoutData.widthHint = button.getSize().x;
-        button.setLayoutData(layoutData);
+        grid = new GridData(GridData.FILL);
+        grid.widthHint = 100;
+        button.setLayoutData(grid);
 
-        label = new Label(composite, SWT.NONE);
-        label.setText("Executable icon:");
-        layoutData = new GridData(GridData.FILL);
-        label.setLayoutData(layoutData);
+        Group group = new Group(top, SWT.NONE);
+        GridLayout layout = new GridLayout();
+        group.setLayout(layout);
+        grid = new GridData(GridData.FILL);
+        grid.horizontalSpan = 3;
+        group.setLayoutData(grid);
+        group.setText("Executable icon");
 
-        Composite cmpIcon = new Composite(composite, SWT.NONE);
-        GridLayout layout = new GridLayout(2, false);
-        layout.marginHeight = 0;
-        layout.marginWidth = 0;
-        cmpIcon.setLayout(layout);
-        layoutData = new GridData(GridData.FILL);
-        cmpIcon.setLayoutData(layoutData);
+        icon = new Label(group, SWT.BORDER | SWT.FLAT);
+        grid = new GridData(GridData.FILL | GridData.HORIZONTAL_ALIGN_CENTER);
+        grid.widthHint = 48;
+        grid.heightHint = 48;
+        icon.setLayoutData(grid);
 
-        lblIcon = new Label(cmpIcon, SWT.BORDER | SWT.FLAT);
-        layoutData = new GridData(GridData.FILL);
-        layoutData.widthHint = 32;
-        layoutData.heightHint = 32;
-        lblIcon.setLayoutData(layoutData);
-
-        button = new Button(cmpIcon, SWT.NONE);
-        button.setSize(JSmoothUtils.computeButtonWidth(button, "Browse..."),
-                SWT.DEFAULT);
+        button = new Button(group, SWT.NONE);
         button.setText("Browse...");
         button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                browseIconPressed();
+                FileDialog dialog = new FileDialog(getShell(), SWT.OPEN);
+                dialog.setText("Icon File");
+                String file = dialog.open();
+
+                // Means "CANCEL"
+                if (file == null) return;
+
+                setModelIcon(setIcon(file) ? file : null);
             }
         });
-        layoutData = new GridData(GridData.FILL);
-        layoutData.widthHint = button.getSize().x;
-        button.setLayoutData(layoutData);
+        grid = new GridData(GridData.FILL);
+        grid.widthHint = 100;
+        button.setLayoutData(grid);
         
-        return composite;
+        return top;
     }
 
-    private void browseIconPressed() {
-        FileDialog dialog = new FileDialog(getShell(), SWT.OPEN);
-        dialog.setText("Icon File");
-        String file = dialog.open();
-
-        // Means "CANCEL"
-        if (file == null)
-            return;
-
-        if (setIconImage(file)) {
-            // adapter.setExecutableFile(file); TODO
-        }
+    private void setModelCurrentdir(String dir) {
+        System.out.println("[DEBUG] Setting exe name to: " + dir);
+        JSmoothModelBean jsmodel = getApplication().getJSmoothModelBean();
+        jsmodel.setCurrentDirectory(dir);
     }
 
-    private boolean setIconImage(String file) {
-        if (file == null) {
-            // Clear the label's image
-            lblIcon.setImage(null);
-            return true;
-        }
+    private void setModelExename(String exename) {
+        System.out.println("[DEBUG] Setting exe name to: " + exename);
+        JSmoothModelBean jsmodel = getApplication().getJSmoothModelBean();
+        jsmodel.setExecutableName(exename);
+    }
 
+    private boolean setIcon(String file) {
         Image img = null;
+        
+        img = icon.getImage();
+        if (img != null) {
+            // Clear the label's image
+            icon.setImage(null);
+            img.dispose();
+        }
+        
+        if (file == null) return true;
+
         try {
-            img = new Image(getControl().getDisplay(), file);
+            img = new Image(getShell().getDisplay(), file);
+            ImageData data = img.getImageData();
+            if (data.width > 48 && data.height > 48) {
+                // TODO: Output a message to JSmooth Console.
+                System.out.println("[DEBUG] The image size is too big, > 48x48");
+                return false;
+            }
         } catch (SWTException e) {
             System.out.println("[ERROR] " + e.getMessage());
             return false;
         }
 
-//        lblIcon.setImage(img);
+        icon.setImage(img);
 
         return true;
     }
-
-    public void update(Observable o, Object arg) {
-//        txtExecName.setText(execMdl.getExecutableName());
-//        txtCurrDir.setText(execMdl.getCurrentDirectory());
-//        setIconImage(execMdl.getIconFile());
+    
+    private void setModelIcon(String iconfile) {
+        System.out.println("[DEBUG] Setting icon file to: " + iconfile);
+        JSmoothModelBean jsmodel = getApplication().getJSmoothModelBean();
+        jsmodel.setIconLocation(iconfile);
     }
 
-    public boolean apply() {
-        return false;
+    protected void configurePage() {
+        setImage(JSmoothResources.IMG_SWITCHER_EXECUTABLE);
+        setToolTip("Windows Executable");
     }
-
 }

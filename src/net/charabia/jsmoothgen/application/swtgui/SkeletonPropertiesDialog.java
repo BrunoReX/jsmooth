@@ -5,12 +5,11 @@ package net.charabia.jsmoothgen.application.swtgui;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Vector;
 
 import net.charabia.jsmoothgen.skeleton.SkeletonProperty;
 
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -20,28 +19,26 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
-public class SkeletonPropertiesDialog implements Observer {
-
-    private Text txt;
-
-    private Button chkPressKey;
-
+/**
+ * @author Dumon
+ */
+public class SkeletonPropertiesDialog extends Dialog {
+    private Text text;
+    private Button check;
     private List controls = new Vector();
-
-    private JSmoothPage jsPage;
-
-    private SkeletonModel skelMdl;
-
-    public SkeletonPropertiesDialog(JSmoothPage jsPage, SkeletonModel skelMdl) {
-//        super(jsPage.getShell());
-        this.skelMdl = skelMdl;
+    private SkeletonPage page;
+    private JSmoothApplication app;
+    
+    public SkeletonPropertiesDialog(SkeletonPage page) {
+        super(page.getApplication().getShell());
+        this.page = page;
     }
 
     protected Control createDialogArea(Composite parent) {
         Composite cmpDlgArea = new Composite(parent, SWT.NONE);
         cmpDlgArea.setLayout(new GridLayout());
 
-        SkeletonProperty[] props = skelMdl.getProperties();
+        SkeletonProperty[] props = page.getApplication().getSkeletonProperties();
 
         for (int i = 0; i < props.length; i++) {
             Control c = createPropertyControl(cmpDlgArea, props[i]);
@@ -52,95 +49,79 @@ public class SkeletonPropertiesDialog implements Observer {
         return cmpDlgArea;
     }
 
-    private Control createPropertyControl(Composite wParent,
-            SkeletonProperty prop) {
+    private Control createPropertyControl(Composite wParent, SkeletonProperty prop) {
+        Group group = null;
+        GridData grid = null;
+        if (prop.getType().equals(SkeletonProperty.TYPE_STRING)) {
+            group = new Group(wParent, SWT.NONE);
+            grid = new GridData(GridData.FILL);
+            grid.widthHint = 400;
+            group.setLayoutData(grid);
+            group.setLayout(new GridLayout());
+            group.setText(prop.getLabel());
 
-        switch (skelMdl.getPropertyType(prop)) {
-        case SkeletonModel.TYPE_TEXT_SINGLE:
-            // The group wrapping the text field
-            //{{
-            Group grp = new Group(wParent, SWT.NONE);
-            GridData layData = new GridData(GridData.FILL);
-            layData.widthHint = 400;
-            grp.setLayoutData(layData);
-            grp.setLayout(new GridLayout());
-            grp.setText(skelMdl.getPropertyLabel(prop));
-            //}}
+            text = new Text(group, SWT.SINGLE | SWT.BORDER);
+            grid = new GridData(GridData.FILL_BOTH);
+            text.setLayoutData(grid);
+            text.setText(prop.getValue());
 
-            // The actual text field
-            txt = new Text(grp, SWT.SINGLE | SWT.BORDER);
-            layData = new GridData(GridData.FILL_BOTH);
-            txt.setLayoutData(layData);
-            txt.setText(skelMdl.getPropertyValue(prop));
+            return text;
+        }
+        else if (prop.getType().equals(SkeletonProperty.TYPE_TEXTAREA)) {
+            group = new Group(wParent, SWT.NONE);
+            grid = new GridData(GridData.FILL);
+            grid.widthHint = 400;
+            grid.heightHint = 100;
+            group.setLayoutData(grid);
+            group.setLayout(new GridLayout());
+            group.setText(prop.getLabel());
 
-            return txt;
+            text = new Text(group, SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+            grid = new GridData(GridData.FILL_BOTH);
+            text.setLayoutData(grid);
+            text.setText(prop.getValue());
 
-        case SkeletonModel.TYPE_TEXT_MULTI:
-            // The group wrapping the text field
-            //{{
-            grp = new Group(wParent, SWT.NONE);
-            layData = new GridData(GridData.FILL);
-            layData.widthHint = 400;
-            layData.heightHint = 100;
-            grp.setLayoutData(layData);
-            grp.setLayout(new GridLayout());
-            grp.setText(skelMdl.getPropertyLabel(prop));
-            //}}
-
-            // The actual text field
-            txt = new Text(grp, SWT.MULTI | SWT.BORDER | SWT.H_SCROLL
-                    | SWT.V_SCROLL);
-            layData = new GridData(GridData.FILL_BOTH);
-            txt.setLayoutData(layData);
-            txt.setText(skelMdl.getPropertyValue(prop));
-
-            return txt;
-
-        case SkeletonModel.TYPE_CHECK:
+            return text;
+        }
+        else if (prop.getType().equals(SkeletonProperty.TYPE_BOOLEAN)) {
             Button chk = new Button(wParent, SWT.CHECK);
-            chk.setText(skelMdl.getPropertyLabel(prop));
-            chk.setSelection("1".equals(skelMdl.getPropertyValue(prop)));
+            chk.setText(prop.getLabel());
+            chk.setSelection("1".equals(prop.getValue()));
 
             return chk;
-
-        default:
-            return null;
+        }
+        else {
+            throw new UnsupportedOperationException("Unknown skeleton property type.");
         }
     }
 
     protected void okPressed() {
         Iterator it = controls.iterator();
-
+        
+        JSmoothApplication app = page.getApplication();
+        Control ctrl = null;
+        String value = null;
+        SkeletonProperty prop = null;
         while (it.hasNext()) {
-            Control ctrl = (Control) it.next();
-            SkeletonProperty prop = (SkeletonProperty) ctrl.getData();
-            switch (skelMdl.getPropertyType(prop)) {
-            case SkeletonModel.TYPE_TEXT_SINGLE:
-                String value = ((Text) ctrl).getText();
-                skelMdl.setPropertyValue(prop, value); // TODO
-
-                break;
-
-            case SkeletonModel.TYPE_TEXT_MULTI:
+            ctrl = (Control) it.next();
+            prop = (SkeletonProperty) ctrl.getData();
+            if (prop.getType().equals(SkeletonProperty.TYPE_STRING)) {
                 value = ((Text) ctrl).getText();
-                skelMdl.setPropertyValue(prop, value); // TODO
-
-                break;
-
-            case SkeletonModel.TYPE_CHECK:
+                prop.setValue(value);
+            }
+            else if (prop.getType().equals(SkeletonProperty.TYPE_TEXTAREA)) {
+                value = ((Text) ctrl).getText();
+                prop.setValue(value);
+            }
+            else if (prop.getType().equals(SkeletonProperty.TYPE_BOOLEAN)) {
                 boolean b = ((Button) ctrl).getSelection();
                 value = (b == true) ? "1" : "0";
-                skelMdl.setPropertyValue(prop, value); // TODO
-
-                break;
+                prop.setValue(value);
             }
+            app.setSkeletonProperty(prop);
         }
 
-//        super.okPressed();
-    }
-
-    public void update(Observable o, Object arg) {
-        // TODO
+        super.okPressed();
     }
 
 }

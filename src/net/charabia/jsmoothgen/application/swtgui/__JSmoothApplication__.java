@@ -15,19 +15,13 @@ import net.charabia.jsmoothgen.skeleton.SkeletonList;
 import net.charabia.jsmoothgen.skeleton.SkeletonProperty;
 
 public class __JSmoothApplication__ {
-
     private boolean dirty = false;
-
     private JSmoothModelBean modelBean;
-
     private File projFile;
-
+    private ExeCompiler compiler;
     private SkeletonModel skeletonModel;
     
-    private ExeCompiler compiler;
-    
     public __JSmoothApplication__() {
-        skeletonModel = new SkeletonModel(this);
         compiler = new ExeCompiler();
     }
 
@@ -159,8 +153,7 @@ public class __JSmoothApplication__ {
     }
 
     public boolean saveProject() {
-        System.out.println("[DEBUG] Saving project to file: "
-                + projFile.getAbsolutePath());
+        System.out.println("[DEBUG] Saving project to file: " + projFile.getAbsolutePath());
         try {
             JSmoothModelPersistency.save(projFile, modelBean);
         } catch (IOException e) {
@@ -227,8 +220,8 @@ public class __JSmoothApplication__ {
         setProperties(modelBean, skeletonModel.getProperties());
     }
     
-    public void setJarLocation(String jarLocation) throws InvalidPathException {
-        modelBean.setJarLocation(jarLocation);
-    }
+//    public void setJarLocation(String jarLocation) throws InvalidPathException {
+//        modelBean.setJarLocation(jarLocation);
+//    }
     
 }

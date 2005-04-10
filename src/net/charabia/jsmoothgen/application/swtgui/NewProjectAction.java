@@ -3,12 +3,14 @@
  */
 package net.charabia.jsmoothgen.application.swtgui;
 
-
-public class NewProjectAction implements JSmoothAction {
+/**
+ * @author Dumon
+ */
+public class NewProjectAction extends JSmoothAction {
     private JSmoothApplication js;
     
     public NewProjectAction(JSmoothApplication js) {
-        this.js = js;
+        super(js);
     }
 
     public void run() {

@@ -4,20 +4,30 @@
 package net.charabia.jsmoothgen.application.swtgui;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 
+/**
+ * @author Dumon
+ */
 public abstract class JSmoothPage {
     private Control control;
     private JSmoothApplication js;
-    private Set modifyListeners;
-    private String toolTip;
+    private Set modifyListeners = new HashSet();
+    private String toolTip = "";
     private Image image;
+    private boolean hidden = false;
+    private String id = "";
+    private ToolItem item;
     
     public JSmoothPage(JSmoothApplication js) {
         this.js = js;
@@ -27,8 +37,29 @@ public abstract class JSmoothPage {
         return control= createPageArea(parent);
     }
     
-    public abstract Control createPageArea(Composite parent);
-
+    public ToolItem createToolItem(final ToolBar toolbar) {
+        item = new ToolItem(toolbar, SWT.RADIO);
+        item.setImage(getImage());
+        item.setToolTipText(getToolTip());
+        item.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                js.showPage(JSmoothPage.this);
+                ToolItem[] items = toolbar.getItems();
+                for (int i = 0; i < items.length; i++) {
+                    if (items[i] != item) items[i].setSelection(false);
+                }
+            }
+        });
+        return item;
+    }
+    
+    public ToolItem getToolItem() {
+        return item;
+    }
+    
+    protected abstract Control createPageArea(Composite parent);
+    protected abstract void configurePage();
+    
     public Control getControl() {
         return control;
     }
@@ -45,21 +76,6 @@ public abstract class JSmoothPage {
         return js.getShell();
     }
     
-    public void addPageModifyListener(PageModifyListener modifyListener) {
-        if (modifyListeners == null) {
-            modifyListeners = new HashSet();
-        }
-        modifyListeners.add(modifyListener);
-    }
-    
-    protected void firePageModified() {
-        for (Iterator it = modifyListeners.iterator(); it.hasNext(); ) {
-            ((PageModifyListener) it.next()).pageModified();
-        }
-    }
-    
-    public abstract boolean apply();
-    
     public void setToolTip(String toolTip) {
         this.toolTip = toolTip;
     }
@@ -69,7 +85,11 @@ public abstract class JSmoothPage {
     }
     
     public String getId() {
-        return getClass().toString();
+        return id;
+    }
+    
+    public void setId(String id) {
+        this.id = id;
     }
     
     public Image getImage() {
@@ -82,5 +102,13 @@ public abstract class JSmoothPage {
     
     protected JSmoothApplication getApplication() {
         return js;
+    }
+    
+    protected void setHidden(boolean hidden) {
+        this.hidden = hidden;
+    }
+    
+    public boolean isHidden() {
+        return hidden;
     }
 }
