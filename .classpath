@@ -8,6 +8,7 @@
 	<classpathentry kind="lib" path="lib/l2fprod-common.jar"/>
 	<classpathentry sourcepath="E:/eclipse30/plugins/org.eclipse.platform.source_3.0.0/src/org.eclipse.ui.forms_3.0.0/formssrc.zip" kind="lib" path="lib/forms.jar"/>
 	<classpathentry kind="lib" path="E:/eclipse30/plugins/org.eclipse.core.runtime_3.0.0/runtime.jar"/>
-	<classpathentry kind="lib" path="lib/jface.jar"/>
+	<classpathentry kind="lib" path="lib/runtime.jar"/>
+	<classpathentry sourcepath="E:/eclipse30/plugins/org.eclipse.platform.source_3.0.0/src/org.eclipse.jface_3.0.0/jfacesrc.zip" kind="lib" path="lib/jface.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
