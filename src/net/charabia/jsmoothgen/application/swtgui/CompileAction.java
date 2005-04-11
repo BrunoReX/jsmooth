@@ -15,7 +15,7 @@ public class CompileAction extends JSmoothAction {
         System.out.println("[DEBUG] Compiling, stand by...");
         JSmoothApplication app = getApplication();
         if (!app.hasProjectFile()) {
-            app.showConsoleMessage("Cannot compile without a project file. Please save the project or load a new one, then try again.");
+            app.consoleMessage("Cannot compile without a project file. Please save the project or load a new one, then try again.");
             return false;
         }
         else {

@@ -48,6 +48,7 @@ public final class JSmoothApplication {
     public final JSmoothAction ACTION_SAVE_AS = new SaveAsProjectAction(JSmoothApplication.this);
     public final JSmoothAction ACTION_NEW = new NewAction(JSmoothApplication.this);
     public final JSmoothAction ACTION_COMPILE = new CompileAction(JSmoothApplication.this);
+    public final JSmoothAction ACTION_RUNEXE = new RunexeAction(JSmoothApplication.this);
     public final JSmoothAction ACTION_CONSOLE_CLEAR = new ClearConsoleAction(JSmoothApplication.this);
     
     private Shell shell;
@@ -65,10 +66,12 @@ public final class JSmoothApplication {
     public final JSmoothPage PAGE_EXECUTABLE = new ExecutablePage(JSmoothApplication.this);
     public final JSmoothPage PAGE_WELCOME = new WelcomePage(JSmoothApplication.this);
     public final JSmoothPage PAGE_APPLICATION = new JavaAppPage(JSmoothApplication.this);
+    public final JSmoothPage PAGE_JVM_OPTIONS = new JVMOptionsPage(JSmoothApplication.this);
     public final JSmoothPage[] PAGES = new JSmoothPage[] {
                  PAGE_WELCOME,
                  PAGE_SKELETON,
                  PAGE_APPLICATION,
+                 PAGE_JVM_OPTIONS,
                  PAGE_EXECUTABLE};
     
     // Page area
@@ -102,7 +105,7 @@ public final class JSmoothApplication {
         jsmodel = new JSmoothModelBean();
         jsmodel.setSkeletonName(getInitialSkeletonName());
         setSkeletonProperties(getInititalSkeletonProperties());
-        jsmodel.setExecutableName("<NONE>");
+        jsmodel.setExecutableName("");
         jsmodel.setArguments("");
         jsmodel.setBundledJVMPath("");
         jsmodel.setClassPath(new String[0]);
@@ -186,6 +189,7 @@ public final class JSmoothApplication {
         PAGE_SKELETON.createToolItem(switcher);
         PAGE_APPLICATION.createToolItem(switcher);
         PAGE_EXECUTABLE.createToolItem(switcher);
+        // PAGE_JVM_OPTIONS.createToolItem(switcher);
     }
     
     private void createMainMenu(Shell shell) {
@@ -252,6 +256,14 @@ public final class JSmoothApplication {
         item.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 ACTION_COMPILE.run();
+            }
+        });
+        
+        item = new MenuItem(menu, SWT.NULL);
+        item.setText("Run .exe");
+        item.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                ACTION_RUNEXE.run();
             }
         });
         
@@ -498,7 +510,7 @@ public final class JSmoothApplication {
     }
     
     public boolean compileProject() {
-        showConsoleMessage("Compiling...");
+        consoleMessage("=== Compilation ===");
         File basedir = projectfile.getParentFile();
         jsmodel.normalizePaths(basedir);
         String skeletonName = jsmodel.getSkeletonName();
@@ -518,25 +530,35 @@ public final class JSmoothApplication {
             // Do nothing, bellow we the errors anyway (see bellow).
         }
         
-        showConsoleMessages((String[]) compiler.getErrors().toArray(new String[0]));
+        consoleMessages((String[]) compiler.getErrors().toArray(new String[0]));
         compiler.cleanErrors();
         
         return success;
     }
     
-    public void showConsoleMessage(String msg) {
+    public void consoleMessage(String msg) {
         if (console.getText().length() != 0) console.append("\r\n"); // New line ?
         console.append(msg);
     }
     
-    public void showConsoleMessages(String[] msg) {
+    public void consoleMessages(String[] msg) {
         for (int i = 0; i < msg.length; i++) {
-            showConsoleMessage(msg[i]);
+            consoleMessage(msg[i]);
         }
     }
     
     public void clearConsole() {
         console.setText("");
+    }
+    
+    public void consoleSection(String title) {
+        StringBuffer buffer = new StringBuffer("-------------------------------------------------------------------------------------");
+        if (title == null) {
+            consoleMessage(buffer.toString());
+            return;
+        }
+        buffer.replace(0, title.length() + 1, title + " ");
+        consoleMessage(buffer.toString());
     }
     
     /**
@@ -630,15 +652,15 @@ public final class JSmoothApplication {
     
     class SWTCompileListener implements ExeCompiler.StepListener {
         public void setNewState(int percent, String state) {
-            showConsoleMessage(state);
+            consoleMessage(state);
         }
 
         public void failed() {
-            showConsoleMessage("Compile failed.");
+            consoleMessage("Compile failed.");
         }
 
         public void complete() {
-            showConsoleMessage("Compile successfull.");
+            consoleMessage("Compile successfull.");
         }
     }
 }

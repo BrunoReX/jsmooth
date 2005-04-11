@@ -19,7 +19,7 @@ public class OpenAction extends JSmoothAction {
         String file = dialog.open();
         if (file != null) {
             boolean ok = getApplication().openProject(file);
-            if (ok) getApplication().showConsoleMessage("Opened the project file " + file);
+            if (ok) getApplication().consoleMessage("Opened the project file " + file);
             return ok;
         }
         else {

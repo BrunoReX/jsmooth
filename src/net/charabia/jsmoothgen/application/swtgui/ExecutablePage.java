@@ -189,7 +189,7 @@ public class ExecutablePage extends JSmoothPage {
     public void load() {
         JSmoothModelBean jsmodel = getApplication().getModelBean();
         String exename = jsmodel.getExecutableName();
-        if (exename.equals("<NONE>") || exename == null) exename = "";
+        if (exename == null) exename = "";
         this.exe.setText(exename);
         
         String iconfile = jsmodel.getIconLocation();
