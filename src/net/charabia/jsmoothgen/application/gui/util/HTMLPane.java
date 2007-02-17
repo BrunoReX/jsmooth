@@ -28,9 +28,7 @@ import java.io.*;
 import com.l2fprod.common.swing.*;
 
 /**
- * Represents a JTextField associated with a button that pops up a
- * file dialog selector.
- *
+ * 
  */
 
 public class HTMLPane extends JPanel
