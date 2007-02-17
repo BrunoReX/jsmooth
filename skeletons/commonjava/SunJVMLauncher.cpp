@@ -39,17 +39,25 @@ std::string SunJVMLauncher::toString() const
 
 bool SunJVMLauncher::run(ResourceManager& resource, const string& origin)
 {
-    if ( ! VmVersion.isValid())
-        return false;
+  // patch proposed by zregvart
+  // if you're using bundeled JVM, you apriori
+  // specified version, and the version check
+  // would require instantiateing JVM which is
+  // an overhead in both code and runtime
+    if (origin != "bundled") {
 
-    Version max(resource.getProperty(ResourceManager:: KEY_MAXVERSION));
-    Version min(resource.getProperty(ResourceManager:: KEY_MINVERSION));
-    
-    if (min.isValid() && (VmVersion < min))
+      if ( ! VmVersion.isValid())
+	return false;
+      
+      Version max(resource.getProperty(ResourceManager:: KEY_MAXVERSION));
+      Version min(resource.getProperty(ResourceManager:: KEY_MINVERSION));
+  
+      if (min.isValid() && (VmVersion < min))
         return false;
-
-    if (max.isValid() && (max < VmVersion))
-        return false;
+      
+      if (max.isValid() && (max < VmVersion))
+	return false;
+    }
 
     DEBUG("Launching " + toString());
 
@@ -129,160 +137,161 @@ bool SunJVMLauncher::runProc(ResourceManager& resource, bool noConsole, const st
 
 bool SunJVMLauncher::runVM12DLL(ResourceManager& resource, const string& origin)
 {
-    std::string jarpath = resource.saveJarInTempFile();
-    std::string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));
+  std::string jarpath = resource.saveJarInTempFile();
+  std::string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));
 
-    std::string args = resource.getProperty(ResourceManager::KEY_ARGUMENTS);
+  std::string args = resource.getProperty(ResourceManager::KEY_ARGUMENTS);
 
-    vector<string> pargs = StringUtils::split(args, " \t\n\r", "\"\'");
-    for (int i=0; i<pargs.size(); i++)
-        DEBUG("ARG:: <" + pargs[i] + ">");
+  vector<string> pargs = StringUtils::split(args, " \t\n\r", "\"\'");
+  for (int i=0; i<pargs.size(); i++)
+    DEBUG("ARG:: <" + pargs[i] + ">");
     
-    HINSTANCE vmlib = LoadLibrary(this->RuntimeLibPath.c_str());
+  HINSTANCE vmlib = LoadLibrary(this->RuntimeLibPath.c_str());
  
-    if (vmlib != 0)
+  if (vmlib != 0)
     {
-        DEBUG("VM12 LOADED!");
-        CreateJavaVM_t CreateJavaVM = (CreateJavaVM_t)GetProcAddress(vmlib, "JNI_CreateJavaVM");
+      DEBUG("VM12 LOADED!");
+      CreateJavaVM_t CreateJavaVM = (CreateJavaVM_t)GetProcAddress(vmlib, "JNI_CreateJavaVM");
 
-        GetDefaultJavaVMInitArgs_t GetDefaultJavaVMInitArgs = (GetDefaultJavaVMInitArgs_t)GetProcAddress(vmlib, "JNI_GetDefaultJavaVMInitArgs");
+      GetDefaultJavaVMInitArgs_t GetDefaultJavaVMInitArgs = (GetDefaultJavaVMInitArgs_t)GetProcAddress(vmlib, "JNI_GetDefaultJavaVMInitArgs");
         
-        if ((CreateJavaVM != NULL) && (GetDefaultJavaVMInitArgs != NULL))
+      if ((CreateJavaVM != NULL) && (GetDefaultJavaVMInitArgs != NULL))
         {
-                DEBUG("CREATEJAVAVM FN LOADED");
-                JavaVM *vm = new JavaVM();
-                JNIEnv *env = new JNIEnv();
+	  DEBUG("CREATEJAVAVM FN LOADED");
+	  JavaVM *vm = new JavaVM();
+	  JNIEnv *env = new JNIEnv();
 
-                jint res;
-                jclass cls;
-                jmethodID mid;
-                jstring jstr;
-                jobjectArray args;
-                char classpath[2048];
+	  jint res;
+	  jclass cls;
+	  jmethodID mid;
+	  jstring jstr;
+	  jobjectArray args;
+	  char classpath[2048];
 
-        //
-        // create the properties array
-        //
-      const vector<JavaProperty>& jprops = resource.getJavaProperties();
-      vector<string> jpropstrv;
-      for (int i=0; i<jprops.size(); i++)
-      {
-            const JavaProperty& jp = jprops[i];
-	    string value = jp.getValue();
+	  //
+	  // create the properties array
+	  //
+	  const vector<JavaProperty>& jprops = resource.getJavaProperties();
+	  vector<string> jpropstrv;
+	  for (int i=0; i<jprops.size(); i++)
+	    {
+	      const JavaProperty& jp = jprops[i];
+	      string value = jp.getValue();
 
-	    value = StringUtils::replace(value, "${VMSELECTION}", origin);
-	    value = StringUtils::replace(value, "${VMSPAWNTYPE}", "JVMDLL");
+	      value = StringUtils::replace(value, "${VMSELECTION}", origin);
+	      value = StringUtils::replace(value, "${VMSPAWNTYPE}", "JVMDLL");
 
-            jpropstrv.push_back("-D" + jp.getName() + "=" + value);
-      }
+	      jpropstrv.push_back("-D" + jp.getName() + "=" + value);
+	    }
 
-      if (resource.getProperty("maxheap") != "")
-      {
-            jpropstrv.push_back("-Xmx" + sizeToString(StringUtils::parseInt(resource.getProperty("maxheap"))) + " ");
-      }
-      if (resource.getProperty("initialheap") != "")
-      {
-            jpropstrv.push_back("-Xms" + sizeToString(StringUtils::parseInt(resource.getProperty("initialheap"))) + " ");
-      }
+	  if (resource.getProperty("maxheap") != "")
+	    {
+	      jpropstrv.push_back("-Xmx" + sizeToString(StringUtils::parseInt(resource.getProperty("maxheap")))); // the extra space at the end would cause JNI_EINVAL return code in CreateJavaVM
+
+	    }
+	  if (resource.getProperty("initialheap") != "")
+	    {
+	      jpropstrv.push_back("-Xms" + sizeToString(StringUtils::parseInt(resource.getProperty("initialheap")))); // the extra space at the end would cause JNI_EINVAL return code in CreateJavaVM
+	    }
 
 
                 
-                JavaVMInitArgs vm_args;
-                JavaVMOption options[1 + jpropstrv.size()];
-                std::string cpoption = "-Djava.class.path=\"";
-                cpoption += jarpath;
-                cpoption += ";" + resource.getNormalizedClassPath();
-		cpoption += "\"";
+	  JavaVMInitArgs vm_args;
+	  JavaVMOption options[1 + jpropstrv.size()];
+	  std::string cpoption = "-Djava.class.path=\"";
+	  cpoption += jarpath;
+	  cpoption += ";" + resource.getNormalizedClassPath();
+	  cpoption += "\"";
 
-                DEBUG("Classpath: " + cpoption);
-                options[0].optionString =  (char*)cpoption.c_str();
-                vm_args.version = 0x00010002;
-                vm_args.options = options;
-                vm_args.nOptions = 1 + jpropstrv.size();
+	  DEBUG("Classpath: " + cpoption);
+	  options[0].optionString =  (char*)cpoption.c_str();
+	  vm_args.version = 0x00010002;
+	  vm_args.options = options;
+	  vm_args.nOptions = 1 + jpropstrv.size();
                 
-                for (int i=0; i<jpropstrv.size(); i++)
-                {
-                    options[1 + i].optionString = (char*)jpropstrv[i].c_str();
-                }
+	  for (int i=0; i<jpropstrv.size(); i++)
+	    {
+	      options[1 + i].optionString = (char*)jpropstrv[i].c_str();
+	    }
                 
-                DEBUG("OPTIONS SET!");
+	  DEBUG("OPTIONS SET!");
                 
-                vm_args.ignoreUnrecognized = JNI_FALSE;
+	  vm_args.ignoreUnrecognized = JNI_FALSE;
                 
-                GetDefaultJavaVMInitArgs(&vm_args);
+	  GetDefaultJavaVMInitArgs(&vm_args);
 
-                res = CreateJavaVM( &vm, &env, &vm_args);
-                if (res != 0)
-                {
-                    DEBUG("Can't create VM");
-                    return false;
-                }
-                else
-                    DEBUG("VM Created !!");
+	  res = CreateJavaVM( &vm, &env, &vm_args);
+	  if (res != 0)
+	    {
+	      DEBUG("Can't create VM");
+	      return false;
+	    }
+	  else
+	    DEBUG("VM Created !!");
                 
-                jclass clstest = env->FindClass("java/lang/System");
-                if (clstest != 0)
-                {
-                                DEBUG("FOUND java.lang.system !");
-                }
-                else
-                {
-                                DEBUG("java.lang.system NOT FOUND");
-                                return false;
-                }                
+	  jclass clstest = env->FindClass("java/lang/System");
+	  if (clstest != 0)
+	    {
+	      DEBUG("FOUND java.lang.system !");
+	    }
+	  else
+	    {
+	      DEBUG("java.lang.system NOT FOUND");
+	      return false;
+	    }                
 
-		classname = StringUtils::replace(classname,".", "/");
-                DEBUG("Look for " + classname);
-                cls = (env)->FindClass(classname.c_str());
-                if (cls == 0)
-                {
-                                char tmpbuf[255];
-                                sprintf(tmpbuf, "Cant find <%s> at all!", classname.c_str());
-                                DEBUG(tmpbuf);
-                                DEBUG(std::string("Can't Find CLASS <") + classname + std::string(">"));
-                                return false;
-                }
-                else
-                            DEBUG("CLASS FOUND");
+	  classname = StringUtils::replace(classname,".", "/");
+	  DEBUG("Look for " + classname);
+	  cls = (env)->FindClass(classname.c_str());
+	  if (cls == 0)
+	    {
+	      char tmpbuf[255];
+	      sprintf(tmpbuf, "Cant find <%s> at all!", classname.c_str());
+	      DEBUG(tmpbuf);
+	      DEBUG(std::string("Can't Find CLASS <") + classname + std::string(">"));
+	      return false;
+	    }
+	  else
+	    DEBUG("CLASS FOUND");
 
-                char strbuf[255];
-                sprintf(strbuf, "");
-                jstr = (env)->NewStringUTF(strbuf);
-                mid = (env)->GetStaticMethodID(cls, "main", "([Ljava/lang/String;)V");
-                if (pargs.size() > 0)
-                {
-                   args = (env)->NewObjectArray(pargs.size(), (env)->FindClass("java/lang/String"), jstr);
-                   for (int i=0; i<pargs.size(); i++)
-                   {
-                       jstr = (env)->NewStringUTF(pargs[i].c_str());
-                       (env)->SetObjectArrayElement(args, i, jstr);
-                   }
-                }
-                else
-                {
-                    args = (env)->NewObjectArray(0, (env)->FindClass("java/lang/String"), jstr);
-                }
+	  char strbuf[255];
+	  sprintf(strbuf, "");
+	  jstr = (env)->NewStringUTF(strbuf);
+	  mid = (env)->GetStaticMethodID(cls, "main", "([Ljava/lang/String;)V");
+	  if (pargs.size() > 0)
+	    {
+	      args = (env)->NewObjectArray(pargs.size(), (env)->FindClass("java/lang/String"), jstr);
+	      for (int i=0; i<pargs.size(); i++)
+		{
+		  jstr = (env)->NewStringUTF(pargs[i].c_str());
+		  (env)->SetObjectArrayElement(args, i, jstr);
+		}
+	    }
+	  else
+	    {
+	      args = (env)->NewObjectArray(0, (env)->FindClass("java/lang/String"), jstr);
+	    }
                 
-                if ((mid != 0) && (args != 0))
-                {
-                                env->CallStaticVoidMethod(cls, mid, args);
-                                DEBUG("VM CALLED !!");
-                                vm->DestroyJavaVM();
-                                DEBUG("VM DESTROYED !!");
-                                return true;
-                }
-                else
-                {
-                                DEBUG("Can't find method !");
-                                return false;
-                }
+	  if ((mid != 0) && (args != 0))
+	    {
+	      env->CallStaticVoidMethod(cls, mid, args);
+	      DEBUG("VM CALLED !!");
+	      vm->DestroyJavaVM();
+	      DEBUG("VM DESTROYED !!");
+	      return true;
+	    }
+	  else
+	    {
+	      DEBUG("Can't find method !");
+	      return false;
+	    }
         }
     }
-    else
+  else
     {
-        DEBUG("CAN'T LOAD DLL");
+      DEBUG("CAN'T LOAD DLL");
     }
-    return false;
+  return false;
 }
 
 

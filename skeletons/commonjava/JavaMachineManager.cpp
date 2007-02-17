@@ -65,6 +65,9 @@ bool JavaMachineManager::run(bool dontUseConsole, bool preferSingleProcess)
     
   vector<string> jvmorder = StringUtils::split(vmorder, ";,", "");
 
+  Version max(m_resman.getProperty(ResourceManager:: KEY_MAXVERSION));
+  Version min(m_resman.getProperty(ResourceManager:: KEY_MINVERSION));
+
   for (vector<string>::const_iterator i = jvmorder.begin(); i != jvmorder.end(); i++)
     {
       DEBUG("------------------------------");
@@ -178,7 +181,10 @@ bool JavaMachineManager::run(bool dontUseConsole, bool preferSingleProcess)
 		    string exename = dontUseConsole?"javaw.exe":"java.exe";
 		    SunJVMLauncher launcher;
 		    launcher.VmVersion = launcher.guessVersionByProcess(exename);
-		    if (launcher.VmVersion.isValid())
+
+		    if (launcher.VmVersion.isValid()
+			&& (!min.isValid() || (min <= launcher.VmVersion))
+			&& (!max.isValid() || (launcher.VmVersion <= max)))
 		      {
 			DEBUG("Found valid java machine " + exename + " on PATH (" + launcher.VmVersion.toString() + ")");
 			Version v12("1.2.0");
