@@ -3,7 +3,7 @@
   <!-- set here the properties specific to your computer      -->
   <!-- see the README.txt file for additional information     -->
   <!-- DO NOT SKIP THIS PART! REALLY! IT WON'T WORK OTHERWISE -->
-  <property name="JDKDIR" value="c:\Program Files\j2sdk_nb\j2sdk1.4.2"/>
+  <property name="JDKDIR" value="c:\Program Files\Java\jdk1.5.0_06"/>
   <property name="RM" value="CMD /C DEL"/>
 
   <!-- Values below should be standard, but check it anyway -->
@@ -13,7 +13,7 @@
 
   <!-- What's below is  optional (needed only if you build a dist) -->
   <property name="FOP" value="c:/Programs/fop-0.20.5\fop.bat"/>
-  <property name="DOCBOOKBASE" value="c:\programs\docbook-xsl-1.62.0"/>
+  <property name="DOCBOOKBASE" value="c:\programs\docbook5-xsl-1.72.0"/>
 
  <!-- set here the properties specific the release --> 
 
@@ -290,6 +290,15 @@
 
   <target name="clean">
     <delete dir="${classes}"/>
+    <delete dir="${distbase}"/>
+    <delete dir="${tmp}"/>
+    <delete file="${jsmoothjar}"/>
+    <delete file="${jsmoothjar-ant}"/>
+
+    <delete file="jsmoothgen.exe"/>
+    <delete file="jsmoothcmd.exe"/>
+    <delete file="proof-test.exe"/>
+
   </target>
 
   <target name="run" depends="jar">
