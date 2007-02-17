@@ -49,7 +49,7 @@ public class Main extends JFrame
 	Splash splash = new Splash(this, "/icons/splash.png", false);
 	splash.setVersion(VERSION);
 	splash.show();
-	
+
 	m_projectFileChooser.addChoosableFileFilter(new SimpleFileFilter("jsmooth", "JSmooth Project Files"));
 
 	getContentPane().setLayout(new BorderLayout());
