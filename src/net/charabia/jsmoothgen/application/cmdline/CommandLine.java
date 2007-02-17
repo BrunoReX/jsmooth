@@ -55,6 +55,10 @@ public class CommandLine
 		System.exit(10);
 	    }
 
+	// setup headless mode
+	System.setProperty("java.awt.headless", "true");
+	java.awt.Toolkit tk = java.awt.Toolkit.getDefaultToolkit();
+
 	String jsmoothbase = System.getProperty("jsmooth.basedir");
 
 	try {
