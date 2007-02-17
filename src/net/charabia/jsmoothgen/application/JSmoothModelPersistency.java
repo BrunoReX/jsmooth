@@ -39,16 +39,14 @@ import com.wutka.jox.*;
 
 public class JSmoothModelPersistency
 {
-	
     public static JSmoothModelBean load(File fin) throws IOException
     {
-	FileInputStream fis = new FileInputStream(fin);
+	FileReader fr = new FileReader(fin);
 	try
 	    {
 		JSmoothModelBean jobj = new JSmoothModelBean();
 		String INVALID = "INVALID";
 		jobj.setSkeletonName(INVALID);
-		FileReader fr = new FileReader(fin);
 		JOXBeanReader jbr = new JOXBeanReader(fr);
 		jbr.readObject(jobj);
 		jbr.close();
@@ -69,8 +67,10 @@ public class JSmoothModelPersistency
 
 	    } catch (Exception exc)
 		{
-		    try {
+		    fr.close();
 
+		    try {
+			FileInputStream fis = new FileInputStream(fin);
 			XMLDecoder dec = new XMLDecoder(fis);
 			JSmoothModelBean xobj = (JSmoothModelBean)dec.readObject();
 			fis.close();
@@ -79,7 +79,6 @@ public class JSmoothModelPersistency
 			    xobj.setEmbeddedJar(true);
 
 			return xobj;
-			
 
 		    } catch (Exception exc2)
 			{
