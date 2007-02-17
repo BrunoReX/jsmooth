@@ -231,10 +231,8 @@ public class ExeCompiler
 
     public void checkImageLoaded(Image img)
     {
-	MediaTracker mtrack = new MediaTracker(new Label(""));
-	
+	MediaTracker mtrack = new MediaTracker(new Canvas());
 	mtrack.addImage(img, 1);
-	
 	try {
 	    mtrack.waitForAll();
 	} catch (InterruptedException e) {
@@ -428,36 +426,6 @@ public class ExeCompiler
 	return null;
     }
 
-//     public int colorCount(BufferedImage img)
-//     {
-// 	MediaTracker mtrack = new MediaTracker(new Label(""));	
-// 	mtrack.addImage(img, 0);
-
-// 	try {
-// 	    mtrack.waitForAll();
-// 	} catch (InterruptedException e) {
-// 	    return 0;
-// 	}
-	
-// 	Hashtable result = new Hashtable();
-// 	int colorindex = 0;
-// 	for (int y=0; y<img.getHeight(null); y++)
-// 	    for (int x=0; x<img.getWidth(null); x++)
-// 		{	
-// 		    int pix = img.getRGB(x,y); // pixels[i]; // & 0x00FFFFFF; // remove alpha channel
-// 		    pix &= 0x00FFFFFF;
-// 		    Integer pixi = new Integer(pix);
-// 		    Object o = result.get(pixi);
-// 		    if (o == null)
-// 			{
-// 			    result.put(pixi, new Integer(colorindex++));
-// 			}
-// 		    if (colorindex > 256)
-// 			return result;
-// 		}
-
-// 	return result.size();
-//     }
 
     private ByteBuffer load(File in) throws Exception
     {
