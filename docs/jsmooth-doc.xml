@@ -589,7 +589,7 @@ browser to a web site where they can download a JVM.
 
       <para>
         For instance, take the following example:
-       <codelisting>
+       <programlisting>
 +myprog/
 |- myjar.jar
 |- lib/
@@ -598,7 +598,7 @@ browser to a web site where they can download a JVM.
 |- jre/
 + [full jre stuff here]
 |- myexe.exe
-        </codelisting>
+        </programlisting>
       </para>
 
      <para>
@@ -1005,6 +1005,29 @@ browser to a web site where they can download a JVM.
 	   instance by displaying a splash screen with specific
 	   information and calling another class).
 
+	 </para>
+	</answer>
+      </qandaentry>
+
+      <qandaentry>
+        <question>
+	  <para>
+
+	   How can I run the ant task or the command line in headless
+	   mode (so that it can run on unix servers without X-Window)?
+
+	  </para>
+	</question>
+	<answer>
+	 <para>
+	  
+	  The command line always starts in headless mode. For the ant
+	  task, you must configure the java environment running ant to
+	  run in headless mode. You have to setup the following
+	  property:
+       <programlisting>
+    java.awt.headless=true
+       </programlisting>
 	 </para>
 	</answer>
       </qandaentry>
