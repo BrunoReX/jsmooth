@@ -40,13 +40,19 @@ string FileUtils::createTempFileName(const string& suffix)
 
 bool FileUtils::fileExists(const string& filename)
 {
-    return GetFileAttributes(filename.c_str()) != 0xFFFFFFFF;
+  if (filename[0] == '"')
+    {
+      string unquoted = StringUtils::replace(filename, "\"", "");
+      return GetFileAttributes(unquoted.c_str()) != 0xFFFFFFFF;
+    }
+  return GetFileAttributes(filename.c_str()) != 0xFFFFFFFF;
 }
 
-vector<string> FileUtils::recursiveSearch(const string& path, const string& pattern)
+vector<string> FileUtils::recursiveSearch(const string& pathdir, const string& pattern)
 {
     vector<string> result;
-    
+    string path = StringUtils::replace(pathdir, "\"", "");
+
     WIN32_FIND_DATA data;
     string file = path + ((path[path.length()-1]=='\\')?"":"\\") + pattern;
     
