@@ -58,6 +58,12 @@ http://sourceforge.net/projects/jsmooth
 	  Just download the docbook-xsl package, you don't need anything
           else here.
 
+	  If you compile with a JDK 1.5 or above, you are very likely
+	  to experience issues with the built-in xslt engine. A
+	  work-around is to override the default engine with xalan
+	  (for instance). Download Xalan and put its jars in the
+	  jre/lib/endorsed/ directory (you may have to create it).
+
 	- FOP, available at http://xml.apache.org/fop/
 
  Configure:
