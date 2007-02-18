@@ -262,7 +262,6 @@
      <exec executable="${mingw-make}" dir="skeletons/${skelname}">
        <arg value="-f"/>
        <arg value="Makefile.win"/>
-       <arg value="clean"/>
        <arg value="all"/>
        <arg value='CUSTOMFLAGS=${skelflags}'/>
        <arg value='"JDK=${JDKDIR}"'/>
