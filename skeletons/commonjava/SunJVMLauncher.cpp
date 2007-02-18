@@ -67,8 +67,9 @@ bool SunJVMLauncher::run(ResourceManager& resource, const string& origin)
     if ((this->RuntimeLibPath.size() == 0) && (this->JavaHome.size()>0))
       {
 	std::string assump = FileUtils::concFile(this->JavaHome, "jre\\bin\\jvm.dll");
-	std::string assump2 = FileUtils::concFile(this->JavaHome, "jre\\bin\\server\\jvm.dll");
-	std::string assump3 = FileUtils::concFile(this->JavaHome, "jre\\bin\\client\\jvm.dll");
+	std::string assump2 = FileUtils::concFile(this->JavaHome, "jre\\bin\\server\\jvm.dll"); // for JRE 1.5+
+	std::string assump3 = FileUtils::concFile(this->JavaHome, "jre\\bin\\client\\jvm.dll"); // for JRE 1.5+
+	std::string assump4 = FileUtils::concFile(this->JavaHome, "bin\\javai.dll"); // For JRE 1.1
 
 	if (FileUtils::fileExists(assump))
 	  this->RuntimeLibPath = assump;
@@ -76,6 +77,8 @@ bool SunJVMLauncher::run(ResourceManager& resource, const string& origin)
 	  this->RuntimeLibPath = assump2;
 	else if (FileUtils::fileExists(assump3))
 	  this->RuntimeLibPath = assump3;
+	else if (FileUtils::fileExists(assump4))
+	  this->RuntimeLibPath = assump4;
 	else
 	  {
 	    vector<string> dlls = FileUtils::recursiveSearch(this->JavaHome, string("jvm.dll"));
@@ -115,36 +118,52 @@ bool SunJVMLauncher::runProc(ResourceManager& resource, bool noConsole, const st
     Version max(resource.getProperty(ResourceManager:: KEY_MAXVERSION));
     Version min(resource.getProperty(ResourceManager:: KEY_MINVERSION));
 
-    string javapath = "\\bin\\java.exe";
-    string jrepath = "\\bin\\jre.exe";
+    string javapath = "bin\\java.exe";
+    string jrepath = "bin\\jre.exe";
 
     if (noConsole)
     {
-        javapath = "\\bin\\javaw.exe";
-        jrepath = "\\bin\\jrew.exe";
+        javapath = "bin\\javaw.exe";
+        jrepath = "bin\\jrew.exe";
     }
 
-    DEBUG("RUN PROC " + origin +" ... " + min.toString() + " <= " + VmVersion.toString() + "<= " + max.toString());
+
+    std::string exepath = StringUtils::requote( FileUtils::concFile(this->JavaHome, javapath) );
+
+    DEBUG("trying " + exepath);
+    if (FileUtils::fileExists(exepath) == false)
+      {
+	exepath = StringUtils::requote( FileUtils::concFile(this->JavaHome, jrepath) );
+	DEBUG("trying " + exepath);
+      }
+
+    if (FileUtils::fileExists(exepath) == false)
+      {
+	DEBUG("Neither java. or jre.exe were at " + this->JavaHome +" ... aborting");
+	return false;
+      }
+
+    DEBUG("Running process " + origin +" ... " + min.toString() + " <= " + VmVersion.toString() + "<= " + max.toString());
     Version curver = VmVersion;
     
     if (curver.isValid() == false)
     {
-        DEBUG(origin + ": check version for " + JavaHome + javapath);
-        Version vjava = guessVersionByProcess(JavaHome + javapath);
+        DEBUG(origin + ": check version for " + exepath);
+        Version vjava = guessVersionByProcess(exepath);
         DEBUG("Java Version detected: " + vjava.toString());
         if (vjava.isValid())
 	  {
                 curver = vjava;
                 VmVersion = vjava;
 	  }
-        else
-        {
-             DEBUG(origin + ": check version for " + JavaHome + jrepath);
-             Version vjre = guessVersionByProcess(JavaHome + jrepath);
-             DEBUG("JRE Version detected: " + vjre.toString());    
-             curver = vjre;
-             VmVersion = vjre;
-        }
+//         else
+//         {
+//              DEBUG(origin + ": check version for " + JavaHome + jrepath);
+//              Version vjre = guessVersionByProcess(JavaHome + jrepath);
+//              DEBUG("JRE Version detected: " + vjre.toString());    
+//              curver = vjre;
+//              VmVersion = vjre;
+//         }
     }
     
     if (curver.isValid() == false)
@@ -156,15 +175,13 @@ bool SunJVMLauncher::runProc(ResourceManager& resource, bool noConsole, const st
     if (max.isValid() && (max < curver))
         return false;
 
-    DEBUG("RUN PROC... version OK");
+    DEBUG("Version of VM checked... OK");
     
     if (Version("1.2") <= VmVersion)
     {
-        DEBUG("RUNVM12PROC");
         return runVM12proc(resource, noConsole, origin);
     } else if (Version("1.1") <= VmVersion)
     {
-        DEBUG("RUNVM11PROC");
         return runVM11proc(resource, noConsole, origin);
     }
     
@@ -178,14 +195,14 @@ bool SunJVMLauncher::setupVM12DLL(ResourceManager& resource, const string& origi
  
   if (vmlib != 0)
     {
-      DEBUG("VM12 loaded from " +this->RuntimeLibPath);
+      DEBUG("v1.2+ type VM loaded from " +this->RuntimeLibPath);
 
       CreateJavaVM_t CreateJavaVM = (CreateJavaVM_t)GetProcAddress(vmlib, "JNI_CreateJavaVM");
       GetDefaultJavaVMInitArgs_t GetDefaultJavaVMInitArgs = (GetDefaultJavaVMInitArgs_t)GetProcAddress(vmlib, "JNI_GetDefaultJavaVMInitArgs");
         
       if ((CreateJavaVM != NULL) && (GetDefaultJavaVMInitArgs != NULL))
         {
-	  DEBUG("CREATEJAVAVM FN LOADED");
+	  DEBUG("VM Created successfully");
 	  JavaVM *vm = new JavaVM();
 	  JNIEnv *env = new JNIEnv();
 
@@ -242,7 +259,7 @@ bool SunJVMLauncher::setupVM12DLL(ResourceManager& resource, const string& origi
 	    }
 	  for (int i=0; i< 1+jpropstrv.size(); i++)
 	    {
-	      DEBUG(string("OPT:") + options[i].optionString);
+	      DEBUG(string("Option added:") + options[i].optionString);
 	    }
                 
 	  vm_args.ignoreUnrecognized = JNI_TRUE;
@@ -259,11 +276,11 @@ bool SunJVMLauncher::setupVM12DLL(ResourceManager& resource, const string& origi
 	  jclass clstest = env->FindClass("java/lang/System");
 	  if (clstest != 0)
 	    {
-	      DEBUG("FOUND java.lang.system !");
+	      DEBUG("Found java.lang.system !");
 	    }
 	  else
 	    {
-	      DEBUG("java.lang.system NOT FOUND");
+	      DEBUG("java.lang.system not found");
 	      return false;
 	    }                
 	
@@ -272,7 +289,11 @@ bool SunJVMLauncher::setupVM12DLL(ResourceManager& resource, const string& origi
 
 	  return true;
 	}
-    } else { DEBUG("Can't even load the DLL: " + this->RuntimeLibPath); }
+    } 
+  else 
+    { 
+      DEBUG("Warning: can't even load the DLL: " + this->RuntimeLibPath);
+    }
 
   return false;
 }
@@ -281,18 +302,15 @@ bool SunJVMLauncher::runVMDLL(ResourceManager& resource, const string& origin)
 {
   std::string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));  
   classname = StringUtils::replace(classname,".", "/");
-  DEBUG("Look for " + classname);
+  DEBUG("Check if " + classname + " is available");
   jclass cls = (m_javaenv)->FindClass(classname.c_str());
   if (cls == 0)
     {
-      char tmpbuf[255];
-      sprintf(tmpbuf, "Cant find <%s> at all!", classname.c_str());
-      DEBUG(tmpbuf);
-      DEBUG(std::string("Can't Find CLASS <") + classname + std::string(">"));
+      DEBUG(std::string("Can't Find CLASS <") + classname + std::string("> (probably a classpath issue)"));
       return false;
     }
   else
-    DEBUG("CLASS FOUND");
+    DEBUG("OK, class " + classname + " is available");
 
   char strbuf[255];
   sprintf(strbuf, "");
@@ -301,7 +319,7 @@ bool SunJVMLauncher::runVMDLL(ResourceManager& resource, const string& origin)
 
   vector<string> pargs = StringUtils::split(resource.getProperty(ResourceManager::KEY_ARGUMENTS), " \t\n\r", "\"\'");
   for (int i=0; i<pargs.size(); i++)
-    DEBUG("ARG:: <" + pargs[i] + ">");
+    DEBUG("Argument " + StringUtils::toString(i)+" : <" + pargs[i] + ">");
 
   jobjectArray args;
     
@@ -321,10 +339,11 @@ bool SunJVMLauncher::runVMDLL(ResourceManager& resource, const string& origin)
                 
   if ((mid != 0) && (args != 0))
     {
+      DEBUG("Calling static void main(String[]) method from " + classname);
       m_javaenv->CallStaticVoidMethod(cls, mid, args);
-      DEBUG("VM CALLED !!");
+      DEBUG(classname + " call complete");
       m_javavm->DestroyJavaVM();
-      DEBUG("VM DESTROYED !!");
+      DEBUG("VM destroyed");
       return true;
     }
   else
@@ -401,34 +420,23 @@ bool SunJVMLauncher::runVMDLL(ResourceManager& resource, const string& origin)
 
 bool SunJVMLauncher::setupVM11DLL(ResourceManager& resource, const string& origin)
 {
-  DEBUG("RUNNING L VM11 = " + VmVersion.toString());
+  DEBUG("Setting up a 1.1-type JVM from the DLL " + this->RuntimeLibPath);
 
   std::string jarpath = resource.saveJarInTempFile();
   std::string extracp = resource.getNormalizedClassPath();
 
-  string jvmdll = RuntimeLibPath;
- 
-  if (FileUtils::fileExists(jvmdll) == false)
-    {
-      jvmdll = JavaHome +  "\\bin\\javai.dll";
-      if (FileUtils::fileExists(jvmdll) == false)
-	{
-	  DEBUG("JVM1.1: CAN'T FIND DLL !!!");
-	  return false;
-	}
-    }
-
-  HINSTANCE vmlib = LoadLibrary(jvmdll.c_str());
+  HINSTANCE vmlib = LoadLibrary(this->RuntimeLibPath.c_str());
       
   if (vmlib != 0)
     {
-      DEBUG("VM 1.1 loaded from " + this->RuntimeLibPath);
+      DEBUG("DLL successfully loaded from " + this->RuntimeLibPath );
       CreateJavaVM_t CreateJavaVM = (CreateJavaVM_t)GetProcAddress(vmlib, "JNI_CreateJavaVM");
       GetDefaultJavaVMInitArgs_t GetDefaultJavaVMInitArgs = (GetDefaultJavaVMInitArgs_t)GetProcAddress(vmlib, "JNI_GetDefaultJavaVMInitArgs");
         
       if ((CreateJavaVM != NULL) && (GetDefaultJavaVMInitArgs != NULL))
 	{
-	  DEBUG("CREATEJAVAVM FN LOADED");
+	  DEBUG("Found the CreateJavaVM and GetDefaultJavaVMInitArgs methods in the DLL... that's good");
+
 	  JavaVM *javavm = new JavaVM();
 	  JNIEnv *env = new JNIEnv();
 
@@ -482,22 +490,23 @@ bool SunJVMLauncher::setupVM11DLL(ResourceManager& resource, const string& origi
 	  std::string classpath = vm_args.classpath;
 	  classpath += ";" + jarpath;
 	  classpath += ";" + extracp;
-	  DEBUG("CLASSPATH = " + classpath);
+	  DEBUG("Classpath = " + classpath);
 	  vm_args.classpath = (char*)classpath.c_str();
 
 	  /* Create the Java VM */
 	  if ((res = CreateJavaVM( &javavm, &env, &vm_args)) < 0)
 	    {
-	      DEBUG("Can't create VM " + jvmdll);
+	      DEBUG("Can't create VM " + this->RuntimeLibPath);
 	      return false;
 	    }
-	  DEBUG("VM Created !!");
+
+	  DEBUG("VM 1.1 successfully created");
 
 	  //
 	  // Test java.lang.system
 	  if (env->FindClass("java/lang/System") == 0)
 	    {
-	      DEBUG("java.lang.system NOT FOUND");
+	      DEBUG("java.lang.system not found... aborting the VM setup");
 	      return false;
 	    }                
 	  
@@ -572,233 +581,251 @@ bool SunJVMLauncher::setupVM11DLL(ResourceManager& resource, const string& origi
 
 bool SunJVMLauncher::runVM11proc(ResourceManager& resource, bool noConsole, const string& origin)
 {
-    string javapath = "\\bin\\java.exe";
-    string jrepath = "\\bin\\jre.exe";
-    if (noConsole)
+  DEBUG("Running process with 1.1 compatibility mode");
+
+  string javapath = "bin\\java.exe";
+  string jrepath = "bin\\jre.exe";
+  if (noConsole)
     {
-        javapath = "\\bin\\javaw.exe";
-        jrepath = "\\bin\\jrew.exe";
+      javapath = "bin\\javaw.exe";
+      jrepath = "bin\\jrew.exe";
     }
 
-    if (runExe(JavaHome + jrepath, true, resource, noConsole, "1.1", origin))
-        return true;
+  std::string exepath = StringUtils::requote( FileUtils::concFile(this->JavaHome, javapath) );
+  if (FileUtils::fileExists(exepath) == false)
+    exepath = StringUtils::requote( FileUtils::concFile(this->JavaHome, jrepath) );
 
-    if (runExe(JavaHome + javapath, true, resource, noConsole, "1.1", origin))
-        return true;
+  if (FileUtils::fileExists(exepath))
+    {
+      if (runExe(exepath, true, resource, noConsole, "1.1", origin))
+	return true;
+    }
         
-    return false;    
+  return false;    
 }
 
 bool SunJVMLauncher::runVM12proc(ResourceManager& resource, bool noConsole, const string& origin)
 {
-    string javapath = "\\bin\\java.exe";
-    string jrepath = "\\bin\\jre.exe";
+    string javapath = "bin\\java.exe";
+    string jrepath = "bin\\jre.exe";
     if (noConsole)
     {
-        javapath = "\\bin\\javaw.exe";
-        jrepath = "\\bin\\jrew.exe";
+        javapath = "bin\\javaw.exe";
+        jrepath = "bin\\jrew.exe";
     }
 
-    if (runExe(JavaHome + javapath, false, resource, noConsole, "1.2+", origin))
-        return true;
+    std::string exepath = StringUtils::requote( FileUtils::concFile(this->JavaHome, javapath) );
+    if (FileUtils::fileExists(exepath) == false)
+      exepath = StringUtils::requote( FileUtils::concFile(this->JavaHome, jrepath) );
 
-    if (runExe(JavaHome + jrepath, false, resource, noConsole, "1.2+", origin))
-        return true;
+    if (FileUtils::fileExists(exepath))
+      {
+	if (runExe(exepath, false, resource, noConsole, "1.2+", origin))
+	  return true;
+      }
         
     return false;
 }
 
 bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource, bool noConsole, const string& version, const string& origin)
 {    
-      DEBUG("Running new proc for " + exepath);
+  DEBUG("Running new proc for " + exepath);
+  
+  string embeddedjar = resource.saveJarInTempFile();
+  DEBUG("Embedded jar saved at " + embeddedjar);
+  string classpath = embeddedjar;
 
-      string classpath = resource.saveJarInTempFile();
-
-      if (forceFullClasspath && (JavaHome != ""))
-      {
-            vector<string> cpzips = FileUtils::recursiveSearch(JavaHome, "*.zip");
-            for (vector<string>::iterator i=cpzips.begin(); i!=cpzips.end(); i++)
-                        DEBUG("ZIP FILE: " + *i);
-            vector<string> cpjars = FileUtils::recursiveSearch(JavaHome, "*.jar");
-            for (vector<string>::iterator i=cpjars.begin(); i!=cpjars.end(); i++)
-                        DEBUG("JAR FILE: " + *i);
-            vector<string> fullcp;
-            fullcp.insert(fullcp.end(), cpzips.begin(), cpzips.end());
-            fullcp.insert(fullcp.end(), cpjars.begin(), cpjars.end());
-            for (vector<string>::iterator i=fullcp.begin(); i!=fullcp.end(); i++)
-                        DEBUG("FULL CP FILE: " + *i);
-            string lcp = StringUtils::join(fullcp, ";");
+  if (forceFullClasspath && (JavaHome != ""))
+    {
+      DEBUG("Forcing full classpath");
+      vector<string> cpzips = FileUtils::recursiveSearch(JavaHome, "*.zip");
+      for (vector<string>::iterator i=cpzips.begin(); i!=cpzips.end(); i++)
+	DEBUG("ZIP FILE: " + *i);
+      vector<string> cpjars = FileUtils::recursiveSearch(JavaHome, "*.jar");
+      for (vector<string>::iterator i=cpjars.begin(); i!=cpjars.end(); i++)
+	DEBUG("JAR FILE: " + *i);
+      vector<string> fullcp;
+      fullcp.insert(fullcp.end(), cpzips.begin(), cpzips.end());
+      fullcp.insert(fullcp.end(), cpjars.begin(), cpjars.end());
+      for (vector<string>::iterator i=fullcp.begin(); i!=fullcp.end(); i++)
+	DEBUG("FULL CP FILE: " + *i);
+      string lcp = StringUtils::join(fullcp, ";");
             
-            classpath += string(";") + lcp;
-      }
+      classpath += string(";") + lcp;
+    }
       
-      string addcp = resource.getNormalizedClassPath();
-      DEBUG("ADDCP= " + addcp);
-      classpath += ";" + addcp;
+  string addcp = resource.getNormalizedClassPath();
+  classpath += ";" + addcp;
       
-      string addargs = resource.getProperty(ResourceManager::KEY_ARGUMENTS);
+  string addargs = resource.getProperty(ResourceManager::KEY_ARGUMENTS);
 
-      string javaproperties = "";
-      const vector<JavaProperty>& jprops = resource.getJavaProperties();
-      for (vector<JavaProperty>::const_iterator i=jprops.begin(); i != jprops.end(); i++)
-      {
-            JavaProperty jp = *i;
-            string v = jp.getValue();
+  string javaproperties = "";
+  const vector<JavaProperty>& jprops = resource.getJavaProperties();
+  for (vector<JavaProperty>::const_iterator i=jprops.begin(); i != jprops.end(); i++)
+    {
+      JavaProperty jp = *i;
+      string v = jp.getValue();
 
-	    v = StringUtils::replace(v, "${VMSELECTION}", origin);
-	    v = StringUtils::replace(v, "${VMSPAWNTYPE}", "PROC");
+      v = StringUtils::replace(v, "${VMSELECTION}", origin);
+      v = StringUtils::replace(v, "${VMSPAWNTYPE}", "PROC");
 
-            string::iterator t = v.end();
-            if (*(--t) == '\\')
-	      v += "\\";
+      string::iterator t = v.end();
+      if (*(--t) == '\\')
+	v += "\\";
 
-            javaproperties += " \"-D" + jp.getName() + "\"=" + StringUtils::fixQuotes(v);
-      }
+      javaproperties += " \"-D" + jp.getName() + "\"=" + StringUtils::fixQuotes(v);
+    }
       
-      if (resource.getProperty("maxheap") != "")
-      {
-            if (version == "1.1")
-                        javaproperties += " -mx" + sizeToString(StringUtils::parseInt(resource.getProperty("maxheap"))) + " ";
-            else
-                        javaproperties += " -Xmx" + sizeToString(StringUtils::parseInt(resource.getProperty("maxheap"))) + " ";
-      }
-      if (resource.getProperty("initialheap") != "")
-      {
-            if (version == "1.1")
-                        javaproperties += " -ms" + sizeToString(StringUtils::parseInt(resource.getProperty("initialheap"))) + " ";
-            else
-                        javaproperties += " -Xms" + sizeToString(StringUtils::parseInt(resource.getProperty("initialheap"))) + " ";
-      }
- 
-      string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));
-
-      string arguments = javaproperties + " -classpath \"" + classpath + "\" " + classname + " " + addargs;
-
-      DEBUG("CLASSNAME = <" + classname + ">");
-      STARTUPINFO info;
-      GetStartupInfo(&info);
-      int creationFlags = 0;
-      int inheritsHandle;
-      if (noConsole == false)
-      {
-            info.dwFlags = STARTF_USESHOWWINDOW|STARTF_USESTDHANDLES;
-            info.hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
-            info.hStdError = GetStdHandle(STD_ERROR_HANDLE);
-            info.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
-            creationFlags = NORMAL_PRIORITY_CLASS;
-            inheritsHandle = TRUE;
-      }
+  if (resource.getProperty("maxheap") != "")
+    {
+      if (version == "1.1")
+	javaproperties += " -mx" + sizeToString(StringUtils::parseInt(resource.getProperty("maxheap"))) + " ";
       else
-      {
-            info.dwFlags = STARTF_USESHOWWINDOW;
-//            info.wShowWindow = SW_HIDE;
-            creationFlags = NORMAL_PRIORITY_CLASS | DETACHED_PROCESS;
-            inheritsHandle = FALSE;
-      }
+	javaproperties += " -Xmx" + sizeToString(StringUtils::parseInt(resource.getProperty("maxheap"))) + " ";
+    }
 
-      PROCESS_INFORMATION procinfo;
-      string exeline = StringUtils::fixQuotes(exepath) + " " + arguments;
+  if (resource.getProperty("initialheap") != "")
+    {
+      if (version == "1.1")
+	javaproperties += " -ms" + sizeToString(StringUtils::parseInt(resource.getProperty("initialheap"))) + " ";
+      else
+	javaproperties += " -Xms" + sizeToString(StringUtils::parseInt(resource.getProperty("initialheap"))) + " ";
+    }
+ 
+  string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));
+  string arguments = javaproperties + " -classpath \"" + classpath + "\" " + classname + " " + addargs;
 
-//       if ((exepath.length()>0) && ((exepath[0]=="\"") || (exepath[0]=="'")))
-// 	exeline += exepath + " " + arguments;
-//       else
-//      exeline += "\"" + exepath + "\" " + arguments;
+  DEBUG("CLASSNAME = <" + classname + ">");
+  STARTUPINFO info;
+  GetStartupInfo(&info);
+  int creationFlags = 0;
+  int inheritsHandle;
+  if (noConsole == false)
+    {
+      info.dwFlags = STARTF_USESHOWWINDOW|STARTF_USESTDHANDLES;
+      info.hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+      info.hStdError = GetStdHandle(STD_ERROR_HANDLE);
+      info.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
+      creationFlags = NORMAL_PRIORITY_CLASS;
+      inheritsHandle = TRUE;
+    }
+  else
+    {
+      info.dwFlags = STARTF_USESHOWWINDOW;
+      creationFlags = NORMAL_PRIORITY_CLASS | DETACHED_PROCESS;
+      inheritsHandle = FALSE;
+    }
 
-      int res = CreateProcess(NULL, (char*)exeline.c_str(), NULL, NULL, inheritsHandle, creationFlags, NULL, NULL, &info, &procinfo);
+  PROCESS_INFORMATION procinfo;
+  string exeline = StringUtils::fixQuotes(exepath) + " " + arguments;
+  int res = CreateProcess(NULL, (char*)exeline.c_str(), NULL, NULL, inheritsHandle, creationFlags, NULL, NULL, &info, &procinfo);
 
-      DEBUG("---------------------------------------------------");
-      DEBUG("COMMAND LINE: " +exeline);
-      DEBUG("RESULT: " + StringUtils::toString(res));
-      if (res != 0)
-      {
+  DEBUG("---------------------------------------------------");
+  DEBUG("COMMAND LINE: " +exeline);
+  DEBUG("RESULT: " + StringUtils::toString(res));
+  if (res != 0)
+    {
       DEBUG("WAITING: " + StringUtils::toString(res));
       WaitForSingleObject(procinfo.hProcess, INFINITE);
-	    DEBUG("WAIT ENDED");
-            return true;
-      }
-      else
-      {
-            DEBUG("Can't run " + exeline);
-      }
+      DEBUG("WAIT ENDED");
 
-   return false;
+      if (embeddedjar.size()>0)
+	{
+	  DEBUG("DELETING " + embeddedjar);
+	  DeleteFile(embeddedjar.c_str());
+	}
+      return true;
+    }
+  else
+    {
+      DEBUG("Can't run " + exeline);
+    }
+
+  if (embeddedjar.size()>0)
+    {
+      DEBUG("DELETING " + embeddedjar);
+      DeleteFile(embeddedjar.c_str());
+    }
+
+  return false;
 }
 
 Version SunJVMLauncher::guessVersionByProcess(const string& exepath)
 {
-    Version result;
+  Version result;
 
-    string tmpfilename = FileUtils::createTempFileName(".tmp");
-    SECURITY_ATTRIBUTES secattrs;
-    secattrs.nLength = sizeof(SECURITY_ATTRIBUTES);
-    secattrs.lpSecurityDescriptor = NULL;
-    secattrs.bInheritHandle = TRUE;
+  string tmpfilename = FileUtils::createTempFileName(".tmp");
+  SECURITY_ATTRIBUTES secattrs;
+  secattrs.nLength = sizeof(SECURITY_ATTRIBUTES);
+  secattrs.lpSecurityDescriptor = NULL;
+  secattrs.bInheritHandle = TRUE;
     
-    HANDLE tmph = CreateFile(tmpfilename.c_str(), GENERIC_WRITE,
-                            FILE_SHARE_WRITE, &secattrs,
-                            CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+  HANDLE tmph = CreateFile(tmpfilename.c_str(), GENERIC_WRITE,
+			   FILE_SHARE_WRITE, &secattrs,
+			   CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
                             
-    if (tmph == NULL)
+  if (tmph == NULL)
     {
-        DEBUG("TEMPH == NULL");
+      DEBUG("TEMPH == NULL");
     }
     
-    DEBUG("REDIRECTED TMP TO " + tmpfilename);
-    STARTUPINFO info;
-    GetStartupInfo(&info);
-    info.hStdOutput = tmph;
-    info.hStdError = tmph;
-    info.wShowWindow = TRUE;
-    info.dwFlags = STARTF_USESTDHANDLES;
-    PROCESS_INFORMATION procinfo;
+  DEBUG("REDIRECTED TMP TO " + tmpfilename);
+  STARTUPINFO info;
+  GetStartupInfo(&info);
+  info.hStdOutput = tmph;
+  info.hStdError = tmph;
+  info.wShowWindow = TRUE;
+  info.dwFlags = STARTF_USESTDHANDLES;
+  PROCESS_INFORMATION procinfo;
     
-    string exeline = exepath + " -version";
-    DEBUG(("Running: " + exeline).c_str());
-    int res = CreateProcess(NULL, (char*)exeline.c_str(), NULL, NULL, 
-                        TRUE, NORMAL_PRIORITY_CLASS, NULL, NULL, &info, &procinfo);
-    
-      if (res != 0)
-      {
-	WaitForSingleObject(procinfo.hProcess, INFINITE);
-	CloseHandle(tmph);
+  string exeline = exepath; // + " -version";
+  DEBUG("Running: " + exeline);
+  int res = CreateProcess(NULL, (char*)exeline.c_str(), NULL, NULL, 
+			  TRUE, NORMAL_PRIORITY_CLASS, NULL, NULL, &info, &procinfo);
+      
+  if (res != 0)
+    {
+      WaitForSingleObject(procinfo.hProcess, INFINITE);
+      CloseHandle(tmph);
 
-	tmph = CreateFile(tmpfilename.c_str(), GENERIC_READ,
-                            FILE_SHARE_READ, NULL,
-                            OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+      tmph = CreateFile(tmpfilename.c_str(), GENERIC_READ,
+			FILE_SHARE_READ, NULL,
+			OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
             
-            if (tmph != NULL)
-            {
-	      DEBUG("Reading temp...");
-                        char buffer[128];
-                        DWORD hasread;
-                        buffer[127] = 0;
-                        if (ReadFile(tmph, buffer, 127, &hasread, NULL))
-                        {
-                            DEBUG(string("DATA READ: ") + buffer);
-                            vector<string> split = StringUtils::split(buffer, " \t\n\r", "\"");
-                            for (vector<string>::iterator i=split.begin(); i != split.end(); i++)
-                            {
-                                Version v(*i);
-                                if (v.isValid())
-                                {
-                                   result = v;
-                                   break;
-                                }
-                            }
-                        }
-                CloseHandle(tmph);
-            }
-	    else
-	      {
-		DEBUG("Can't open temporary file for result");
-	      }
-      }
+      if (tmph != NULL)
+	{
+	  DEBUG("Reading temp...");
+	  char buffer[128];
+	  DWORD hasread;
+	  buffer[127] = 0;
+	  if (ReadFile(tmph, buffer, 127, &hasread, NULL))
+	    {
+	      DEBUG(string("DATA READ: ") + buffer);
+	      vector<string> split = StringUtils::split(buffer, " \t\n\r", "\"");
+	      for (vector<string>::iterator i=split.begin(); i != split.end(); i++)
+		{
+		  Version v(*i);
+		  if (v.isValid())
+		    {
+		      result = v;
+		      break;
+		    }
+		}
+	    }
+	  CloseHandle(tmph);
+	}
       else
 	{
-	  DEBUG("Can't run process");
+	  DEBUG("Can't open temporary file for result");
 	}
-      //    DeleteFile(tmpfilename.c_str());
-    return result;
+    }
+  else
+    {
+      DEBUG("Can't run process");
+    }
+
+  DeleteFile(tmpfilename.c_str());
+  return result;
 }
 
 std::string SunJVMLauncher::sizeToString(int size)
