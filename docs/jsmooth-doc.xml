@@ -955,7 +955,7 @@ browser to a web site where they can download a JVM.
 	  exit. Note however that this is not always possible. For
 	  example, an instance of a JVM created using the JVM DLL does
 	  not unload cleanly. This behaviour is documented by Sun, and
-	  there is no known work-around for it.
+	  there is no known work-around for it. 
 
 	 </para>
 
@@ -963,17 +963,21 @@ browser to a web site where they can download a JVM.
 
 	  Both Windowed and Console wrapper always prefer the JVM
 	  instanciation methods that allow them to delete the temp jar
-	  after the application exits.
+	  after the application exits. Note that embedding a jar in
+	  the exe is not required, it is always a safe choice to just
+	  leave it near the executable, either in the same directory,
+	  or in a sibling or parent directory.
 
 	 </para>
 
 	 <para>
 
-  	  Note however that deleting the files in the windows TEMP
+  	  Note also that deleting the files in the windows TEMP
 	  directory is not required for Windows applications, and most
 	  application just leave them, letting the operating system
-	  manage it. However, MS Windows deletes those temp files only
-	  when the disks are running low in available space.
+	  manage it. The standard behaviour of MS Windows is to
+	  propose the user to delete the temporary files when the
+	  disks are running low on available space.
 
 	 </para>
 
