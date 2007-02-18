@@ -87,52 +87,8 @@ bool JavaMachineManager::run(bool dontUseConsole, bool preferSingleProcess)
             {
 	      DEBUG("- Trying registry: " + m_registryVms[i].toString());
 
-	      if (dontUseConsole)
-                {
-		  //
-		  // If we are here, then we prefer to launch the java
-		  // application detached from any console. Typically
-		  // for a Windows app.
-		  //
-                     
-		  if (preferSingleProcess)
-		    {
-		      DEBUG("Trying to run the JVM as a DLL call (executing in this process)...");
-		      if (m_registryVms[i].run(m_resman, "registry"))
-                        {
-			  return true;
-                        }
-		      DEBUG("Well, couldn't use a DLL (see traces above), so falling back into normal process creation mode");
-
-		      if (m_registryVms[i].runProc(m_resman, dontUseConsole, "registry"))
-			{
-			  return true;
-			}
-		    }
-		  else
-		    {
-		      if (m_registryVms[i].runProc(m_resman, dontUseConsole, "registry"))
-			{
-			  return true;
-			} else if (m_registryVms[i].run(m_resman, "registry"))
-                          {
-			    return true;
-                          }
-                     
-		    }
-                          
-                }
-	      else
-                {
-		  DEBUG("DONT USE CONSOLE == FALSE");
-		  if (m_registryVms[i].runProc(m_resman, dontUseConsole, "registry"))
-		    {
-		      return true;
-		    } else if (m_registryVms[i].run(m_resman, "registry"))
-		      {
-                        return true;
-		      }
-                }
+	      if (internalRun(m_registryVms[i], dontUseConsole, preferSingleProcess, "registry") == true)
+		return true;
 	      DEBUG("Couldn't use this VM, now trying something else");
             }
         } else if (*i == "jview")
@@ -149,38 +105,23 @@ bool JavaMachineManager::run(bool dontUseConsole, bool preferSingleProcess)
 	      if (m_javahomeVm.size()>0)
                 {
 		  DEBUG("JAVAHOME exists..." + m_javahomeVm[0].toString());
-                                
-		  if (m_javahomeVm[0].runProc(m_resman, dontUseConsole, "javahome"))
-                    {
-		      return true;
-                    }
+		  if (internalRun(m_javahomeVm[0], dontUseConsole, preferSingleProcess, "jrehome"))
+		    return true;
                 }
 	    } else if (*i == "jrepath")
 	      {
                 DEBUG("- Trying to use JRE_HOME");
                 if (m_jrepathVm.size()>0)
 		  {
-                    if (m_jrepathVm[0].runProc(m_resman, dontUseConsole, "jrehome"))
-		      {
-                        return true;
-		      }
-		  }
-	      } else if (*i == "jdkpath")
-		{
-		  DEBUG("- Trying to use JDK_HOME");
-		  if (m_jdkpathVm.size()>0)
-		    {
-		      if (m_jdkpathVm[0].runProc(m_resman, dontUseConsole, "jdkhome"))
-			{
-			  return true;
-			}
+		    if (internalRun(m_jrepathVm[0], dontUseConsole, preferSingleProcess, "jrehome"))
+		      return true;
 		    }
 		} else if (*i == "exepath")
 		  {
 		    DEBUG("- Trying to use PATH");
 		    string exename = dontUseConsole?"javaw.exe":"java.exe";
 		    SunJVMLauncher launcher;
-		    launcher.VmVersion = launcher.guessVersionByProcess(exename);
+		    launcher.VmVersion = launcher.guessVersionByProcess("java.exe");
 
 		    if (launcher.VmVersion.isValid()
 			&& (!min.isValid() || (min <= launcher.VmVersion))
@@ -196,4 +137,27 @@ bool JavaMachineManager::run(bool dontUseConsole, bool preferSingleProcess)
 
   DEBUG("Couldn't run any suitable JVM!");
   return false;
+}
+
+
+bool JavaMachineManager::internalRun(SunJVMLauncher& launcher, bool noConsole, bool preferSingleProcess, const string& org)
+{
+  if (noConsole == false)
+    {
+      return launcher.runProc(m_resman, noConsole, org);
+    }
+  
+  if (noConsole && preferSingleProcess)
+    {
+      DEBUG("Trying to run the JVM as a DLL call (executing in this process)...");
+      if (launcher.run(m_resman, org) == true)
+	return true;
+
+      DEBUG("Couldn't use the DLL at " + launcher.RuntimeLibPath);      
+    }
+
+  if (launcher.runProc(m_resman, noConsole, org) == false)
+    return launcher.run(m_resman, org);
+
+  return true;
 }

@@ -88,6 +88,11 @@ class JavaMachineManager
    * @return true if the application is successfully started, false otherwise.
    */
   bool run(bool noConsole, bool preferSingleProcess);
+
+
+ protected:
+  bool internalRun(SunJVMLauncher& launcher, bool noConsole, bool preferSingleProcess, const string& org);
+
 };
 
 #endif
