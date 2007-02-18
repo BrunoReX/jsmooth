@@ -22,7 +22,7 @@ all: all-before ConsoleWrapper.exe all-after
 clean: clean-custom
 	$(RM) $(OBJ) $(BIN)
 
-$(BIN): $(LINKOBJ)
+$(BIN): $(LINKOBJ)  ../commonjava/CommonJava.a
 	$(CPP) $(LINKOBJ) -o "ConsoleWrapper.exe" $(LIBS)
 
 main.o: main.cpp

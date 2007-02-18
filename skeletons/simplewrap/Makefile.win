@@ -17,13 +17,13 @@ CFLAGS = $(INCS)
 
 .PHONY: all all-before all-after clean clean-custom
 
-all: all-before JWrap.exe all-after
+all: all-before JWrap.exe all-after 
 
 
 clean: clean-custom
 	$(RM) $(OBJ) $(BIN)
 
-$(BIN): $(LINKOBJ)
+$(BIN): $(LINKOBJ) ../commonjava/CommonJava.a
 	$(CPP) $(LINKOBJ) -o "JWrap.exe" $(LIBS)
 
 main.o: main.cpp
