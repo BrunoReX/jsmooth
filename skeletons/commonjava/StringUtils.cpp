@@ -213,6 +213,11 @@ string StringUtils::replaceEnvironmentVariable(const string& str)
     return result;
 }
 
+string StringUtils::requote(const string& str)
+{
+  return StringUtils::fixQuotes( StringUtils::replace(str, "\"", "") );
+}
+
 string StringUtils::replace(const string& str, const string& pattern, const string& replacement)
 {
     string result = str;

@@ -128,6 +128,8 @@ class StringUtils
   static string trim(string& str);
 
   static string fixQuotes(const string& str);
+
+  static string requote(const string& str);
     
 };
 
