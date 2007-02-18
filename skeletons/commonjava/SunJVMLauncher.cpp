@@ -120,14 +120,6 @@ bool SunJVMLauncher::runProc(ResourceManager& resource, bool noConsole, const st
 
     string javapath = "bin\\java.exe";
     string jrepath = "bin\\jre.exe";
-
-    if (noConsole)
-    {
-        javapath = "bin\\javaw.exe";
-        jrepath = "bin\\jrew.exe";
-    }
-
-
     std::string exepath = StringUtils::requote( FileUtils::concFile(this->JavaHome, javapath) );
 
     DEBUG("trying " + exepath);
@@ -156,14 +148,6 @@ bool SunJVMLauncher::runProc(ResourceManager& resource, bool noConsole, const st
                 curver = vjava;
                 VmVersion = vjava;
 	  }
-//         else
-//         {
-//              DEBUG(origin + ": check version for " + JavaHome + jrepath);
-//              Version vjre = guessVersionByProcess(JavaHome + jrepath);
-//              DEBUG("JRE Version detected: " + vjre.toString());    
-//              curver = vjre;
-//              VmVersion = vjre;
-//         }
     }
     
     if (curver.isValid() == false)
@@ -650,7 +634,7 @@ bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, Reso
       for (vector<string>::iterator i=fullcp.begin(); i!=fullcp.end(); i++)
 	DEBUG("FULL CP FILE: " + *i);
       string lcp = StringUtils::join(fullcp, ";");
-            
+      
       classpath += string(";") + lcp;
     }
       
@@ -778,7 +762,7 @@ Version SunJVMLauncher::guessVersionByProcess(const string& exepath)
   info.dwFlags = STARTF_USESTDHANDLES;
   PROCESS_INFORMATION procinfo;
     
-  string exeline = exepath; // + " -version";
+  string exeline = exepath + " -version";
   DEBUG("Running: " + exeline);
   int res = CreateProcess(NULL, (char*)exeline.c_str(), NULL, NULL, 
 			  TRUE, NORMAL_PRIORITY_CLASS, NULL, NULL, &info, &procinfo);
