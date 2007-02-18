@@ -47,7 +47,21 @@ bool SunJVMLauncher::run(ResourceManager& resource, const string& origin)
     if (origin != "bundled") {
 
       if ( ! VmVersion.isValid())
-	return false;
+	{
+	  // If there is a JavaHome, let's try to guess the version of the JVM
+	  if (this->JavaHome.size() > 0)
+	    {
+	      this->VmVersion = guessVersionByProcess(FileUtils::concFile(this->JavaHome, "\\bin\\java.exe"));
+
+	      if (!VmVersion.isValid())
+		{
+		  this->VmVersion = guessVersionByProcess(FileUtils::concFile(this->JavaHome, "\\bin\\jre.exe"));
+		}
+	    }
+	  
+	  if (! VmVersion.isValid())
+	    return false;
+	}
       
       Version max(resource.getProperty(ResourceManager:: KEY_MAXVERSION));
       Version min(resource.getProperty(ResourceManager:: KEY_MINVERSION));
@@ -227,7 +241,8 @@ bool SunJVMLauncher::setupVM12DLL(ResourceManager& resource, const string& origi
 	    cpath += ';';
 	  if (additionalcpath.size()>0)
 	    cpath += additionalcpath;
-	  cpoption += StringUtils::fixQuotes(cpath);
+	  //	  cpoption += StringUtils::fixQuotes(cpath);
+	  cpoption += cpath;
 	  cpoption += "";
 
 	  DEBUG("Classpath: " + cpoption);
@@ -737,6 +752,10 @@ bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, Reso
 Version SunJVMLauncher::guessVersionByProcess(const string& exepath)
 {
   Version result;
+
+  // Return immediatly if the exe does not exist
+  if (!FileUtils::fileExists(exepath))
+    return result;
 
   string tmpfilename = FileUtils::createTempFileName(".tmp");
   SECURITY_ATTRIBUTES secattrs;
