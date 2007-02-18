@@ -226,3 +226,13 @@ string StringUtils::replace(const string& str, const string& pattern, const stri
     return result;
 }
 
+string StringUtils::fixQuotes(const string& str)
+{
+  if (str.size() == 0)
+    return "\"\"";
+  
+  if (str[0] == '"')
+    return str;
+
+  return "\"" + str + "\"";
+}

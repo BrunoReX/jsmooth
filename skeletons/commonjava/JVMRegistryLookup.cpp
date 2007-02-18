@@ -46,70 +46,70 @@ vector<SunJVMLauncher> JVMRegistryLookup::lookupJVM()
 
 vector<SunJVMLauncher> JVMRegistryLookup::lookup(HKEY key, const string& path)
 {
-    vector<SunJVMLauncher> result;
+  vector<SunJVMLauncher> result;
 
-    HKEY hKey;
-	LONG error = ERROR_SUCCESS;
-	LONG val = RegOpenKeyEx(key, path.c_str(), 0, KEY_READ, &hKey);
+  HKEY hKey;
+  LONG error = ERROR_SUCCESS;
+  LONG val = RegOpenKeyEx(key, path.c_str(), 0, KEY_READ, &hKey);
 
-	unsigned long buffersize = 1024;
-	char buffer[1024];
+  unsigned long buffersize = 1024;
+  char buffer[1024];
 
-	for (int i=0; RegEnumKey(hKey, i, buffer, buffersize) == ERROR_SUCCESS; i++)
+  for (int i=0; RegEnumKey(hKey, i, buffer, buffersize) == ERROR_SUCCESS; i++)
+    {
+      int v = i;
+      HKEY version;
+      int foundver = RegOpenKeyEx(hKey, buffer, 0, KEY_READ, &version);
+      if (foundver == ERROR_SUCCESS)
 	{
-		int v = i;
-		HKEY version;
-		int foundver = RegOpenKeyEx(hKey, buffer, 0, KEY_READ, &version);
-		if (foundver == ERROR_SUCCESS)
-		{
-		    std::string versionname(buffer);
-			HKEY runtimelib;
-			unsigned long datatype;
-			std::string runtimelibstr = "";
-			std::string javahomestr = "";
+	  std::string versionname(buffer);
+	  HKEY runtimelib;
+	  unsigned long datatype;
+	  std::string runtimelibstr = "";
+	  std::string javahomestr = "";
 
-			unsigned char *b = (unsigned char*)buffer;
-			buffersize = 1024;
-			int foundlib = RegQueryValueEx(version, TEXT("RuntimeLib"), 
-								NULL, 
-								&datatype, 
-								b, 
-								&buffersize);
+	  unsigned char *b = (unsigned char*)buffer;
+	  buffersize = 1024;
+	  int foundlib = RegQueryValueEx(version, TEXT("RuntimeLib"), 
+					 NULL, 
+					 &datatype, 
+					 b, 
+					 &buffersize);
 			
-            if (foundlib == ERROR_SUCCESS)
+	  if (foundlib == ERROR_SUCCESS)
             {
-                        runtimelibstr = buffer;
+	      runtimelibstr = buffer;
             }
 
-            b = (unsigned char*)buffer;
-			buffersize = 1024;
-            int foundhome = RegQueryValueEx(version, TEXT("JavaHome"),
-								NULL, 
-								&datatype, 
-								b, 
-								&buffersize);
-			if (foundhome == ERROR_SUCCESS)
+	  b = (unsigned char*)buffer;
+	  buffersize = 1024;
+	  int foundhome = RegQueryValueEx(version, TEXT("JavaHome"),
+					  NULL, 
+					  &datatype, 
+					  b, 
+					  &buffersize);
+	  if (foundhome == ERROR_SUCCESS)
             {
-                        javahomestr = buffer;
+	      javahomestr = buffer;
             }								
 
-			if ((runtimelibstr.length()>0) || (javahomestr.length()>0))
-			{
-				    SunJVMLauncher vm;
-				    vm.RuntimeLibPath = runtimelibstr;
-				    vm.JavaHome = javahomestr;
-				    vm.VmVersion = Version(versionname);
-				    result.push_back(vm);
+	  if ((runtimelibstr.length()>0) || (javahomestr.length()>0))
+	    {
+	      SunJVMLauncher vm;
+	      vm.RuntimeLibPath = runtimelibstr;
+	      vm.JavaHome = javahomestr;
+	      vm.VmVersion = Version(versionname);
+	      result.push_back(vm);
 				    
-				    char buffer[244];
-				    sprintf(buffer, "V(%d)(%d)(%d)", vm.VmVersion.getMajor(), vm.VmVersion.getMinor(), vm.VmVersion.getSubMinor());
-				    DEBUG(std::string("JVM Lookup: found VM (") + buffer + ") in registry.");
-			} 
-		}
-
+	      char buffer[244];
+	      sprintf(buffer, "V(%d)(%d)(%d)", vm.VmVersion.getMajor(), vm.VmVersion.getMinor(), vm.VmVersion.getSubMinor());
+	      DEBUG(std::string("JVM Lookup: found VM (") + buffer + ") in registry.");
+	    } 
 	}
+
+    }
     
-    return result;
+  return result;
 }
 
 

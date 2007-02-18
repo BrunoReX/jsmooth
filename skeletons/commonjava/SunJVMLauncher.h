@@ -48,10 +48,15 @@ class SunJVMLauncher
    */ 
   std::string RuntimeLibPath;
 
+ protected:
+  JavaVM *m_javavm;
+  JNIEnv *m_javaenv;
+  
+ public:
   /**
    * The path to a directory where a JRE is installed. It is expected
    * that the executable bin\\java.exe, bin\\javaw.exe, bin\\jre.exe,
-   * or bin\\jrew.exe exist. The string may be empty is the
+   * or bin\\jrew.exe exist. The string may be empty if the
    * information is not known.
    */ 
   std::string JavaHome;
@@ -105,8 +110,13 @@ friend bool operator < (const SunJVMLauncher& v1, const SunJVMLauncher& v2);
 
  private:
      
-  bool runVM12DLL(ResourceManager& resource, const string& origin);
-  bool runVM11DLL(ResourceManager& resource, const string& origin);
+  //  bool runVM12DLL(ResourceManager& resource, const string& origin);
+  //  bool runVM11DLL(ResourceManager& resource, const string& origin);
+  bool runVMDLL(ResourceManager& resource, const string& origin);
+
+  bool setupVM12DLL(ResourceManager& resource, const string& origin);
+  bool setupVM11DLL(ResourceManager& resource, const string& origin);
+
   bool runVM11proc(ResourceManager& resource, bool noConsole, const string& origin);
   bool runVM12proc(ResourceManager& resource, bool noConsole, const string& origin);
        

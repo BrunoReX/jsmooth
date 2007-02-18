@@ -126,6 +126,8 @@ class StringUtils
     
   static string join(const vector<string>& seq, const string& separator);
   static string trim(string& str);
+
+  static string fixQuotes(const string& str);
     
 };
 

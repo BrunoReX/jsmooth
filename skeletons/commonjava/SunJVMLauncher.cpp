@@ -60,17 +60,53 @@ bool SunJVMLauncher::run(ResourceManager& resource, const string& origin)
     }
 
     DEBUG("Launching " + toString());
-
-    if (Version("1.2") <= VmVersion)
-    {
-        DEBUG("RUNNING L VM " + VmVersion.toString());
-        return runVM12DLL(resource, origin);
-    } else if (Version("1.1") <= VmVersion)
-    {
-        DEBUG("RUNNING L VM11 = " + VmVersion.toString());
-        return runVM11DLL(resource, origin);
-    }
     
+    //
+    // search for the dll if it's not set in the registry...
+    //
+    if ((this->RuntimeLibPath.size() == 0) && (this->JavaHome.size()>0))
+      {
+	std::string assump = FileUtils::concFile(this->JavaHome, "jre\\bin\\jvm.dll");
+	std::string assump2 = FileUtils::concFile(this->JavaHome, "jre\\bin\\server\\jvm.dll");
+	std::string assump3 = FileUtils::concFile(this->JavaHome, "jre\\bin\\client\\jvm.dll");
+
+	if (FileUtils::fileExists(assump))
+	  this->RuntimeLibPath = assump;
+	else if (FileUtils::fileExists(assump2))
+	  this->RuntimeLibPath = assump2;
+	else if (FileUtils::fileExists(assump3))
+	  this->RuntimeLibPath = assump3;
+	else
+	  {
+	    vector<string> dlls = FileUtils::recursiveSearch(this->JavaHome, string("jvm.dll"));
+	    if (dlls.size() > 0)
+	      this->RuntimeLibPath = dlls[0];
+	  }
+      }
+
+
+    // First, set up the VM
+    if (Version("1.2") <= VmVersion)
+      {
+	if (!setupVM12DLL(resource, origin))
+	  {
+	    DEBUG("Can't set up the VM12DLL");
+	    return false;
+	  }
+      } 
+    else if (Version("1.1") <= VmVersion)
+      {
+	if (!setupVM11DLL(resource, origin))
+	  {
+	    DEBUG("Can't set up the VM11DLL");
+	    return false;
+	  }
+    }
+
+    if ((m_javavm != 0) && (m_javaenv != 0))
+      {
+	return runVMDLL(resource, origin);
+      }
     return false;
 }
 
@@ -135,24 +171,16 @@ bool SunJVMLauncher::runProc(ResourceManager& resource, bool noConsole, const st
     return false;
 }
 
-bool SunJVMLauncher::runVM12DLL(ResourceManager& resource, const string& origin)
+bool SunJVMLauncher::setupVM12DLL(ResourceManager& resource, const string& origin)
 {
   std::string jarpath = resource.saveJarInTempFile();
-  std::string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));
-
-  std::string args = resource.getProperty(ResourceManager::KEY_ARGUMENTS);
-
-  vector<string> pargs = StringUtils::split(args, " \t\n\r", "\"\'");
-  for (int i=0; i<pargs.size(); i++)
-    DEBUG("ARG:: <" + pargs[i] + ">");
-    
   HINSTANCE vmlib = LoadLibrary(this->RuntimeLibPath.c_str());
  
   if (vmlib != 0)
     {
-      DEBUG("VM12 LOADED!");
-      CreateJavaVM_t CreateJavaVM = (CreateJavaVM_t)GetProcAddress(vmlib, "JNI_CreateJavaVM");
+      DEBUG("VM12 loaded from " +this->RuntimeLibPath);
 
+      CreateJavaVM_t CreateJavaVM = (CreateJavaVM_t)GetProcAddress(vmlib, "JNI_CreateJavaVM");
       GetDefaultJavaVMInitArgs_t GetDefaultJavaVMInitArgs = (GetDefaultJavaVMInitArgs_t)GetProcAddress(vmlib, "JNI_GetDefaultJavaVMInitArgs");
         
       if ((CreateJavaVM != NULL) && (GetDefaultJavaVMInitArgs != NULL))
@@ -160,13 +188,6 @@ bool SunJVMLauncher::runVM12DLL(ResourceManager& resource, const string& origin)
 	  DEBUG("CREATEJAVAVM FN LOADED");
 	  JavaVM *vm = new JavaVM();
 	  JNIEnv *env = new JNIEnv();
-
-	  jint res;
-	  jclass cls;
-	  jmethodID mid;
-	  jstring jstr;
-	  jobjectArray args;
-	  char classpath[2048];
 
 	  //
 	  // create the properties array
@@ -181,7 +202,7 @@ bool SunJVMLauncher::runVM12DLL(ResourceManager& resource, const string& origin)
 	      value = StringUtils::replace(value, "${VMSELECTION}", origin);
 	      value = StringUtils::replace(value, "${VMSPAWNTYPE}", "JVMDLL");
 
-	      jpropstrv.push_back("-D" + jp.getName() + "=" + value);
+	      jpropstrv.push_back("-D" + jp.getName() + "=" + StringUtils::fixQuotes(value));
 	    }
 
 	  if (resource.getProperty("maxheap") != "")
@@ -193,19 +214,25 @@ bool SunJVMLauncher::runVM12DLL(ResourceManager& resource, const string& origin)
 	    {
 	      jpropstrv.push_back("-Xms" + sizeToString(StringUtils::parseInt(resource.getProperty("initialheap")))); // the extra space at the end would cause JNI_EINVAL return code in CreateJavaVM
 	    }
-
-
                 
 	  JavaVMInitArgs vm_args;
+	  GetDefaultJavaVMInitArgs(&vm_args);
+
 	  JavaVMOption options[1 + jpropstrv.size()];
-	  std::string cpoption = "-Djava.class.path=\"";
-	  cpoption += jarpath;
-	  cpoption += ";" + resource.getNormalizedClassPath();
-	  cpoption += "\"";
+	  std::string cpoption = "-Djava.class.path=";
+	  string cpath = jarpath;
+	  string additionalcpath = resource.getNormalizedClassPath();
+	  if ((cpath.size()>0) && (additionalcpath.size()>0))
+	    cpath += ';';
+	  if (additionalcpath.size()>0)
+	    cpath += additionalcpath;
+	  cpoption += StringUtils::fixQuotes(cpath);
+	  cpoption += "";
 
 	  DEBUG("Classpath: " + cpoption);
 	  options[0].optionString =  (char*)cpoption.c_str();
 	  vm_args.version = 0x00010002;
+	  vm_args.version = JNI_VERSION_1_2;
 	  vm_args.options = options;
 	  vm_args.nOptions = 1 + jpropstrv.size();
                 
@@ -213,21 +240,21 @@ bool SunJVMLauncher::runVM12DLL(ResourceManager& resource, const string& origin)
 	    {
 	      options[1 + i].optionString = (char*)jpropstrv[i].c_str();
 	    }
+	  for (int i=0; i< 1+jpropstrv.size(); i++)
+	    {
+	      DEBUG(string("OPT:") + options[i].optionString);
+	    }
                 
-	  DEBUG("OPTIONS SET!");
-                
-	  vm_args.ignoreUnrecognized = JNI_FALSE;
-                
-	  GetDefaultJavaVMInitArgs(&vm_args);
+	  vm_args.ignoreUnrecognized = JNI_TRUE;
 
-	  res = CreateJavaVM( &vm, &env, &vm_args);
-	  if (res != 0)
+	  //
+	  // Create the VM
+	  if (CreateJavaVM( &vm, &env, &vm_args) != 0)
 	    {
 	      DEBUG("Can't create VM");
 	      return false;
 	    }
-	  else
-	    DEBUG("VM Created !!");
+	  DEBUG("VM Created !!");
                 
 	  jclass clstest = env->FindClass("java/lang/System");
 	  if (clstest != 0)
@@ -239,228 +266,309 @@ bool SunJVMLauncher::runVM12DLL(ResourceManager& resource, const string& origin)
 	      DEBUG("java.lang.system NOT FOUND");
 	      return false;
 	    }                
+	
+	  m_javavm = vm;
+	  m_javaenv = env;
 
-	  classname = StringUtils::replace(classname,".", "/");
-	  DEBUG("Look for " + classname);
-	  cls = (env)->FindClass(classname.c_str());
-	  if (cls == 0)
-	    {
-	      char tmpbuf[255];
-	      sprintf(tmpbuf, "Cant find <%s> at all!", classname.c_str());
-	      DEBUG(tmpbuf);
-	      DEBUG(std::string("Can't Find CLASS <") + classname + std::string(">"));
-	      return false;
-	    }
-	  else
-	    DEBUG("CLASS FOUND");
+	  return true;
+	}
+    } else { DEBUG("Can't even load the DLL: " + this->RuntimeLibPath); }
 
-	  char strbuf[255];
-	  sprintf(strbuf, "");
-	  jstr = (env)->NewStringUTF(strbuf);
-	  mid = (env)->GetStaticMethodID(cls, "main", "([Ljava/lang/String;)V");
-	  if (pargs.size() > 0)
-	    {
-	      args = (env)->NewObjectArray(pargs.size(), (env)->FindClass("java/lang/String"), jstr);
-	      for (int i=0; i<pargs.size(); i++)
-		{
-		  jstr = (env)->NewStringUTF(pargs[i].c_str());
-		  (env)->SetObjectArrayElement(args, i, jstr);
-		}
-	    }
-	  else
-	    {
-	      args = (env)->NewObjectArray(0, (env)->FindClass("java/lang/String"), jstr);
-	    }
-                
-	  if ((mid != 0) && (args != 0))
-	    {
-	      env->CallStaticVoidMethod(cls, mid, args);
-	      DEBUG("VM CALLED !!");
-	      vm->DestroyJavaVM();
-	      DEBUG("VM DESTROYED !!");
-	      return true;
-	    }
-	  else
-	    {
-	      DEBUG("Can't find method !");
-	      return false;
-	    }
-        }
-    }
-  else
-    {
-      DEBUG("CAN'T LOAD DLL");
-    }
   return false;
 }
 
-
-
-bool SunJVMLauncher::runVM11DLL(ResourceManager& resource, const string& origin)
+bool SunJVMLauncher::runVMDLL(ResourceManager& resource, const string& origin)
 {
-    std::string jarpath = resource.saveJarInTempFile();
-    std::string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));
- //   std::string extracp = resource.getProperty(string(ResourceManager::KEY_CLASSPATH));
-    std::string extracp = resource.getNormalizedClassPath();
+  std::string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));  
+  classname = StringUtils::replace(classname,".", "/");
+  DEBUG("Look for " + classname);
+  jclass cls = (m_javaenv)->FindClass(classname.c_str());
+  if (cls == 0)
+    {
+      char tmpbuf[255];
+      sprintf(tmpbuf, "Cant find <%s> at all!", classname.c_str());
+      DEBUG(tmpbuf);
+      DEBUG(std::string("Can't Find CLASS <") + classname + std::string(">"));
+      return false;
+    }
+  else
+    DEBUG("CLASS FOUND");
 
-    std::string args = resource.getProperty(ResourceManager::KEY_ARGUMENTS);
-    vector<string> pargs = StringUtils::split(args, " \t\n\r", "\"\'");
+  char strbuf[255];
+  sprintf(strbuf, "");
+  jstring jstr = (m_javaenv)->NewStringUTF(strbuf);
+  jmethodID mid = (m_javaenv)->GetStaticMethodID(cls, "main", "([Ljava/lang/String;)V");
 
-    string jvmdll = RuntimeLibPath;
+  vector<string> pargs = StringUtils::split(resource.getProperty(ResourceManager::KEY_ARGUMENTS), " \t\n\r", "\"\'");
+  for (int i=0; i<pargs.size(); i++)
+    DEBUG("ARG:: <" + pargs[i] + ">");
+
+  jobjectArray args;
     
-    if (FileUtils::fileExists(jvmdll) == false)
+  if (pargs.size() > 0)
     {
-        jvmdll = JavaHome +  "\\bin\\javai.dll";
-        if (FileUtils::fileExists(jvmdll) == false)
-        {
-             DEBUG("JVM1.1: CAN'T FIND DLL !!!");
-             return false;
-        }
+      args = (m_javaenv)->NewObjectArray(pargs.size(), (m_javaenv)->FindClass("java/lang/String"), jstr);
+      for (int i=0; i<pargs.size(); i++)
+	{
+	  jstr = (m_javaenv)->NewStringUTF(pargs[i].c_str());
+	  (m_javaenv)->SetObjectArrayElement(args, i, jstr);
+	}
     }
-
-    HINSTANCE vmlib = LoadLibrary(jvmdll.c_str());
-      
-    if (vmlib != 0)
+  else
     {
-        DEBUG("VM LOADED!");
-        CreateJavaVM_t CreateJavaVM = (CreateJavaVM_t)GetProcAddress(vmlib, "JNI_CreateJavaVM");
-        GetDefaultJavaVMInitArgs_t GetDefaultJavaVMInitArgs = (GetDefaultJavaVMInitArgs_t)GetProcAddress(vmlib, "JNI_GetDefaultJavaVMInitArgs");
-        
-        if ((CreateJavaVM != NULL) && (GetDefaultJavaVMInitArgs != NULL))
-        {
-                DEBUG("CREATEJAVAVM FN LOADED");
-                JavaVM *javavm = new JavaVM();
-                JNIEnv *env = new JNIEnv();
-
-                jint res;
-                jclass cls;
-                jmethodID mid;
-                jstring jstr;
-                jobjectArray args;
-              
-                  JDK1_1InitArgs vm_args;
-                  //vm_args.exit = myexit;
-                  vm_args.version = 0x00010001;
-                  GetDefaultJavaVMInitArgs(&vm_args);
-                  
-      if (resource.getProperty("maxheap") != "")
-      {
-            vm_args.maxHeapSize = StringUtils::parseInt(resource.getProperty("maxheap"));
-      }
-      if (resource.getProperty("initialheap") != "")
-      {
-            vm_args.minHeapSize = StringUtils::parseInt(resource.getProperty("initialheap"));
-      }
-                  
-        //
-        // create the properties array
-        //
-      const vector<JavaProperty>& jprops = resource.getJavaProperties();
-      vector<string> jpropstrv;
-      for (int i=0; i<jprops.size(); i++)
-      {
-            const JavaProperty& jp = jprops[i];
-	    string value = jp.getValue();
-
-	    value = StringUtils::replace(value, "${VMSELECTION}", origin);
-	    value = StringUtils::replace(value, "${VMSPAWNTYPE}", "JVMDLL");
-
-            jpropstrv.push_back(jp.getName() + "=" + value);
-      }
-      
-      char  const  * props[jprops.size()+1];
-      for (int i=0; i<jpropstrv.size(); i++)
-      {
-             props[i] = jpropstrv[i].c_str();
-      }
-      props[jprops.size()] = NULL;
-      
-      vm_args.properties = (char**)props;
-
-     /* Append USER_CLASSPATH to the default system class path */
-
-        std::string classpath = vm_args.classpath;
-        classpath += ";" + jarpath;
-        classpath += ";" + extracp;
-        DEBUG("CLASSPATH = " + classpath);
-        vm_args.classpath = (char*)classpath.c_str();
-
-      /* Create the Java VM */
-
-        res = CreateJavaVM( &javavm, &env, &vm_args);
-
-       if (res < 0)
-        {
-             DEBUG("Can't create VM " + jvmdll);
-             return false;
-        }
-        else
-                            DEBUG("VM Created !!");
-       
-                jclass clstest = env->FindClass("java/lang/System");
-                if (clstest != 0)
-                {
-                                DEBUG("FOUND java.lang.system !");
-                }
-                else
-                {
-                                DEBUG("java.lang.system NOT FOUND");
-                                return false;
-                }                
-
-		classname = StringUtils::replace(classname,".", "/");                
-                cls = (env)->FindClass(classname.c_str());
-                if (cls == 0)
-                {
-                                char tmpbuf[255];
-                                sprintf(tmpbuf, "Cant find <%s> at all!", classname.c_str());
-                                DEBUG(tmpbuf);
-                                DEBUG(std::string("Can't Find CLASS <") + classname + std::string(">"));
-                                return false;
-                }
-                else
-                            DEBUG("CLASS "+ classname +" FOUND");
-
-                char strbuf[255];
-                sprintf(strbuf, "");
-                jstr = (env)->NewStringUTF(strbuf);
-                mid = (env)->GetStaticMethodID(cls, "main", "([Ljava/lang/String;)V");
-
-                if (pargs.size() > 0)
-                {
-                   args = (env)->NewObjectArray(pargs.size(), (env)->FindClass("java/lang/String"), jstr);
-                   for (int i=0; i<pargs.size(); i++)
-                   {
-                       jstr = (env)->NewStringUTF(pargs[i].c_str());
-                       (env)->SetObjectArrayElement(args, i, jstr);
-                   }
-                }
-                else
-                {
-                    args = (env)->NewObjectArray(0, (env)->FindClass("java/lang/String"), jstr);
-                }
-
-                if ((mid != 0) && (args != 0))
-                {
-                                env->CallStaticVoidMethod(cls, mid, args);
-                                DEBUG("VM CALLED !!");
-                                
-                                javavm->DestroyJavaVM();
-                                return true;
-                }
-                else
-                {
-                                DEBUG("Can't find method !");
-                                return false;
-                }
-        }
+      args = (m_javaenv)->NewObjectArray(0, (m_javaenv)->FindClass("java/lang/String"), jstr);
     }
-    else
+                
+  if ((mid != 0) && (args != 0))
     {
-        DEBUG("CAN'T LOAD DLL " + jvmdll);
+      m_javaenv->CallStaticVoidMethod(cls, mid, args);
+      DEBUG("VM CALLED !!");
+      m_javavm->DestroyJavaVM();
+      DEBUG("VM DESTROYED !!");
+      return true;
     }
-    return false;
+  else
+    {
+      DEBUG("Can't find method !");
+      return false;
+    }
 }
+
+
+// bool SunJVMLauncher::runVM12DLL(ResourceManager& resource, const string& origin)
+// {
+//   if (setupVM12DLL(resource, origin) == false)
+//     {
+//       DEBUG("CAN'T LOAD DLL");
+//       return false;
+//     }
+
+//   std::string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));  
+//   classname = StringUtils::replace(classname,".", "/");
+//   DEBUG("Look for " + classname);
+//   jclass cls = (m_javaenv)->FindClass(classname.c_str());
+//   if (cls == 0)
+//     {
+//       char tmpbuf[255];
+//       sprintf(tmpbuf, "Cant find <%s> at all!", classname.c_str());
+//       DEBUG(tmpbuf);
+//       DEBUG(std::string("Can't Find CLASS <") + classname + std::string(">"));
+//       return false;
+//     }
+//   else
+//     DEBUG("CLASS FOUND");
+
+//   char strbuf[255];
+//   sprintf(strbuf, "");
+//   jstring jstr = (m_javaenv)->NewStringUTF(strbuf);
+//   jmethodID mid = (m_javaenv)->GetStaticMethodID(cls, "main", "([Ljava/lang/String;)V");
+
+//   vector<string> pargs = StringUtils::split(resource.getProperty(ResourceManager::KEY_ARGUMENTS), " \t\n\r", "\"\'");
+//   for (int i=0; i<pargs.size(); i++)
+//     DEBUG("ARG:: <" + pargs[i] + ">");
+
+//   jobjectArray args;
+    
+//   if (pargs.size() > 0)
+//     {
+//       args = (m_javaenv)->NewObjectArray(pargs.size(), (m_javaenv)->FindClass("java/lang/String"), jstr);
+//       for (int i=0; i<pargs.size(); i++)
+// 	{
+// 	  jstr = (m_javaenv)->NewStringUTF(pargs[i].c_str());
+// 	  (m_javaenv)->SetObjectArrayElement(args, i, jstr);
+// 	}
+//     }
+//   else
+//     {
+//       args = (m_javaenv)->NewObjectArray(0, (m_javaenv)->FindClass("java/lang/String"), jstr);
+//     }
+                
+//   if ((mid != 0) && (args != 0))
+//     {
+//       m_javaenv->CallStaticVoidMethod(cls, mid, args);
+//       DEBUG("VM CALLED !!");
+//       m_javavm->DestroyJavaVM();
+//       DEBUG("VM DESTROYED !!");
+//       return true;
+//     }
+//   else
+//     {
+//       DEBUG("Can't find method !");
+//       return false;
+//     }
+// }
+
+
+bool SunJVMLauncher::setupVM11DLL(ResourceManager& resource, const string& origin)
+{
+  DEBUG("RUNNING L VM11 = " + VmVersion.toString());
+
+  std::string jarpath = resource.saveJarInTempFile();
+  std::string extracp = resource.getNormalizedClassPath();
+
+  string jvmdll = RuntimeLibPath;
+ 
+  if (FileUtils::fileExists(jvmdll) == false)
+    {
+      jvmdll = JavaHome +  "\\bin\\javai.dll";
+      if (FileUtils::fileExists(jvmdll) == false)
+	{
+	  DEBUG("JVM1.1: CAN'T FIND DLL !!!");
+	  return false;
+	}
+    }
+
+  HINSTANCE vmlib = LoadLibrary(jvmdll.c_str());
+      
+  if (vmlib != 0)
+    {
+      DEBUG("VM 1.1 loaded from " + this->RuntimeLibPath);
+      CreateJavaVM_t CreateJavaVM = (CreateJavaVM_t)GetProcAddress(vmlib, "JNI_CreateJavaVM");
+      GetDefaultJavaVMInitArgs_t GetDefaultJavaVMInitArgs = (GetDefaultJavaVMInitArgs_t)GetProcAddress(vmlib, "JNI_GetDefaultJavaVMInitArgs");
+        
+      if ((CreateJavaVM != NULL) && (GetDefaultJavaVMInitArgs != NULL))
+	{
+	  DEBUG("CREATEJAVAVM FN LOADED");
+	  JavaVM *javavm = new JavaVM();
+	  JNIEnv *env = new JNIEnv();
+
+	  jint res;
+	  jclass cls;
+	  jmethodID mid;
+	  jstring jstr;
+	  jobjectArray args;
+              
+	  JDK1_1InitArgs vm_args;
+	  //vm_args.exit = myexit;
+	  vm_args.version = 0x00010001;
+	  GetDefaultJavaVMInitArgs(&vm_args);
+                  
+	  if (resource.getProperty("maxheap") != "")
+	    {
+	      vm_args.maxHeapSize = StringUtils::parseInt(resource.getProperty("maxheap"));
+	    }
+	  if (resource.getProperty("initialheap") != "")
+	    {
+	      vm_args.minHeapSize = StringUtils::parseInt(resource.getProperty("initialheap"));
+	    }
+                  
+	  //
+	  // create the properties array
+	  //
+	  const vector<JavaProperty>& jprops = resource.getJavaProperties();
+	  vector<string> jpropstrv;
+	  for (int i=0; i<jprops.size(); i++)
+	    {
+	      const JavaProperty& jp = jprops[i];
+	      string value = jp.getValue();
+
+	      value = StringUtils::replace(value, "${VMSELECTION}", origin);
+	      value = StringUtils::replace(value, "${VMSPAWNTYPE}", "JVMDLL");
+
+	      jpropstrv.push_back(jp.getName() + "=" + StringUtils::fixQuotes(value));
+	    }
+      
+	  char  const  * props[jprops.size()+1];
+	  for (int i=0; i<jpropstrv.size(); i++)
+	    {
+	      props[i] = jpropstrv[i].c_str();
+	    }
+	  props[jprops.size()] = NULL;
+      
+	  vm_args.properties = (char**)props;
+
+	  /* Append USER_CLASSPATH to the default system class path */
+
+	  std::string classpath = vm_args.classpath;
+	  classpath += ";" + jarpath;
+	  classpath += ";" + extracp;
+	  DEBUG("CLASSPATH = " + classpath);
+	  vm_args.classpath = (char*)classpath.c_str();
+
+	  /* Create the Java VM */
+	  if ((res = CreateJavaVM( &javavm, &env, &vm_args)) < 0)
+	    {
+	      DEBUG("Can't create VM " + jvmdll);
+	      return false;
+	    }
+	  DEBUG("VM Created !!");
+
+	  //
+	  // Test java.lang.system
+	  if (env->FindClass("java/lang/System") == 0)
+	    {
+	      DEBUG("java.lang.system NOT FOUND");
+	      return false;
+	    }                
+	  
+	  m_javavm = javavm;
+	  m_javaenv = env;
+
+	  return true;
+	}
+    }
+
+  return false;
+}
+
+// bool SunJVMLauncher::runVM11DLL(ResourceManager& resource, const string& origin)
+// {
+//   if (setupVM11DLL(resource, origin) == false)
+//     {
+//       DEBUG("CAN'T LOAD DLL ");
+//       return false;
+//     }
+      
+//   std::string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));
+//   classname = StringUtils::replace(classname,".", "/");                
+//   jclass cls = (m_javaenv)->FindClass(classname.c_str());
+//   if (cls == 0)
+//     {
+//       char tmpbuf[255];
+//       sprintf(tmpbuf, "Cant find <%s> at all!", classname.c_str());
+//       DEBUG(tmpbuf);
+//       DEBUG(std::string("Can't Find CLASS <") + classname + std::string(">"));
+//       return false;
+//     }
+//   else
+//     DEBUG("CLASS "+ classname +" FOUND");
+
+//   char strbuf[255];
+//   sprintf(strbuf, "");
+//   jstring jstr = (m_javaenv)->NewStringUTF(strbuf);
+//   jmethodID mid = (m_javaenv)->GetStaticMethodID(cls, "main", "([Ljava/lang/String;)V");
+
+//   vector<string> pargs = StringUtils::split(resource.getProperty(ResourceManager::KEY_ARGUMENTS), " \t\n\r", "\"\'");
+//   jobjectArray args;
+
+//   if (pargs.size() > 0)
+//     {
+//       args = (m_javaenv)->NewObjectArray(pargs.size(), (m_javaenv)->FindClass("java/lang/String"), jstr);
+//       for (int i=0; i<pargs.size(); i++)
+// 	{
+// 	  jstr = (m_javaenv)->NewStringUTF(pargs[i].c_str());
+// 	  (m_javaenv)->SetObjectArrayElement(args, i, jstr);
+// 	}
+//     }
+//   else
+//     {
+//       args = (m_javaenv)->NewObjectArray(0, (m_javaenv)->FindClass("java/lang/String"), jstr);
+//     }
+
+//   if ((mid != 0) && (args != 0))
+//     {
+//       m_javaenv->CallStaticVoidMethod(cls, mid, args);
+//       DEBUG("VM CALLED !!");
+                                
+//       m_javavm->DestroyJavaVM();
+//       return true;
+//     }
+//   else
+//     {
+//       DEBUG("Can't find method !");
+//       return false;
+//     }
+// }
 
 bool SunJVMLauncher::runVM11proc(ResourceManager& resource, bool noConsole, const string& origin)
 {
@@ -542,8 +650,9 @@ bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, Reso
 
             string::iterator t = v.end();
             if (*(--t) == '\\')
-                        v += "\\";
-            javaproperties += " \"-D" + jp.getName() + "=" + v + "\"";
+	      v += "\\";
+
+            javaproperties += " \"-D" + jp.getName() + "\"=" + StringUtils::fixQuotes(v);
       }
       
       if (resource.getProperty("maxheap") != "")
@@ -588,10 +697,16 @@ bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, Reso
       }
 
       PROCESS_INFORMATION procinfo;
-      string exeline = exepath + " " + arguments;
+      string exeline = StringUtils::fixQuotes(exepath) + " " + arguments;
+
+//       if ((exepath.length()>0) && ((exepath[0]=="\"") || (exepath[0]=="'")))
+// 	exeline += exepath + " " + arguments;
+//       else
+//      exeline += "\"" + exepath + "\" " + arguments;
 
       int res = CreateProcess(NULL, (char*)exeline.c_str(), NULL, NULL, inheritsHandle, creationFlags, NULL, NULL, &info, &procinfo);
 
+      DEBUG("---------------------------------------------------");
       DEBUG("COMMAND LINE: " +exeline);
       DEBUG("RESULT: " + StringUtils::toString(res));
       if (res != 0)
@@ -638,7 +753,7 @@ Version SunJVMLauncher::guessVersionByProcess(const string& exepath)
     PROCESS_INFORMATION procinfo;
     
     string exeline = exepath + " -version";
-
+    DEBUG(("Running: " + exeline).c_str());
     int res = CreateProcess(NULL, (char*)exeline.c_str(), NULL, NULL, 
                         TRUE, NORMAL_PRIORITY_CLASS, NULL, NULL, &info, &procinfo);
     
@@ -646,13 +761,14 @@ Version SunJVMLauncher::guessVersionByProcess(const string& exepath)
       {
 	WaitForSingleObject(procinfo.hProcess, INFINITE);
 	CloseHandle(tmph);
-            
-            tmph = CreateFile(tmpfilename.c_str(), GENERIC_READ,
+
+	tmph = CreateFile(tmpfilename.c_str(), GENERIC_READ,
                             FILE_SHARE_READ, NULL,
                             OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
             
             if (tmph != NULL)
             {
+	      DEBUG("Reading temp...");
                         char buffer[128];
                         DWORD hasread;
                         buffer[127] = 0;
@@ -672,8 +788,16 @@ Version SunJVMLauncher::guessVersionByProcess(const string& exepath)
                         }
                 CloseHandle(tmph);
             }
+	    else
+	      {
+		DEBUG("Can't open temporary file for result");
+	      }
       }
-    DeleteFile(tmpfilename.c_str());
+      else
+	{
+	  DEBUG("Can't run process");
+	}
+      //    DeleteFile(tmpfilename.c_str());
     return result;
 }
 
