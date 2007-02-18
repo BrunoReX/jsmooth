@@ -21,43 +21,71 @@
 package net.charabia.jsmoothgen.application.gui.util;
 
 import java.io.*;
+import java.util.*;
 
 /**
  *
  */
 public class CommandRunner
 {
-	static public class CmdStdReader implements Runnable
+    static private Vector s_runningprocs = new Vector();
+
+    static {
+	Thread t = new ProcessCleaner();
+	t.setDaemon(true);
+	Runtime.getRuntime().addShutdownHook(t);
+    }
+
+    static public class CmdStdReader implements Runnable
+    {
+	InputStream m_in;
+		
+	public CmdStdReader(InputStream in)
 	{
-		InputStream m_in;
+	    m_in = in;
+	}
 		
-		public CmdStdReader(InputStream in)
+	public void run() 
+	{
+	    try {
+		BufferedReader br = new BufferedReader(new InputStreamReader(m_in));
+		String line = null;
+		while ( (line = br.readLine()) != null)
+		    System.out.println(line);
+	    } catch (Exception exc)
 		{
-			m_in = in;
+		    exc.printStackTrace();
 		}
+	}
 		
-		public void run() 
+    }
+
+    static public class ProcessCleaner extends Thread
+    {
+	public void run()  
+	{
+	    for (Enumeration e=s_runningprocs.elements(); e.hasMoreElements(); )
 		{
-			try {
-				BufferedReader br = new BufferedReader(new InputStreamReader(m_in));
-				String line = null;
-				while ( (line = br.readLine()) != null)
-			                System.out.println(line);
-			} catch (Exception exc)
+		    Process p = (Process)e.nextElement();
+		    try {
+			int res = p.exitValue();
+		    } catch (Exception ex)
 			{
-				exc.printStackTrace();
+			    p.destroy();
 			}
 		}
-		
 	}
+    }
 	
-	static public void run(String[] cmd, File curdir) throws Exception
-	{
-		Process proc = Runtime.getRuntime().exec(cmd, null, curdir);
-		InputStream stdin = proc.getInputStream();
-		InputStream stderr = proc.getErrorStream();
+    static public void run(String[] cmd, File curdir) throws Exception
+    {
+	Process proc = Runtime.getRuntime().exec(cmd, null, curdir);
+	InputStream stdin = proc.getInputStream();
+	InputStream stderr = proc.getErrorStream();
 		
-		new Thread(new CmdStdReader(stdin)).start();
-		new Thread(new CmdStdReader(stderr)).start();
-	}
+	new Thread(new CmdStdReader(stdin)).start();
+	new Thread(new CmdStdReader(stderr)).start();
+
+	s_runningprocs.add(proc);
+    }
 }
