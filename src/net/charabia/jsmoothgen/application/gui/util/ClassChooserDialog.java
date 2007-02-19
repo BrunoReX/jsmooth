@@ -290,7 +290,7 @@ public class ClassChooserDialog extends javax.swing.JDialog
      */
     public static void main(String args[])
     {
-        new ClassChooserDialog(new javax.swing.JFrame(), true).show();
+        new ClassChooserDialog(new javax.swing.JFrame(), true).setVisible(true);
     }
     
     public boolean validated()

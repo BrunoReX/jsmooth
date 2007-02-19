@@ -112,7 +112,7 @@ public class MainClass extends Editor
 	    }
 
 	chooser.setClassName(m_classname.getText());
-	chooser.show();
+	chooser.setVisible(true);
 	if (chooser.validated())
 	    {
 		String classname = chooser.getClassName();

@@ -73,7 +73,7 @@ public class OptionalHelpPanel extends JPanel
 	setLayout(new PanelLayout());
 
 	m_titlePanel.setLayout(new BorderLayout());
-	m_titlePanel.add(BorderLayout.CENTER, m_title);
+       	m_titlePanel.add(BorderLayout.CENTER, m_title);
 	m_titlePanel.add(BorderLayout.EAST, m_helptoggle);
 	m_titlePanel.setOpaque(true);
 	m_helptoggle.setOpaque(false);

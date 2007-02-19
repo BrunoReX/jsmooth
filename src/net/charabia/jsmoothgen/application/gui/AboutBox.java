@@ -169,7 +169,7 @@ public class AboutBox extends javax.swing.JDialog
 	 */
 	public static void main(String args[])
 	{
-		new AboutBox(new javax.swing.JFrame(), true).show();
+		new AboutBox(new javax.swing.JFrame(), true).setVisible(true);
 	}
 	
 	

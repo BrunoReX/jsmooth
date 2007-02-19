@@ -51,7 +51,7 @@ public class JavaProperties extends Editor
 	{
 	    JavaPropertyPair jpp = (JavaPropertyPair)item;
 	    PropertyEditorDialog dia = new PropertyEditorDialog(jpp);                    
-	    dia.show();
+	    dia.setVisible(true);
 	    return item;
 	}
                 

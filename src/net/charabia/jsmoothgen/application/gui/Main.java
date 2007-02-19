@@ -255,7 +255,7 @@ public class Main extends JFrame
 			    {
 				dia.setNewState(100, "- " + (i.next().toString()));
 			    }
-			dia.show();
+			dia.setVisible(true);
 		    }
 	    }
 	};
@@ -274,7 +274,7 @@ public class Main extends JFrame
 	    {
 		AboutBox ab = new AboutBox(Main.this, true);
 		ab.setVersion(Main.VERSION + " (" + Main.RELEASEINFO + ")");
-		ab.show();
+		ab.setVisible(true);
 	    }
 	};
 
@@ -337,6 +337,6 @@ public class Main extends JFrame
 	} catch (Exception e) { e.printStackTrace(); }
 
 	Main.MAIN = new Main();
-	Main.MAIN.show();
+	Main.MAIN.setVisible(true);
     }
 }

@@ -85,7 +85,7 @@ public class Splash
 	m_window.setSize(m_splashImage.getWidth(m_window), m_splashImage.getHeight(m_window));
 	m_window.setLocation( (screendim.width - m_splashImage.getWidth(m_window))/2,
 			      (screendim.height- m_splashImage.getHeight(m_window))/2);
-	m_window.show();
+	m_window.setVisible(true);
     }
 
     public void dispose()
