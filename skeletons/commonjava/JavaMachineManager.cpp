@@ -142,11 +142,15 @@ bool JavaMachineManager::run(bool dontUseConsole, bool preferSingleProcess)
 
 bool JavaMachineManager::internalRun(SunJVMLauncher& launcher, bool noConsole, bool preferSingleProcess, const string& org)
 {
-  if (noConsole == false)
+  // Need a console, and spawning a process is OK ? Then exec
+  // [java/jre].exe.
+  if ((noConsole == false) && (preferSingleProcess==false))
     {
       return launcher.runProc(m_resman, noConsole, org);
     }
-  
+
+  // No need for a console, and need a single process ? Use the DLL
+  // and create a JVM with it
   if (noConsole && preferSingleProcess)
     {
       DEBUG("Trying to run the JVM as a DLL call (executing in this process)...");
@@ -156,8 +160,21 @@ bool JavaMachineManager::internalRun(SunJVMLauncher& launcher, bool noConsole, b
       DEBUG("Couldn't use the DLL at " + launcher.RuntimeLibPath);      
     }
 
-  if (launcher.runProc(m_resman, noConsole, org) == false)
-    return launcher.run(m_resman, org);
-
+  // If we have an embedded jar, always prefer the exec process
+  // launching, as it garantees that the temporary jar is cleaned up
+  // on exit (due to a bug in the JVM DLL that prevents it to
+  // terminate nicely).
+  if (m_resman.useEmbeddedJar())
+    {
+      if (launcher.runProc(m_resman, noConsole, org) == false)
+	return launcher.run(m_resman, org);
+    }
+  else // Otherwise, preferring the JVM DLL call first is better
+       // (it spares a new process)
+    {
+      if (launcher.run(m_resman, org) == false)
+	return launcher.runProc(m_resman, noConsole, org);
+    }
+  
   return true;
 }
