@@ -17,7 +17,7 @@
 
  <!-- set here the properties specific the release --> 
 
-  <property name="VERSION" value="0.9.7"/>
+  <property name="VERSION" value="0.9.8"/>
 
   <!-- You should need to modify the properties below -->
 
@@ -297,7 +297,6 @@
     <delete file="jsmoothgen.exe"/>
     <delete file="jsmoothcmd.exe"/>
     <delete file="proof-test.exe"/>
-
   </target>
 
   <target name="run" depends="jar">
