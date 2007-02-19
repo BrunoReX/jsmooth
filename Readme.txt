@@ -1,5 +1,5 @@
 JSmooth: a VM wrapper toolkit for Windows
-Copyright (C) 2003 Rodrigo Reyes <reyes@charabia.net>
+Copyright (C) 2003-2007 Rodrigo Reyes <reyes@charabia.net>
 
 JSmooth is a Java Executable Wrapper that builds standard Windows
 executable binaries (.exe) that launch java applications. Such binaries
@@ -11,9 +11,7 @@ can download a JVM.
 
 1. Status of the project
 
- JSmooth is currently in beta phase. It is provided in the hope it can
- be useful to the java community, but always keep in mind that it's
- still beta.
+ JSmooth is currently in advanced beta phase. 
 
 2 Using the software
 
@@ -83,15 +81,12 @@ http://sourceforge.net/projects/jsmooth
 
 4. License
 
-All the JSmooth project is distributed under the terms of the GNU
-General Public License. Please read the License.txt file that comes
-with the package.
+The JSmooth project is distributed under the terms of the GNU General
+Public License. Please read the License.txt file that comes with the
+package. Additional software bundled with JSmooth may come with their
+own license, please check.
 
-This license applies to all the files of the project, but not on the
-generated executable. This means that you are free to generate
-executable wrappers for proprietary software and distribute them
-without applying the terms of the GPL to them.
-
-Of course, this is the one and only exception. All other kind of
-distribution of any file of the JSmooth package must conform with the
-terms of the GNU General Public License.
+This GPL license applies to the project, but not on the generated
+executable. This means that you are free to generate executable
+wrappers for proprietary software and distribute them without applying
+the terms of the GPL to them.
