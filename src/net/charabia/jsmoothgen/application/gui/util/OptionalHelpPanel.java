@@ -168,6 +168,6 @@ public class OptionalHelpPanel extends JPanel
 	f.getContentPane().add(ohp);
 	f.getContentPane().add(ohp2);
 	f.setSize(300,300);
-	f.show();
+	f.setVisible(true);
     }
 }

@@ -613,7 +613,7 @@ public class SkeletonEditor extends javax.swing.JFrame
 	 */
 	public static void main(String args[])
 	{
-		new SkeletonEditor().show();
+		new SkeletonEditor().setVisible(true);
 	}
 	
 	

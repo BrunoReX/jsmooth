@@ -268,14 +268,14 @@ public class ClassChooserDialog extends javax.swing.JDialog
     {//GEN-HEADEREND:event_buttonSelectActionPerformed
         // Add your handling code here:
         m_valid = true;
-        hide();
+        setVisible(false);
     }//GEN-LAST:event_buttonSelectActionPerformed
 
     private void buttonCancelActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_buttonCancelActionPerformed
     {//GEN-HEADEREND:event_buttonCancelActionPerformed
         // Add your handling code here:
         m_valid = false;
-        hide();
+        setVisible(false);
     }//GEN-LAST:event_buttonCancelActionPerformed
     
     /** Closes the dialog */

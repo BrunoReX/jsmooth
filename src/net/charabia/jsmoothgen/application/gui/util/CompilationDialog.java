@@ -138,7 +138,7 @@ public class CompilationDialog extends javax.swing.JDialog implements ExeCompile
 		Thread t = new Thread(r);
 		t.start();
 		setModal(true);
-		show();
+		setVisible(true);
 	}
 	
 	/**
@@ -146,7 +146,7 @@ public class CompilationDialog extends javax.swing.JDialog implements ExeCompile
 	 */
 	public static void main(String args[])
 	{
-		new CompilationDialog(new javax.swing.JFrame(), true).show();
+		new CompilationDialog(new javax.swing.JFrame(), true).setVisible(true);
 	}
 	
 	public void complete()
