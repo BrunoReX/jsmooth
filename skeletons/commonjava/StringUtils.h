@@ -127,8 +127,23 @@ class StringUtils
   static string join(const vector<string>& seq, const string& separator);
   static string trim(string& str);
 
+  /**
+   * If a string does not start with a quote ("), it returns a copy of
+   * the string with enclosing quotes.
+   *
+   * @param str a string
+   * @return a fixed copy of the string
+   */
   static string fixQuotes(const string& str);
-
+  
+  /**
+   * Ensures a string is correctly quoted, the quotes are enclosing
+   * the whole string, not a part of the string. For instance
+   * <<"c:\\my path"\\bin>> is transformed into <<"c:\\my path\\bin">>
+   *
+   * @param str a string
+   * @return a fixed copy of the string
+   */
   static string requote(const string& str);
     
 };
