@@ -8,9 +8,9 @@ WINDRES = windres.exe
 RES  = JWrap_private.res
 OBJ  = main.o $(RES)
 LINKOBJ  = main.o $(RES)
-LIBS =  -L"/lib" -L"../commonjava" -mwindows ../commonjava/CommonJava.a 
-INCS =  -I"/include"  -I"$(JDK)/include/win32"  -I"$(JDK)/include"  -I"../commonjava" 
-CXXINCS =  -I"/include/c++"  -I"/include/c++/mingw32"  -I"/include/c++/backward"  -I"/include"  -I"$(JDK)/include/win32"  -I"$(JDK)/include"  -I"../commonjava" 
+LIBS =  -L"/lib" -L"../commonjava"  -L"../util-core" -mwindows ../commonjava/CommonJava.a ../util-core/util-core.a
+INCS =  -I"/include"  -I"$(JDK)/include/win32"  -I"$(JDK)/include"  -I"../commonjava" -I"../util-core"
+CXXINCS =  -I"/include/c++"  -I"/include/c++/mingw32"  -I"/include/c++/backward"  -I"/include"  -I"$(JDK)/include/win32"  -I"$(JDK)/include"  -I"../commonjava"  -I../util-core
 BIN  = JWrap.exe
 CXXFLAGS = $(CUSTOMFLAGS) $(CXXINCS) -DJDK="$(JDK)"
 CFLAGS = $(INCS) 

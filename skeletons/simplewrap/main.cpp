@@ -1,21 +1,21 @@
 /*
   JSmooth: a VM wrapper toolkit for Windows
-  Copyright (C) 2003 Rodrigo Reyes <reyes@charabia.net>
+  Copyright (C) 2003-2007 Rodrigo Reyes <reyes@charabia.net>
 
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Library General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
+  
+  This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Library General Public License for more details.
+  
+  You should have received a copy of the GNU Library General Public
+  License along with this library; if not, write to the Free
+  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  
 */
 
 #include <windows.h>
@@ -59,6 +59,15 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 
     globalResMan = new ResourceManager("JAVA", PROPID, JARID);
 
+    // sets up the command line arguments
+    // not sure if lpszArgument can be null on Windows...
+     if ((lpszArgument!=NULL) && (strlen(lpszArgument)>0))
+       {
+ 	// Note that this overwrites an existing KEY_ARGUMENTS
+	 std::vector<std::string> args = StringUtils::split(lpszArgument, " \t\n\r", "\"'", true);
+	 globalResMan->setUserArguments( args );
+       }
+
     std::string dodebug = globalResMan->getProperty("skel_Debug");
     if (StringUtils::parseInt(dodebug) != 0)
       {
@@ -67,15 +76,6 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
       }
 
     DEBUG(string("Main class: ") + globalResMan->getMainName());
-
-    // sets up the command line arguments
-    // not sure if lpszArgument can be null on Windows...
-     if ((lpszArgument!=NULL) && (strlen(lpszArgument)>0))
-       {
-	 DEBUG(string("Setting arguments: ") + lpszArgument);
- 	// Note that this overwrites an existing KEY_ARGUMENTS
- 	globalResMan->setProperty(string(ResourceManager::KEY_ARGUMENTS), lpszArgument);
-       }
 
     char curdir[256];
     GetCurrentDirectory(256, curdir);

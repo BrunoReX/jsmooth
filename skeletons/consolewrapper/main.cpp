@@ -1,21 +1,21 @@
 /*
   JSmooth: a VM wrapper toolkit for Windows
-  Copyright (C) 2003 Rodrigo Reyes <reyes@charabia.net>
+  Copyright (C) 2003-2007 Rodrigo Reyes <reyes@charabia.net>
 
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Library General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
+  
+  This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Library General Public License for more details.
+  
+  You should have received a copy of the GNU Library General Public
+  License along with this library; if not, write to the Free
+  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  
 */
 
 #include <iostream>
@@ -46,6 +46,16 @@ void _debugWaitKey()
 int main(int argc, char *argv[])
 {    
     ResourceManager* globalResMan = new ResourceManager("JAVA", PROPID, JARID);
+
+    // sets up the arguments
+    //
+    if (argc > 1)
+      globalResMan->setProperty(string(ResourceManager::KEY_ARGUMENTS), "");
+    for (int i=1; i<argc; i++)
+      globalResMan->addUserArgument(argv[i]);
+
+    //
+    // sets up the debug mode, if requested
     std::string dodebug = globalResMan->getProperty("skel_Debug");
     if (StringUtils::parseInt(dodebug) != 0)
       {
@@ -59,15 +69,6 @@ int main(int argc, char *argv[])
     string newcurdir = globalResMan->getProperty(ResourceManager::KEY_CURRENTDIR);
     SetCurrentDirectory(newcurdir.c_str());
 
-    std::string args = "";
-    for (int i=1; i<argc; i++)
-    {
-        args += string("\"") + argv[i] + "\" ";
-    }
-
-    if (args.length() > 0)
-      globalResMan->setProperty(string(ResourceManager::KEY_ARGUMENTS), args);
-    
     JavaMachineManager man(*globalResMan);
     if (man.run(false, false) == false)
     {
