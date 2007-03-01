@@ -91,7 +91,7 @@ public class JSmoothPropertiesDisplayer extends java.awt.Frame
 	 */
 	public static void main(String args[])
 	{
-		new JSmoothPropertiesDisplayer(args).show();
+		new JSmoothPropertiesDisplayer(args).setVisible(true);
 	}
 
 	private void displayInformation()

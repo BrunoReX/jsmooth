@@ -6,6 +6,7 @@
 <JVMSearchPath>jdkpath</JVMSearchPath>
 <JVMSearchPath>exepath</JVMSearchPath>
 <JVMSearchPath>jview</JVMSearchPath>
+<embeddedJar>true</embeddedJar>
 <executableName>test-javaproperties-console.exe</executableName>
 <initialMemoryHeap>-1</initialMemoryHeap>
 <jarLocation>..\generic-javaproperties\sample.jar</jarLocation>

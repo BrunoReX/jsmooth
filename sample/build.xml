@@ -14,7 +14,7 @@
 
   <target depends="init" name="compile">
     <!-- Compile the java code from ${src} into ${classes} -->
-    <javac deprecation="yes" destdir="${classes}" srcdir="${src}" target="1.1"/>
+    <javac deprecation="yes" destdir="${classes}" srcdir="${src}" source="1.1" target="1.1"/>
   </target>
 
   <target depends="compile" name="dist">
@@ -24,5 +24,6 @@
 
   <target name="clean">
     <delete dir="${classes}"/>
+    <delete file="sample.jar"/>
   </target>
 </project>

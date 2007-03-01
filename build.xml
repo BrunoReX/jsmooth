@@ -11,13 +11,25 @@
   <property name="mingw-make" value="mingw32-make.exe"/>
   <property name="mingw-strip" value="strip.exe"/>
 
+  <!-- the autodownload skeleton needs the fltk lib to be available  -->
+  <!-- Unfortunately, I couldn't find a way to call fltk-config      -->
+  <!-- directly from ANT or from the makefile. To find the correct   -->
+  <!-- values for your system, run the msys/mingw shell and type     -->
+  <!-- "fltk-config __ldflags" and "fltk-config __cxxflags"          -->
+  <!-- (replace each _ with a - above, due to xml syntax constraints -->
+  <!-- Then, add the windows path so that the makefile gets it right -->
+  <!-- Below are the default values when you ./configure, make and   -->
+  <!-- make install fltk under an msys environement                  -->
+  <property name="fltk-ldflags" value="-LC:/msys/1.0/local/lib -mwindows -mno-cygwin -lfltk -lole32 -luuid -lcomctl32 -lwsock32"/>
+  <property name="fltk-cxxflags" value="-IC:/msys/1.0/local/include -IC:/msys/1.0/local/include/FL/images -mwindows -DWIN32 -mno-cygwin"/>
+
   <!-- What's below is  optional (needed only if you build a dist) -->
   <property name="FOP" value="c:/Programs/fop-0.20.5\fop.bat"/>
   <property name="DOCBOOKBASE" value="c:\programs\docbook5-xsl-1.72.0"/>
 
  <!-- set here the properties specific the release --> 
 
-  <property name="VERSION" value="0.9.8-2"/>
+  <property name="VERSION" value="0.9.9"/>
 
   <!-- You should need to modify the properties below -->
 
@@ -224,7 +236,7 @@
     <copy todir="${dist}" file="Changelog"/>
 
     <!-- Compile the wrappers -->
-    <ant antfile="build.xml" dir="skeletons/simplewrap/samplejar/" target="dist"/>
+    <ant antfile="build.xml" dir="skeletons/samplejar/" target="dist"/>
     <ant antfile="build.xml" dir="skeletons/consolewrapper/samplejar/" target="dist"/>
 
     <mkdir dir="${dist}/skeletons/windowed-wrapper"/>
@@ -259,13 +271,16 @@
   </target>
 
    <target name="compileskel" depends="">
+    <echo>Making ${skelname} ${target}</echo>
      <exec executable="${mingw-make}" dir="skeletons/${skelname}">
        <arg value="-f"/>
        <arg value="Makefile.win"/>
-       <arg value="all"/>
+       <arg value="${target}"/>
        <arg value='CUSTOMFLAGS=${skelflags}'/>
        <arg value='"JDK=${JDKDIR}"'/>
        <arg value='"RM=${RM}"'/>
+       <arg value='"FLTK-LDFLAGS=${fltk-ldflags}"'/>
+       <arg value='"FLTK-CXXFLAGS=${fltk-cxxflags}"'/>
      </exec>
    </target>
 
@@ -274,16 +289,34 @@
      <ant dir="skeletons/consolewrapper/samplejar" /> 
 
     <antcall target="compileskel">
+      <param name="skelname" value="util-core"/>
+      <param name="skelflags" value="${skelflags}"/>
+      <param name="target" value="all"/>
+    </antcall>
+    <antcall target="compileskel">
+      <param name="skelname" value="util-net"/>
+      <param name="skelflags" value="${skelflags}"/>
+      <param name="target" value="all"/>
+    </antcall>
+    <antcall target="compileskel">
       <param name="skelname" value="commonjava"/>
       <param name="skelflags" value="${skelflags}"/>
+      <param name="target" value="all"/>
     </antcall>
     <antcall target="compileskel">
       <param name="skelname" value="consolewrapper"/>
       <param name="skelflags" value="${skelflags}"/>
+      <param name="target" value="all"/>
     </antcall>
     <antcall target="compileskel">
       <param name="skelname" value="simplewrap"/>
       <param name="skelflags" value="${skelflags}"/>
+      <param name="target" value="all"/>
+    </antcall>
+    <antcall target="compileskel">
+      <param name="skelname" value="autodownload"/>
+      <param name="skelflags" value="${skelflags}"/>
+      <param name="target" value="all"/>
     </antcall>
    </target>
 
@@ -293,6 +326,39 @@
     <delete dir="${tmp}"/>
     <delete file="${jsmoothjar}"/>
     <delete file="${jsmoothjar-ant}"/>
+
+    <ant antfile="build.xml" dir="sample" target="clean"/>
+
+    <antcall target="compileskel">
+      <param name="skelname" value="util-core"/>
+      <param name="skelflags" value="${skelflags}"/>
+      <param name="target" value="clean"/>
+    </antcall>
+    <antcall target="compileskel">
+      <param name="skelname" value="util-net"/>
+      <param name="skelflags" value="${skelflags}"/>
+      <param name="target" value="clean"/>
+    </antcall>
+    <antcall target="compileskel">
+      <param name="skelname" value="commonjava"/>
+      <param name="skelflags" value="${skelflags}"/>
+      <param name="target" value="clean"/>
+    </antcall>
+    <antcall target="compileskel">
+      <param name="skelname" value="consolewrapper"/>
+      <param name="skelflags" value="${skelflags}"/>
+      <param name="target" value="clean"/>
+    </antcall>
+    <antcall target="compileskel">
+      <param name="skelname" value="simplewrap"/>
+      <param name="skelflags" value="${skelflags}"/>
+      <param name="target" value="clean"/>
+    </antcall>
+    <antcall target="compileskel">
+      <param name="skelname" value="autodownload"/>
+      <param name="skelflags" value="${skelflags}"/>
+      <param name="target" value="clean"/>
+    </antcall>
 
     <delete file="jsmoothgen.exe"/>
     <delete file="jsmoothcmd.exe"/>

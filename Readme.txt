@@ -64,12 +64,21 @@ http://sourceforge.net/projects/jsmooth
 
 	- FOP, available at http://xml.apache.org/fop/
 
+	- FLTK, available at http://www.fltk.org The easiest way is
+	  probably to grab a recent source package of fltk, then to
+	  run under an MSYS/MINGW environment the three commands:
+	  "./configure", "make", and "make install".
+
  Configure:
 
 	- Open the build.xml ant script at the root of the project, and
          change the properties located at the top of the file. They are
          just under the comment:
+
          <!-- set here the properties specific to your computer -->
+
+	 Read carefully the comments and set the properties
+	 accordingly.
 
  -- BUILDING --
 
