@@ -1,21 +1,21 @@
 /*
   JSmooth: a VM wrapper toolkit for Windows
-  Copyright (C) 2003 Rodrigo Reyes <reyes@charabia.net>
+  Copyright (C) 2003-2007 Rodrigo Reyes <reyes@charabia.net>
 
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Library General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
+  
+  This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Library General Public License for more details.
+  
+  You should have received a copy of the GNU Library General Public
+  License along with this library; if not, write to the Free
+  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  
 */
 
 #include "SunJVMLauncher.h"
@@ -222,12 +222,12 @@ bool SunJVMLauncher::setupVM12DLL(ResourceManager& resource, const string& origi
 
 	  if (resource.getProperty("maxheap") != "")
 	    {
-	      jpropstrv.push_back("-Xmx" + sizeToString(StringUtils::parseInt(resource.getProperty("maxheap")))); // the extra space at the end would cause JNI_EINVAL return code in CreateJavaVM
+	      jpropstrv.push_back("-Xmx" + sizeToString(resource.getProperty("maxheap"))); // the extra space at the end would cause JNI_EINVAL return code in CreateJavaVM
 
 	    }
 	  if (resource.getProperty("initialheap") != "")
 	    {
-	      jpropstrv.push_back("-Xms" + sizeToString(StringUtils::parseInt(resource.getProperty("initialheap")))); // the extra space at the end would cause JNI_EINVAL return code in CreateJavaVM
+	      jpropstrv.push_back("-Xms" + sizeToString(resource.getProperty("initialheap"))); // the extra space at the end would cause JNI_EINVAL return code in CreateJavaVM
 	    }
                 
 	  JavaVMInitArgs vm_args;
@@ -678,17 +678,17 @@ bool SunJVMLauncher::runExe(const string& exepath, bool forceFullClasspath, Reso
   if (resource.getProperty("maxheap") != "")
     {
       if (version == "1.1")
-	javaproperties += " -mx" + sizeToString(StringUtils::parseInt(resource.getProperty("maxheap"))) + " ";
+	javaproperties += " -mx" + sizeToString(resource.getProperty("maxheap")) + " ";
       else
-	javaproperties += " -Xmx" + sizeToString(StringUtils::parseInt(resource.getProperty("maxheap"))) + " ";
+	javaproperties += " -Xmx" + sizeToString(resource.getProperty("maxheap")) + " ";
     }
 
   if (resource.getProperty("initialheap") != "")
     {
       if (version == "1.1")
-	javaproperties += " -ms" + sizeToString(StringUtils::parseInt(resource.getProperty("initialheap"))) + " ";
+	javaproperties += " -ms" + sizeToString(resource.getProperty("initialheap")) + " ";
       else
-	javaproperties += " -Xms" + sizeToString(StringUtils::parseInt(resource.getProperty("initialheap"))) + " ";
+	javaproperties += " -Xms" + sizeToString(resource.getProperty("initialheap")) + " ";
     }
  
   string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));
@@ -829,6 +829,19 @@ Version SunJVMLauncher::guessVersionByProcess(const string& exepath)
 
   DeleteFile(tmpfilename.c_str());
   return result;
+}
+
+std::string SunJVMLauncher::sizeToString(std::string size)
+{
+  if ( (size.find('m') != string::npos)
+      || (size.find('M') != string::npos)
+      || (size.find('k') != string::npos)
+      || (size.find('K') != string::npos) )
+    {
+      return size;
+    }
+  else
+    return sizeToString(StringUtils::parseInt(size));
 }
 
 std::string SunJVMLauncher::sizeToString(int size)

@@ -1,21 +1,21 @@
-    /*
+/*
   JSmooth: a VM wrapper toolkit for Windows
-  Copyright (C) 2003 Rodrigo Reyes <reyes@charabia.net>
+  Copyright (C) 2003-2007 Rodrigo Reyes <reyes@charabia.net>
 
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Library General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
+  
+  This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Library General Public License for more details.
+  
+  You should have received a copy of the GNU Library General Public
+  License along with this library; if not, write to the Free
+  Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  
 */
 
 #include "ResourceManager.h"
@@ -221,5 +221,37 @@ void ResourceManager::printDebug() const
   for (map<string, string>::iterator i = props.begin(); i != props.end(); i++)
     {
       DEBUG(" - Property: "  + i->first + "=" + i->second);
+    }
+}
+
+void ResourceManager::setUserArguments(std::vector<std::string> arguments)
+{
+  if (arguments.size() > 0)
+    globalResMan->setProperty(KEY_ARGUMENTS, "");
+  for (std::vector<std::string>::iterator i=arguments.begin(); i != arguments.end(); i++)
+    {
+      addUserArgument(*i);
+    }
+}
+
+
+void ResourceManager::addUserArgument(std::string argument)
+{
+  if ((argument.size()>3) && (argument.substr(0,2) == "-J"))
+    {  
+      int pos = argument.find("=");
+      if (pos != std::string::npos)
+	{
+	  string key = argument.substr(2, pos-2);
+	  string value = argument.substr(pos+1);
+	  
+	  DEBUG("FOUND USER ARGUMENT for JSMOOTH: [" + key + "]=[" + value + "]");
+	  setProperty(key, value);
+	}
+    }
+  else
+    {
+      setProperty(KEY_ARGUMENTS, getProperty(KEY_ARGUMENTS) + " " + argument);
+      DEBUG("Added user argument " + argument);
     }
 }

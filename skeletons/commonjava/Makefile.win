@@ -7,11 +7,11 @@ CC   = gcc.exe
 WINDRES = windres.exe
 MINGW =
 RES  = 
-OBJ  = DebugConsole.o FileUtils.o JavaMachineManager.o JVMEnvVarLookup.o JVMRegistryLookup.o MSJViewLauncher.o Properties.o ResourceManager.o StringUtils.o SunJVMLauncher.o Version.o global.o JavaProperty.o $(RES)
-LINKOBJ  = DebugConsole.o FileUtils.o JavaMachineManager.o JVMEnvVarLookup.o JVMRegistryLookup.o MSJViewLauncher.o Properties.o ResourceManager.o StringUtils.o SunJVMLauncher.o Version.o global.o JavaProperty.o $(RES)
+OBJ  = JavaMachineManager.o JVMEnvVarLookup.o JVMRegistryLookup.o MSJViewLauncher.o Properties.o ResourceManager.o SunJVMLauncher.o Version.o global.o JavaProperty.o $(RES)
+LINKOBJ  = JavaMachineManager.o JVMEnvVarLookup.o JVMRegistryLookup.o MSJViewLauncher.o Properties.o ResourceManager.o SunJVMLauncher.o Version.o global.o JavaProperty.o $(RES)
 LIBS =  -L"$(MINGW)/lib" 
-INCS =  -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32" 
-CXXINCS =  -I"$(MINGW)/include/c++"  -I"$(MINGW)/include/c++/mingw32"  -I"$(MINGW)/include/c++/backward"  -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32" 
+INCS =  -I"../util-core" -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32" 
+CXXINCS =  -I"../util-core" -I"$(MINGW)/include/c++"  -I"$(MINGW)/include/c++/mingw32"  -I"$(MINGW)/include/c++/backward"  -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32" 
 BIN  = CommonJava.a
 CXXFLAGS = $(CUSTOMFLAGS) $(CXXINCS) -DJDK="$(JDK)"
 CFLAGS = $(INCS) 
@@ -27,12 +27,6 @@ clean: clean-custom
 $(BIN): $(LINKOBJ)
 	ar r $(BIN) $(LINKOBJ)
 	ranlib $(BIN)
-
-DebugConsole.o: DebugConsole.cpp
-	$(CPP) -c DebugConsole.cpp -o DebugConsole.o $(CXXFLAGS)
-
-FileUtils.o: FileUtils.cpp
-	$(CPP) -c FileUtils.cpp -o FileUtils.o $(CXXFLAGS)
 
 JavaMachineManager.o: JavaMachineManager.cpp
 	$(CPP) -c JavaMachineManager.cpp -o JavaMachineManager.o $(CXXFLAGS)
@@ -51,9 +45,6 @@ Properties.o: Properties.cpp
 
 ResourceManager.o: ResourceManager.cpp
 	$(CPP) -c ResourceManager.cpp -o ResourceManager.o $(CXXFLAGS)
-
-StringUtils.o: StringUtils.cpp
-	$(CPP) -c StringUtils.cpp -o StringUtils.o $(CXXFLAGS)
 
 SunJVMLauncher.o: SunJVMLauncher.cpp
 	$(CPP) -c SunJVMLauncher.cpp -o SunJVMLauncher.o $(CXXFLAGS)
