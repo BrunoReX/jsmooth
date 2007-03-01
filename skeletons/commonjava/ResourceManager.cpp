@@ -227,7 +227,7 @@ void ResourceManager::printDebug() const
 void ResourceManager::setUserArguments(std::vector<std::string> arguments)
 {
   if (arguments.size() > 0)
-    globalResMan->setProperty(KEY_ARGUMENTS, "");
+    setProperty(KEY_ARGUMENTS, "");
   for (std::vector<std::string>::iterator i=arguments.begin(); i != arguments.end(); i++)
     {
       addUserArgument(*i);
