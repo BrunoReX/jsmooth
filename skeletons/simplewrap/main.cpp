@@ -63,9 +63,11 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     // not sure if lpszArgument can be null on Windows...
      if ((lpszArgument!=NULL) && (strlen(lpszArgument)>0))
        {
+	 DEBUG(string("Setting arguments: ") + lpszArgument);
  	// Note that this overwrites an existing KEY_ARGUMENTS
 	 std::vector<std::string> args = StringUtils::split(lpszArgument, " \t\n\r", "\"'", true);
 	 globalResMan->setUserArguments( args );
+	 // globalResMan->setProperty(string(ResourceManager::KEY_ARGUMENTS), lpszArgument);
        }
 
     std::string dodebug = globalResMan->getProperty("skel_Debug");
