@@ -47,6 +47,8 @@ void _debugOutput(const std::string& text)
 {
   if (DEBUGCONSOLE != NULL)
     DEBUGCONSOLE->writeline(text);
+  printf("%s\n", text.c_str());
+  fflush(stdout);
 }
 
 void _debugWaitKey()
@@ -74,7 +76,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     }
 
   std::string dodebug = globalResMan->getProperty("skel_Debug");
-  //    if (StringUtils::parseInt(dodebug) != 0)
+  if (StringUtils::parseInt(dodebug) != 0)
   {
     DEBUGCONSOLE = new DebugConsole("JSmooth Debug");
     globalResMan->printDebug();
@@ -102,17 +104,27 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
       DEBUG("Displaying error message to user...");
       std::string errmsg = globalResMan->getProperty("skel_Message");
       std::string url = globalResMan->getProperty("skel_URL");
-      if (MessageBox(NULL, errmsg.c_str(), "No Java?", MB_OKCANCEL|MB_ICONQUESTION|MB_APPLMODAL) == IDOK)
+      DEBUG("URL=" + url);
+      if ((url != "") && (MessageBox(NULL, errmsg.c_str(), "No Java?", MB_OKCANCEL|MB_ICONQUESTION|MB_APPLMODAL) == IDOK))
 	{
-	  //string file = httpDownload("http://localhost/jinstall-1_4_2-windows-i586.cab");
-	  //string file = httpDownload("http://java.sun.com/update/1.5.0/jinstall-1_5_0-windows-i586.cab");
-	  string file = httpDownload("http://java.sun.com/products/plugin/autodl/jinstall-1_3_0_05-win.cab");
+	  // string file = httpDownload("http://java.sun.com/products/plugin/autodl/jinstall-1_3_0_05-win.cab");
+	  DEBUG("Now downloading " + url);
+	  string file = httpDownload(url);
 	  printf("GOT FILE[%s]\n", file.c_str());
+	  
 	  if (file != "")
 	    {
-	      exec_cab(file);
-	      // 	      string path = unpack_cab(file);
-	      // 	      exec_cabdir(path);
+	      string ext = StringUtils::toLowerCase(FileUtils::getFileExtension(file));
+	      if (ext == "cab")
+		exec_cab(file);
+	      else if (ext == "exe")
+		{
+		  execute(file, true);
+		}
+	      else // anything else, we try to open it like a document
+		{
+		  ShellExecute(NULL, "open", file.c_str(), NULL, "", 0);
+		}
 	    }
 	  else
 	    {
