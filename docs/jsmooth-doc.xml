@@ -31,12 +31,16 @@
 
 JSmooth is a Java Executable Wrapper. It builds standard Windows
 executable binaries (.exe) that contain all the information needed to
-launch your java application, i.e. the classpath, the java properties,
-the jvm version required, and so on. If Java is not installed, it
-helps the users by displaying a notice and optionally launching a
-browser to a web site where they can download a JVM.
+launch your java application, i.e. the classpath, the jvm version
+required, the java properties, and so on. If Java is not installed,
+JSmooth can also properly redirect them to a web site or even download
+and install automatically a JVM.
 
    </para>
+
+   <para>Because JSmooth is 100% java, it can build a windows
+   executable from any environement running Java, including linux,
+   solaris, etc.  </para>
    
    <sect3><title>Web Site</title>
    <para>
@@ -56,62 +60,178 @@ browser to a web site where they can download a JVM.
   </sect3>
   </sect2>
 
-  <sect2><title>Rationale</title>
-   <para>
+  <sect2> <title>Features</title>
 
-   The deployment of desktop Java applications has been a problem since
-   version 1 of Java. Java developers had to either bundle a JRE with
-   their application, or let the users manage themselves the issue of
-   installing a JVM and configuring the application. Unfortunately, none
-   of those solutions are efficient and scalable.
+   <sect3>
+      <title>Smooth User Experience</title>
+     <itemizedlist>
 
-   </para>
+        <listitem>
+           <para>
+               Your users see and use a standard windows Exe
+               binary. No more technical explanation on .jar, on javaw
+               association, etc.
+           </para>
+        </listitem>
 
-   <para> The size of a JRE bundle gets bigger and bigger
-         as the Java language evolves.
-	   While it was reasonable to bundle the 2MB JRE 1.1 with the
-	   application, bundling the 14MB JRE 1.4 increases
-	   drastically the size of the bundle. This may not be an
-	   issue for vendors that are used to sell a packaged box with
-	   a CD, but stays an open issue for open-source developer and
-	   companies distributing their software product on the
-	   internet.
-    </para>
+        <listitem>
+           <para>
 
+               The JSmooth EXE are smart: They know how to swiftly
+               search for all the JVM installed on a computer, and
+               determine which best suits the requirements of your
+               application. If no VM is found, it's OK as well, your
+               end-users are in good hands with jsmooth: the wrappers
+               can redirect them to a web page, or even better, they
+               can propose the user to automatically download and
+               install a Java Environment.
 
-   <para>
+           </para>
+        </listitem>
+     </itemizedlist>
+   </sect3>
 
-     Although Sun has recently introduced the Java Web Start
-     mechanism, it does not address all the issues: users want
-     standard windows applications, that install in the standard
-     "program files" directory, and which they can launch by
-     double-clicking a standard .exe.
+   <sect3>
+      <title>Flexible automatic Java VM detection</title>
+     <itemizedlist>
 
-   </para>
+        <listitem>
+           <para>
+               Detects the location of any Sun JVM installed. The
+               wrappers use several strategies to detect all the JVM
+               available on a computer, using windows registry,
+               environment variables, or windows path (basically,
+               whatever gives hints is used).
+           </para>
+        </listitem>
 
-  </sect2>
+        <listitem>
+           <para>
+               Detects and uses Microsoft's JView (for 1.0 and 1.1
+               Java applications only), if available. 
+           </para>
+        </listitem>
 
+        <listitem>
+           <para>
+              The JVM search sequence is fully customizable using the
+              GUI. You can force the executable to search in the path
+              first, and in the registry last, or in JAVA_HOME
+              first. We have all the flavours!
+           </para>
+        </listitem>
 
-  <sect2> <title>Benefits</title>
+        <listitem>
+           <para>
+              Sometimes it's more convenient to bundle a JRE with your
+              application. JSmooth can deal with that too, you just
+              need to define in which folder the JRE is expected. It
+              falls back nicely to a standard JVM search if the JRE is
+              not where it should be.
+           </para>
+        </listitem>
 
-    <para>
-     JSmooth aims at enhancing the user experience by taking care of all
-     those issues: the java application is wrapped in an .exe, as any
-     other Windows software. When the user clicks on the .exe, it
-     searches the most suitable JVM installed on the computer to launch
-     the java application. If no JVM is found, a dialog box is displayed
-     to the users and they may be redirected to a web site.  </para>
+        <listitem>
+           <para>
+              Specify which versions of the JVM are compatible with
+              your software! You can set a minimum version, but also a
+              maximum JVM version.
+          </para>
+        </listitem>
 
-    <para>
+    </itemizedlist>
+   </sect3>
 
-     JSmooth knows all the JVM version currently available. It knows
-     how to pass the parameters, how to set up the memory
-     configuration, how to manage the version constraints, and so on
-     for every JVM version. This is the main difference between a
-     simple .bat with "java -Xmx64m -jar myjar" which works only on
-     the developer's computer, and a smart wrapper which adapts
-     itself to the end-user's configuration.
-    </para>
+   <sect3>
+      <title>Graphical User Interface</title>
+     <itemizedlist>
+
+        <listitem>
+           <para>
+              A Swing-based project editor allows you to easily
+              configure the executable binary for your software. All
+              the parameters are configured with a GUI, just click and
+              compile the project.
+           </para>
+        </listitem>
+
+        <listitem>
+           <para>
+	      Associate an icon to your executable, using a .ICO,
+           .PNG, or .GIF file (automatic color reduction is done if
+           necessary). 
+           </para>
+        </listitem>
+    </itemizedlist>
+   </sect3>
+
+   <sect3>
+      <title>Application configuration</title>
+     <itemizedlist>
+
+        <listitem>
+           <para>
+              Easy java properties configuration: specify the
+              tag=value pairs you want the wrappers to pass to your
+              java application.
+           </para>
+        </listitem>
+
+        <listitem>
+           <para>
+              You can easely pass environment variables from the
+              system: just define the java properties to pass to your
+              application, and use the standard Windows %VARIABLE%
+              syntax.
+           </para>
+        </listitem>
+
+        <listitem>
+           <para>
+	      Pass special variables that are not available to Java
+	      program, such as the executable path and name, and even
+	      the Windows computer name.
+           </para>
+        </listitem>
+
+        <listitem>
+           <para>
+              Specify all the classpath configuration, adding .jar,
+              .zip, or directories, with an intuitive GUI.
+           </para>
+        </listitem>
+
+        <listitem>
+           <para>
+
+              Want to modify the current directory used by your Java
+              application? The wrappers will handle this for you. 
+           </para>
+        </listitem>
+
+    </itemizedlist>
+   </sect3>
+
+   <sect3>
+      <title>Wrappers</title>
+     <itemizedlist>
+
+        <listitem>
+           <para>
+	     Provided with several exe wrappers skeletons, for GUI or for console-base application.
+           </para>
+        </listitem>
+
+        <listitem>
+           <para>
+             If none of the provided wrappers pleases you, just create
+             your own ! It's open-source and easy to plug in the
+             jsmooth framework!
+           </para>
+        </listitem>
+
+    </itemizedlist>
+   </sect3>
 
   </sect2>
 
@@ -568,7 +688,7 @@ browser to a web site where they can download a JVM.
       <para>
         What the "JVM Bundle" option really specifies, is a path (relative
         to the generated EXE) where a JRE can be found. This is NOT an
-        option to bundle a JRE in the EXE, as many people may think.
+        option to bundle a JRE in the EXE, as many people think.
       </para>
       </warning>
 
@@ -579,11 +699,12 @@ browser to a web site where they can download a JVM.
        try to locate the JRE at the location mentionned. If it can't
        be found there, then it will fallback in the normal jre look-up
        mode (search for a jre or a jdk in the Windows registry or in
-       commonly-used environment variables).
-      </para>
+       commonly-used environment variables). There is no JVM-version
+       check when using a bundled JRE, as the packager is supposed to
+       bundle a suitable JVM for the application.</para>
 
       <para>
-       Therefore, if you use the "Bundle JVM" option, you'll need to
+       Consequently, if you use the "Bundle JVM" option, you'll need to
        install yourself the JRE at the same relative path to the EXE.
       </para>
 
@@ -1082,24 +1203,16 @@ browser to a web site where they can download a JVM.
 <sect1><title>License</title>
 
  <para>
-All the JSmooth project is distributed under the terms of the GNU
-General Public License. Please read the License.txt file that comes
+The JSmooth generator is distributed under the terms of the GNU
+General Public Licence. Please read the License.txt file that comes
 with the package. Alternatively, you can find additional information
 on the GNU GPL license on the <ulink url="http://www.gnu.org">GNU Web
 Site</ulink></para>
 
  <para>
-This license applies to all the files of the project, but not on the
-generated executable. This means that you are free to generate
-executable wrappers for proprietary software and distribute them
-without applying the terms of the GPL to them.
- </para>
-
- <para>
-Of course, this is the one and only exception. All other kind of
-distribution of any file of the JSmooth package must conform with the
-terms of the GNU General Public License.
- </para>
+The generated executables are distributed under the terms of the GNU
+Library General Public Licence and as such do not constrain the
+licence of the Jar it may embed.</para>
 
 </sect1>
 
@@ -1116,6 +1229,18 @@ make it easy to transfer data between XML documents and Java beans. It is distri
 
  <para>
 JSmooth includes the DTDParser library. It is distributed under the terms of either an Apache-style license or the Lesser GPL license. Source code for is available at the library's web site: <ulink url="http://www.wutka.com/dtdparser.html">http://www.wutka.com/dtdparser.html</ulink>.
+</para>
+
+ <para>
+ The autodownload skeleton uses the libmspack library
+(http://www.kyz.uklinux.net/libmspack/). The licence is not exactly
+the LGPL but is OK with jsmooth usage.</para>
+
+ <para>
+ The autodownload skeleton uses the fltk library
+ (http://www.fltk.org/). FLTK is provided under the terms of the GNU
+ Library Public License, Version 2 with exceptions that allow for
+ static linking.
 </para>
 
 </sect1>
