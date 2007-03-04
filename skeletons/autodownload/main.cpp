@@ -103,7 +103,8 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     {
       DEBUG("Displaying error message to user...");
       std::string errmsg = globalResMan->getProperty("skel_Message");
-      std::string url = globalResMan->getProperty("skel_URL");
+      std::string url = globalResMan->getProperty("skel_DownloadURL");
+
       DEBUG("URL=" + url);
       if ((url != "") && (MessageBox(NULL, errmsg.c_str(), "No Java?", MB_OKCANCEL|MB_ICONQUESTION|MB_APPLMODAL) == IDOK))
 	{

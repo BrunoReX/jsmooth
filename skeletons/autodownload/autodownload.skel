@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<jsmoothskeleton>
+<debug>false</debug>
+<description><![CDATA[
+
+
+
+This skeleton wraps <b>GUI applications</b>.<ul> 
+<li>No console I/O is displayed
+<li>If no Java VM is found, the wrapper asks the user to download and install a Java VM using Sun's Auto Download service.
+</ul>
+Arguments can be passed to the application (either use the JSmooth default argument mechanism, or create a shortcut with arguments).
+
+
+
+]]>
+</description>
+<executableName>autodownload.exe</executableName>
+<resourceCategory>JAVA</resourceCategory>
+<resourceJarId>102</resourceJarId>
+<resourcePropsId>103</resourcePropsId>
+<shortName>Autodownload Wrapper</shortName>
+<skeletonProperties>
+<description>When no JVM is found in the target computer, the user is prompted with the message defined below. Then, the default browser is launched with the URL defined here.</description>
+<idName>Message</idName>
+<label>Message</label>
+<type>textarea</type>
+<value>Java has not been found on your computer. Do you want to download it?</value>
+</skeletonProperties>
+<skeletonProperties>
+<description>The Sun's Auto Download URL for the JVM that should be downloaded by the wrapper when no JVM is found. Select the version of the JVM needed by your application. Select the highest possible version.</description>
+<idName>DownloadURL</idName>
+<label>Java VM to download</label>
+<type>autodownloadurl</type>
+<value>http://java.sun.com/update/1.5.0/jinstall-1_5_0-windows-i586.cab</value>
+</skeletonProperties>
+<skeletonProperties>
+<description>The default behaviour is to launch the java application in a different (detached)  process. If you want to force the wrapper to launch the Java application in the same process than the exe, than select this option.</description>
+<idName>SingleProcess</idName>
+<label>Launch java app in the exe process</label>
+<type>boolean</type>
+<value>0</value>
+</skeletonProperties>
+<skeletonProperties>
+<description>Enable the jsmooth debug console.</description>
+<idName>Debug</idName>
+<label>Debug console</label>
+<type>boolean</type>
+<value>0</value>
+</skeletonProperties>
+</jsmoothskeleton>
