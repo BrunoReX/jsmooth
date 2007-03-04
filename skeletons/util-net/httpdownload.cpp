@@ -26,24 +26,23 @@ Fl_Window *httpWindow ;
 HttpClient httpClient;
 char downloadLabel[256];
 unsigned long downloadThread;
+HttpUpdater updater;
 
-
-//
-// The listener that keeps track of the download progress and update
-// the progress bar. 
-class HttpUpdater : public HttpClientListener
+void HttpUpdater::httpDownloadUpdate(int current, int total)
 {
-  void httpDownloadUpdate(int current, int total)
-  {
-    Fl::lock();
-    hcg_progressbar->maximum((float)total);
-    hcg_progressbar->value((float)current);
+  Fl::lock();
+  hcg_progressbar->maximum((float)total);
+  hcg_progressbar->value((float)current);
+
+  if (total != 0)
     sprintf(downloadLabel, "Downloading %d%%", (current*100)/total);
-    hcg_progressbar->label(downloadLabel);
-    hcg_progressbar->redraw();
-    Fl::unlock();
-  }
-};
+  else
+    sprintf(downloadLabel, "Downloading...");
+
+  hcg_progressbar->label(downloadLabel);
+  hcg_progressbar->redraw();
+  Fl::unlock();
+}
 
 //
 // A timeout'ed method to refresh the progress bar display
@@ -75,7 +74,6 @@ bool downloadHttpThread(void* param)
   std::string outputFile = (std::string) dparam->outputFile;
 
   URL urltarget(outputFile);
-  HttpUpdater updater;
   httpClient.addListener(updater);
   httpClient.setURL(urltarget);
   map<string,string> headr;

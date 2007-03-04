@@ -36,6 +36,15 @@
 #include "downloadgui.h"
 #include "HttpClient.h"
 
+//
+// The listener that keeps track of the download progress and update
+// the progress bar. 
+class HttpUpdater : public HttpClientListener
+{
+  void httpDownloadUpdate(int current, int total);
+};
+
+
 /**
  * Downloads a file in a separate thread and display a progress bar.
  * Returns an empty string if the download failed, of the path to a
