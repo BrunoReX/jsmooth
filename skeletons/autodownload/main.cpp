@@ -120,6 +120,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 		exec_cab(file);
 	      else if (ext == "exe")
 		{
+		  DEBUG("Executing EXE");
 		  execute(file, true);
 		}
 	      else // anything else, we try to open it like a document
