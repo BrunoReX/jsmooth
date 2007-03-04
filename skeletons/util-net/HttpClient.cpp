@@ -133,6 +133,7 @@ bool HttpClient::sendGet()
 	  if ((value.size()>0) && (value[0]==' '))
 	    value = value.substr(1);
 	  m_headers[key] = value;
+	  //	  DEBUG("HEADER: " + key + ": " + value);
 	}
     }
 

@@ -157,7 +157,7 @@ string URL::encode(const string& str)
       if ( ((c>= '0') && (c<='9'))
 	   || ((c>= 'a') && (c<='z'))
 	   || ((c>= 'A') && (c<='Z'))
-	   || (c == '/') || (c == '.') || (c == '-') )
+	   || (c == '/') || (c == '.') || (c == '%') || (c == '-') )
 	result += c;
       else
 	{
@@ -172,10 +172,23 @@ string URL::encode(const string& str)
 
 std::string URL::getFileName() const
 {
+  string fname = m_path;
+
   int pos = m_path.rfind('/');
   if (pos != std::string::npos)
-    {
-      return m_path.substr(pos+1);
-    }
-  return m_path;
+    fname = m_path.substr(pos+1);
+
+  pos = fname.find("?");
+  if (pos != std::string::npos)
+    fname = fname.substr(0, pos);
+
+  pos = fname.find("%3f");
+  if (pos != std::string::npos)
+    fname = fname.substr(0, pos);
+
+  pos = fname.find("%3F");
+  if (pos != std::string::npos)
+    fname = fname.substr(0, pos);
+
+  return fname;
 }

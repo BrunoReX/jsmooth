@@ -46,17 +46,32 @@ string url = "http://jsmooth.sf.net:9091/test1/test2&ici#123";
 
 #include "httpdownload.h"
 
+#define DEBUG(x) _debugOutput(x)
+#define DEBUGWAITKEY() _debugWaitKey()
+
+void _debugOutput(const std::string& text)
+{
+  //  std::cerr << text << "\r\n";
+  printf("%s\n", text.c_str());
+  fflush(stdout);
+}
+
+void _debugWaitKey()
+{
+}
 
 
 int main(int argc, char *argv[])
 {
-  printf("Starting...\n");
+  _debugOutput("Starting...\n");
 
   //httpDownload("http://ftpclubic1.clubic.com/temp-clubic-rx270/logiciel/exstora_exstora_1.2_francais_22607.exe");
   //  string file = httpDownload("http://java.sun.com/update/1.5.0/jinstall-1_5_0-windows-i586.cab");
 
   //  string file = httpDownload("http://localhost/jinstall-1_4_2-windows-i586.cab");
-  string file = httpDownload("http://java.sun.com/products/plugin/autodl/jinstall-1_3_0_05-win.cab");
+  //  string file = httpDownload("http://java.sun.com/products/plugin/autodl/jinstall-1_3_0_05-win.cab");
+
+  string file= httpDownload("http://downloads.sourceforge.net/filezilla/FileZilla_2_2_31_setup.exe?use_mirror=osdn");
 
   printf("Downloaded: %s\n", file.c_str());
   exit(0);
