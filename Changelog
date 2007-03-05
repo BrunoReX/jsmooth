@@ -1,6 +1,6 @@
 0.9.9
 	- Added a new skeleton called autodownload, that is able to
-	download and install a JRE (or whatever) when it is missing.
+	download and install a JRE (or whatever) when no VM is available.
 	- Moved the simplewrap jar to the root of the c++ library, so that
 	it can be shared between simplewrap and autodownload
 	- Changed the licencing of the skeleton so that it comes under the
@@ -11,6 +11,7 @@
 	modules, commonjava and util-core
 	- Added a new c++ module called util-net. It contains mainly an
 	http client
+	- Updated the documentation w/ arguments mngmt
 	
 0.9.8
 	- Fixed the classpath in JRE1.2+ VM DLL instanciation

@@ -2,17 +2,12 @@
 <jsmoothskeleton>
 <debug>false</debug>
 <description><![CDATA[
-
-
 This skeleton wraps <b>GUI applications</b>.<ul> 
 <li>No console I/O is displayed
 <li>If no Java VM is found, the user is proposed to download and execute a file from the web.
-<li>The URL that the wrapper uses to download when no JVM is found must be defined in the wrapper. The URL can point on a .exe, a .cab, or any other filetype. Please note that some enterprise firewalls filter executable files.
+<li>The URL that the wrapper uses to download a file when no JVM is found must be defined in the wrapper. The URL can point on a .exe, a .cab, or any other filetype. Please note that some enterprise firewalls filter executable files.
 </ul>
 Arguments can be passed to the application (either use the JSmooth default argument mechanism, or create a shortcut with arguments).
-
-
-
 
 ]]>
 </description>

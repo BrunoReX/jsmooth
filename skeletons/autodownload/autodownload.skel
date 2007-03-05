@@ -2,16 +2,11 @@
 <jsmoothskeleton>
 <debug>false</debug>
 <description><![CDATA[
-
-
-
 This skeleton wraps <b>GUI applications</b>.<ul> 
 <li>No console I/O is displayed
 <li>If no Java VM is found, the wrapper asks the user to download and install a Java VM using Sun's Auto Download service.
 </ul>
 Arguments can be passed to the application (either use the JSmooth default argument mechanism, or create a shortcut with arguments).
-
-
 
 ]]>
 </description>
