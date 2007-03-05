@@ -1166,15 +1166,62 @@ and install automatically a JVM.
 	</question>
 	<answer>
 	 <para>
-	  
-	  
 
-	  The jar file extraction is wrapper-specific. However, all
-	  the wrapper provided with JSmooth as of version 0.9.3
-	  extract it in the default temporary directory. This is the
-	  standard behaviour expected by Windows application.
+	 There is no much point in passing JVM-specific arguments for
+	 wrappers that are supposed to use any available JVM on the
+	 end-user's computer. However, JSmooth wrappers can use
+	 jsmooth-specific arguments passed on the command line (for
+	 command-line programs) or passed within a short-cut (for
+	 window-based programs).
 
 	 </para>
+
+	 <para>
+	  The following arguments all start with a -J and are recognized the jsmooth
+	 wrappers (note the case-sensitiveness):
+
+	 <itemizedlist>
+
+	   <listitem><para><function>-Jminversion=xxx</function>: 
+	      Alter the minimum version of the JVM
+	        required by the application. This is handy to test the
+	        behaviour of the wrapper when no suitable JVM is
+	        found. Values are of the form 1.4.2 or just 1.3 (for
+	        instance).
+              </para></listitem>
+
+	   <listitem><para><function>-Jmaxversion=xxx</function>:
+  	        Alter the maximum version of the JVM required by the
+  	        application. Values are of the form 1.4.2 or just 1.3
+  	        (for instance).  </para></listitem>
+
+	   <listitem><para><function>-Jmainclassname=fqdn.classname</function>:
+	        Specify a classname that should be used by the wrapper as the main class
+		for the application.
+	     </para></listitem>
+
+	   <listitem><para><function>-Jcurrentdir=DIR</function>:
+	        Specifies the current dir that the wrapper must set up for the application.
+	     </para></listitem>
+
+	   <listitem><para><function>-Jmaxheap=SIZE</function>:
+	        The maximum heap size that the VM can allocate. The size can be specified in bytes, 
+		in kilobytes (suffix k), or in megabytes (suffix m). For instance
+		<function>-Jmaxheap=256M</function> (256 MB of heap space can be allocated) 
+		or <function>-Jmaxheap=1200k</function> (maximum 1200 kilobytes can be allocated).
+	     </para></listitem>
+
+	   <listitem><para><function>-Jinitialheap=SIZE</function>:
+	        The initial memory heap size that the VM allocates at startup. The size can be specified in bytes, 
+		in kilobytes (suffix k), or in megabytes (suffix m). For instance
+		<function>-Jinitialheap=256M</function> (256 MB of heap space are allocated at startup) 
+		or <function>-Jinitialheap=1200k</function> (1200 kilobytes are allocated).
+	     </para></listitem>
+
+	 </itemizedlist>
+
+        </para>
+
 	</answer>
       </qandaentry>
 
@@ -1193,22 +1240,19 @@ and install automatically a JVM.
 	  </para>
 	</question>
 	<answer>
-	 <para>
 
+	 <para>
 	   The MSVCRT.DLL file is required by the wrapped application
 	   but may be missing on some Windows 95 computers that have
 	   never been upgraded. This file is often installed by
 	   third-party application, but it may happen that your users
 	   do not have it installed.
-
 	 </para>
 
 	 <para>
-      
            To solve this issue, either ask your user to upgrade to a
 	   decent OS, or just bundle this MSVCRT.DLL along with your
 	   application.
-
          </para>
 
 	</answer>
