@@ -195,7 +195,7 @@
     <copy todir="${dist}/lib" file="jsmoothgen-ant.jar"/>
     <copy todir="${dist}/lib" file="lib/jox116.jar"/>
     <copy todir="${dist}/lib" file="lib/dtdparser113.jar"/>
-    <copy todir="${dist}/lib" file="lib/l2fprod-common.jar"/>
+    <copy todir="${dist}/lib" file="lib/l2fprod-common-all.jar"/>
 
     <!-- Now that the ANT task is available, register it  -->
 
@@ -241,6 +241,7 @@
 
     <mkdir dir="${dist}/skeletons/windowed-wrapper"/>
     <mkdir dir="${dist}/skeletons/console-wrapper"/>
+    <mkdir dir="${dist}/skeletons/autodownload-wrapper"/>
     <antcall target="compileskels">
       <param name="skelflags" value=""/>
     </antcall>
@@ -248,6 +249,10 @@
     <copy todir="${dist}/skeletons/windowed-wrapper" file="skeletons/simplewrap/description.skel"/>
     <copy todir="${dist}/skeletons/console-wrapper" file="skeletons/consolewrapper/consolewrapper.exe"/>
     <copy todir="${dist}/skeletons/console-wrapper" file="skeletons/consolewrapper/description.skel"/>
+    <copy todir="${dist}/skeletons/autodownload-wrapper" file="skeletons/autodownload/autodownload.skel"/>
+    <copy todir="${dist}/skeletons/autodownload-wrapper" file="skeletons/autodownload/customdownload.skel"/>
+    <copy todir="${dist}/skeletons/autodownload-wrapper" file="skeletons/autodownload/autodownload.exe"/>
+
     <exec executable="${mingw-strip}" dir="${dist}/skeletons/console-wrapper">
         <arg value="consolewrapper.exe"/>
     </exec>

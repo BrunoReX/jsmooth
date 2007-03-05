@@ -1044,6 +1044,7 @@ and install automatically a JVM.
   <sect2><title>Wrappers Behaviour</title>
 
     <qandaset>
+
       <qandaentry>
         <question>
 	  <para>
@@ -1075,8 +1076,8 @@ and install automatically a JVM.
 	  Whenever possible, the wrappers delete the file on
 	  exit. Note however that this is not always possible. For
 	  example, an instance of a JVM created using the JVM DLL does
-	  not unload cleanly. This behaviour is documented by Sun, and
-	  there is no known work-around for it. 
+	  not unload cleanly. This behaviour (not to call it a bug) is
+	  documented by Sun, and there is no known work-around for it.
 
 	 </para>
 
@@ -1086,8 +1087,8 @@ and install automatically a JVM.
 	  instanciation methods that allow them to delete the temp jar
 	  after the application exits. Note that embedding a jar in
 	  the exe is not required, it is always a safe choice to just
-	  leave it near the executable, either in the same directory,
-	  or in a sibling or parent directory.
+	  leave it on the filesystem near the executable, either in
+	  the same directory, or in a sibling or parent directory.
 
 	 </para>
 
@@ -1111,14 +1112,14 @@ and install automatically a JVM.
 
 	   Jsmooth allows only one embedded jar in the executable
 	   binary. Does it mean that all the java application must be
-	   exhaustively set up in this jar ?
+	   entirely contained in this jar ?
 
 	  </para>
 	</question>
 	<answer>
 	 <para>
 	  
-	   No. While the jsmooth wrappers require a jar to bootstrap
+	   No. While the jsmooth wrappers may use a jar to bootstrap
 	   the java application, you can reference other jar files in
 	   a jsmooth project. Those jar files will be accessible to
 	   your executable binary, provided the path specified is
@@ -1128,7 +1129,7 @@ and install automatically a JVM.
 	   jar in the executable, but you can just put a small jar
 	   which purpose is just to bootstrap the application (for
 	   instance by displaying a splash screen with specific
-	   information and calling another class).
+	   information and calling the real main class).
 
 	 </para>
 	</answer>
@@ -1153,6 +1154,26 @@ and install automatically a JVM.
        <programlisting>
     java.awt.headless=true
        </programlisting>
+	 </para>
+	</answer>
+      </qandaentry>
+
+      <qandaentry>
+        <question>
+	  <para>
+	   How do I pass JVM-specific arguments with the wrappers?
+	  </para>
+	</question>
+	<answer>
+	 <para>
+	  
+	  
+
+	  The jar file extraction is wrapper-specific. However, all
+	  the wrapper provided with JSmooth as of version 0.9.3
+	  extract it in the default temporary directory. This is the
+	  standard behaviour expected by Windows application.
+
 	 </para>
 	</answer>
       </qandaentry>

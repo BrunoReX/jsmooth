@@ -8,6 +8,7 @@ currentdir=
 bundledvm=jre
 skel_Message=Java has not been found on your computer. Do you want to download it?
 skel_URL=http://www.java.com
+skel_DownloadURL=http://java.sun.com/update/1.5.0/jinstall-1_5_0-windows-i586.cab
 javapropertiescount=1
 javaproperty_name_0=nom1
 javaproperty_value_0=valeur1
