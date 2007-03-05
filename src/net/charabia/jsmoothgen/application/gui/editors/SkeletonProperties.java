@@ -36,6 +36,69 @@ public class SkeletonProperties extends Editor implements JSmoothModelBean.Skele
     private String m_currentSkelName = null;
     private SkeletonBean m_skel = null;
 
+    protected String[] m_autourls = new String[] {
+	"JRE 1.5.0", "http://java.sun.com/update/1.5.0/jinstall-1_5_0-windows-i586.cab",
+	"JRE 1.4.2_03", "http://java.sun.com/update/1.4.2/jinstall-1_4_2_03-windows-i586.cab",
+	"JRE 1.4.2_02", "http://java.sun.com/update/1.4.2/jinstall-1_4_2_02-windows-i586.cab",
+	"JRE 1.4.2_01", "http://java.sun.com/update/1.4.2/jinstall-1_4_2_01-windows-i586.cab",
+	"JRE 1.4.2", "http://java.sun.com/products/plugin/autodl/jinstall-1_4_2-windows-i586.cab",
+	"JRE 1.4.1_03", "http://java.sun.com/products/plugin/autodl/jinstall-1_4_1_03-windows-i586.cab",
+	"JRE 1.4.1_02", "http://java.sun.com/products/plugin/autodl/jinstall-1_4_1_02-windows-i586.cab",
+	"JRE 1.4.1_01", "http://java.sun.com/products/plugin/autodl/jinstall-1_4_1_01-windows-i586.cab",
+	"JRE 1.4.1", "http://java.sun.com/products/plugin/autodl/jinstall-1_4_1-windows-i586.cab",
+	"JRE 1.4.0_04", "http://java.sun.com/products/plugin/autodl/jinstall-1_4_0_04-win.cab",
+	"JRE 1.4.0_03", "http://java.sun.com/products/plugin/autodl/jinstall-1_4_0_03-win.cab",
+	"JRE 1.4.0_02", "http://java.sun.com/products/plugin/autodl/jinstall-1_4_0_02-win.cab",
+	"JRE 1.4.0_01", "http://java.sun.com/products/plugin/autodl/jinstall-1_4_0_01-win.cab",
+	"JRE 1.4.0", "http://java.sun.com/products/plugin/autodl/jinstall-1_4_0-win.cab",
+	"JRE 1.3.1_08", "http://java.sun.com/products/plugin/autodl/jinstall-1_3_1_08-windows-i586.cab",
+	"JRE 1.3.1_07", "http://java.sun.com/products/plugin/autodl/jinstall-1_3_1_07-windows-i586.cab",
+	"JRE 1.3.1_06", "http://java.sun.com/products/plugin/autodl/jinstall-1_3_1_06-windows-i586.cab",
+	"JRE 1.3.1_05", "http://java.sun.com/products/plugin/autodl/jinstall-1_3_1_05-windows-i586.cab",
+	"JRE 1.3.1_04", "http://java.sun.com/products/plugin/autodl/jinstall-1_3_1_04-win.cab",
+	"JRE 1.3.1_03", "http://java.sun.com/products/plugin/autodl/jinstall-1_3_1_03-win.cab",
+	"JRE 1.3.1_02", "http://java.sun.com/products/plugin/autodl/jinstall-1_3_1_02-win.cab",
+	"JRE 1.3.1_01", "http://java.sun.com/products/plugin/autodl/jinstall-1_3_1_01-win.cab",
+	"JRE 1.3.0_05", "http://java.sun.com/products/plugin/autodl/jinstall-1_3_0_05-win.cab"
+    };
+
+    public class SkelEditorFactory implements com.l2fprod.common.propertysheet.PropertyEditorFactory
+    {
+
+	public java.beans.PropertyEditor createPropertyEditor(Property property)
+	{
+	    if (property instanceof SkeletonPropertyProxy)
+		{
+		    SkeletonPropertyProxy spp = (SkeletonPropertyProxy)property;
+		    String pname = spp.getTypeName();
+
+		    if (pname.equals("boolean"))
+			new com.l2fprod.common.beans.editor.BooleanAsCheckBoxPropertyEditor();
+		    else if (pname.equals("textarea"))
+			return new com.l2fprod.common.beans.editor.StringPropertyEditor();
+		    else if (pname.equals("string"))
+			return new com.l2fprod.common.beans.editor.StringPropertyEditor();
+		    else if (pname.equals("autodownloadurl"))
+			{
+			    com.l2fprod.common.beans.editor.ComboBoxPropertyEditor ed = new com.l2fprod.common.beans.editor.ComboBoxPropertyEditor();
+			    Object values[] = new Object[m_autourls.length / 2];
+			    for (int i=0; i<m_autourls.length; i+=2)
+				{
+				    values[(i+1)/2] = new com.l2fprod.common.beans.editor.ComboBoxPropertyEditor.Value(m_autourls[i+1], m_autourls[i]);
+				}
+			    ed.setAvailableValues(values);
+			    return ed;
+			}
+		    return new com.l2fprod.common.beans.editor.BooleanAsCheckBoxPropertyEditor();
+		}
+	    else
+		{
+		    return new com.l2fprod.common.beans.editor.BooleanAsCheckBoxPropertyEditor();		    
+		}
+	}
+    }
+
+
     public class SkeletonPropertyProxy extends DefaultProperty
     {
 	SkeletonProperty m_property;
@@ -69,8 +132,16 @@ public class SkeletonProperties extends Editor implements JSmoothModelBean.Skele
 		return String.class;
 	    else if (m_property.getType().equals("string"))
 		return String.class;
+	    else if (m_property.getType().equals("autodownloadurl"))
+		return String.class;
 
 	    return String.class;
+	}
+
+
+	public String getTypeName()
+	{
+	    return m_property.getType();
 	}
 	
 	public boolean isEditable()
@@ -128,6 +199,7 @@ public class SkeletonProperties extends Editor implements JSmoothModelBean.Skele
 	else
 	    sprops = new SkeletonProperty[0];
 
+	m_skelprops.setEditorFactory(new SkelEditorFactory());
 	SkeletonPropertyProxy[] proxy = new SkeletonPropertyProxy[sprops.length];
 	for (int i=0; i<sprops.length; i++)
 	    {

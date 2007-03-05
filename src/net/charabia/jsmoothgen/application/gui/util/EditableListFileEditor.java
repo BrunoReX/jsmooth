@@ -75,7 +75,11 @@ public class EditableListFileEditor implements SortedEditableList.Editor
 	
     public Object editItem(SortedEditableList selist, Object item)
     {
-	m_fileChooser.setSelectedFile((File)item);
+	if (! (item instanceof File))
+	    m_fileChooser.setSelectedFile(new File(item.toString()));
+	else
+	    m_fileChooser.setSelectedFile((File)item);
+
 	if (m_fileChooser.showOpenDialog(selist) == JFileChooser.APPROVE_OPTION)
 	    {
 		File f = m_fileChooser.getSelectedFile();
