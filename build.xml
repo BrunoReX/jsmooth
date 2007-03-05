@@ -259,6 +259,9 @@
     <exec executable="${mingw-strip}" dir="${dist}/skeletons/windowed-wrapper">
         <arg value="jwrap.exe"/>
     </exec>
+    <exec executable="${mingw-strip}" dir="${dist}/skeletons/autodownload-wrapper">
+        <arg value="autodownload.exe"/>
+    </exec>
 
     <!-- Builds the jsmooth executable -->
     <jsmoothgen project="jsprj/jsmoothgen.jsmooth" skeletonroot="${dist}/skeletons"/>
