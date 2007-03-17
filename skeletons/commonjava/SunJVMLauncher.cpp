@@ -217,7 +217,9 @@ bool SunJVMLauncher::setupVM12DLL(ResourceManager& resource, const string& origi
 	      value = StringUtils::replace(value, "${VMSELECTION}", origin);
 	      value = StringUtils::replace(value, "${VMSPAWNTYPE}", "JVMDLL");
 
-	      jpropstrv.push_back("-D" + jp.getName() + "=" + StringUtils::fixQuotes(value));
+	      //	      jpropstrv.push_back("-D" + jp.getName() + "=" + StringUtils::fixQuotes(value));
+
+	      jpropstrv.push_back( "-D" + jp.getName() + "=" + value);
 	    }
 
 	  if (resource.getProperty("maxheap") != "")
@@ -472,7 +474,8 @@ bool SunJVMLauncher::setupVM11DLL(ResourceManager& resource, const string& origi
 	      value = StringUtils::replace(value, "${VMSELECTION}", origin);
 	      value = StringUtils::replace(value, "${VMSPAWNTYPE}", "JVMDLL");
 
-	      jpropstrv.push_back(jp.getName() + "=" + StringUtils::fixQuotes(value));
+	      //	      jpropstrv.push_back(jp.getName() + "=" + StringUtils::fixQuotes(value));
+	      jpropstrv.push_back(jp.getName() + "=" + value);
 	    }
       
 	  char  const  * props[jprops.size()+1];

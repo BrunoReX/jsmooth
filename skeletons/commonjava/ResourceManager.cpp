@@ -251,7 +251,7 @@ void ResourceManager::addUserArgument(std::string argument)
     }
   else
     {
-      setProperty(KEY_ARGUMENTS, getProperty(KEY_ARGUMENTS) + " " + argument);
+      setProperty(KEY_ARGUMENTS, getProperty(KEY_ARGUMENTS) + " " + StringUtils::fixQuotes(argument) );
       DEBUG("Added user argument " + argument);
     }
 }

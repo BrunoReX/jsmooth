@@ -22,14 +22,16 @@
 #include <stdlib.h>
 
 #include "StringUtils.h"
+#include <winnls.h>
 
 int main(int argc, char *argv[])
 {
-  int i;
+  char buffer[256];
+  buffer[0] = 0;
+  int res = GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME,
+			  buffer, 255);
 
-  CreateDirectoryA("TESTICI", 0);
-
-  i = StringUtils::parseHexa("C49F2F");
-  printf("hexa = %d\n", i);
-  printf("OK %d\n");
+  if (res > 0)
+    printf("result: %s\n", buffer);
+  
 }
