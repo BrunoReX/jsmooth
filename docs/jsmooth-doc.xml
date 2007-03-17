@@ -1222,9 +1222,48 @@ and install automatically a JVM.
 
         </para>
 
+	 <para>
+
+	  Wrapper-specific options can also be passed in order to
+	  override the defaults parameters set up at wrapper
+	  creation. Those options start with
+	  <function>-Jskel_</function> (names are case-sensitive as
+	  well).
+
+	 <itemizedlist>
+
+	   <listitem><para><function>-JskelDebug=0|1</function>: 
+	      Specifies whether the wrapper shall start in debug mode
+	      or not. In debug mode, it outputs logs in a console (in
+	      the standard output for console applications, or in a
+	      shell console otherwise). This is usually useful to
+	      debug why a wrapper couldn't launch a VM. 0 to disable
+	      the debug mode, 1 to enable it.
+              </para></listitem>
+
+	   <listitem><para><function>-Jskel_Message=aString</function>: 
+	       The message to display to the user when no JVM is
+              found. This is a short sentence that proposes the user
+              to go on downloading a JRE (or going to an URL,
+              depending on the wrapper), or just cancel the action.
+              </para></listitem>
+
+
+	   <listitem><para><function>-Jskel_URL=http://myurl/wherever</function>:
+	      For the Windowed wrapper only, this is the URL where the
+	      user is redirected if no JRE is found and if they accept
+	      the action.  </para></listitem>
+
+	   <listitem><para><function>-Jskel_DownloadURL=http://myurl/wherever</function>:
+	      For the Autodownload and Custom Web Download wrappers only, this is the download URL that
+	      the wrapper has to download in order to install a JRE.
+	      </para></listitem>
+
+	 </itemizedlist>
+        </para>
+
 	</answer>
       </qandaentry>
-
 
 
     </qandaset>
