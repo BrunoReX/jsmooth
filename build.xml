@@ -25,11 +25,11 @@
 
   <!-- What's below is  optional (needed only if you build a dist) -->
   <property name="FOP" value="c:/Programs/fop-0.20.5\fop.bat"/>
-  <property name="DOCBOOKBASE" value="c:\programs\docbook5-xsl-1.72.0"/>
+  <property name="DOCBOOKBASE" value="c:\programs\docbook-xsl-1.72.0"/>
 
  <!-- set here the properties specific the release --> 
 
-  <property name="VERSION" value="0.9.9"/>
+  <property name="VERSION" value="0.9.9-2"/>
 
   <!-- You should need to modify the properties below -->
 
