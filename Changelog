@@ -1,3 +1,8 @@
+0.9.9-2
+	- Fixed missing quotes for command-line arguments
+	- Fixed issue #1679934: jvm properties not defined properly when
+	starting the JVM DLL.
+
 0.9.9
 	- Added a new skeleton called autodownload, that is able to
 	download and install a JRE (or whatever) when no VM is available.
