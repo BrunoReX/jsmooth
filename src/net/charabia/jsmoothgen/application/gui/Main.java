@@ -133,7 +133,7 @@ public class Main extends JFrame
 	} catch (Exception exc)
 	    {
 	    }
-	return key;
+	return "["+key+"]";
     }
 
 

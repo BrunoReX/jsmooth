@@ -81,5 +81,10 @@ public class JVMSearchSequence extends Editor
     {
 	return "JVMSEARCH_HELP";
     }
+
+    public boolean needsBigSpace()
+    {
+	return true;
+    }
         
 }

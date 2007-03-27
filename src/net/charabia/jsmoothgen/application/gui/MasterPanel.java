@@ -30,6 +30,8 @@ import java.io.File;
 import java.util.*;
 import com.l2fprod.common.swing.*;
 
+import se.datadosen.component.RiverLayout;
+
 public class MasterPanel extends JPanel
 {
     private JButtonBar m_leftBar = new JButtonBar(JButtonBar.VERTICAL);
@@ -48,32 +50,42 @@ public class MasterPanel extends JPanel
 
     private String m_currentPanelName = "";
 
-    private Class[] m_skelElements = { net.charabia.jsmoothgen.application.gui.editors.SkeletonChooser.class, net.charabia.jsmoothgen.application.gui.editors.SkeletonProperties.class };
-
-    private Class[] m_execElements = { 
-	net.charabia.jsmoothgen.application.gui.editors.ExecutableName.class ,
-	net.charabia.jsmoothgen.application.gui.editors.ExecutableIcon.class ,
-	net.charabia.jsmoothgen.application.gui.editors.CurrentDirectory.class
+    private Object[] m_skelElements = { 
+	new net.charabia.jsmoothgen.application.gui.editors.SkeletonChooser(), 
+	new net.charabia.jsmoothgen.application.gui.editors.SkeletonPropertiesEditor() 
+	//	new net.charabia.jsmoothgen.application.gui.editors.SkeletonProperties()
     };
 
-    private Class[] m_appElements = {
-	net.charabia.jsmoothgen.application.gui.editors.MainClass.class,
-	net.charabia.jsmoothgen.application.gui.editors.ApplicationArguments.class,
-	net.charabia.jsmoothgen.application.gui.editors.EmbeddedJar.class,
-	net.charabia.jsmoothgen.application.gui.editors.ClassPath.class
+    private Object[] m_execElements = { 
+	"GUI_LABEL_EXECUTABLE_SETTINGS",
+	new net.charabia.jsmoothgen.application.gui.editors.ExecutableName() ,
+	new net.charabia.jsmoothgen.application.gui.editors.ExecutableIcon() ,
+	new net.charabia.jsmoothgen.application.gui.editors.CurrentDirectory()
     };
 
-    private Class[] m_jvmSelElements = {
-	net.charabia.jsmoothgen.application.gui.editors.MinVersion.class,
-	net.charabia.jsmoothgen.application.gui.editors.MaxVersion.class,
-	net.charabia.jsmoothgen.application.gui.editors.JVMBundle.class,
-	net.charabia.jsmoothgen.application.gui.editors.JVMSearchSequence.class
+    private Object[] m_appElements = {
+	"GUI_LABEL_APPLICATION_SETTINGS",
+	new net.charabia.jsmoothgen.application.gui.editors.MainClass(),
+	new net.charabia.jsmoothgen.application.gui.editors.ApplicationArguments(),
+	"GUI_LABEL_EMBEDDEDJAR_SETTINGS",
+	new net.charabia.jsmoothgen.application.gui.editors.EmbeddedJar(),
+	new net.charabia.jsmoothgen.application.gui.editors.ClassPath()
     };
 
-    private Class[] m_jvmCfgElements = {
-	net.charabia.jsmoothgen.application.gui.editors.MaxMemoryHeap.class,
-	net.charabia.jsmoothgen.application.gui.editors.InitialMemoryHeap.class,
-	net.charabia.jsmoothgen.application.gui.editors.JavaProperties.class
+    private Object[] m_jvmSelElements = {
+	"GUI_LABEL_JAVA_VERSION",
+	new net.charabia.jsmoothgen.application.gui.editors.MinVersion(),
+	new net.charabia.jsmoothgen.application.gui.editors.MaxVersion(),
+	"GUI_LABEL_BUNDLEDJRE",
+	new net.charabia.jsmoothgen.application.gui.editors.JVMBundle(),
+	new net.charabia.jsmoothgen.application.gui.editors.JVMSearchSequence()
+    };
+
+    private Object[] m_jvmCfgElements = {
+	"GUI_LABEL_MEMORYSETTINGS",
+	new net.charabia.jsmoothgen.application.gui.editors.MaxMemoryHeap(),
+	new net.charabia.jsmoothgen.application.gui.editors.InitialMemoryHeap(),
+	new net.charabia.jsmoothgen.application.gui.editors.JavaProperties()
     };
 
     public MasterPanel()
@@ -85,8 +97,9 @@ public class MasterPanel extends JPanel
 	add(BorderLayout.CENTER, scp);
 	scp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-	PanelLayout pl = new PanelLayout();
-	m_mainpanel.setLayout(pl);
+	//	PanelLayout pl = new PanelLayout();
+	//	m_mainpanel.setLayout(pl);
+	m_mainpanel.setLayout(new RiverLayout());
 
 	addAction("Skeleton", "/icons/stock_new-template.png", m_skelElements);
 	addAction("Executable", "/icons/stock_autopilot-24.png", m_execElements);
@@ -108,7 +121,7 @@ public class MasterPanel extends JPanel
 	return key;
     }
 
-    private void addAction(final String name, String iconloc, final Class[] els)
+    private void addAction(final String name, String iconloc, final Object[] els)
     {
 	final Action a = new AbstractAction( name, new ImageIcon(getClass().getResource(iconloc))) {
 		public void actionPerformed(ActionEvent e) 
@@ -125,7 +138,7 @@ public class MasterPanel extends JPanel
 	m_leftBar.add(jtb);
     }
 
-    public void setupPanel(Class[] els)
+    public void setupPanel(Object[] els)
     {
 	fireUpdateModel();
 	detachAll();
@@ -138,26 +151,90 @@ public class MasterPanel extends JPanel
 	if (els == null)
 	    return;
 
+	JPanel pgroup = null;
+
 	for (int i=0; i<els.length; i++)
 	    {
-		try {
-		    //		    Editor ed = (Editor)els[i].newInstance();
-		    Editor ed = m_edPool.getInstance(els[i]);
-
-		    OptionalHelpPanel help = new OptionalHelpPanel();
-		    help.getContentPane().setLayout(new BorderLayout());
-		    help.getContentPane().add(BorderLayout.CENTER, ed);
-
-		    help.setLabel(getLocaleText(ed.getLabel()));
-		    help.setHelpText(getLocaleText(ed.getDescription()));
-
-		    m_mainpanel.add(help);
-		    m_displayedElements.add(ed);
-
-		} catch (Exception exc)
+		if (els[i] instanceof Editor)
 		    {
-			exc.printStackTrace();
+			//			Editor ed = m_edPool.getInstance(els[i]);
+			Editor ed = (Editor)els[i];
+			if (ed.needsBigSpace() && (pgroup != null))
+			    {
+				m_mainpanel.add("br hfill", pgroup);
+				pgroup = null;
+			    }
+
+			if (pgroup == null)
+			    {
+				pgroup = new JPanel();
+				pgroup.setLayout(new RiverLayout());
+				javax.swing.border.TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.LOWERED), "");
+			    }
+
+			//		    Editor ed = (Editor)els[i].newInstance();
+
+			//  		    OptionalHelpPanel help = new OptionalHelpPanel();
+			//  		    help.getContentPane().setLayout(new BorderLayout());
+			//  		    help.getContentPane().add(BorderLayout.CENTER, ed);
+			//  		    help.setLabel(getLocaleText(ed.getLabel()));
+			//  		    help.setHelpText(getLocaleText(ed.getDescription()));
+			// 		    m_mainpanel.add("p left hfill", help);
+
+			if (ed.needsBigSpace())
+			    {
+				javax.swing.border.TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.LOWERED), getLocaleText(ed.getLabel()));
+				pgroup.setBorder(title);
+				pgroup.add("left vtop", new HelpButton(getLocaleText(ed.getDescription())));
+				pgroup.add("tab left hfill", ed);
+				String gc = "br hfill";
+ 				if (i+1>=els.length)
+ 				    gc = "p hfill vfill";
+				m_mainpanel.add(gc, pgroup);
+				pgroup = null;
+			    }
+			else
+			    {
+				pgroup.add("br left", new JLabel(getLocaleText(ed.getLabel())));
+				pgroup.add("tab", new HelpButton(getLocaleText(ed.getDescription())));
+				pgroup.add("tab hfill", ed);
+			    }
+
+			// 		    jp.setBorder(title);
+			// 		    jp.setLayout(new BorderLayout());
+			// 		    jp.add(ed, BorderLayout.CENTER);
+			// 		    m_mainpanel.add("p left hfill", jp);
+			// 		    m_mainpanel.add("p left", new JLabel(ed.getLabel()));
+			// 		    m_mainpanel.add("tab hfill", ed);
+
+			m_displayedElements.add(ed);
 		    }
+		else if (els[i] instanceof String)
+		    {
+			System.out.println("TITLE: " + els[i]);
+			if (pgroup != null)
+			    {
+				m_mainpanel.add("br hfill", pgroup);
+				pgroup = null;
+			    }
+
+			pgroup = new JPanel();
+			pgroup.setLayout(new RiverLayout());
+
+			javax.swing.border.TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.LOWERED), getLocaleText((String)els[i]));
+			pgroup.setBorder(title);
+		    }
+
+		// 		try {
+
+		// 		} catch (Exception exc)
+		// 		    {
+		// 			exc.printStackTrace();
+		// 		    }
+	    }
+	if (pgroup != null)
+	    {
+		m_mainpanel.add("p hfill", pgroup);
 	    }
 	m_mainpanelVBar.setValue(0);
 	attachAll();
@@ -260,8 +337,8 @@ public class MasterPanel extends JPanel
 	    fireUpdateModel();
 	    m_model.normalizePaths(m_modelLocation.getParentFile(), true);
 	    JSmoothModelPersistency.save(m_modelLocation, m_model);
-
-	    fireModelChanged();
+	    System.out.println("saving model " + m_model);
+	    //	    fireModelChanged();
 	    return true;
 	} catch (java.io.IOException iox)
 	    {

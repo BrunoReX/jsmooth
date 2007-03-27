@@ -42,7 +42,7 @@ public class HTMLPane extends JPanel
 	m_scroller = new JScrollPane(m_html);
 	setLayout(new BorderLayout());
 	m_html.setEditable(false);
-	add(BorderLayout.CENTER, m_scroller);
+	add(m_scroller, BorderLayout.CENTER);
     }
 
     public void setText(String s)

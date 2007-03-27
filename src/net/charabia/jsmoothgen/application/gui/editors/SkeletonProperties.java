@@ -71,7 +71,7 @@ public class SkeletonProperties extends Editor implements JSmoothModelBean.Skele
 		{
 		    SkeletonPropertyProxy spp = (SkeletonPropertyProxy)property;
 		    String pname = spp.getTypeName();
-
+		    
 		    if (pname.equals("boolean"))
 			new com.l2fprod.common.beans.editor.BooleanAsCheckBoxPropertyEditor();
 		    else if (pname.equals("textarea"))
@@ -236,7 +236,6 @@ public class SkeletonProperties extends Editor implements JSmoothModelBean.Skele
 		setProperties();
 		return;
 	    }
-
 	if ( ! m_model.getSkeletonName().equalsIgnoreCase(m_currentSkelName))
 	    {
 		m_currentSkelName = m_model.getSkeletonName();
@@ -267,7 +266,6 @@ public class SkeletonProperties extends Editor implements JSmoothModelBean.Skele
 	dataChanged();
     }
     
-
     public String getLabel()
     {
 	return "SKELETONPROPERTIES_LABEL";
@@ -276,6 +274,11 @@ public class SkeletonProperties extends Editor implements JSmoothModelBean.Skele
     public String getDescription()
     {
 	return "SKELETONPROPERTIES_HELP";
+    }
+
+    public boolean needsBigSpace()
+    {
+	return true;
     }
     
 }

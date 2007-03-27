@@ -60,6 +60,11 @@ public abstract class Editor extends JPanel
     abstract public String getLabel();
     abstract public String getDescription();
 
+    public boolean needsBigSpace()
+    {
+	return false;
+    }
+
     protected java.io.File getAbsolutePath(java.io.File f)
     {
 	if (f.isAbsolute())

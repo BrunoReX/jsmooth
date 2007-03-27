@@ -106,6 +106,7 @@ public class PropertiesBuilder
                 }
             addPair("classpath", makePathConc(relcp), out);
         }
+
 	//
 	// Adds all the skeleton-specific properties
 	//

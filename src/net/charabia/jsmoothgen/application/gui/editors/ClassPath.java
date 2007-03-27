@@ -94,4 +94,10 @@ public class ClassPath extends Editor
 	return "CLASSPATH_HELP";
     }
         
+    public boolean needsBigSpace()
+    {
+	return true;
+    }
+
 }
+

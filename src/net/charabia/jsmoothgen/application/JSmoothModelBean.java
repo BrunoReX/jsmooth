@@ -145,9 +145,12 @@ public class JSmoothModelBean
 	
     public void setSkeletonName(String name)
     {
-	m_skeletonName = name;
-	fireSkeletonChanged();
-	fireChanged();
+	if (name != m_skeletonName)
+	    {
+		m_skeletonName = name;
+		fireSkeletonChanged();
+		fireChanged();
+	    }
     }
 	
     public String getSkeletonName()
@@ -157,15 +160,21 @@ public class JSmoothModelBean
 	
     public void setExecutableName(String name)
     {
-	m_executableName = name;
-	fireChanged();
+	if (name != m_executableName)
+	    {
+		m_executableName = name;
+		fireChanged();
+	    }
     }
 
     
     public void setCurrentDirectory(String curdir)
     {
-        m_currentDirectory = curdir;
-        fireChanged();
+	if (curdir != m_currentDirectory)
+	    {
+		m_currentDirectory = curdir;
+		fireChanged();
+	    }
     }
     
     public String getCurrentDirectory()
@@ -180,8 +189,11 @@ public class JSmoothModelBean
 
     public void setIconLocation(String name)
     {
-	m_iconLocation = name;
-	fireChanged();
+	if (name != m_iconLocation)
+	    {
+		m_iconLocation = name;
+		fireChanged();
+	    }
     }
 
     public String getIconLocation()
@@ -202,8 +214,11 @@ public class JSmoothModelBean
 
     public void setJarLocation(String name)
     {
-	m_jarLocation = name;
-	fireChanged();
+	if (name != m_jarLocation)
+	    {
+		m_jarLocation = name;
+		fireChanged();
+	    }
     }
 
     public String getJarLocation()
@@ -214,8 +229,11 @@ public class JSmoothModelBean
 
     public void setMainClassName(String name)
     {
-	m_mainClassName = name;
-	fireChanged();
+	if (name != m_mainClassName)
+	    {
+		m_mainClassName = name;
+		fireChanged();
+	    }
     }
 
     public String getMainClassName()
@@ -280,6 +298,9 @@ public class JSmoothModelBean
 	
     public void setSkeletonProperties(JSmoothModelBean.Property[] props)
     {
+// 	for (int i=0; i<props.length; i++)
+// 	    System.out.println("SET PROPERTY: " + props[i].getIdName() + "=" + props[i].getValue());
+
 	m_skelproperties = props;
 	fireChanged();
     }

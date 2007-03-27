@@ -94,5 +94,10 @@ public class JavaProperties extends Editor
     {
 	return "JAVAPROP_HELP";
     }
+
+    public boolean needsBigSpace()
+    {
+	return true;
+    }
         
 }

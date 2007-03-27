@@ -12,20 +12,20 @@ package net.charabia.jsmoothgen.skeleton;
  */
 public class SkeletonProperty
 {
-	static public String TYPE_STRING = "string";
-	static public String TYPE_TEXTAREA = "textarea";
-	static public String TYPE_BOOLEAN = "boolean";
+    static public String TYPE_STRING = "string";
+    static public String TYPE_TEXTAREA = "textarea";
+    static public String TYPE_BOOLEAN = "boolean";
 	
-	private String m_idName = "";
-	private String m_shortName = "";
-	private String m_description = "";
-	private String m_type = "";
-	private String m_value = "";
+    private String m_idName = "";
+    private String m_shortName = "";
+    private String m_description = "";
+    private String m_type = "";
+    private String m_value = "";
 	
-	/** Creates a new instance of SkeletonProperty */
-	public SkeletonProperty()
-	{
-	}
+    /** Creates a new instance of SkeletonProperty */
+    public SkeletonProperty()
+    {
+    }
 
     public SkeletonProperty(SkeletonProperty sp)
     {
@@ -36,55 +36,56 @@ public class SkeletonProperty
 	m_value = sp.m_value;
     }
 
-	public void setIdName(String idName)
-	{
-		m_idName = idName;
-	}
+    public void setIdName(String idName)
+    {
+	m_idName = idName;
+    }
 	
-	public String getIdName()
-	{
-		return m_idName;
-	}
+    public String getIdName()
+    {
+	return m_idName;
+    }
 
-	public void setLabel(String name)
-	{
-		m_shortName = name;
-	}
+    public void setLabel(String name)
+    {
+	m_shortName = name;
+    }
 	
-	public String getLabel()
-	{
-		return m_shortName;
-	}
+    public String getLabel()
+    {
+	return m_shortName;
+    }
 	
-	public void setDescription(String desc)
-	{
-		m_description = desc;
-	}
+    public void setDescription(String desc)
+    {
+	m_description = desc;
+    }
 	
-	public String getDescription()
-	{
-		return m_description;
-	}
+    public String getDescription()
+    {
+	return m_description;
+    }
 
-	public void setType(String type)
-	{
-		m_type = type;
-	}
+    public void setType(String type)
+    {
+	m_type = type;
+    }
 	
-	public String getType()
-	{
-		return m_type;
-	}
+    public String getType()
+    {
+	return m_type;
+    }
 
-	public void setValue(String value)
-	{
-		m_value = value;
-	}
+    public void setValue(String value)
+    {
+	System.out.println("SkeletonProperty.setValue:" + value);
+	m_value = value;
+    }
 	
-	public String getValue()
-	{
-		return m_value;
-	}
+    public String getValue()
+    {
+	return m_value;
+    }
 
 }
 
