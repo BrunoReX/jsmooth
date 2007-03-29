@@ -132,6 +132,7 @@ public class SkeletonPropertiesEditor extends Editor implements JSmoothModelBean
 	    }
 
 	JSmoothModelBean.Property[] jsprop = m_model.getSkeletonProperties();
+	System.out.println("jsprop is null ? " + jsprop + " / " + ((jsprop!=null)?jsprop.length:-1));
 	if (jsprop != null)
 	    {
 		for (Enumeration e=m_editors.elements(); e.hasMoreElements(); )
@@ -141,19 +142,28 @@ public class SkeletonPropertiesEditor extends Editor implements JSmoothModelBean
 			if (p != null)
 			    spe.valueChanged(p.getValue());
 		    }
-
-		// 		for (int i=0; i<jsprop.length; i++)
-		// 		    {
-		// 			System.out.println("......prop " + jsprop[i].getKey() + "=" + jsprop[i].getValue());
-		// 			for (Enumeration e=m_editors.elements(); e.hasMoreElements(); )
-		// 			    {
-		// 				SkelPropEditor spe = (SkelPropEditor)e.nextElement();
-		// 				if (spe.getIdName().equals(jsprop[i].getKey()))
-		// 				    spe.valueChanged(jsprop[i].getValue());
-		// 			    }
-		// 		    }
 	    }
+	else
+	    { // if no properties are defined for this model, we use the default values
+		
+		SkeletonBean skel = Main.SKELETONS.getSkeleton( m_model.getSkeletonName() );
+		SkeletonProperty[] sprops = null;
+		if (skel != null)
+		    sprops = skel.getSkeletonProperties();
 
+		if (sprops != null)
+		    {
+			for (Enumeration e=m_editors.elements(); e.hasMoreElements(); )
+			    {
+				SkelPropEditor spe = (SkelPropEditor)e.nextElement();				
+				for (int i=0; i<sprops.length; i++)
+				    {
+					if (sprops[i].getIdName().equals(spe.getIdName()))
+					    spe.valueChanged(sprops[i].getValue());
+				    }
+			    }			
+		    }
+	    }
 
 	System.out.println("DONE NOTHING! " +m_currentSkelName + "/" + m_model.getSkeletonName());
     }
