@@ -3,6 +3,8 @@
 	- Changed the GUI for property editors of jsmoothmodel bean
 	- Changed the GUI for the skeleton editors
 	- Added I18N support for skeleton texts
+	- Current-directory setting now accepts sys. env. variables and
+	the special ${EXECUTABLEPATH} variable.
 
 0.9.9-2
 	- Fixed missing quotes for command-line arguments
