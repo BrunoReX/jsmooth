@@ -12,7 +12,7 @@
 <idName>Message</idName>
 <label>SKEL_AUTODOWNLOAD_PROPERTY_MESSAGE_LABEL</label>
 <type>textarea</type>
-<value>SKEL_AUTODOWNLOAD_PROPERTY_MESSAGE_VALUE</value>
+<value>Java has not been found on your computer. Do you want to download it?</value>
 </skeletonProperties>
 <skeletonProperties>
 <description>SKEL_AUTODOWNLOAD_PROPERTY_DLURL_DESCRIPTION</description>
