@@ -107,7 +107,11 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId)
     if (curdirmodifier.length()>0)
         m_currentDirectory = FileUtils::concFile(FileUtils::getExecutablePath(), curdirmodifier);
     else
-        m_currentDirectory = FileUtils::getExecutablePath();    
+      {
+        m_currentDirectory = FileUtils::getExecutablePath();
+	m_currentDirectory = StringUtils::replace(m_currentDirectory, "${EXECUTABLEPATH}", exepath);
+	m_currentDirectory = StringUtils::replaceEnvironmentVariable(m_currentDirectory);
+      }
 }
 
 ResourceManager::~ResourceManager()
