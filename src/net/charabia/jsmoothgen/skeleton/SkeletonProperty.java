@@ -15,6 +15,7 @@ public class SkeletonProperty
     static public String TYPE_STRING = "string";
     static public String TYPE_TEXTAREA = "textarea";
     static public String TYPE_BOOLEAN = "boolean";
+    static public String TYPE_AUTODOWNLOADURL = "autodownloadurl";
 	
     private String m_idName = "";
     private String m_shortName = "";

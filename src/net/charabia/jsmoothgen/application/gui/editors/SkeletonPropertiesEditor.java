@@ -84,6 +84,10 @@ public class SkeletonPropertiesEditor extends Editor implements JSmoothModelBean
 		    {
 			spe = new CheckBoxEditor();
 		    }
+		else if (sprops[i].getType().equalsIgnoreCase(SkeletonProperty.TYPE_AUTODOWNLOADURL))
+		    {
+			spe = new AutoDownloadURLEditor();
+		    }
 
 		if (spe == null)
 		    {

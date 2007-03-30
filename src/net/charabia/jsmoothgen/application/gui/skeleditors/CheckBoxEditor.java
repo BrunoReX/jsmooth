@@ -33,15 +33,6 @@ public class CheckBoxEditor extends SkelPropEditor
     public CheckBoxEditor()
     {
 	m_comp = new JCheckBox();
-// 	m_comp.addActionListener(new ActionListener() {
-// 		public void actionPerformed(ActionEvent e)
-// 		{
-// 		    if (CheckBoxEditor.this.m_comp.isSelected())
-// 			set("1");
-// 		    else
-// 			set("0");
-// 		}
-// 	    });
     }
 
     public java.awt.Component getGUI()

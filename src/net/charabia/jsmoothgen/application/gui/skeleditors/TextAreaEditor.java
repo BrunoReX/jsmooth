@@ -33,11 +33,6 @@ public class TextAreaEditor extends SkelPropEditor
     {
 	m_comp = new JTextArea(5, 40);
 	PlainDocument doc = new PlainDocument();
-// 	doc.addDocumentListener(new DocumentListener() {
-// 		public void insertUpdate(DocumentEvent e) { TextAreaEditor.this.set(m_comp.getText());  }
-// 		public void removeUpdate(DocumentEvent e) { TextAreaEditor.this.set(m_comp.getText());  }
-// 		public void changedUpdate(DocumentEvent e){ TextAreaEditor.this.set(m_comp.getText());  }
-// 	    });
 	m_comp.setDocument(doc);
 	m_sp = new JScrollPane(m_comp);
     }
