@@ -5,7 +5,13 @@
 	- Added I18N support for skeleton texts
 	- Current-directory setting now accepts sys. env. variables and
 	the special ${EXECUTABLEPATH} variable.
-
+	- Adds GUI support for ${EXECUTABLEPATH]}'s current directory
+	- Removed dependency to libmspack by using the ms setup api
+	- All temporary files are now flagged "remove on reboot" to
+	Windows
+	- Fixed bug preventing compilation of the executable when
+	classpath is empty
+	
 0.9.9-2
 	- Fixed missing quotes for command-line arguments
 	- Fixed issue #1679934: jvm properties not defined properly when
