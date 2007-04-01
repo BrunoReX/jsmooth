@@ -99,6 +99,8 @@ public class JSmoothPropertiesDisplayer extends java.awt.Frame
 		StringBuffer out = new StringBuffer();
 		out.append("-- Sample --\n\n");
 
+		out.append("Current Directory: " + new java.io.File(".").getAbsolutePath() + "\n");
+
 		out.append("Arguments passed on the command line: " + m_args.length + " \n");
 		for (int i=0; i<m_args.length; i++)
 		    {
