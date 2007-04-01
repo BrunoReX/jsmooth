@@ -205,12 +205,13 @@ public class PropertiesBuilder
     static public String makePathConc(String[] elements)
     {
 	StringBuffer buf = new StringBuffer();
-	for (int i=0; i<elements.length; i++)
-	    {
-		buf.append(elements[i]);
-		if ((i+1)<elements.length)
-		    buf.append(";");
-	    }
+	if (elements != null)
+	    for (int i=0; i<elements.length; i++)
+		{
+		    buf.append(elements[i]);
+		    if ((i+1)<elements.length)
+			buf.append(";");
+		}
 	return buf.toString();
     }
 

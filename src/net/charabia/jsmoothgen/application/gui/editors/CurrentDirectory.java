@@ -33,11 +33,29 @@ import com.l2fprod.common.propertysheet.*;
 public class CurrentDirectory extends Editor
 {
     private FileSelectionTextField m_selector = new FileSelectionTextField();
- 
+    private JCheckBox m_forceExePath = new JCheckBox();
+    
     public CurrentDirectory()
     {
 	setLayout(new BorderLayout());
 	add(BorderLayout.CENTER, m_selector);
+	
+	JPanel jpc = new JPanel();
+	jpc.setLayout(new BorderLayout());
+	jpc.add(BorderLayout.WEST, m_forceExePath);
+	jpc.add(BorderLayout.CENTER, new HelpButton(Main.local("CURRENTDIR_FORCEEXEPATH_HELP")));
+	add(BorderLayout.SOUTH, jpc);
+
+	m_forceExePath.setAction(new AbstractAction(Main.local("CURRENTDIR_FORCEEXEPATH")) {
+		public void actionPerformed(java.awt.event.ActionEvent e)
+		{
+		    if (m_forceExePath.isSelected())
+			m_selector.setEnabled(false);
+		    else
+			m_selector.setEnabled(true);
+		}
+	    });
+
 	m_selector.setFileChooser(new JDirectoryChooser());
     }
     
@@ -48,23 +66,42 @@ public class CurrentDirectory extends Editor
 	String dir = m_model.getCurrentDirectory();
 	System.out.println("Cur Directory data changed: " + dir);
 
-	if ((dir != null) && (dir.trim().length()>0))
+	if ("${EXECUTABLEPATH}".equals(dir))
 	    {
-		m_selector.setFile(new java.io.File(dir));
+		m_selector.setEnabled(false);
+		m_forceExePath.setSelected(true);
 	    }
 	else
 	    {
-		m_selector.setFile(null);
+		m_forceExePath.setSelected(false);
+		m_selector.setEnabled(true);
+
+		if ((dir != null) && (dir.trim().length()>0))
+		    {
+			m_selector.setFile(new java.io.File(dir));
+		    }
+		else
+		    {
+			m_selector.setFile(null);
+		    }
 	    }
     }
 
     public void updateModel()
     {
 	System.out.println("UPDATE MODEL: " + m_selector.getFile());
-	if (m_selector.getFile() != null)
-	    m_model.setCurrentDirectory(m_selector.getFile().toString());
+
+	if (m_forceExePath.isSelected())
+	    {
+		m_model.setCurrentDirectory("${EXECUTABLEPATH}");
+	    }
 	else
-	    m_model.setCurrentDirectory(null);
+	    {
+		if (m_selector.getFile() != null)
+		    m_model.setCurrentDirectory(m_selector.getFile().toString());
+		else
+		    m_model.setCurrentDirectory(null);
+	    }
     }
 
     public String getLabel()
