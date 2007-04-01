@@ -47,6 +47,7 @@ http://sourceforge.net/projects/jsmooth
  documentation, you need to install the docbook compilation chain).
 
  Install:
+
 	- http://xml.apache.org/xalan-j/ and put the xalan jars into
 	the lib folder of ANT. This is required to make ANT able to
 	process XSLT.
@@ -64,27 +65,28 @@ http://sourceforge.net/projects/jsmooth
 
 	- FOP, available at http://xml.apache.org/fop/
 
-	- FLTK, available at http://www.fltk.org The easiest way is
-	  probably to grab a recent source package of fltk, then to
-	  run under an MSYS/MINGW environment the three commands:
-	  "./configure", "make", and "make install".
+ 3.4 FLTK library
 
- Configure:
+ FLTK, available at http://www.fltk.org The easiest way is probably to
+ grab a recent source package of fltk, then to run under an MSYS/MINGW
+ environment the three commands: "./configure", "make", and "make
+ install".
 
-	- Open the build.xml ant script at the root of the project, and
-         change the properties located at the top of the file. They are
-         just under the comment:
 
-         <!-- set here the properties specific to your computer -->
+ 3.5 Configure:
 
-	 Read carefully the comments and set the properties
-	 accordingly.
+ - Open the build.xml ant script at the root of the project, and
+ change the properties located at the top of the file. They are just
+ under the comment:
 
- -- BUILDING --
+   <!-- set here the properties specific to your computer -->
 
-  3.3 Building the project
+ Read carefully the comments and set the properties accordingly.
+
+ 3.6 Building the project
 
   To build the project, run the following command: ant jar
+  To build the wrappers: ant compileskels
   To run the program: ant run
   To build a distribution: ant dist
 
