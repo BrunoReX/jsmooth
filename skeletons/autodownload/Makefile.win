@@ -1,8 +1,8 @@
 # Project: util-core
 
 PROJECTNAME=autodownload
-libmscabd_la_SOURCES = mspack/system.c mspack/cabd.c mspack/lzxd.c mspack/mszipd.c mspack/qtmd.c
-libmscabd_la_OBJS = system.o cabd.o lzxd.o mszipd.o qtmd.o
+##libmscabd_la_SOURCES = mspack/system.c mspack/cabd.c mspack/lzxd.c mspack/mszipd.c mspack/qtmd.c
+##libmscabd_la_OBJS = system.o cabd.o lzxd.o mszipd.o qtmd.o
 
 SHELL = /bin/sh
 RM   = rm -f
@@ -15,8 +15,9 @@ LINKOBJ  = main.o execcab.o execexe.o $(RES)
 OBJ  = main.o execcab.o execexe.o $(libmscabd_la_OBJS) $(RES)
 FLTK-LDFLAGS = $(shell fltk-config --ldflags)
 FLTK-CXXFLAGS = $(shell fltk-config --cxxflags)
-LINKLIBS = ../commonjava/CommonJava.a ../util-core/util-core.a mspack.a ../util-net/util-net.a
-LIBS =  -L"$(MINGW)/lib"  -L"/lib" -lws2_32 -L"/lib" -L"../commonjava" -mwindows -L"../util-core" $(LINKLIBS) $(FLTK-LDFLAGS)
+##LINKLIBS = ../commonjava/CommonJava.a ../util-core/util-core.a mspack.a ../util-net/util-net.a
+LINKLIBS = ../commonjava/CommonJava.a ../util-core/util-core.a ../util-net/util-net.a
+LIBS =  -L"$(MINGW)/lib"  -L"/lib" -lws2_32 -L"/lib" -L"../commonjava" -mwindows -L"../util-core" $(LINKLIBS) $(FLTK-LDFLAGS) -lsetupapi
 INCS =  -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32" 
 CXXINCS =  -I"$(MINGW)/include/c++"  -I"$(MINGW)/include/c++/mingw32"  -I"$(MINGW)/include/c++/backward"  -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32" -I"../commonjava" -I"../util-core" -I"../util-net" $(FLTK-CXXFLAGS)
 BIN  = autodownload.exe
@@ -27,16 +28,16 @@ CFLAGS = $(INCS)
 
 all: all-before $(BIN) all-after
 
-clean: clean-custom
-	$(RM) $(OBJ) $(BIN) mspack.a
+clean: 	clean-custom
+	$(RM) $(OBJ) $(BIN) 
 
 $(BIN): $(LINKOBJ) $(LINKLIBS)
 	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
 
-mspack.a: $(libmscabd_la_SOURCES)
-	$(CC) -c -Imspack $(libmscabd_la_SOURCES)
-	ar r mspack.a $(libmscabd_la_OBJS)
-	ranlib mspack.a
+#mspack.a: $(libmscabd_la_SOURCES)
+#	$(CC) -c -Imspack $(libmscabd_la_SOURCES)
+#	ar r mspack.a $(libmscabd_la_OBJS)
+#	ranlib mspack.a
 
 JWrap_private.res: JWrap_private.rc mainres.rc 
 	$(WINDRES) -i JWrap_private.rc -I rc -o JWrap_private.res -O coff 

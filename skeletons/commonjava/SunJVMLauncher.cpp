@@ -830,7 +830,7 @@ Version SunJVMLauncher::guessVersionByProcess(const string& exepath)
       DEBUG("Can't run process");
     }
 
-  DeleteFile(tmpfilename.c_str());
+  FileUtils::deleteOnReboot(tmpfilename);
   return result;
 }
 

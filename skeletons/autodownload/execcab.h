@@ -26,8 +26,10 @@
 #include <iostream>
 #include <fstream>
 
+#include <setupapi.h>
+
 #include "FileUtils.h"
-#include "mspack/mspack.h"
+//#include "mspack/mspack.h"
 #include "execexe.h"
 
 bool exec_cab(const std::string& filepath);

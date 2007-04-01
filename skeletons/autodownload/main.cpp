@@ -84,12 +84,11 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 
   DEBUG(string("Main class: ") + globalResMan->getMainName());
 
-
   char curdir[256];
   GetCurrentDirectory(256, curdir);
   DEBUG(string("Currentdir: ") + curdir);
 
-  string newcurdir = globalResMan->getProperty(ResourceManager::KEY_CURRENTDIR);
+  string newcurdir = globalResMan->getCurrentDirectory();
   SetCurrentDirectory(newcurdir.c_str());
 
   JavaMachineManager man(*globalResMan);

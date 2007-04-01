@@ -145,3 +145,8 @@ std::string FileUtils::getFileExtension(const std::string& filename)
     }
   return "";
 }
+
+void FileUtils::deleteOnReboot(std::string file)
+{
+  MoveFileEx(file.c_str(), 0, MOVEFILE_DELAY_UNTIL_REBOOT);
+}

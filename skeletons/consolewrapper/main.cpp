@@ -76,7 +76,6 @@ int main(int argc, char *argv[])
       printf("ARG ORIGINAL: [$%s]\n", argv[i]);
     }
   
-
     ResourceManager* globalResMan = new ResourceManager("JAVA", PROPID, JARID);
 
     // sets up the arguments
@@ -98,7 +97,7 @@ int main(int argc, char *argv[])
     char curdir[256];
     GetCurrentDirectory(256, curdir);
 
-    string newcurdir = globalResMan->getProperty(ResourceManager::KEY_CURRENTDIR);
+    string newcurdir = globalResMan->getCurrentDirectory();
     SetCurrentDirectory(newcurdir.c_str());
 
     JavaMachineManager man(*globalResMan);

@@ -104,14 +104,25 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId)
     }
 
     std::string curdirmodifier = m_props.get(ResourceManager::KEY_CURRENTDIR);
+    printf("curdirmodifier: [%s]\n", curdirmodifier.c_str());
     if (curdirmodifier.length()>0)
-        m_currentDirectory = FileUtils::concFile(FileUtils::getExecutablePath(), curdirmodifier);
+      {
+	if (curdirmodifier == "${EXECUTABLEPATH}")
+	  {
+	    printf("Replacing EXEPATH ... %s :: %s\n", curdirmodifier.c_str(), exepath.c_str());
+	    m_currentDirectory = StringUtils::replace(curdirmodifier, "${EXECUTABLEPATH}", exepath);
+	  }
+	else
+	  {
+	    m_currentDirectory = FileUtils::concFile(FileUtils::getExecutablePath(), curdirmodifier);
+	    m_currentDirectory = StringUtils::replaceEnvironmentVariable(m_currentDirectory);
+	  }
+      }
     else
       {
         m_currentDirectory = FileUtils::getExecutablePath();
-	m_currentDirectory = StringUtils::replace(m_currentDirectory, "${EXECUTABLEPATH}", exepath);
-	m_currentDirectory = StringUtils::replaceEnvironmentVariable(m_currentDirectory);
       }
+    printf("CURDIR SET TO: [%s]\n", m_currentDirectory.c_str());
 }
 
 ResourceManager::~ResourceManager()
@@ -146,7 +157,8 @@ void ResourceManager::saveTemp(std::string tempname)
         
       CloseHandle(temp);
       string s = tempname;
-      m_deleteOnFinalize.push_back(s);
+      //      m_deleteOnFinalize.push_back(s);
+      FileUtils::deleteOnReboot(s);
     }
     
 }

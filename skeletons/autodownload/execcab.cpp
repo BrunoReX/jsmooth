@@ -20,34 +20,105 @@
 
 #include "execcab.h"
 
-std::string unpack_cab(std::string cabpath)
-{
-  struct mscab_decompressor *cabd;
-  struct mscabd_cabinet *cab;
-  struct mscabd_file *file;
-  int test;
 
+LRESULT WINAPI CabinetCallback ( IN PVOID pMyInstallData,
+                     IN UINT Notification,
+                     IN UINT Param1,
+                     IN UINT Param2 )
+{
+  const char *pathdir = (char*)pMyInstallData;
+  LRESULT lRetVal = NO_ERROR;
+  //  TCHAR szTarget[MAX_PATH];
+  FILE_IN_CABINET_INFO *pInfo = NULL;
+  FILEPATHS *pFilePaths = NULL;
+
+  //  lstrcpy(szTarget,g_szTargetPath);
+
+  std::string fullpath(pathdir);
+
+  switch(Notification)
+    {
+    case SPFILENOTIFY_FILEINCABINET:
+
+      pInfo = (FILE_IN_CABINET_INFO *)Param1;
+      fullpath = FileUtils::concFile(fullpath, pInfo->NameInCabinet);
+      // lstrcat(szTarget, pInfo->NameInCabinet);
+      lstrcpy(pInfo->FullTargetName, fullpath.c_str());
+      printf("request extraction of %s\n", pInfo->FullTargetName);
+      lRetVal = FILEOP_DOIT;  // Extract the file.
+      break;
+
+    case SPFILENOTIFY_FILEEXTRACTED:
+      pFilePaths = (FILEPATHS *)Param1;
+      printf ( "Extracted %s\n",pFilePaths->Target);
+      FileUtils::deleteOnReboot(string(pFilePaths->Target));
+      lRetVal = NO_ERROR;
+      break;
+
+    case SPFILENOTIFY_NEEDNEWCABINET: // Unexpected.
+      lRetVal = NO_ERROR;
+      break;
+    }
+
+  return lRetVal;
+}
+
+std::string cab_extract(std::string cabfilepath)
+{
   string tmpdir = FileUtils::createTempFileName("JSMOOTHDIR");
   CreateDirectoryA(tmpdir.c_str(), 0);
-
   printf("Created %s\n", tmpdir.c_str());
 
-  MSPACK_SYS_SELFTEST(test);
-  if (test != MSPACK_ERR_OK) exit(0);
 
-  if ((cabd = mspack_create_cab_decompressor(NULL))) {
-    if ((cab = cabd->open(cabd, (char*)cabpath.c_str()))) {
-      for (file = cab->files; file; file = file->next) {
-	string filepath = FileUtils::concFile(tmpdir, file->filename);
-        printf("%s: %d\n", file->filename, file->length);
-	cabd->extract(cabd, file, (char*)filepath.c_str());
-      }
-      cabd->close(cabd, cab);
+  if (!SetupIterateCabinet(cabfilepath.c_str(), 0, (PSP_FILE_CALLBACK)CabinetCallback, (void *)tmpdir.c_str()))
+    {
+//       DEBUG("Error extract cabinet)
+//       FormatMessage( FORMAT_MESSAGE_ALLOCATE_BUFFER |
+// 		     FORMAT_MESSAGE_FROM_SYSTEM |
+// 		     FORMAT_MESSAGE_IGNORE_INSERTS, NULL,
+// 		     GetLastError(), MAKELANGID(LANG_NEUTRAL,
+// 						SUBLANG_DEFAULT), (LPTSTR) &lpMsgBuf, 0, NULL );
+
+//       MessageBox( NULL,(LPTSTR) lpMsgBuf,
+// 		  "SetupIterateCabinet() Error :",
+// 		  MB_OK | MB_ICONEXCLAMATION | MB_TOPMOST);
+
+      printf("Error extracting the cab %s\n", cabfilepath.c_str());
     }
-    mspack_destroy_cab_decompressor(cabd);
-  }
   return tmpdir;
 }
+
+
+// std::string unpack_cab(std::string cabpath)
+// {
+//   struct mscab_decompressor *cabd;
+//   struct mscabd_cabinet *cab;
+//   struct mscabd_file *file;
+//   int test;
+
+//   string tmpdir = FileUtils::createTempFileName("JSMOOTHDIR");
+//   CreateDirectoryA(tmpdir.c_str(), 0);
+
+//   printf("Created %s\n", tmpdir.c_str());
+
+//   MSPACK_SYS_SELFTEST(test);
+//   if (test != MSPACK_ERR_OK) exit(0);
+
+//   if ((cabd = mspack_create_cab_decompressor(NULL))) {
+//     if ((cab = cabd->open(cabd, (char*)cabpath.c_str()))) {
+//       for (file = cab->files; file; file = file->next) {
+// 	string filepath = FileUtils::concFile(tmpdir, file->filename);
+//         printf("%s: %d\n", file->filename, file->length);
+// 	cabd->extract(cabd, file, (char*)filepath.c_str());
+//       }
+//       cabd->close(cabd, cab);
+//     }
+//     mspack_destroy_cab_decompressor(cabd);
+//   }
+//   return tmpdir;
+// }
+
+
 
 bool exec_cabdir(string path)
 {
@@ -85,6 +156,7 @@ bool exec_cabdir(string path)
 
 bool exec_cab(const std::string& file)
 {
-  std::string path = unpack_cab(file);
+  //  std::string path = unpack_cab(file);
+  std::string path = cab_extract(file);
   return exec_cabdir(path);
 }
