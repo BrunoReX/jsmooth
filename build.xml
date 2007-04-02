@@ -236,8 +236,10 @@
     <copy todir="${dist}/docs/images">
       <fileset dir="${tmp}/docs/images"/>
     </copy>
-    <copy todir="${dist}" file="${tmp}/docs/readme.txt"/>
-    <copy todir="${dist}" file="${tmp}/docs/license.txt"/>
+    <copy todir="${dist}" file="${tmp}/readme.txt"/>
+    <copy todir="${dist}" file="${tmp}/license.txt"/>
+    <copy todir="${dist}" file="${tmp}/LGPL-LICENSE.txt"/>
+    <copy todir="${dist}" file="${tmp}/GPL-LICENSE.txt"/>
     <copy todir="${dist}" file="Changelog"/>
 
     <!-- Compile the wrappers -->
