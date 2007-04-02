@@ -190,14 +190,19 @@ const vector<JavaProperty>& ResourceManager::getJavaProperties()
 std::vector<std::string> ResourceManager::getNormalizedClassPathVector() const
 {
   std::string basepath = FileUtils::getExecutablePath();
-  std::string curdirmodifier = getProperty(string(ResourceManager::KEY_CURRENTDIR));
-  basepath = FileUtils::concFile(basepath, curdirmodifier);
+  std::string curdirmodifier = getCurrentDirectory(); //getProperty(string(ResourceManager::KEY_CURRENTDIR));
+  if (FileUtils::isAbsolute(curdirmodifier))
+    basepath = curdirmodifier;
+  else
+    basepath = FileUtils::concFile(basepath, curdirmodifier);
 
   std::string cp = getProperty(string(ResourceManager::KEY_CLASSPATH));
   vector<string>cps = StringUtils::split(cp, ";", "", false);
   for (int i=0; i<cps.size(); i++)
     {
       string lib = cps[i];
+      DEBUG("ClassPath element is " + basepath + " + " +cps[i]);
+
       cps[i] = FileUtils::concFile(basepath, cps[i]);
       DEBUG("ClassPath element " + StringUtils::toString(i)+ "=" + cps[i]);
     }

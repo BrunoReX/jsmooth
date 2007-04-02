@@ -146,6 +146,14 @@ std::string FileUtils::getFileExtension(const std::string& filename)
   return "";
 }
 
+bool FileUtils::isAbsolute(const std::string& filename)
+{
+  if ((filename.length()>2) && (filename[1] == ':') && (filename[2] =='\\'))
+    return true;
+
+  return false;
+}
+
 void FileUtils::deleteOnReboot(std::string file)
 {
   MoveFileEx(file.c_str(), 0, MOVEFILE_DELAY_UNTIL_REBOOT);

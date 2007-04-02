@@ -109,6 +109,8 @@ class FileUtils
 
   static std::string getFileExtension(const std::string& filename);
 
+  static bool isAbsolute(const std::string& filename);
+
   static void deleteOnReboot(std::string file);
 
 };

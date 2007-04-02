@@ -71,10 +71,10 @@ std::string fixArgumentString(const std::string& arg)
 
 int main(int argc, char *argv[])
 {    
-  for (int i=0; i<argc; i++)
-    {
-      printf("ARG ORIGINAL: [$%s]\n", argv[i]);
-    }
+//   for (int i=0; i<argc; i++)
+//     {
+//       printf("ARG ORIGINAL: [$%s]\n", argv[i]);
+//     }
   
     ResourceManager* globalResMan = new ResourceManager("JAVA", PROPID, JARID);
 
