@@ -83,16 +83,25 @@ public class PropertiesBuilder
 		curdir = new File(basedir, curdir.toString());
 	    }
 
+
+	//	System.out.println("... curdir1 : " + curdir.toString());
+
 	if (obj.getCurrentDirectory() != null)
 	    {
 		File newcurdir = new File(obj.getCurrentDirectory());
-		if (newcurdir.isAbsolute() == false)
+		//		System.out.println("... curdir1.5 : " + obj.getCurrentDirectory());
+
+		if ( ! "${EXECUTABLEPATH}".equalsIgnoreCase(obj.getCurrentDirectory()))
 		    {
-			curdir = new File(curdir, newcurdir.toString());
+			if (newcurdir.isAbsolute() == false)
+			    {
+				curdir = new File(curdir, newcurdir.toString());
+			    }
+			else
+			    curdir = newcurdir;
 		    }
-		else
-		    curdir = newcurdir;
 	    }
+	//	System.out.println("... curdir2 : " + curdir.toString());
 
 	if (obj.getBundledJVMPath() != null)
 	    addPair("bundledvm", getRenormalizedPathIfNeeded(obj.getBundledJVMPath(), basedir, curdir), out);
