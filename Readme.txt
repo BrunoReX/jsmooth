@@ -97,7 +97,7 @@ Public License. Please read the License.txt file that comes with the
 package. Additional software bundled with JSmooth may come with their
 own license, please check.
 
-This GPL license applies to the project, but not on the generated
-executable. This means that you are free to generate executable
-wrappers for proprietary software and distribute them without applying
-the terms of the GPL to them.
+The executable generated (the launchers created by JSmooth) are under
+the LGPL with a "runtime exception" similar to the gcc licence
+exception: It is not required that you distribute the source code
+with, nor that you publish a notice mentionning jsmooth.

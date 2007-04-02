@@ -29,7 +29,7 @@
 
  <!-- set here the properties specific the release --> 
 
-  <property name="VERSION" value="0.9.9-2"/>
+  <property name="VERSION" value="0.9.9-3"/>
 
   <!-- You should need to modify the properties below -->
 
@@ -140,9 +140,14 @@
          Builds the distribution file for jsmooth.
       -->
 
-  <target depends="" name="test">
-    <ant antfile="build.xml" dir="skeletons/simplewrap/samplejar/" target="dist"/>
-    <ant antfile="build.xml" dir="skeletons/consolewrapper/samplejar/" target="dist"/>
+  <target depends="jar" name="test">
+    <echo>Running test class... ${jsmoothjar}</echo>    
+     <java classname="net.charabia.jsmoothgen.application.gui.beaneditors.BeanPanel" fork="yes" >
+       <classpath refid="jsmooth.class.path"/>
+       <classpath>
+          <pathelement path="${jsmoothjar}"/>
+       </classpath>
+     </java>
   </target>
 
   <target depends="" name="dist">
@@ -379,6 +384,7 @@
        <classpath>
           <pathelement path="${jsmoothjar}"/>
        </classpath>
+        <arg value="sample/sample.jsmooth"/>
      </java>
   </target>
 

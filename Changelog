@@ -8,9 +8,11 @@
 	- Adds GUI support for ${EXECUTABLEPATH]}'s current directory
 	- Removed dependency to libmspack by using the ms setup api
 	- All temporary files are now flagged "remove on reboot" to
-	Windows
+	Windows by default.
 	- Fixed bug preventing compilation of the executable when
 	classpath is empty
+	- JSmoothGen now accepts project files as argument. Also added
+	file association.
 	
 0.9.9-2
 	- Fixed missing quotes for command-line arguments

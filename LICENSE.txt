@@ -28,5 +28,5 @@ The full details are below:
   (the launchers created by JSmooth) are under the LGPL with a
   "runtime exception" similar to the gcc licence exception: It is not
   required that you distribute the source code with, nor that you
-  publish a notice mentionning jsmooth. It's near public-domain, but
-  the LGPL warranty-limitation still applies.
+  publish a notice mentionning jsmooth. It's not far from
+  public-domain, but the LGPL warranty-limitation still applies.
