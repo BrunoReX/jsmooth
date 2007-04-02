@@ -446,7 +446,7 @@ and install automatically a JVM.
 	  <para>
 	    Changing the current directory for a console application
 	    is probably not what you want. A common issue is for a
-	    console application to find resources which are found in
+	    console application to find resources which are located in
 	    the file system (i.e not in the jar of the
 	    application). Lots of application work this way, but Java
 	    applications, unfortunately, do not have access to the information they
@@ -460,10 +460,17 @@ and install automatically a JVM.
 	  an environment variable (which may be complicated to set
 	  under windows). Instead, define a Java Property, and set
 	  <systemitem>${EXECUTABLEPATH}</systemitem> as value. The effect of
-	  this is to pass to your application a java property which
-	  indicates where the executable is located. Just use
+	  this is to pass to your application a java property that contains
+	  the directory where the executable is located. Just use
 	  <methodname>System.getProperty()</methodname> call to
 	  retrieve the value.  </para>
+
+	  <para>
+
+	   For GUI application, it's easier: just enable the option
+	  "Sets the executable folder as current directory of the
+	  application" and define a standard file association in
+	  Windows.  </para>
 
         </warning>
 
@@ -1261,6 +1268,37 @@ and install automatically a JVM.
 
 	 </itemizedlist>
         </para>
+
+	</answer>
+      </qandaentry>
+
+
+      <qandaentry>
+        <question>
+	  <para>
+
+	   I have a filetype associated to my program. However, when I
+	   launch a document, my application can't find its resources,
+	   because the current directory is the directory of the
+	   document. How do I fix that ?
+
+	  </para>
+	</question>
+	<answer>
+	 <para>
+	  
+	  You can force the wrappers to always force the current
+	  directory of your application to be the executable's instead
+	  of the document's by enabling the "Sets the executable
+	  folder as current directory of the application" option
+	  (located in the executable settings panel).
+	   
+	 </para>
+
+	 <para>
+	  This works correctly because Windows always provides the
+	 document as an absolute path argument of the application.
+	 </para>
 
 	</answer>
       </qandaentry>
