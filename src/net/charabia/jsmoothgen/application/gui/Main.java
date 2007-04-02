@@ -337,6 +337,21 @@ public class Main extends JFrame
 	} catch (Exception e) { e.printStackTrace(); }
 
 	Main.MAIN = new Main();
+
+	if (args.length>0)
+	    {
+		java.io.File f = new java.io.File(args[0]);
+		if (f.exists())
+		    {
+			Main.MAIN.m_panel.openFile(f);
+			Main.MAIN.setTitle(f.toString());
+		    }
+		else
+		    {
+			JOptionPane.showMessageDialog(null, Main.MAIN.local("GENERAL_CANTOPENFILE"), Main.MAIN.local("GENERAL_ERROR_LABEL"), JOptionPane.ERROR_MESSAGE); 
+		    }
+	    }
+	    
 	Main.MAIN.setVisible(true);
     }
 }
