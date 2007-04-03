@@ -201,6 +201,7 @@
     <copy todir="${dist}/lib" file="lib/jox116.jar"/>
     <copy todir="${dist}/lib" file="lib/dtdparser113.jar"/>
     <copy todir="${dist}/lib" file="lib/l2fprod-common-all.jar"/>
+    <copy todir="${dist}/lib" file="lib/riverlayout.jar"/>
 
     <!-- Now that the ANT task is available, register it  -->
 
