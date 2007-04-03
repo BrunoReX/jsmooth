@@ -6,7 +6,6 @@
 <JVMSearchPath>jdkpath</JVMSearchPath>
 <JVMSearchPath>exepath</JVMSearchPath>
 <JVMSearchPath>jview</JVMSearchPath>
-<arguments></arguments>
 <classPath>..\lib\jox116.jar</classPath>
 <classPath>..\lib\JimiProClasses.zip</classPath>
 <classPath>..\lib\dtdparser113.jar</classPath>
