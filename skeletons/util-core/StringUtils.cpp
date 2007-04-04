@@ -274,3 +274,29 @@ string StringUtils::toLowerCase(const string& str)
     }
   return result;
 }
+
+std::string StringUtils::fixArgumentString(const std::string& arg)
+{
+  string res;
+  for (int i=0; i<arg.length(); i++)
+    {
+      char c = arg[i];
+      if (c == '\\')
+	{
+	  if ((i + 1) < arg.length())
+	    {
+	      if (arg[i+1] == '"')
+		{
+		  res += "\\§§";
+		}
+	    }
+	  else
+	    {
+	      res += '\\';
+	    }
+	}
+
+      res += c;
+    }
+  return res;
+}

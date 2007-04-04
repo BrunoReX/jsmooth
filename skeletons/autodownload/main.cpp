@@ -57,6 +57,8 @@ void _debugWaitKey()
     DEBUGCONSOLE->waitKey();
 }
 
+
+
 int WINAPI WinMain (HINSTANCE hThisInstance,
                     HINSTANCE hPrevInstance,
                     LPSTR lpszArgument,
@@ -71,7 +73,9 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
   if ((lpszArgument!=NULL) && (strlen(lpszArgument)>0))
     {
       // Note that this overwrites an existing KEY_ARGUMENTS
-      std::vector<std::string> args = StringUtils::split(lpszArgument, " \t\n\r", "\"'", true);
+      std::vector<std::string> args = StringUtils::split(lpszArgument, " \t\n\r", "\"'", false);
+      for (int i=0; i<args.size(); i++)
+	args[i] = StringUtils::fixArgumentString(args[i]);
       globalResMan->setUserArguments( args );
     }
 

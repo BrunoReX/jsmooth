@@ -106,21 +106,25 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId)
     std::string curdirmodifier = m_props.get(ResourceManager::KEY_CURRENTDIR);
     if (curdirmodifier.length()>0)
       {
-	if (curdirmodifier == "${EXECUTABLEPATH}")
+	int pos = string::npos;
+	if ( (pos=curdirmodifier.find("${EXECUTABLEPATH}")) != string::npos)
 	  {
-	    m_currentDirectory = StringUtils::replace(curdirmodifier, "${EXECUTABLEPATH}", exepath);
+	    m_currentDirectory = FileUtils::concFile(exepath, curdirmodifier.substr(pos + string("${EXECUTABLEPATH}").size()));
+	    //	    m_currentDirectory = StringUtils::replace(curdirmodifier, "${EXECUTABLEPATH}", exepath);
 	  }
 	else
 	  {
-	    m_currentDirectory = FileUtils::concFile(FileUtils::getExecutablePath(), curdirmodifier);
+	    DEBUG(string("Currentdirectory =") + curdirmodifier);
+	    m_currentDirectory = curdirmodifier;
+	    //	    m_currentDirectory = FileUtils::concFile(FileUtils::getExecutablePath(), curdirmodifier);
 	    m_currentDirectory = StringUtils::replaceEnvironmentVariable(m_currentDirectory);
 	  }
       }
     else
       {
-        m_currentDirectory = FileUtils::getExecutablePath();
+        m_currentDirectory = "";
       }
-    //    printf("CURDIR SET TO: [%s]\n", m_currentDirectory.c_str());
+    printf("CURDIR SET TO: [%s]\n", m_currentDirectory.c_str());
 }
 
 ResourceManager::~ResourceManager()

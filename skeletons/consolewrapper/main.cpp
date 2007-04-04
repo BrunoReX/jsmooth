@@ -43,31 +43,31 @@ void _debugWaitKey()
 {
 }
 
-std::string fixArgumentString(const std::string& arg)
-{
-  string res;
-  for (int i=0; i<arg.length(); i++)
-    {
-      char c = arg[i];
-      if (c == '\\')
-	{
-	  if ((i + 1) < arg.length())
-	    {
-	      if (arg[i+1] == '"')
-		{
-		  res += "\\§§";
-		}
-	    }
-	  else
-	    {
-	      res += '\\';
-	    }
-	}
+// std::string fixArgumentString(const std::string& arg)
+// {
+//   string res;
+//   for (int i=0; i<arg.length(); i++)
+//     {
+//       char c = arg[i];
+//       if (c == '\\')
+// 	{
+// 	  if ((i + 1) < arg.length())
+// 	    {
+// 	      if (arg[i+1] == '"')
+// 		{
+// 		  res += "\\§§";
+// 		}
+// 	    }
+// 	  else
+// 	    {
+// 	      res += '\\';
+// 	    }
+// 	}
 
-      res += c;
-    }
-  return res;
-}
+//       res += c;
+//     }
+//   return res;
+// }
 
 int main(int argc, char *argv[])
 {    
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
     if (argc > 1)
       globalResMan->setProperty(string(ResourceManager::KEY_ARGUMENTS), "");
     for (int i=1; i<argc; i++)
-      globalResMan->addUserArgument(fixArgumentString(argv[i]));
+      globalResMan->addUserArgument(StringUtils::fixArgumentString(argv[i]));
 
     //
     // sets up the debug mode, if requested

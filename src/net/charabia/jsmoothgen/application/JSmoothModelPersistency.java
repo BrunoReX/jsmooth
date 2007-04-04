@@ -126,6 +126,9 @@ public class JSmoothModelPersistency
     // t4:    z:/a/b/c/d
     static public File makePathRelativeIfPossible(File root, File f)
     {
+	if (f.toString().indexOf("${")>=0)
+	    return f;
+
 	File orgfile = f;
 	try
 	    {

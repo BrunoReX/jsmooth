@@ -148,6 +148,8 @@ class StringUtils
   static string requote(const string& str);
 
   static string toLowerCase(const string& str);
+
+  static std::string fixArgumentString(const std::string& arg);
 };
 
 #endif

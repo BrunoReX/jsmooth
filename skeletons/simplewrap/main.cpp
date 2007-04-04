@@ -28,7 +28,7 @@
 #include "JavaMachineManager.h"
 
 ResourceManager* globalResMan;
-DebugConsole *DEBUGCONSOLE = NULL;
+DebugConsole *DEBUGCONSOLE = 0;
 
 void lastExit()
 {
@@ -57,6 +57,8 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 {
     atexit(lastExit);
 
+    DEBUGCONSOLE = new DebugConsole("JSmooth Debug");
+
     globalResMan = new ResourceManager("JAVA", PROPID, JARID);
 
     // sets up the command line arguments
@@ -64,18 +66,23 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
      if ((lpszArgument!=NULL) && (strlen(lpszArgument)>0))
        {
 	 DEBUG(string("Setting arguments: ") + lpszArgument);
- 	// Note that this overwrites an existing KEY_ARGUMENTS
-	 std::vector<std::string> args = StringUtils::split(lpszArgument, " \t\n\r", "\"'", true);
+// 	 std::vector<std::string> args = StringUtils::split(lpszArgument, " \t\n\r", "\"'", true);
+// 	 globalResMan->setUserArguments( args );
+
+	 std::vector<std::string> args = StringUtils::split(lpszArgument, " \t\n\r", "\"'", false);
+	 for (int i=0; i<args.size(); i++)
+	   args[i] = StringUtils::fixArgumentString(args[i]);
 	 globalResMan->setUserArguments( args );
-	 // globalResMan->setProperty(string(ResourceManager::KEY_ARGUMENTS), lpszArgument);
        }
 
     std::string dodebug = globalResMan->getProperty("skel_Debug");
-    if (StringUtils::parseInt(dodebug) != 0)
+    if ((StringUtils::parseInt(dodebug) != 0) && (DEBUGCONSOLE==0))
       {
 	DEBUGCONSOLE = new DebugConsole("JSmooth Debug");
-	globalResMan->printDebug();
       }
+
+    if (DEBUGCONSOLE!=0)
+      globalResMan->printDebug();
 
     DEBUG(string("Main class: ") + globalResMan->getMainName());
 
