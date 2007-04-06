@@ -71,7 +71,7 @@ public class SkeletonChooser extends Editor implements JSmoothModelBean.Skeleton
 		}
 	    }, java.awt.BorderLayout.CENTER);
 	add("br hfill", jp);
-
+	m_skeldesc.setEditable(false);
 	m_skelcombo.addActionListener(new java.awt.event.ActionListener()  {
 		public void actionPerformed(java.awt.event.ActionEvent evt)
 		{

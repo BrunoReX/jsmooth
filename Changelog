@@ -1,3 +1,10 @@
+0.9.9-4
+	- Fixed bug #1694330: Working directory handled incorrectly.
+	- Fixed bug #1694128: launch in exe proc: '\' in command line not
+	passed correctly
+	- Fixed bug #1694136: Typos in strings 
+	- Added welcome panel
+	
 0.9.9-3
 	- Fixed bug #1463939: Command line parameters parsing 
 	- Changed the GUI for property editors of jsmoothmodel bean

@@ -29,7 +29,7 @@
 
  <!-- set here the properties specific the release --> 
 
-  <property name="VERSION" value="0.9.9-3"/>
+  <property name="VERSION" value="0.9.9-4"/>
 
   <!-- You should need to modify the properties below -->
 
@@ -118,10 +118,10 @@
   <target depends="compile" name="jar">
     <!-- Compile the java code from ${src} into ${classes} -->
     <copy todir="classes/icons">
-      <fileset dir="src/icons"/>
+      <fileset dir="${src}/icons"/>
     </copy>
     <copy todir="classes/locale">
-      <fileset dir="src/locale"/>
+      <fileset dir="${src}/locale"/>
     </copy>
     <jar basedir="classes" jarfile="${jsmoothjar}" manifest="src\MANIFEST.txt"/>
   </target>
@@ -180,11 +180,19 @@
     <copy todir="${tmp}/src">
       <fileset dir="src"/>
     </copy>
+
     <replace token="@{VERSION}@" dir="${tmp}/src" value="${VERSION}">
       <include name="**/*.java"/>
     </replace>
     <replace token="@{RELEASEINFO}@" dir="${tmp}/src" value="${RELEASEINFO}">
       <include name="**/*.java"/>
+    </replace>
+
+    <replace token="@{VERSION}@" dir="${tmp}/src" value="${VERSION}">
+      <include name="**/*.properties"/>
+    </replace>
+    <replace token="@{RELEASEINFO}@" dir="${tmp}/src" value="${RELEASEINFO}">
+      <include name="**/*.properties"/>
     </replace>
 
     <antcall target="jar">
@@ -202,6 +210,7 @@
     <copy todir="${dist}/lib" file="lib/dtdparser113.jar"/>
     <copy todir="${dist}/lib" file="lib/l2fprod-common-all.jar"/>
     <copy todir="${dist}/lib" file="lib/riverlayout.jar"/>
+    <copy todir="${dist}/lib" file="lib/BrowserLauncher2-10.jar"/>
 
     <!-- Now that the ANT task is available, register it  -->
 
@@ -213,15 +222,16 @@
     <copy todir="${tmp}/docs">
       <fileset dir="docs"/>
     </copy>
-    <replace token="@{VERSION}@" dir="${tmp}/docs" value="${VERSION}">
+    <replace token="@{VERSION}@" dir="${tmp}/docs/" value="${VERSION}">
       <include name="**/*.xml"/>
       <include name="**/*.txt"/>
+      <include name="**/*.properties"/>
     </replace>
-    <replace token="@{RELEASEINFO}@" dir="${tmp}/docs" value="${RELEASEINFO}">
+    <replace token="@{RELEASEINFO}@" dir="${tmp}/docs/" value="${RELEASEINFO}">
       <include name="**/*.xml"/>
       <include name="**/*.txt"/>
+      <include name="**/*.properties"/>
     </replace>
-
     <antcall target="docs">
       <param name="docs" value="${tmp}/docs"/>
     </antcall>
@@ -241,7 +251,7 @@
     <copy todir="${dist}" file="LICENSE.txt"/>
     <copy todir="${dist}" file="LGPL-LICENSE.txt"/>
     <copy todir="${dist}" file="GPL-LICENSE.txt"/>
-    <copy todir="${dist}" file="Changelog"/>
+    <copy tofile="${dist}/Changelog.txt" file="Changelog"/>
 
     <!-- Compile the wrappers -->
     <ant antfile="build.xml" dir="skeletons/samplejar/" target="dist"/>

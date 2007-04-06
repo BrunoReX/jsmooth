@@ -124,7 +124,7 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId)
       {
         m_currentDirectory = "";
       }
-    printf("CURDIR SET TO: [%s]\n", m_currentDirectory.c_str());
+    //    printf("CURDIR SET TO: [%s]\n", m_currentDirectory.c_str());
 }
 
 ResourceManager::~ResourceManager()

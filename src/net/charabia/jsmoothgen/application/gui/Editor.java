@@ -65,6 +65,16 @@ public abstract class Editor extends JPanel
 	return false;
     }
 
+    public boolean needsFullSpace()
+    {
+	return false;
+    }
+
+    public boolean useDescription()
+    {
+	return true;
+    }
+
     protected java.io.File getAbsolutePath(java.io.File f)
     {
 	if (f.isAbsolute())

@@ -6,7 +6,7 @@
 <JVMSearchPath>jdkpath</JVMSearchPath>
 <JVMSearchPath>exepath</JVMSearchPath>
 <JVMSearchPath>jview</JVMSearchPath>
-<arguments>simpleargument "multiple tokens"</arguments>
+<arguments>simpleargument "multiple tokens" c:\my\test\here</arguments>
 <embeddedJar>true</embeddedJar>
 <executableName>..\proof-test.exe</executableName>
 <iconLocation>..\src\icons\stock_web-support.png</iconLocation>
@@ -15,19 +15,15 @@
 <mainClassName>JSmoothPropertiesDisplayer</mainClassName>
 <maximumMemoryHeap>-1</maximumMemoryHeap>
 <maximumVersion></maximumVersion>
-<minimumVersion></minimumVersion>
-<skeletonName>Windowed Wrapper</skeletonName>
+<minimumVersion>1.9</minimumVersion>
+<skeletonName>Console Wrapper</skeletonName>
 <skeletonProperties>
 <key>Message</key>
 <value>This program needs Java 1.4 or higher to run.
 Please download it at http://www.java.com</value>
 </skeletonProperties>
 <skeletonProperties>
-<key>URL</key>
-<value>http://www.java.com</value>
-</skeletonProperties>
-<skeletonProperties>
-<key>SingleProcess</key>
+<key>PressKey</key>
 <value>0</value>
 </skeletonProperties>
 <skeletonProperties>

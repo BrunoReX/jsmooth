@@ -20,6 +20,11 @@ can download a JVM.
 3. Compiling the project
 
  -- PREREQUISITE --
+
+The section below only applies if you need to build JSmooth from its
+sources. If you just need to create an executable binary for your
+application, just run JSmoothGen as it comes from its standard
+distribution.
  
  3.1 Get the source
 
@@ -38,8 +43,8 @@ http://sourceforge.net/projects/jsmooth
  any other package, so don't be afraid of all the stuff available on
  their web site.
 
- Once installed, you still need to setup your %PATH% environment variable to add the bin/
- directory where MINGW is installed.
+ Once installed, you still need to setup your %PATH% environment
+ variable to add the bin/ directory where MINGW is installed.
  
  3.3 DOCUMENTATION STUFF (optional)
 
@@ -71,7 +76,6 @@ http://sourceforge.net/projects/jsmooth
  grab a recent source package of fltk, then to run under an MSYS/MINGW
  environment the three commands: "./configure", "make", and "make
  install".
-
 
  3.5 Configure:
 

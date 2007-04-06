@@ -38,6 +38,7 @@ public class MasterPanel extends JPanel
     private ButtonGroup m_leftGroup = new ButtonGroup();
     private JPanel m_mainpanel = new JPanel();
     private JScrollBar m_mainpanelVBar;
+    private JScrollPane m_scrollpane;
 
     //    private ResourceBundle m_texts;
     
@@ -88,26 +89,29 @@ public class MasterPanel extends JPanel
 	new net.charabia.jsmoothgen.application.gui.editors.JavaProperties()
     };
 
+    private Object[] m_jsInfo = {
+	new net.charabia.jsmoothgen.application.gui.editors.JSmoothInfo()
+    };
+
     public MasterPanel()
     {
 	setLayout(new BorderLayout());
-	add(BorderLayout.WEST, new JScrollPane(m_leftBar));
-	JScrollPane scp = new JScrollPane(m_mainpanel);
-	m_mainpanelVBar = scp.getVerticalScrollBar();
+	add(BorderLayout.WEST, m_scrollpane = new JScrollPane(m_leftBar));
+ 	JScrollPane scp = new JScrollPane(m_mainpanel);
+ 	m_mainpanelVBar = scp.getVerticalScrollBar();
 	add(BorderLayout.CENTER, scp);
 	scp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
-	//	PanelLayout pl = new PanelLayout();
-	//	m_mainpanel.setLayout(pl);
+	//	add(BorderLayout.CENTER, m_mainpanel);
 	m_mainpanel.setLayout(new RiverLayout());
 
+	addAction("Welcome", "/icons/stock_form-properties.png", m_jsInfo);
 	addAction("Skeleton", "/icons/stock_new-template.png", m_skelElements);
 	addAction("Executable", "/icons/stock_autopilot-24.png", m_execElements);
 	addAction("Application", "/icons/stock_form-image-control.png", m_appElements);
 	addAction("JVM Selection", "/icons/stock_search.png", m_jvmSelElements);
 	addAction("JVM Configuration", "/icons/stock_form-properties.png", m_jvmCfgElements);
 	
-	//	m_texts = PropertyResourceBundle.getBundle("locale.Texts");
+	setupPanel(m_jsInfo);
     }
 
     private String getLocaleText(String key)
@@ -172,16 +176,18 @@ public class MasterPanel extends JPanel
 				javax.swing.border.TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.LOWERED), "");
 			    }
 
-			//		    Editor ed = (Editor)els[i].newInstance();
-
-			//  		    OptionalHelpPanel help = new OptionalHelpPanel();
-			//  		    help.getContentPane().setLayout(new BorderLayout());
-			//  		    help.getContentPane().add(BorderLayout.CENTER, ed);
-			//  		    help.setLabel(getLocaleText(ed.getLabel()));
-			//  		    help.setHelpText(getLocaleText(ed.getDescription()));
-			// 		    m_mainpanel.add("p left hfill", help);
-
-			if (ed.needsBigSpace())
+			if (ed.needsFullSpace())
+			    {
+				pgroup.add("left hfill vfill", ed);
+				String gc = "br hfill vfill";
+				m_mainpanel.add(gc, ed);
+				ed.setMaximumSize(new java.awt.Dimension(300,300));
+				m_mainpanel.add("tab", new JLabel("..."));
+				pgroup = null;
+				// m_scrollpane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+				//m_scrollpane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+			    }
+			else if (ed.needsBigSpace())
 			    {
 				javax.swing.border.TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.LOWERED), getLocaleText(ed.getLabel()));
 				pgroup.setBorder(title);
@@ -195,17 +201,17 @@ public class MasterPanel extends JPanel
 			    }
 			else
 			    {
-				pgroup.add("br left", new JLabel(getLocaleText(ed.getLabel())));
-				pgroup.add("tab", new HelpButton(getLocaleText(ed.getDescription())));
-				pgroup.add("tab hfill", ed);
+				if (ed.useDescription())
+				    {
+					pgroup.add("br left", new JLabel(getLocaleText(ed.getLabel())));
+					pgroup.add("tab", new HelpButton(getLocaleText(ed.getDescription())));
+					pgroup.add("tab hfill", ed);
+				    }
+				else
+				    {
+					pgroup.add("left hfill", ed);
+				    }
 			    }
-
-			// 		    jp.setBorder(title);
-			// 		    jp.setLayout(new BorderLayout());
-			// 		    jp.add(ed, BorderLayout.CENTER);
-			// 		    m_mainpanel.add("p left hfill", jp);
-			// 		    m_mainpanel.add("p left", new JLabel(ed.getLabel()));
-			// 		    m_mainpanel.add("tab hfill", ed);
 
 			m_displayedElements.add(ed);
 		    }
