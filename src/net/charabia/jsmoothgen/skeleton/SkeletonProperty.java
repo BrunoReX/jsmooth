@@ -79,7 +79,6 @@ public class SkeletonProperty
 
     public void setValue(String value)
     {
-	System.out.println("SkeletonProperty.setValue:" + value);
 	m_value = value;
     }
 	
