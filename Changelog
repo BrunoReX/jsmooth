@@ -1,4 +1,4 @@
-0.9.9-4
+0.9.9-4	(2007-04-07)
 	- Fixed bug #1694330: Working directory handled incorrectly.
 	- Fixed bug #1694128: launch in exe proc: '\' in command line not
 	passed correctly
