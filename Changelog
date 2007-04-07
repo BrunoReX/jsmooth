@@ -8,6 +8,7 @@
 	no directory was defined
 	- Added destination directory parameter in ant task (as suggested
 	in http://sourceforge.net/mailarchive/message.php?msg_name=20050920090245.99697.qmail%40web53103.mail.yahoo.com)
+	- Fixed initial jsmooth window size issue
 	
 0.9.9-3	(2007-04-03)
 	- Fixed bug #1463939: Command line parameters parsing 
