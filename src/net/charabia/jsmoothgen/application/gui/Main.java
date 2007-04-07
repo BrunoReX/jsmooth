@@ -297,10 +297,8 @@ public class Main extends JFrame
     public void saveWindowSettings()
     {
 	Preferences prefs = Preferences.systemNodeForPackage(this.getClass());
-	System.out.println("prefs: " + prefs);
-
 	prefs.putInt("window-state", this.getExtendedState());
-	setExtendedState(NORMAL);
+	//	setExtendedState(NORMAL);
 
 	prefs.putInt("window-x", (int)this.getLocation().getX());
 	prefs.putInt("window-y", (int)this.getLocation().getY());
@@ -314,6 +312,7 @@ public class Main extends JFrame
     {
 	Preferences prefs = Preferences.systemNodeForPackage(this.getClass());
 	this.setExtendedState(prefs.getInt("window-state", Frame.NORMAL));
+
 	if (prefs.getInt("window-x", -1) > 0)
 	    {
 		this.setLocation(prefs.getInt("window-x", 10), prefs.getInt("window-y", 10));
@@ -324,6 +323,11 @@ public class Main extends JFrame
 		if (h <= 0)
 		    h = 400;
 		this.setSize(w,h);
+		setExtendedState(prefs.getInt("window-state", NORMAL));
+	    }
+	else
+	    {
+		this.setSize(500, 400);
 		setExtendedState(prefs.getInt("window-state", NORMAL));
 	    }
     }
