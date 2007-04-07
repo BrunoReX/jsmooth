@@ -244,7 +244,6 @@ public class Main extends JFrame
 		    {
 			dia.setCompiler(compiler.getCompiler());
 			dia.compile(compiler);
-			System.out.println("FINISH !!");			
 			//			return dia.getResult();
 		    }
 		else

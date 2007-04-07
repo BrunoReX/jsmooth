@@ -91,7 +91,7 @@ public class SkeletonChooser extends Editor implements JSmoothModelBean.Skeleton
 		
  	SkeletonBean skel = Main.SKELETONS.getSkeleton(skelname);
 	
- 	System.out.println("SKEL: " + skel.toString());
+//  	System.out.println("SKEL: " + skel.toString());
  	if (skel != null)
  	    {
  		m_skeldesc.setText(Main.local(skel.getDescription()));

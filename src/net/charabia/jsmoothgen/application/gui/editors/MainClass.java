@@ -102,7 +102,7 @@ public class MainClass extends Editor
 	for (Iterator i=jars.iterator(); i.hasNext(); )
 	    {
 		File f = (File)i.next();
-		System.out.println("Adding jar <" + f + ">");
+// 		System.out.println("Adding jar <" + f + ">");
 		try {
 		    chooser.addJar(new JarFile(f));
 		} catch (Exception ex)

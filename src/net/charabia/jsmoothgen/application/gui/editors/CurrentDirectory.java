@@ -61,10 +61,10 @@ public class CurrentDirectory extends Editor
     
     public void dataChanged()
     {
-	System.out.println("CurDir, basedir=" + getBaseDir());
+// 	System.out.println("CurDir, basedir=" + getBaseDir());
 	m_selector.setBaseDir(getBaseDir());
 	String dir = m_model.getCurrentDirectory();
-	System.out.println("Cur Directory data changed: " + dir);
+// 	System.out.println("Cur Directory data changed: " + dir);
 
 	if ("${EXECUTABLEPATH}".equals(dir))
 	    {
@@ -89,7 +89,7 @@ public class CurrentDirectory extends Editor
 
     public void updateModel()
     {
-	System.out.println("UPDATE MODEL: " + m_selector.getFile());
+// 	System.out.println("UPDATE MODEL: " + m_selector.getFile());
 
 	if (m_forceExePath.isSelected())
 	    {

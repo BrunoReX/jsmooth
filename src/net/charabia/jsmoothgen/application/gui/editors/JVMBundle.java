@@ -50,6 +50,9 @@ public class JVMBundle extends Editor
 		    m_selector.setEnabled(m_checker.isSelected());
 		}
 	    });
+
+	if (m_model != null)
+	    dataChanged();
     }
 
     public void dataChanged()
@@ -60,12 +63,14 @@ public class JVMBundle extends Editor
 		m_checker.setSelected(false);
 		m_selector.setBaseDir(getBaseDir());
 		m_selector.setFile(null);
+		m_selector.setEnabled(false);
 	    }
 	else
 	    {
 		m_checker.setSelected(true);
 		m_selector.setBaseDir(getBaseDir());
 		m_selector.setFile(new java.io.File(bundle));
+		m_selector.setEnabled(true);
 	    }
     }
 
@@ -74,7 +79,10 @@ public class JVMBundle extends Editor
 	if (m_checker.isSelected())
 	    {
 		File f = m_selector.getFile();
-		m_model.setBundledJVMPath(f.toString());
+		if (f != null)
+		    m_model.setBundledJVMPath(f.toString());
+		else
+		    m_model.setBundledJVMPath("");
 	    }
 	else
 	    {

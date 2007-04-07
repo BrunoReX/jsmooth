@@ -142,7 +142,7 @@ public class FileSelectionTextField extends javax.swing.JPanel
 	
     public void setFile(java.io.File f)
     {
-	System.out.println("Setting File: " + f + " / " + m_basedir);
+	//	System.out.println("Setting File: " + f + " / " + m_basedir);
 	if (f == null)
 	    {
 		m_filename.setText("");
@@ -161,7 +161,7 @@ public class FileSelectionTextField extends javax.swing.JPanel
 	    {
 		m_filename.setText(f.toString());
 	    }
-	System.out.println("Filename: " + m_filename.getText());
+	//	System.out.println("Filename: " + m_filename.getText());
     }
     
     public java.io.File getFile()

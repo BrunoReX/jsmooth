@@ -45,7 +45,7 @@ public class EmbeddedJar extends Editor
 	m_checker.setAction(new AbstractAction(Main.local("EMBEDDEDJAR_CHECKBOX")) {
 		public void actionPerformed(java.awt.event.ActionEvent e)
 		{
-		    System.out.println("Embedded jar, checkbox action");
+// 		    System.out.println("Embedded jar, checkbox action");
 		    m_selector.setEnabled(m_checker.isSelected());
 		    updateModel();
 		}

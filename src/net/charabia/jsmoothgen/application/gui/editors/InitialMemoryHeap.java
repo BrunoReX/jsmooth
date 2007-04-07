@@ -60,7 +60,7 @@ public class InitialMemoryHeap extends Editor
     {
 	int value;
 
-	System.out.println("Parsing " + m_args.getText());
+// 	System.out.println("Parsing " + m_args.getText());
 
 	try {
 	    value = Integer.parseInt(m_args.getText());
@@ -70,7 +70,7 @@ public class InitialMemoryHeap extends Editor
 		m_model.setInitialMemoryHeap(-1);
 		return;
 	    }
-	System.out.println("sel index: " + m_units.getSelectedIndex() + " / " + value + " / " + (value*1024*1024));
+// 	System.out.println("sel index: " + m_units.getSelectedIndex() + " / " + value + " / " + (value*1024*1024));
 
 	switch(m_units.getSelectedIndex())
 	    {
@@ -87,7 +87,7 @@ public class InitialMemoryHeap extends Editor
 		    break;
 	    }
 
-	System.out.println("Resulting initmem: " + m_model.getInitialMemoryHeap());
+// 	System.out.println("Resulting initmem: " + m_model.getInitialMemoryHeap());
     }
 
     public String getLabel()

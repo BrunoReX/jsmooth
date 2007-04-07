@@ -150,7 +150,7 @@ public class MasterPanel extends JPanel
 	m_mainpanel.removeAll();
 	m_displayedElements.removeAllElements();
 
-	System.out.println("Adding " + els);
+	//	System.out.println("Adding " + els);
 
 	if (els == null)
 	    return;
@@ -217,7 +217,7 @@ public class MasterPanel extends JPanel
 		    }
 		else if (els[i] instanceof String)
 		    {
-			System.out.println("TITLE: " + els[i]);
+			//			System.out.println("TITLE: " + els[i]);
 			if (pgroup != null)
 			    {
 				m_mainpanel.add("br hfill", pgroup);
@@ -284,7 +284,7 @@ public class MasterPanel extends JPanel
 
     private void attachAll()
     {
-	System.out.println("Attaching all with " + m_modelLocation + ": " + m_model);
+	//	System.out.println("Attaching all with " + m_modelLocation + ": " + m_model);
 	for (Iterator i=m_displayedElements.iterator(); i.hasNext(); )
 	    {
 		Editor ed = (Editor)i.next();
@@ -343,7 +343,7 @@ public class MasterPanel extends JPanel
 	    fireUpdateModel();
 	    m_model.normalizePaths(m_modelLocation.getParentFile(), true);
 	    JSmoothModelPersistency.save(m_modelLocation, m_model);
-	    System.out.println("saving model " + m_model);
+	    //	    System.out.println("saving model " + m_model);
 	    //	    fireModelChanged();
 	    return true;
 	} catch (java.io.IOException iox)
@@ -384,7 +384,7 @@ public class MasterPanel extends JPanel
 	    else
 		out = new File(m_model.getExecutableName());
 
-	    System.out.println("out = "+ out.getAbsolutePath());
+	    //	    System.out.println("out = "+ out.getAbsolutePath());
 	    ExeCompiler compiler = new ExeCompiler();
 	    ExeCompiler.CompilerRunner runner = compiler.getRunnable(skelroot, skel, basedir, m_model, out);
 	    return runner;
@@ -405,7 +405,7 @@ public class MasterPanel extends JPanel
 	    File f = new File(basedir, m_model.getExecutableName());
 	    String[] cmd = new String[]{ f.getAbsolutePath() };
 	    
-	    System.out.println("RUNNING " + cmd[0] + " @ " + basedir);
+	    //	    System.out.println("RUNNING " + cmd[0] + " @ " + basedir);
 	    CommandRunner.run(cmd, f.getParentFile());
 	} catch (Exception exc)
 	    {

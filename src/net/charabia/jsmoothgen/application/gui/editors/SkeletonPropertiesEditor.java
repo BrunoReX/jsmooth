@@ -49,11 +49,11 @@ public class SkeletonPropertiesEditor extends Editor implements JSmoothModelBean
 
     public void rebuildProperties()
     {
-	System.out.println("=============================================");
-	System.out.println("=============================================");
-	System.out.println("===   REBUILD PROPERTIES !!!!     ===========");
-	System.out.println("=============================================");
-	System.out.println("=============================================");
+// 	System.out.println("=============================================");
+// 	System.out.println("=============================================");
+// 	System.out.println("===   REBUILD PROPERTIES !!!!     ===========");
+// 	System.out.println("=============================================");
+// 	System.out.println("=============================================");
 
 	m_skel = null;
 	if (m_currentSkelName != null)
@@ -119,24 +119,24 @@ public class SkeletonPropertiesEditor extends Editor implements JSmoothModelBean
 
     public void dataChanged()
     {
-	System.out.println("========================================================");
-	System.out.println("SkeletonPropertiesEditor: data changed, " + m_model.getSkeletonName());
+// 	System.out.println("========================================================");
+// 	System.out.println("SkeletonPropertiesEditor: data changed, " + m_model.getSkeletonName());
 	if (m_model.getSkeletonName() == null)
 	    {
-		System.out.println("SkeletonPropertiesEditor, no name");
+// 		System.out.println("SkeletonPropertiesEditor, no name");
 		m_currentSkelName = null;
 		rebuildProperties();
 	    }
 
 	if ((m_model != null) && (m_model.getSkeletonName() != null) && (!m_model.getSkeletonName().equalsIgnoreCase(m_currentSkelName)))
 	    {
-		System.out.println("SkeletonPropertiesEditor, different...");
+// 		System.out.println("SkeletonPropertiesEditor, different...");
 		m_currentSkelName = m_model.getSkeletonName();
 		rebuildProperties();
 	    }
 
 	JSmoothModelBean.Property[] jsprop = m_model.getSkeletonProperties();
-	System.out.println("jsprop is null ? " + jsprop + " / " + ((jsprop!=null)?jsprop.length:-1));
+// 	System.out.println("jsprop is null ? " + jsprop + " / " + ((jsprop!=null)?jsprop.length:-1));
 	if (jsprop != null)
 	    {
 		for (Enumeration e=m_editors.elements(); e.hasMoreElements(); )
@@ -169,7 +169,7 @@ public class SkeletonPropertiesEditor extends Editor implements JSmoothModelBean
 		    }
 	    }
 
-	System.out.println("DONE NOTHING! " +m_currentSkelName + "/" + m_model.getSkeletonName());
+// 	System.out.println("DONE NOTHING! " +m_currentSkelName + "/" + m_model.getSkeletonName());
     }
 
     JSmoothModelBean.Property getPropertyInstance(String name)
@@ -192,7 +192,7 @@ public class SkeletonPropertiesEditor extends Editor implements JSmoothModelBean
 		for (Enumeration e=m_editors.elements(); e.hasMoreElements(); )
 		    {
 			SkelPropEditor spe = (SkelPropEditor)e.nextElement();
-			System.out.println("IMODEL property " + spe + "/" + spe.getIdName() + "=" + spe.get());
+// 			System.out.println("IMODEL property " + spe + "/" + spe.getIdName() + "=" + spe.get());
 			props[index] = new JSmoothModelBean.Property();
 			props[index].setKey(spe.getIdName());
 			props[index].setValue(spe.get());

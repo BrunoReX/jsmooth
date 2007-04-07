@@ -47,7 +47,7 @@ public class ExecutableIcon extends Editor
 	m_selector.addListener(new FileSelectionTextField.FileSelected() {
 		public void fileSelected(String filename)
 		{
-		    System.out.println("new icon: " + filename);
+// 		    System.out.println("new icon: " + filename);
 		    setIconLocation(new File(filename));
 		}
 	    });
@@ -98,7 +98,7 @@ public class ExecutableIcon extends Editor
 	    }
 	ImageIcon icon = null;
 	
-	System.out.println("setIconLocation: " + iconfile);
+// 	System.out.println("setIconLocation: " + iconfile);
 
 	if (iconfile.toString().toUpperCase().endsWith(".ICO"))
 	    {
