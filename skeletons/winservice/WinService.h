@@ -52,7 +52,7 @@ class WinService
   SunJVMLauncher* m_jvm;
 
  public:
-  WinService(const std::string& name);
+  WinService(const std::string& name, const std::string& filename);
 
   void connect();
 

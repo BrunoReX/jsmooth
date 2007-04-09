@@ -31,6 +31,8 @@ public class AlertServer
 			FileWriter fw = new FileWriter("c:/alertserver.log", true);
 			System.out.println("Received: " + line);
 			fw.write(line + "\n");
+			if (line.startsWith("EXIT"))
+			    System.exit(0);
 			fw.close();
 			JOptionPane.showMessageDialog(null, line, "alert", JOptionPane.ERROR_MESSAGE); 
 		    }
@@ -74,9 +76,29 @@ public class AlertServer
 	    }
     }
 
+    public void shutdown()
+    {
+	try {
+	    FileWriter fw = new FileWriter("c:/shutdown.log", true);
+	    fw.write("END NOW " + System.currentTimeMillis() + "\n");
+	    fw.close();
+	} catch (IOException iox)
+	    {
+		iox.printStackTrace();
+	    }
+    }
+
     static public void main(String[] args)
     {
-	AlertServer a = new AlertServer();
+	final AlertServer a = new AlertServer();
+	Runtime.getRuntime().addShutdownHook(new Thread() {
+		public void run()
+		{
+		    System.out.println("SHUTDOWN...");
+		    a.shutdown();
+		}
+	    });
+
 	a.setup();
 	a.listen();
     }

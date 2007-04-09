@@ -59,9 +59,9 @@ void winservice_thread_stop(void* param)
   service->kill();  
 }
 
-WinService::WinService(const std::string& name)
+WinService::WinService(const std::string& name, const std::string& filename)
 {
-  m_log = new Log("c:\\winservice.log");
+  m_log = new Log(filename);
   m_log->out("Constructing winservice object " + name);
 
   m_jvm = 0;
@@ -77,7 +77,6 @@ WinService::WinService(const std::string& name)
   m_dispatchTable[1].lpServiceName = 0;
   m_dispatchTable[1].lpServiceProc = 0;
   winservice_ref = this;
-  m_log->out("Constructing winservice object " + name + " ... done!");
 }
 
 void WinService::connect()
@@ -90,7 +89,6 @@ void WinService::connect()
       int err = GetLastError();
       printf("connect error %d (%d)!\n", err, ERROR_INVALID_DATA);
     }
-  printf("connection done %d!\n", handle);
 }
  
 bool WinService::install()

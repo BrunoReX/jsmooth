@@ -56,9 +56,11 @@ int main(int argc, char *argv[])
 
   std::string autostart = resman.getProperty("skel_Autostart");
 
-  fflush(stdout);
+  std::string logfile = resman.getProperty("skel_Logile");
+  if (logfile == "")
+    logfile = "service.log";
 
-  WinService winserv(serviceName);
+  WinService winserv(serviceName, logfile);
   winserv.setDisplayName(serviceDisplayName);
   winserv.setDescription(serviceDescription);
   winserv.setAutostart( (StringUtils::parseInt(autostart)==1)?true:false );

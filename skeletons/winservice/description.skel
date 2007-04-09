@@ -8,19 +8,46 @@
 <resourcePropsId>103</resourcePropsId>
 <shortName>WinService Wrapper</shortName>
 <skeletonProperties>
-<description>SKEL_CUSTOMWRAPPER_PROPERTY_MESSAGE_DESCRIPTION</description>
-<idName>Message</idName>
-<label>SKEL_CUSTOMWRAPPER_PROPERTY_MESSAGE_LABEL</label>
-<type>textarea</type>
-<value>This program needs Java to run.
-Please download it at http://www.java.com</value>
+<description>SKEL_WINSERVICE_NAME_DESCRIPTION</description>
+<idName>ServiceName</idName>
+<label>SKEL_WINSERVICE_NAME_LABEL</label>
+<type>string</type>
+<value>myservice</value>
 </skeletonProperties>
 <skeletonProperties>
-<description>SKEL_CUSTOMWRAPPER_PROPERTY_KEYPRESS_DESCRIPTION</description>
-<idName>PressKey</idName>
-<label>SKEL_CUSTOMWRAPPER_PROPERTY_KEYPRESS_LABEL</label>
+<description>SKEL_WINSERVICE_DISPLAYNAME_DESCRIPTION</description>
+<idName>ServiceDisplayName</idName>
+<label>SKEL_WINSERVICE_DISPLAYNAME_LABEL</label>
+<type>string</type>
+<value>My Service</value>
+</skeletonProperties>
+<skeletonProperties>
+<description>SKEL_WINSERVICE_DESCRIPTION_DESCRIPTION</description>
+<idName>ServiceDescription</idName>
+<label>SKEL_WINSERVICE_DESCRIPTION_LABEL</label>
+<type>textarea</type>
+<value>A description of the service</value>
+</skeletonProperties>
+<skeletonProperties>
+<description>SKEL_WINSERVICE_PROPERTY_MESSAGE_DESCRIPTION</description>
+<idName>Message</idName>
+<label>SKEL_WINSERVICE_PROPERTY_MESSAGE_LABEL</label>
+<type>textarea</type>
+<value>This program needs Java to run. Please download it at http://www.java.comf</value>
+</skeletonProperties>
+<skeletonProperties>
+<description>SKEL_WINSERVICE_AUTOSTART_DESCRIPTION</description>
+<idName>Autostart</idName>
+<label>SKEL_WINSERVICE_AUTOSTART_LABEL</label>
 <type>boolean</type>
-<value>0</value>
+<value>1</value>
+</skeletonProperties>
+<skeletonProperties>
+<description>SKEL_WINSERVICE_LOGFILE_DESCRIPTION</description>
+<idName>Logfile</idName>
+<label>SKEL_WINSERVICE_LOGFILE_LABEL</label>
+<type>string</type>
+<value>service.log</value>
 </skeletonProperties>
 <skeletonProperties>
 <description>SKEL_GENERIC_PROPERTY_DEBUG_DESCRIPTION</description>
