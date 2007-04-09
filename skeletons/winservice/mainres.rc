@@ -1,0 +1,8 @@
+
+#include "resource.h"
+
+JARID JAVA "sample/sample.jar"
+PROPID JAVA "sample/sample.props"
+
+A2 ICON MOVEABLE PURE LOADONCALL DISCARDABLE "JWrap.ico"
+
