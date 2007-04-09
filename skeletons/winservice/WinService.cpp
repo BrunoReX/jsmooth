@@ -56,7 +56,7 @@ WINAPI void *winservice_servicemain_support(DWORD argCount,LPSTR* arguments)
 void winservice_thread_stop(void* param)
 {
   WinService* service = (WinService*)param;
-  service->stop();  
+  service->kill();  
 }
 
 WinService::WinService(const std::string& name)
@@ -68,12 +68,16 @@ WinService::WinService(const std::string& name)
   m_status_checkpoint = 0;
  
   m_serviceName = name;
+  m_serviceDescription = "";
+  m_autostart = false;
+
   strcpy(m_cname, m_serviceName.c_str());
   m_dispatchTable[0].lpServiceName = m_cname;
   m_dispatchTable[0].lpServiceProc = (LPSERVICE_MAIN_FUNCTION)winservice_servicemain_support;
   m_dispatchTable[1].lpServiceName = 0;
   m_dispatchTable[1].lpServiceProc = 0;
   winservice_ref = this;
+  m_log->out("Constructing winservice object " + name + " ... done!");
 }
 
 void WinService::connect()
@@ -98,17 +102,17 @@ bool WinService::install()
     return false;
   std::string exepath = FileUtils::concFile(FileUtils::getExecutablePath(), FileUtils::getExecutableFileName());
   HANDLE service = (HANDLE)CreateService((SC_HANDLE)scman, m_cname, 
-					       m_cname, // service name to display
-					       SERVICE_ALL_ACCESS, // desired access 
-					       SERVICE_WIN32_OWN_PROCESS | SERVICE_INTERACTIVE_PROCESS, // service type 
-					       SERVICE_DEMAND_START, // start type 
-					       SERVICE_ERROR_NORMAL, // error control type 
-					       exepath.c_str(), // service's binary 
-					       NULL, // no load ordering group 
-					       NULL, // no tag identifier 
-					       NULL, // no dependencies
-					       NULL, // LocalSystem account
-					       NULL); // no password
+					 m_serviceDisplayName.c_str(), // service name to display
+					 SERVICE_ALL_ACCESS, // desired access 
+					 SERVICE_WIN32_OWN_PROCESS | SERVICE_INTERACTIVE_PROCESS, // service type 
+					 m_autostart?SERVICE_AUTO_START:SERVICE_DEMAND_START, // start type 
+					 SERVICE_ERROR_NORMAL, // error control type 
+					 exepath.c_str(), // service's binary 
+					 NULL, // no load ordering group 
+					 NULL, // no tag identifier 
+					 NULL, // no dependencies
+					 NULL, // LocalSystem account
+					 NULL); // no password
   
   CloseServiceHandle((SC_HANDLE)scman);
 
@@ -227,12 +231,14 @@ void WinService::serviceCtrlHandler(DWORD nControlCode)
 void WinService::run()
 {
   setStatus(SERVICE_START_PENDING);
-  
+  log("Run...");
+
   ResourceManager* globalResMan = new ResourceManager("JAVA", PROPID, JARID);
 
   //
   // sets up the debug mode, if requested
   std::string dodebug = globalResMan->getProperty("skel_Debug");
+  dodebug = "1";
   if (StringUtils::parseInt(dodebug) != 0)
     {
       globalResMan->printDebug();
@@ -260,7 +266,7 @@ void WinService::run()
   return;
 }
 
-void WinService::stop()
+void WinService::kill()
 {
   log("requesting stop...");
   setStatus(SERVICE_STOP_PENDING);
@@ -272,4 +278,66 @@ void WinService::stop()
       m_jvm->destroyVM();
       log("vm destroyed");
     }
+}
+
+bool WinService::startService()
+{
+  HANDLE scman = OpenSCManager(NULL,NULL,SC_MANAGER_ALL_ACCESS);
+  if (scman == 0)
+    return false;
+
+  SC_HANDLE service = OpenService((SC_HANDLE)scman,	// handle to service control manager database  
+				  m_cname,	// pointer to name of service to start 
+				  SERVICE_ALL_ACCESS	 	// type of access to service 
+				  );
+  if (service != 0)
+    {
+      return StartService(service, 0, NULL);
+    }
+
+  return false;
+}
+
+bool WinService::stopService()
+{
+  HANDLE scman = OpenSCManager(NULL,NULL,SC_MANAGER_ALL_ACCESS);
+  if (scman == 0)
+    return false;
+
+  SC_HANDLE service = OpenService((SC_HANDLE)scman,	// handle to service control manager database  
+				  m_cname,	// pointer to name of service to start 
+				  SERVICE_ALL_ACCESS	 	// type of access to service 
+				  );
+  if (service != 0)
+    {
+      SERVICE_STATUS status;
+
+      status.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
+      status.dwCurrentState = SERVICE_STOP_PENDING;
+      status.dwControlsAccepted = SERVICE_ACCEPT_STOP | SERVICE_ACCEPT_SHUTDOWN;
+      status.dwWin32ExitCode = NO_ERROR;
+      status.dwServiceSpecificExitCode = 0;
+      status.dwCheckPoint = m_status_checkpoint++;
+      status.dwWaitHint = 60*1000;
+
+      return ControlService(service, SERVICE_CONTROL_STOP, &status);
+    }
+
+  return false;
+}
+
+
+void WinService::setDescription(const std::string& description)
+{
+  m_serviceDescription = description;
+}
+
+void WinService::setAutostart(bool b)
+{
+  m_autostart = b;
+}
+
+void WinService::setDisplayName(const std::string& displayname)
+{
+  m_serviceDisplayName = displayname;
 }

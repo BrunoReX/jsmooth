@@ -37,30 +37,67 @@ extern WinService* winservice_ref;
 
 void _debugOutput(const std::string& text)
 {
+  if (winservice_ref != 0)
     winservice_ref->log(text);
 }
 
 void _debugWaitKey() { }
 
 int main(int argc, char *argv[])
-{    
-  WinService winserv("mytest");
+{ 
+  winservice_ref = 0;
+  ResourceManager resman("JAVA", PROPID, JARID);
+  
+  std::string serviceName = resman.getProperty("skel_ServiceName");
+  std::string serviceDisplayName = resman.getProperty("skel_ServiceDisplayName");
+  std::string serviceDescription = resman.getProperty("skel_ServiceDescription");
+  if (serviceDisplayName == "")
+    serviceDisplayName = serviceName;
+
+  std::string autostart = resman.getProperty("skel_Autostart");
+
+  fflush(stdout);
+
+  WinService winserv(serviceName);
+  winserv.setDisplayName(serviceDisplayName);
+  winserv.setDescription(serviceDescription);
+  winserv.setAutostart( (StringUtils::parseInt(autostart)==1)?true:false );
+
+  winserv.setAutostart( true );
 
   if (argc>1)
     {
-      if (strcmp(argv[1], "-i")==0)
+      if ((strcmp(argv[1], "-i")==0) || (strcmp(argv[1], "install")==0))
 	{
-	  winserv.install();
+	  if (winserv.install())
+	    printf("Service %s installed.\n", serviceName.c_str());
+	  else
+	    printf("Failed to install service %s.\n", serviceName.c_str());
 	}
-      else if (strcmp(argv[1], "-d")==0)
+      else if ((strcmp(argv[1], "-d")==0) || (strcmp(argv[1], "uninstall")==0))
 	{
-	  winserv.uninstall();
+	  if (winserv.uninstall())
+	    printf("Service %s uninstalled.\n", serviceName.c_str());
+	  else
+	    printf("Failed to uninstall service %s.\n", serviceName.c_str());
+	}
+      else if (strcmp(argv[1], "start")==0)
+	{
+	  if (winserv.startService())
+	    printf("Service %s started.\n", serviceName.c_str());
+	  else
+	    printf("Failed to start service %s.\n", serviceName.c_str());	    
+	}
+      else if (strcmp(argv[1], "stop")==0)
+	{
+	  if (winserv.stopService())
+	    printf("Service %s stopped.\n", serviceName.c_str());
+	  else
+	    printf("Failed to stop service %s.\n", serviceName.c_str());	    
 	}
     }
   else
-    {
-      winserv.connect();
-    }
+    winserv.connect();
 
   return 0;
 }

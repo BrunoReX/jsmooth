@@ -36,6 +36,10 @@ class WinService
  protected:
   Log* m_log;
   std::string m_serviceName;
+  std::string m_serviceDisplayName;
+  std::string m_serviceDescription;
+  bool        m_autostart;
+
   SERVICE_TABLE_ENTRY m_dispatchTable[2];
   SERVICE_STATUS_HANDLE m_serviceStatusHandle; 
   DWORD m_serviceCurrentStatusId;
@@ -56,10 +60,14 @@ class WinService
   void serviceCtrlHandler(DWORD);
 
   void run();
-  void stop();
+  void kill();
 
   bool install();
   bool uninstall();
+
+  bool startService();
+  bool stopService();
+  
 
   bool setStatus(int currentState);
 
@@ -67,6 +75,11 @@ class WinService
 
   void log(const std::string& msg) const;
   void log(const char* msg) const;
+
+  void setDisplayName(const std::string& displayname);
+  void setDescription(const std::string& description);
+  void setAutostart(bool b);
+
 };
 
 #endif
