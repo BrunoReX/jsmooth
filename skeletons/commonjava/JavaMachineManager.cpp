@@ -178,3 +178,28 @@ bool JavaMachineManager::internalRun(SunJVMLauncher& launcher, bool noConsole, b
   
   return true;
 }
+
+
+
+SunJVMLauncher* JavaMachineManager::runDLLFromRegistry(bool justInstanciate)
+{
+  string vms = "DLL VM will be tried in the following order: ";
+  for (int i=0; i<m_registryVms.size(); i++)
+    {
+      vms += m_registryVms[i].VmVersion.toString();
+      vms += ";";
+    }
+  DEBUG(vms);
+
+  for (int i=0; i<m_registryVms.size(); i++)
+    {
+      DEBUG("- Trying registry: " + m_registryVms[i].toString());
+
+      bool res = m_registryVms[i].run(m_resman, "registry", justInstanciate);
+      
+      if (res)
+	return &m_registryVms[i];
+    }
+
+  return NULL;
+}

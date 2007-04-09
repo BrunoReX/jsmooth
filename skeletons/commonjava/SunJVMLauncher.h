@@ -77,7 +77,7 @@ class SunJVMLauncher
    * @return true if the java application was successfully launched,
    * false otherwise.
    */ 
-  virtual bool run(ResourceManager& resource, const string& origin);
+  virtual bool run(ResourceManager& resource, const string& origin, bool justInstanciate = false);
 
 
   /**
@@ -108,11 +108,17 @@ friend bool operator < (const SunJVMLauncher& v1, const SunJVMLauncher& v2);
 
   bool runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource, bool noConsole, const std::string& version, const string& origin);
 
+  bool dllInstanciate(ResourceManager& resource, const string& origin);
+
+  bool callDLLStaticMethod(const std::string& classname, const std::string& methodname, const std::string& signature);
+
+  int destroyVM();
+
  private:
      
   //  bool runVM12DLL(ResourceManager& resource, const string& origin);
   //  bool runVM11DLL(ResourceManager& resource, const string& origin);
-  bool runVMDLL(ResourceManager& resource, const string& origin);
+  bool runVMDLL(ResourceManager& resource, const string& origin, bool justInstanciate=false);
 
   bool setupVM12DLL(ResourceManager& resource, const string& origin);
   bool setupVM11DLL(ResourceManager& resource, const string& origin);

@@ -37,11 +37,13 @@ std::string SunJVMLauncher::toString() const
     return "<" + JavaHome + "><" + RuntimeLibPath + "><" + VmVersion.toString() + ">";
 }
 
-bool SunJVMLauncher::run(ResourceManager& resource, const string& origin)
+bool SunJVMLauncher::run(ResourceManager& resource, const string& origin, bool justInstanciate)
 {
+  DEBUG("Running now " + this->toString() + ", instanciate=" + (justInstanciate?"yes":"no"));
+
   // patch proposed by zregvart
   // if you're using bundeled JVM, you apriori
-  // specified version, and the version check
+  // specified the version, and the version check
   // would require instantiateing JVM which is
   // an overhead in both code and runtime
     if (origin != "bundled") {
@@ -122,7 +124,7 @@ bool SunJVMLauncher::run(ResourceManager& resource, const string& origin)
 
     if ((m_javavm != 0) && (m_javaenv != 0))
       {
-	return runVMDLL(resource, origin);
+	return runVMDLL(resource, origin, justInstanciate);
       }
     return false;
 }
@@ -299,8 +301,10 @@ bool SunJVMLauncher::setupVM12DLL(ResourceManager& resource, const string& origi
   return false;
 }
 
-bool SunJVMLauncher::runVMDLL(ResourceManager& resource, const string& origin)
+bool SunJVMLauncher::runVMDLL(ResourceManager& resource, const string& origin, bool justInstanciate)
 {
+  DEBUG("DLL set up " + this->toString() + ", instanciate=" + (justInstanciate?"yes":"no"));
+
   std::string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));  
   classname = StringUtils::replace(classname,".", "/");
   DEBUG("Check if " + classname + " is available");
@@ -340,6 +344,12 @@ bool SunJVMLauncher::runVMDLL(ResourceManager& resource, const string& origin)
                 
   if ((mid != 0) && (args != 0))
     {
+      DEBUG(std::string("VM OK, instanciate ? ") + (justInstanciate?"yes":"no"));
+      if (justInstanciate)
+	{
+	  return true;
+	}
+
       DEBUG("Calling static void main(String[]) method from " + classname);
       m_javaenv->CallStaticVoidMethod(cls, mid, args);
       DEBUG(classname + " call complete");
@@ -354,69 +364,6 @@ bool SunJVMLauncher::runVMDLL(ResourceManager& resource, const string& origin)
     }
 }
 
-
-// bool SunJVMLauncher::runVM12DLL(ResourceManager& resource, const string& origin)
-// {
-//   if (setupVM12DLL(resource, origin) == false)
-//     {
-//       DEBUG("CAN'T LOAD DLL");
-//       return false;
-//     }
-
-//   std::string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));  
-//   classname = StringUtils::replace(classname,".", "/");
-//   DEBUG("Look for " + classname);
-//   jclass cls = (m_javaenv)->FindClass(classname.c_str());
-//   if (cls == 0)
-//     {
-//       char tmpbuf[255];
-//       sprintf(tmpbuf, "Cant find <%s> at all!", classname.c_str());
-//       DEBUG(tmpbuf);
-//       DEBUG(std::string("Can't Find CLASS <") + classname + std::string(">"));
-//       return false;
-//     }
-//   else
-//     DEBUG("CLASS FOUND");
-
-//   char strbuf[255];
-//   sprintf(strbuf, "");
-//   jstring jstr = (m_javaenv)->NewStringUTF(strbuf);
-//   jmethodID mid = (m_javaenv)->GetStaticMethodID(cls, "main", "([Ljava/lang/String;)V");
-
-//   vector<string> pargs = StringUtils::split(resource.getProperty(ResourceManager::KEY_ARGUMENTS), " \t\n\r", "\"\'");
-//   for (int i=0; i<pargs.size(); i++)
-//     DEBUG("ARG:: <" + pargs[i] + ">");
-
-//   jobjectArray args;
-    
-//   if (pargs.size() > 0)
-//     {
-//       args = (m_javaenv)->NewObjectArray(pargs.size(), (m_javaenv)->FindClass("java/lang/String"), jstr);
-//       for (int i=0; i<pargs.size(); i++)
-// 	{
-// 	  jstr = (m_javaenv)->NewStringUTF(pargs[i].c_str());
-// 	  (m_javaenv)->SetObjectArrayElement(args, i, jstr);
-// 	}
-//     }
-//   else
-//     {
-//       args = (m_javaenv)->NewObjectArray(0, (m_javaenv)->FindClass("java/lang/String"), jstr);
-//     }
-                
-//   if ((mid != 0) && (args != 0))
-//     {
-//       m_javaenv->CallStaticVoidMethod(cls, mid, args);
-//       DEBUG("VM CALLED !!");
-//       m_javavm->DestroyJavaVM();
-//       DEBUG("VM DESTROYED !!");
-//       return true;
-//     }
-//   else
-//     {
-//       DEBUG("Can't find method !");
-//       return false;
-//     }
-// }
 
 
 bool SunJVMLauncher::setupVM11DLL(ResourceManager& resource, const string& origin)
@@ -861,7 +808,52 @@ std::string SunJVMLauncher::sizeToString(int size)
     }
 }
 
+bool SunJVMLauncher::dllInstanciate(ResourceManager& resource, const std::string& origin)
+{
+  return runVMDLL(resource, origin);
+}
+
 bool operator < (const SunJVMLauncher& v1, const SunJVMLauncher& v2)
 {
   return v1.VmVersion < v2.VmVersion;
+}
+
+bool SunJVMLauncher::callDLLStaticMethod(const std::string& clazz, const std::string& methodname, const std::string& signature)
+{
+  std::string classname = StringUtils::replace(clazz,".", "/");
+  DEBUG("Calling " + classname + "::" + methodname + signature);
+  DEBUG("Check if " + classname + " is available");
+  jclass cls = (m_javaenv)->FindClass(classname.c_str());
+  if (cls == 0)
+    {
+      DEBUG(std::string("Can't Find CLASS <") + classname + std::string("> (probably a classpath issue)"));
+      return false;
+    }
+  else
+    DEBUG("OK, class " + classname + " is available");
+
+  char strbuf[255];
+  sprintf(strbuf, "");
+  jstring jstr = (m_javaenv)->NewStringUTF(strbuf);
+  jmethodID mid = (m_javaenv)->GetStaticMethodID(cls, methodname.c_str(), signature.c_str());
+                
+  if (mid != 0)
+    {
+      DEBUG("Calling static method  from " + classname);
+      m_javaenv->CallStaticVoidMethod(cls, mid);
+      return true;
+    }
+  else
+    {
+      DEBUG("Can't find method !");
+      return false;
+    }
+
+}
+
+int SunJVMLauncher::destroyVM()
+{
+  if (m_javavm != 0)
+    return m_javavm->DestroyJavaVM();  
+  return -1;
 }

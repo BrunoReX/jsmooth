@@ -89,6 +89,7 @@ class JavaMachineManager
    */
   bool run(bool noConsole, bool preferSingleProcess);
 
+  SunJVMLauncher* runDLLFromRegistry(bool justInstanciate=false);
 
  protected:
   bool internalRun(SunJVMLauncher& launcher, bool noConsole, bool preferSingleProcess, const string& org);
