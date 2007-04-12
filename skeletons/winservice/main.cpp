@@ -34,10 +34,11 @@
 using namespace std;
 
 extern WinService* winservice_ref;
+bool   global_debug;
 
 void _debugOutput(const std::string& text)
 {
-  if (winservice_ref != 0)
+  if ((winservice_ref != 0) && global_debug)
     winservice_ref->log(text);
 }
 
@@ -45,8 +46,11 @@ void _debugWaitKey() { }
 
 int main(int argc, char *argv[])
 { 
+  global_debug = false;
   winservice_ref = 0;
   ResourceManager resman("JAVA", PROPID, JARID);
+
+  std::string rootdir = FileUtils::getExecutablePath();
   
   std::string serviceName = resman.getProperty("skel_ServiceName");
   std::string serviceDisplayName = resman.getProperty("skel_ServiceDisplayName");
@@ -54,18 +58,20 @@ int main(int argc, char *argv[])
   if (serviceDisplayName == "")
     serviceDisplayName = serviceName;
 
-  std::string autostart = resman.getProperty("skel_Autostart");
+  global_debug = resman.getBooleanProperty("skel_Debug");
 
-  std::string logfile = resman.getProperty("skel_Logile");
+  std::string logfile = resman.getProperty("skel_Logfile");
   if (logfile == "")
     logfile = "service.log";
+
+  if (!FileUtils::isAbsolute(logfile))
+    logfile = FileUtils::concFile(rootdir, logfile);
 
   WinService winserv(serviceName, logfile);
   winserv.setDisplayName(serviceDisplayName);
   winserv.setDescription(serviceDescription);
-  winserv.setAutostart( (StringUtils::parseInt(autostart)==1)?true:false );
-
-  winserv.setAutostart( true );
+  winserv.setAutostart( resman.getBooleanProperty("skel_Autostart") );
+  winserv.setInteractive( resman.getBooleanProperty("skel_Interactive") );
 
   if (argc>1)
     {

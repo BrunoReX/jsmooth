@@ -69,7 +69,7 @@ public abstract class Editor extends JPanel
     {
 	return false;
     }
-
+    
     public boolean useDescription()
     {
 	return true;

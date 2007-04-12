@@ -32,7 +32,11 @@ public class AlertServer
 			System.out.println("Received: " + line);
 			fw.write(line + "\n");
 			if (line.startsWith("EXIT"))
-			    System.exit(0);
+			    {
+				System.out.println("calling System.exit(0);");
+				System.exit(0);
+				return;
+			    }
 			fw.close();
 			JOptionPane.showMessageDialog(null, line, "alert", JOptionPane.ERROR_MESSAGE); 
 		    }
@@ -62,7 +66,6 @@ public class AlertServer
     public void listen()
     {
 	try {
-	    
 	    while (true)
 		{
 		    Socket sock = m_socket.accept();
@@ -94,11 +97,20 @@ public class AlertServer
 	Runtime.getRuntime().addShutdownHook(new Thread() {
 		public void run()
 		{
+		    // JOptionPane.showMessageDialog(null, "TERMINATING!", "alert", JOptionPane.ERROR_MESSAGE); 
+		    try {
+			FileWriter fw = new FileWriter("shutdown1.log", true);
+			fw.write("END NOW " + System.currentTimeMillis() + "\n");
+			fw.close();
+		    } catch (Exception exc)
+			{
+			    exc.printStackTrace();
+			}
 		    System.out.println("SHUTDOWN...");
 		    a.shutdown();
 		}
 	    });
-
+	
 	a.setup();
 	a.listen();
     }

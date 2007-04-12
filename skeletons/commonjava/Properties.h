@@ -78,6 +78,8 @@ class Properties
    */
   string get(const string& key) const;
 
+  bool contains(const string& key) const;
+
   /**
    * Adds a new property.
    *

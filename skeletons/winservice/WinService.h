@@ -39,6 +39,7 @@ class WinService
   std::string m_serviceDisplayName;
   std::string m_serviceDescription;
   bool        m_autostart;
+  bool        m_interactive;
 
   SERVICE_TABLE_ENTRY m_dispatchTable[2];
   SERVICE_STATUS_HANDLE m_serviceStatusHandle; 
@@ -53,6 +54,7 @@ class WinService
 
  public:
   WinService(const std::string& name, const std::string& filename);
+  ~WinService();
 
   void connect();
 
@@ -79,6 +81,7 @@ class WinService
   void setDisplayName(const std::string& displayname);
   void setDescription(const std::string& description);
   void setAutostart(bool b);
+  void setInteractive(bool b);
 
 };
 

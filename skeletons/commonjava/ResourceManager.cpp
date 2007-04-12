@@ -161,8 +161,7 @@ void ResourceManager::saveTemp(std::string tempname)
       string s = tempname;
       //      m_deleteOnFinalize.push_back(s);
       FileUtils::deleteOnReboot(s);
-    }
-    
+    }    
 }
 
 std::string ResourceManager::getMainName()  const
@@ -173,6 +172,23 @@ std::string ResourceManager::getMainName()  const
 std::string ResourceManager::getProperty(const std::string& key)  const
 {
   return m_props.get(key);
+}
+
+std::string ResourceManager::getProperty(const std::string& key, const std::string& def) const
+{
+  if (m_props.contains(key))
+    return m_props.get(key);
+  else
+    return def;
+}
+
+bool ResourceManager::getBooleanProperty(const std::string& key) const
+{
+  std::string prop = getProperty(key);
+  if (StringUtils::parseInt(prop)==1)
+    return true;
+
+  return false;
 }
 
 std::string ResourceManager::saveJarInTempFile()
@@ -277,4 +293,30 @@ void ResourceManager::addUserArgument(std::string argument)
       setProperty(KEY_ARGUMENTS, getProperty(KEY_ARGUMENTS) + " " + StringUtils::fixQuotes(argument) );
       DEBUG("Added user argument " + argument);
     }
+}
+
+int ResourceManager::getResourceSize(int id)
+{
+  std::string propid = idToResourceName(id);
+  HRSRC resprop = FindResource(NULL, propid.c_str(), m_resourceCategory.c_str());
+  if (resprop != NULL)
+    {
+      return SizeofResource(NULL, resprop);
+    }
+  else
+    return 0;
+}
+
+HGLOBAL ResourceManager::getResource(int id)
+{
+  std::string propid = idToResourceName(id);
+  HRSRC resprop = FindResource(NULL, propid.c_str(), m_resourceCategory.c_str());
+  if (resprop != NULL)
+    {
+      int size = SizeofResource(NULL, resprop);
+      char buffer[size+1];
+      return LoadResource(NULL, resprop);
+    }
+  else
+    return 0;
 }

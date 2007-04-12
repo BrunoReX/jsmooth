@@ -75,6 +75,14 @@ void Properties::set(const string& key, const string& value)
     m_data[key] = value;
 }
 
+bool Properties::contains(const string& key) const
+{
+    map<string, string>::const_iterator i = m_data.find(key);
+    if (i == m_data.end())
+        return false;
+    return true;
+}
+
 string Properties::unescape(const string& val)
 {
     string result;

@@ -79,6 +79,12 @@ WinService::WinService(const std::string& name, const std::string& filename)
   winservice_ref = this;
 }
 
+WinService::~WinService()
+{
+  if (m_jvm != 0)
+    m_jvm->callDLLStaticMethodInt("java.lang.System", "exit", "(I)V", 0);
+}
+
 void WinService::connect()
 {
   log(std::string("setting up a connection with the control dispatcher (") + getName() + ")");
@@ -99,10 +105,11 @@ bool WinService::install()
   if (scman == 0)
     return false;
   std::string exepath = FileUtils::concFile(FileUtils::getExecutablePath(), FileUtils::getExecutableFileName());
+
   HANDLE service = (HANDLE)CreateService((SC_HANDLE)scman, m_cname, 
 					 m_serviceDisplayName.c_str(), // service name to display
 					 SERVICE_ALL_ACCESS, // desired access 
-					 SERVICE_WIN32_OWN_PROCESS | SERVICE_INTERACTIVE_PROCESS, // service type 
+					 SERVICE_WIN32_OWN_PROCESS | (m_interactive?SERVICE_INTERACTIVE_PROCESS:0), // service type 
 					 m_autostart?SERVICE_AUTO_START:SERVICE_DEMAND_START, // start type 
 					 SERVICE_ERROR_NORMAL, // error control type 
 					 exepath.c_str(), // service's binary 
@@ -216,7 +223,6 @@ void WinService::serviceCtrlHandler(DWORD nControlCode)
     case SERVICE_CONTROL_STOP:
       setStatus(SERVICE_STOP_PENDING);
       m_serviceThread.start(winservice_thread_stop, (void*)this);
-      setStatus(SERVICE_STOP_PENDING);
       return;
       
     default:
@@ -250,13 +256,20 @@ void WinService::run()
       log("JVM found and instanciated successfully (" + launcher->toString() + ")");
 
       setStatus(SERVICE_RUNNING);
-      launcher->dllInstanciate(*globalResMan, "wsreg");
-
-      log("Launched successfully the DLL (" + launcher->toString() + ")");
+      if ( ! launcher->dllInstanciate(*globalResMan, "wsreg") )
+	{
+	  log("Failed to launch the service: can't instanciate the JVM DLL");
+	}
+      else
+	log("Launched successfully the DLL (" + launcher->toString() + ")");
     }
   else
     {
-      log("ERROR: could not launch the JVM DLL");
+      log("ERROR: could not find any suitable Java Virtual Machine");
+      std::string errmsg = globalResMan->getProperty("skel_Message");
+      MessageBox(NULL, 
+		 errmsg.c_str(), FileUtils::getExecutableFileName().c_str(), 
+		 MB_OK|MB_ICONQUESTION|MB_APPLMODAL);
     }
 
   setStatus(SERVICE_STOPPED);
@@ -266,16 +279,17 @@ void WinService::run()
 
 void WinService::kill()
 {
-  log("requesting stop...");
-  setStatus(SERVICE_STOP_PENDING);
+  log("Stopping the service...");
   if (m_jvm != 0)
     {
       setStatus(SERVICE_STOPPED);
-      m_jvm->callDLLStaticMethod("java.lang.System", "exit", "()V");
-      log("exit called");
-      m_jvm->destroyVM();
-      log("vm destroyed");
+      // We are never here for a very long time, as the
+      // SERVICE_STOPPED signal kills this thread asap.  Therefore, we
+      // do nothing here, we delay the java.lang.System.exit() call to
+      // the destructor of this class
     }
+  else
+    log("no jvm available");
 }
 
 bool WinService::startService()
@@ -333,6 +347,11 @@ void WinService::setDescription(const std::string& description)
 void WinService::setAutostart(bool b)
 {
   m_autostart = b;
+}
+
+void WinService::setInteractive(bool b)
+{
+  m_interactive = b;
 }
 
 void WinService::setDisplayName(const std::string& displayname)

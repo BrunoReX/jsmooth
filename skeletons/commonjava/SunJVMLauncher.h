@@ -48,6 +48,15 @@ class SunJVMLauncher
    */ 
   std::string RuntimeLibPath;
 
+  enum {
+    JVM_NOT_LAUNCHED=0,
+    JVM_PROCESS_LAUNCHED,
+    JVM_DLL_INSTANCIATED
+  };
+
+  int Status;
+
+
  protected:
   JavaVM *m_javavm;
   JNIEnv *m_javaenv;
@@ -79,7 +88,6 @@ class SunJVMLauncher
    */ 
   virtual bool run(ResourceManager& resource, const string& origin, bool justInstanciate = false);
 
-
   /**
    * Runs the JVM as a process and launches the application. The
    * command line is created according to the parameters of the
@@ -99,25 +107,20 @@ class SunJVMLauncher
   virtual bool runProc(ResourceManager& resource, bool noConsole, const string& origin);
 
   std::string toString() const;
-
   Version guessVersionByProcess(const string& exepath);
 
-  //  int operator<(const SunJVMLauncher& other) const;
-
-friend bool operator < (const SunJVMLauncher& v1, const SunJVMLauncher& v2);
-
+  friend bool operator < (const SunJVMLauncher& v1, const SunJVMLauncher& v2);
+  
   bool runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource, bool noConsole, const std::string& version, const string& origin);
-
   bool dllInstanciate(ResourceManager& resource, const string& origin);
 
   bool callDLLStaticMethod(const std::string& classname, const std::string& methodname, const std::string& signature);
+  bool callDLLStaticMethodInt(const std::string& classname, const std::string& methodname, const std::string& signature, int value);
 
   int destroyVM();
 
  private:
      
-  //  bool runVM12DLL(ResourceManager& resource, const string& origin);
-  //  bool runVM11DLL(ResourceManager& resource, const string& origin);
   bool runVMDLL(ResourceManager& resource, const string& origin, bool justInstanciate=false);
 
   bool setupVM12DLL(ResourceManager& resource, const string& origin);

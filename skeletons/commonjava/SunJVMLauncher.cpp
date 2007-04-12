@@ -469,65 +469,6 @@ bool SunJVMLauncher::setupVM11DLL(ResourceManager& resource, const string& origi
   return false;
 }
 
-// bool SunJVMLauncher::runVM11DLL(ResourceManager& resource, const string& origin)
-// {
-//   if (setupVM11DLL(resource, origin) == false)
-//     {
-//       DEBUG("CAN'T LOAD DLL ");
-//       return false;
-//     }
-      
-//   std::string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));
-//   classname = StringUtils::replace(classname,".", "/");                
-//   jclass cls = (m_javaenv)->FindClass(classname.c_str());
-//   if (cls == 0)
-//     {
-//       char tmpbuf[255];
-//       sprintf(tmpbuf, "Cant find <%s> at all!", classname.c_str());
-//       DEBUG(tmpbuf);
-//       DEBUG(std::string("Can't Find CLASS <") + classname + std::string(">"));
-//       return false;
-//     }
-//   else
-//     DEBUG("CLASS "+ classname +" FOUND");
-
-//   char strbuf[255];
-//   sprintf(strbuf, "");
-//   jstring jstr = (m_javaenv)->NewStringUTF(strbuf);
-//   jmethodID mid = (m_javaenv)->GetStaticMethodID(cls, "main", "([Ljava/lang/String;)V");
-
-//   vector<string> pargs = StringUtils::split(resource.getProperty(ResourceManager::KEY_ARGUMENTS), " \t\n\r", "\"\'");
-//   jobjectArray args;
-
-//   if (pargs.size() > 0)
-//     {
-//       args = (m_javaenv)->NewObjectArray(pargs.size(), (m_javaenv)->FindClass("java/lang/String"), jstr);
-//       for (int i=0; i<pargs.size(); i++)
-// 	{
-// 	  jstr = (m_javaenv)->NewStringUTF(pargs[i].c_str());
-// 	  (m_javaenv)->SetObjectArrayElement(args, i, jstr);
-// 	}
-//     }
-//   else
-//     {
-//       args = (m_javaenv)->NewObjectArray(0, (m_javaenv)->FindClass("java/lang/String"), jstr);
-//     }
-
-//   if ((mid != 0) && (args != 0))
-//     {
-//       m_javaenv->CallStaticVoidMethod(cls, mid, args);
-//       DEBUG("VM CALLED !!");
-                                
-//       m_javavm->DestroyJavaVM();
-//       return true;
-//     }
-//   else
-//     {
-//       DEBUG("Can't find method !");
-//       return false;
-//     }
-// }
-
 bool SunJVMLauncher::runVM11proc(ResourceManager& resource, bool noConsole, const string& origin)
 {
   DEBUG("Running process with 1.1 compatibility mode");
@@ -820,10 +761,22 @@ bool operator < (const SunJVMLauncher& v1, const SunJVMLauncher& v2)
 
 bool SunJVMLauncher::callDLLStaticMethod(const std::string& clazz, const std::string& methodname, const std::string& signature)
 {
+  JNIEnv *env = new JNIEnv();
+  jint result = m_javavm->AttachCurrentThread((void**)&env, 0);
+  DEBUG("Attached thread to the VM: " + StringUtils::toString(result));
+
+//   if (result != 0)
+//     {
+//       DEBUG("Can't attach the thread to the VM!");
+//       return false;
+//     }
+
+  JNIEnv* jenv = env;
+
   std::string classname = StringUtils::replace(clazz,".", "/");
   DEBUG("Calling " + classname + "::" + methodname + signature);
   DEBUG("Check if " + classname + " is available");
-  jclass cls = (m_javaenv)->FindClass(classname.c_str());
+  jclass cls = (jenv)->FindClass(classname.c_str());
   if (cls == 0)
     {
       DEBUG(std::string("Can't Find CLASS <") + classname + std::string("> (probably a classpath issue)"));
@@ -834,13 +787,55 @@ bool SunJVMLauncher::callDLLStaticMethod(const std::string& clazz, const std::st
 
   char strbuf[255];
   sprintf(strbuf, "");
-  jstring jstr = (m_javaenv)->NewStringUTF(strbuf);
-  jmethodID mid = (m_javaenv)->GetStaticMethodID(cls, methodname.c_str(), signature.c_str());
+  jstring jstr = (jenv)->NewStringUTF(strbuf);
+  jmethodID mid = (jenv)->GetStaticMethodID(cls, methodname.c_str(), signature.c_str());
                 
   if (mid != 0)
     {
       DEBUG("Calling static method  from " + classname);
-      m_javaenv->CallStaticVoidMethod(cls, mid);
+      jenv->CallStaticVoidMethod(cls, mid);
+      return true;
+    }
+  else
+    {
+      DEBUG("Can't find method !");
+      return false;
+    }
+
+}
+
+bool SunJVMLauncher::callDLLStaticMethodInt(const std::string& clazz, const std::string& methodname, const std::string& signature, int value)
+{
+  JNIEnv *env = new JNIEnv();
+  jint result = m_javavm->AttachCurrentThread((void**)&env, 0);
+  DEBUG("Attached thread to the VM: " + StringUtils::toString(result));
+
+  JNIEnv* jenv = env;
+
+  std::string classname = StringUtils::replace(clazz,".", "/");
+  DEBUG("Calling " + classname + "::" + methodname + signature);
+  DEBUG("Check if " + classname + " is available");
+  jclass cls = (jenv)->FindClass(classname.c_str());
+  if (cls == 0)
+    {
+      DEBUG(std::string("Can't Find CLASS <") + classname + std::string("> (probably a classpath issue)"));
+      return false;
+    }
+  else
+    DEBUG("OK, class " + classname + " is available");
+
+  char strbuf[255];
+  sprintf(strbuf, "");
+  jstring jstr = (jenv)->NewStringUTF(strbuf);
+  jmethodID mid = (jenv)->GetStaticMethodID(cls, methodname.c_str(), signature.c_str());
+                
+  if (mid != 0)
+    {
+      DEBUG("Calling static method " + methodname + " from " + classname + " (" + StringUtils::toString((int)cls) + "," + StringUtils::toString((int)mid) +")" );
+      jvalue args[5];
+      args[0].i = value;
+      jint val = value;
+      jenv->CallStaticVoidMethod(cls, mid, (jint)value);
       return true;
     }
   else

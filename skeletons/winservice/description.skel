@@ -22,13 +22,6 @@
 <value>My Service</value>
 </skeletonProperties>
 <skeletonProperties>
-<description>SKEL_WINSERVICE_DESCRIPTION_DESCRIPTION</description>
-<idName>ServiceDescription</idName>
-<label>SKEL_WINSERVICE_DESCRIPTION_LABEL</label>
-<type>textarea</type>
-<value>A description of the service</value>
-</skeletonProperties>
-<skeletonProperties>
 <description>SKEL_WINSERVICE_PROPERTY_MESSAGE_DESCRIPTION</description>
 <idName>Message</idName>
 <label>SKEL_WINSERVICE_PROPERTY_MESSAGE_LABEL</label>
@@ -48,6 +41,13 @@
 <label>SKEL_WINSERVICE_LOGFILE_LABEL</label>
 <type>string</type>
 <value>service.log</value>
+</skeletonProperties>
+<skeletonProperties>
+<description>SKEL_WINSERVICE_INTERACTIVE_DESCRIPTION</description>
+<idName>Interactive</idName>
+<label>SKEL_WINSERVICE_INTERACTIVE_LABEL</label>
+<type>boolean</type>
+<value>0</value>
 </skeletonProperties>
 <skeletonProperties>
 <description>SKEL_GENERIC_PROPERTY_DEBUG_DESCRIPTION</description>

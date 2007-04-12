@@ -136,6 +136,8 @@ class ResourceManager
    * @return a string that contains the value of the property, or an empty string if the property does not exist.
    */
   std::string getProperty(const std::string& key) const;
+  std::string getProperty(const std::string& key, const std::string& def) const;
+  bool getBooleanProperty(const std::string& key) const;
 
   /**
    * Adds a new property.
@@ -164,7 +166,10 @@ class ResourceManager
 
   void setUserArguments(std::vector<std::string> arguments);
   void addUserArgument(std::string argument);
-  
+
+  int getResourceSize(int id);
+  HGLOBAL getResource(int id);
+
  private:
   void saveTemp(std::string tempname);
 

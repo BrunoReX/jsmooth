@@ -1304,6 +1304,68 @@ and install automatically a JVM.
       </qandaentry>
 
 
+      <qandaentry>
+        <question>
+	  <para>
+	  How do I convert my java application into a Windows service ?
+	  </para>
+	</question>
+
+	<answer>
+	 <para>
+	  There is nothing much to do to make a service from a java
+	 application. Just select the "Windows Service" wrapper, and
+	 build your executable as you would do for a standard application.</para>
+
+	 <para>
+	  The behaviour of the service wrapper is very simple: 
+	 </para>
+
+	 <itemizedlist>
+	   <listitem>
+	      <para> First, you have to register the service in the
+	            Windows environement. Just run
+	            <function>your-app.exe install</function>. Once
+	            this is done, you can see the service added to the
+	            list of services available on the computer (look
+	            for a Services program in the Administration tools
+	            of Windows).
+	      </para>
+	   </listitem>
+
+	   <listitem>
+	      <para> Then you can start or stop your service, by
+	      calling the executable with the "start" or "stop"
+	      arguments (only the first argument of the command line
+	      is taken into account). If the "autostart" option is
+	      enabled, the service will be automatically when Windows
+	      is started.
+	      </para>
+	   </listitem>
+
+	   <listitem>
+	      <para> To uninstall the service, simply run the
+	      executable as <function>your-app.exe uninstall</function>, that's all.
+	      </para>
+	   </listitem>
+
+	   <listitem>
+
+	      <para> The JVM is started and your application launched
+	      when the the service starts. The JVM is stopped when the
+	      services stops (obviously). Note however that you can
+	      exit cleanly, as <function>System.exit(0)</function> is
+	      called by the wrapper right before exiting: just add a
+	      shutdown hook
+	      (<function>Runtime.addShutdownHook()</function>) and
+	      you're safe.  </para>
+	   </listitem>
+
+	 </itemizedlist>
+
+	</answer>
+      </qandaentry>
+
     </qandaset>
     </sect2>
 
@@ -1320,7 +1382,7 @@ and install automatically a JVM.
 
 	 <para>
 	   The MSVCRT.DLL file is required by the wrapped application
-	   but may be missing on some Windows 95 computers that have
+	   but may be missing on some early Windows 95 computers that have
 	   never been upgraded. This file is often installed by
 	   third-party application, but it may happen that your users
 	   do not have it installed.
@@ -1331,6 +1393,29 @@ and install automatically a JVM.
 	   decent OS, or just bundle this MSVCRT.DLL along with your
 	   application.
          </para>
+
+	</answer>
+      </qandaentry>
+
+    </qandaset>
+
+    <qandaset>
+      <qandaentry>
+        <question>
+	  <para>
+	  Something goes wrong at launch-time, and the wrapper won't start my java application. How can I investigate?
+	  </para>
+	</question>
+	<answer>
+
+	 <para>
+	 The first thing to do, is to run the wrapper with the
+	 additional argument <function>-JskelDebug=1</function> (the
+	 option is case-sensitive). This will start the wrapper in
+	 debug mode, displaying a console (or using the current one,
+	 for the console wrapper), and output many useful
+	 information.
+	 </para>
 
 	</answer>
       </qandaentry>

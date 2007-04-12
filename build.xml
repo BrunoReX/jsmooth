@@ -29,7 +29,7 @@
 
  <!-- set here the properties specific the release --> 
 
-  <property name="VERSION" value="0.9.9-4"/>
+  <property name="VERSION" value="0.9.9-5"/>
 
   <!-- You should need to modify the properties below -->
 
@@ -232,6 +232,7 @@
       <include name="**/*.txt"/>
       <include name="**/*.properties"/>
     </replace>
+
     <antcall target="docs">
       <param name="docs" value="${tmp}/docs"/>
     </antcall>
@@ -260,6 +261,7 @@
     <mkdir dir="${dist}/skeletons/windowed-wrapper"/>
     <mkdir dir="${dist}/skeletons/console-wrapper"/>
     <mkdir dir="${dist}/skeletons/autodownload-wrapper"/>
+    <mkdir dir="${dist}/skeletons/winservice-wrapper"/>
     <antcall target="compileskels">
       <param name="skelflags" value=""/>
     </antcall>
@@ -270,6 +272,8 @@
     <copy todir="${dist}/skeletons/autodownload-wrapper" file="skeletons/autodownload/autodownload.skel"/>
     <copy todir="${dist}/skeletons/autodownload-wrapper" file="skeletons/autodownload/customdownload.skel"/>
     <copy todir="${dist}/skeletons/autodownload-wrapper" file="skeletons/autodownload/autodownload.exe"/>
+    <copy todir="${dist}/skeletons/winservice-wrapper" file="skeletons/winservice/description.skel"/>
+    <copy todir="${dist}/skeletons/winservice-wrapper" file="skeletons/winservice/winservice.exe"/>
 
     <exec executable="${mingw-strip}" dir="${dist}/skeletons/console-wrapper">
         <arg value="consolewrapper.exe"/>
@@ -279,6 +283,9 @@
     </exec>
     <exec executable="${mingw-strip}" dir="${dist}/skeletons/autodownload-wrapper">
         <arg value="autodownload.exe"/>
+    </exec>
+    <exec executable="${mingw-strip}" dir="${dist}/skeletons/winservice-wrapper">
+        <arg value="winservice.exe"/>
     </exec>
 
     <!-- Builds the jsmooth executable -->
@@ -397,10 +404,9 @@
        <classpath>
           <pathelement path="${jsmoothjar}"/>
        </classpath>
-        <arg value="sample/sample.jsmooth"/>
+        <arg value="c:/temp/test/testservice.jsmooth"/>
      </java>
   </target>
-
 
   <target name="runskeletoneditor" depends="jar">
      <java classname="net.charabia.jsmoothgen.skeleton.SkeletonEditor" fork="yes" >
