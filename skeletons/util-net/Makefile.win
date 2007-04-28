@@ -25,7 +25,7 @@ clean: clean-custom
 $(BIN): $(OBJ)
 	ar r $(BIN) $(OBJ)
 	ranlib $(BIN)
-	$(CPP) -g $(OBJ) testmain.o -o test.exe $(LIBS) ../util-core/util-core.a
+	$(CPP) -g $(OBJ)  ../util-core/util-core.a testmain.o -o test.exe $(LIBS)
 
 $(PROJECTNAME).a: $(OBJ) testmain.o
 

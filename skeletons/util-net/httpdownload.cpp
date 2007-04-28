@@ -20,6 +20,8 @@
 
 #include "httpdownload.h"
 
+#include "Thread.h"
+
 #include <stdlib.h>
 
 Fl_Window *httpWindow ;
@@ -67,7 +69,7 @@ struct downloadThreadParams
 // The download thread... it sets up the http client class and sends
 // the requests.
 //
-bool downloadHttpThread(void* param)
+void downloadHttpThread(void* param)
 {
   downloadThreadParams* dparam = (downloadThreadParams*)param;
 
@@ -116,7 +118,9 @@ std::string httpDownload(const std::string& url)
   params.outputFile = url;
   params.downloadResult = false;
 
-  downloadThread = _beginthread((void( __cdecl * )( void * ))downloadHttpThread, 0, (void*) &params);
+  Thread th;
+  th.start(downloadHttpThread, &params);
+
   Fl::add_timeout(1.0, updateProgressBar);
   Fl::run();  
 
