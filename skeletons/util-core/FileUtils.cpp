@@ -48,6 +48,12 @@ bool FileUtils::fileExists(const string& filename)
   return GetFileAttributes(filename.c_str()) != 0xFFFFFFFF;
 }
 
+bool FileUtils::fileExists(const std::string& path, const std::string& filename)
+{
+  std::string f = FileUtils::concFile(path, filename);
+  return fileExists(f);
+}
+
 vector<string> FileUtils::recursiveSearch(const string& pathdir, const string& pattern)
 {
     vector<string> result;
@@ -116,6 +122,18 @@ std::string FileUtils::getExecutableFileName()
     return full.substr(pos+1);
 }
 
+std::string FileUtils::getParent(const std::string &path)
+{
+  if (path[path.length()-1] == '\\')
+    return getParent( path.substr(0, path.size() - 1) );
+
+  int pos = path.rfind('\\', path.npos);
+  if (pos != path.npos)
+    return path.substr(0, pos+1);
+  else
+    return path;
+}
+
 std::string FileUtils::getComputerName()
 {
     char buffer[MAX_COMPUTERNAME_LENGTH + 1];
@@ -157,4 +175,34 @@ bool FileUtils::isAbsolute(const std::string& filename)
 void FileUtils::deleteOnReboot(std::string file)
 {
   MoveFileEx(file.c_str(), 0, MOVEFILE_DELAY_UNTIL_REBOOT);
+}
+
+std::string FileUtils::readFile(const std::string& filename)
+{
+  HANDLE f = CreateFile(filename.c_str(), GENERIC_READ,
+			FILE_SHARE_READ, NULL,
+			OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+  std::string result;
+
+  if (f != INVALID_HANDLE_VALUE)
+    {
+      char buffer[129];
+      DWORD hasread;
+      buffer[127] = 0;
+
+      do {
+	ReadFile(f, buffer, 127, &hasread, NULL);
+	buffer[hasread] = 0;
+	result += buffer;
+      } while (hasread > 0);
+
+      CloseHandle(f);
+    }
+  else
+    {
+      //      printf("Can't open file %s\n",filename.c_str());
+    }
+
+  return result;
 }

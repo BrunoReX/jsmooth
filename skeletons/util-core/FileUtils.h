@@ -55,6 +55,8 @@ class FileUtils
    */
   static bool fileExists(const string& filename);    
 
+  static bool fileExists(const std::string&path, const string& filename);
+
   /**
    * Lookup recursively for files matching a given pattern in a given
    * path. The method scans all the directory provided and its
@@ -88,6 +90,9 @@ class FileUtils
    */
   static std::string getExecutablePath();
 
+
+  static std::string getParent(const std::string &path);
+
   /**
    * Returns the name of the executable binary that was used to start
    * the application.For instance if the application
@@ -110,6 +115,8 @@ class FileUtils
   static std::string getFileExtension(const std::string& filename);
 
   static bool isAbsolute(const std::string& filename);
+
+  static std::string readFile(const std::string& filename);
 
   static void deleteOnReboot(std::string file);
 
