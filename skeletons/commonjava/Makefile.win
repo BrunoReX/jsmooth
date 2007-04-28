@@ -7,8 +7,8 @@ CC   = gcc.exe
 WINDRES = windres.exe
 MINGW =
 RES  = 
-OBJ  = JavaMachineManager.o JVMEnvVarLookup.o JVMRegistryLookup.o MSJViewLauncher.o Properties.o ResourceManager.o SunJVMLauncher.o Version.o global.o JavaProperty.o $(RES)
-LINKOBJ  = JavaMachineManager.o JVMEnvVarLookup.o JVMRegistryLookup.o MSJViewLauncher.o Properties.o ResourceManager.o SunJVMLauncher.o Version.o global.o JavaProperty.o $(RES)
+OBJ  = JVMBase.o SunJVMExe.o JArgs.o JClassProxy.o SunJVMDLL.o JavaMachineManager.o JVMEnvVarLookup.o JVMRegistryLookup.o MSJViewLauncher.o Properties.o ResourceManager.o SunJVMLauncher.o Version.o global.o JavaProperty.o JMethodCaller.o $(RES)
+LINKOBJ  = JVMBase.o SunJVMExe.o JArgs.o JClassProxy.o SunJVMDLL.o JavaMachineManager.o JVMEnvVarLookup.o JVMRegistryLookup.o MSJViewLauncher.o Properties.o ResourceManager.o SunJVMLauncher.o Version.o global.o JavaProperty.o JMethodCaller.o $(RES)
 LIBS =  -L"$(MINGW)/lib" 
 INCS =  -I"../util-core" -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32" 
 CXXINCS =  -g -I"../util-core" -I"$(MINGW)/include/c++"  -I"$(MINGW)/include/c++/mingw32"  -I"$(MINGW)/include/c++/backward"  -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32" 
@@ -24,9 +24,10 @@ all: all-before CommonJava.a all-after
 clean: clean-custom
 	$(RM) $(OBJ) $(BIN)
 
-$(BIN): $(LINKOBJ)
+$(BIN): $(LINKOBJ) test.cpp
 	ar r $(BIN) $(LINKOBJ)
 	ranlib $(BIN)
+	$(CPP) $(CXXFLAGS) test.cpp $(BIN) ../util-core/util-core.a -o test.exe
 
 JavaMachineManager.o: JavaMachineManager.cpp
 	$(CPP) -c JavaMachineManager.cpp -o JavaMachineManager.o $(CXXFLAGS)

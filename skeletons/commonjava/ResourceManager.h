@@ -59,6 +59,8 @@ class ResourceManager
   std::string m_lastError;    
   HGLOBAL m_jarHandler;
   int m_jarSize;
+
+  std::vector<std::string> m_arguments;
     
   std::vector<std::string> m_deleteOnFinalize;
   std::vector<JavaProperty> m_javaProperties;
@@ -166,6 +168,8 @@ class ResourceManager
 
   void setUserArguments(std::vector<std::string> arguments);
   void addUserArgument(std::string argument);
+
+  std::vector<std::string> getArguments();
 
   int getResourceSize(int id);
   HGLOBAL getResource(int id);

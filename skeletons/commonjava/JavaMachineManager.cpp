@@ -119,19 +119,23 @@ bool JavaMachineManager::run(bool dontUseConsole, bool preferSingleProcess)
 		} else if (*i == "exepath")
 		  {
 		    DEBUG("- Trying to use PATH");
-		    string exename = dontUseConsole?"javaw.exe":"java.exe";
-		    SunJVMLauncher launcher;
-		    launcher.VmVersion = launcher.guessVersionByProcess("java.exe");
 
-		    if (launcher.VmVersion.isValid()
-			&& (!min.isValid() || (min <= launcher.VmVersion))
-			&& (!max.isValid() || (launcher.VmVersion <= max)))
-		      {
-			DEBUG("Found valid java machine " + exename + " on PATH (" + launcher.VmVersion.toString() + ")");
-			Version v12("1.2.0");
-			if (launcher.runExe(exename, false, m_resman, dontUseConsole, (launcher.VmVersion<v12)?"1.1":"1.2", "path"))
-			  return true;
-		      }
+		    SunJVMLauncher launcher;
+		    return launcher.runProc(m_resman, ! dontUseConsole, "path");
+		    
+// 		    string exename = dontUseConsole?"javaw.exe":"java.exe";
+// 		    SunJVMLauncher launcher;
+// 		    launcher.VmVersion = launcher.guessVersionByProcess("java.exe");
+
+// 		    if (launcher.VmVersion.isValid()
+// 			&& (!min.isValid() || (min <= launcher.VmVersion))
+// 			&& (!max.isValid() || (launcher.VmVersion <= max)))
+// 		      {
+// 			DEBUG("Found valid java machine " + exename + " on PATH (" + launcher.VmVersion.toString() + ")");
+// 			Version v12("1.2.0");
+// 			if (launcher.runExe(exename, false, m_resman, dontUseConsole, (launcher.VmVersion<v12)?"1.1":"1.2", "path"))
+// 			  return true;
+// 		      }
 		  }
     }
 

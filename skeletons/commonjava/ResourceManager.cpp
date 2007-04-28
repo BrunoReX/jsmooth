@@ -58,7 +58,13 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId)
       m_lastError = "Can't find resource 'main name'";
       return;
     }
-    
+
+  //
+  // Split the arguments
+  //
+  m_arguments = StringUtils::split(getProperty(KEY_ARGUMENTS, ""), " \t\n\r", "\"\'");
+  
+
   //
   // loads the jar information
   // 
@@ -259,14 +265,14 @@ void ResourceManager::printDebug() const
   DEBUG(" - Property count: " + StringUtils::toString(props.size()));
   for (map<string, string>::iterator i = props.begin(); i != props.end(); i++)
     {
-      DEBUG(" - Property: "  + i->first + "=" + i->second);
+      DEBUG(" - Property: "  + i->first + "=<" + i->second+">");
     }
 }
 
 void ResourceManager::setUserArguments(std::vector<std::string> arguments)
 {
-  if (arguments.size() > 0)
-    setProperty(KEY_ARGUMENTS, "");
+  m_arguments.clear();
+
   for (std::vector<std::string>::iterator i=arguments.begin(); i != arguments.end(); i++)
     {
       addUserArgument(*i);
@@ -290,9 +296,14 @@ void ResourceManager::addUserArgument(std::string argument)
     }
   else
     {
-      setProperty(KEY_ARGUMENTS, getProperty(KEY_ARGUMENTS) + " " + StringUtils::fixQuotes(argument) );
-      DEBUG("Added user argument " + argument);
+      m_arguments.push_back(argument);
+//       setProperty(KEY_ARGUMENTS, getProperty(KEY_ARGUMENTS) + " " + StringUtils::requoteForCommandLine(StringUtils::escape(argument)) );
     }
+}
+
+std::vector<std::string> ResourceManager::getArguments()
+{
+  return m_arguments;
 }
 
 int ResourceManager::getResourceSize(int id)

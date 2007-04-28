@@ -22,13 +22,16 @@
 #define __SUNJVMLAUNCHER_H_
 
 #include <string>
-#include <jni.h>
+#include "jni.h"
 
 #include "Version.h"
 #include "StringUtils.h"
 #include "FileUtils.h"
 #include "ResourceManager.h"
 #include "JavaProperty.h"
+
+#include "SunJVMDLL.h"
+#include "SunJVMExe.h"
 
 typedef jint (JNICALL *CreateJavaVM_t)(JavaVM **pvm, JNIEnv **env, void *args);
 typedef jint (JNICALL *GetDefaultJavaVMInitArgs_t)(void *args);
@@ -54,8 +57,7 @@ class SunJVMLauncher
     JVM_DLL_INSTANCIATED
   };
 
-  int Status;
-
+  int LaunchingStatus;
 
  protected:
   JavaVM *m_javavm;
@@ -104,9 +106,14 @@ class SunJVMLauncher
    * @return true if the java application was successfully launched,
    * false otherwise.
    */ 
+
   virtual bool runProc(ResourceManager& resource, bool noConsole, const string& origin);
 
+  virtual bool setupVM(ResourceManager& resource, JVMBase* vm);
+  
+
   std::string toString() const;
+
   Version guessVersionByProcess(const string& exepath);
 
   friend bool operator < (const SunJVMLauncher& v1, const SunJVMLauncher& v2);
@@ -118,6 +125,15 @@ class SunJVMLauncher
   bool callDLLStaticMethodInt(const std::string& classname, const std::string& methodname, const std::string& signature, int value);
 
   int destroyVM();
+  JavaVM* getJavaVM();
+
+  jclass findClass(const std::string& clazz);
+  jmethodID findMethod(jclass& cls, const std::string& methodname, const std::string& signature, bool isStatic);
+
+  void invokeVoidStatic(jclass clazz, jmethodID& methodid, jvalue arguments[]);
+  //  jvaluea invokeIntStatic(jclass clazz, jmethodID& methodid, jvalue arguments[]);
+  jint invokeIntStatic(jclass clazz, jmethodID& methodid, jvalue arguments[]);
+  jlong invokeLongStatic(jclass clazz, jmethodID& methodid, jvalue arguments[]);
 
  private:
      
@@ -128,9 +144,7 @@ class SunJVMLauncher
 
   bool runVM11proc(ResourceManager& resource, bool noConsole, const string& origin);
   bool runVM12proc(ResourceManager& resource, bool noConsole, const string& origin);
-       
-  std::string sizeToString(int size);
-  std::string sizeToString(std::string size);
+
 };
 
 
