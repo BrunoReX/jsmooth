@@ -1,5 +1,7 @@
 0.9.9-5
 	- Adds new wrapper for windows services
+	- Refactored the Sun JVM launcher, now 3 specialized class are
+	available: JVMBase, SunJVMExe, SunJVMDLL
 
 0.9.9-4	(2007-04-07)
 	- Fixed bug #1694330: Working directory handled incorrectly.

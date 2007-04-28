@@ -3,7 +3,7 @@
   <!-- set here the properties specific to your computer      -->
   <!-- see the README.txt file for additional information     -->
   <!-- DO NOT SKIP THIS PART! REALLY! IT WON'T WORK OTHERWISE -->
-  <property name="JDKDIR" value="c:\Program Files\Java\jdk1.5.0_06"/>
+  <property name="JDKDIR" value="c:\Program Files\Java\jdk1.5.0_11"/>
   <property name="RM" value="CMD /C DEL"/>
 
   <!-- Values below should be standard, but check it anyway -->
@@ -27,11 +27,11 @@
   <property name="FOP" value="c:/Programs/fop-0.20.5\fop.bat"/>
   <property name="DOCBOOKBASE" value="c:\programs\docbook-xsl-1.72.0"/>
 
- <!-- set here the properties specific the release --> 
+ <!-- set here the properties specific to the release --> 
 
   <property name="VERSION" value="0.9.9-5"/>
 
-  <!-- You should need to modify the properties below -->
+  <!-- You don't need to modify the properties below -->
 
   <property environment="env"/>
   <property name="src" value="src"/>
