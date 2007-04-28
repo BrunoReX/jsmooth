@@ -16,8 +16,8 @@ OBJ  = main.o execcab.o execexe.o $(libmscabd_la_OBJS) $(RES)
 FLTK-LDFLAGS = $(shell fltk-config --ldflags)
 FLTK-CXXFLAGS = $(shell fltk-config --cxxflags)
 ##LINKLIBS = ../commonjava/CommonJava.a ../util-core/util-core.a mspack.a ../util-net/util-net.a
-LINKLIBS = ../commonjava/CommonJava.a ../util-core/util-core.a ../util-net/util-net.a
-LIBS =  -L"$(MINGW)/lib"  -L"/lib" -lws2_32 -L"/lib" -L"../commonjava" -mwindows -L"../util-core" $(LINKLIBS) $(FLTK-LDFLAGS) -lsetupapi
+LINKLIBS = ../commonjava/CommonJava.a ../util-net/util-net.a ../util-core/util-core.a 
+LIBS =  -L. -L"$(MINGW)/lib"  -L"/lib" -lws2_32 -L"/lib" -L"../commonjava" -mwindows -L"../util-core" -L"../util-net" $(LINKLIBS) $(FLTK-LDFLAGS) -lsetupapi
 INCS =  -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32" 
 CXXINCS =  -I"$(MINGW)/include/c++"  -I"$(MINGW)/include/c++/mingw32"  -I"$(MINGW)/include/c++/backward"  -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32" -I"../commonjava" -I"../util-core" -I"../util-net" $(FLTK-CXXFLAGS)
 BIN  = autodownload.exe
@@ -32,7 +32,7 @@ clean: 	clean-custom
 	$(RM) $(OBJ) $(BIN) 
 
 $(BIN): $(LINKOBJ) $(LINKLIBS)
-	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
+	$(CPP) $(CXXFLAGS) $(LINKOBJ) $(LIBS) -o $(BIN)
 
 #mspack.a: $(libmscabd_la_SOURCES)
 #	$(CC) -c -Imspack $(libmscabd_la_SOURCES)

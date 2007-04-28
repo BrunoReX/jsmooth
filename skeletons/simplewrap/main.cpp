@@ -57,29 +57,23 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 {
     atexit(lastExit);
 
-    DEBUGCONSOLE = new DebugConsole("JSmooth Debug");
-
     globalResMan = new ResourceManager("JAVA", PROPID, JARID);
 
     // sets up the command line arguments
     // not sure if lpszArgument can be null on Windows...
      if ((lpszArgument!=NULL) && (strlen(lpszArgument)>0))
        {
-	 DEBUG(string("Setting arguments: ") + lpszArgument);
-// 	 std::vector<std::string> args = StringUtils::split(lpszArgument, " \t\n\r", "\"'", true);
-// 	 globalResMan->setUserArguments( args );
-
 	 std::vector<std::string> args = StringUtils::split(lpszArgument, " \t\n\r", "\"'", false);
-	 for (int i=0; i<args.size(); i++)
-	   args[i] = StringUtils::fixArgumentString(args[i]);
 	 globalResMan->setUserArguments( args );
        }
+
 
     std::string dodebug = globalResMan->getProperty("skel_Debug");
     if ((StringUtils::parseInt(dodebug) != 0) && (DEBUGCONSOLE==0))
       {
 	DEBUGCONSOLE = new DebugConsole("JSmooth Debug");
       }
+
 
     if (DEBUGCONSOLE!=0)
       globalResMan->printDebug();

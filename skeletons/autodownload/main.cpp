@@ -74,8 +74,6 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     {
       // Note that this overwrites an existing KEY_ARGUMENTS
       std::vector<std::string> args = StringUtils::split(lpszArgument, " \t\n\r", "\"'", false);
-      for (int i=0; i<args.size(); i++)
-	args[i] = StringUtils::fixArgumentString(args[i]);
       globalResMan->setUserArguments( args );
     }
 
