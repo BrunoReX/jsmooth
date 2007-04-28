@@ -23,6 +23,16 @@
 
 #include "StringUtils.h"
 #include <winnls.h>
+#include "FileUtils.h"
+
+void _debugOutput(const std::string& text)
+{
+  printf("%s\n", text.c_str());
+}
+
+void _debugWaitKey()
+{
+}
 
 int main(int argc, char *argv[])
 {
@@ -33,5 +43,24 @@ int main(int argc, char *argv[])
 
   if (res > 0)
     printf("result: %s\n", buffer);
+
+
+  std::string cmdlinetest = " \"this is my\ test\\\" \"here and then\"";
+  cmdlinetest = " \"this is my\ test here\\\" \"and\" \"then\"";
+  printf("splitting line <%s>\n", cmdlinetest.c_str());
+  std::vector<std::string> args = StringUtils::split(cmdlinetest, " \t\n\r", "\"'", false, false);
+  for (int i=0; i<args.size(); i++)
+    {
+      printf("ARG[%d]=%s\n", i, args[i].c_str(), false, false);
+    }
+
+  //   std::string fqmethod = "void mytest1(java.lang.String test[ ] ) ";
+  //   std::vector<std::string> t1 = StringUtils::split(fqmethod, " \t(,);][", "", false, true);
+
+  //   for (std::vector<std::string>::iterator i=t1.begin(); i != t1.end(); i++)
+  //     printf("TOK: %s\n" , i->c_str());
+
+  //   std::string readf = FileUtils::readFile("Log.h");
+  //   printf("READ: <<%s>>", readf.c_str());
   
 }
