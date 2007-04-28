@@ -70,7 +70,7 @@ class StringUtils
    * @param separators a string that contains all the characters to be used as separators.
    * @param quotechars a string that contains all the characters that are used as quote chars.
    */
-  static vector<string> split(const string& str, const string& separators, const string& quotechars, bool handleEscape = true);
+  static vector<string> split(const string& str, const string& separators, const string& quotechars, bool handleEscape = true, bool returnSeparators = false);
 
   /**
    * Converts a string to an int. If the string is not a valid
@@ -90,6 +90,7 @@ class StringUtils
    * @return a string
    */
   static string toString(int val);
+  static string toHexString(int val);
 
   /**
    * Provides a string representation of a vector of string.  A vector
@@ -135,8 +136,10 @@ class StringUtils
    * @param str a string
    * @return a fixed copy of the string
    */
-  static string fixQuotes(const string& str);
-  
+  static std::string fixQuotes(const string& str);
+
+  static std::string escape(const string& str);
+  static std::string unescape(const string& str);
   /**
    * Ensures a string is correctly quoted, the quotes are enclosing
    * the whole string, not a part of the string. For instance
@@ -145,11 +148,15 @@ class StringUtils
    * @param str a string
    * @return a fixed copy of the string
    */
-  static string requote(const string& str);
-
-  static string toLowerCase(const string& str);
+  static std::string requote(const string& str);
+  static std::string StringUtils::requoteForCommandLine(const string& str);
+  static std::string toLowerCase(const string& str);
 
   static std::string fixArgumentString(const std::string& arg);
+
+  static std::string sizeToJavaString(int size);
+  static std::string sizeToJavaString(std::string size);
+  
 };
 
 #endif

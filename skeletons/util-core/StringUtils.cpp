@@ -20,14 +20,15 @@
 
 #include "StringUtils.h"
 
-vector<string> StringUtils::split(const string& str, const string& separators, const string& quotechars, bool handleEscape)
+vector<string> StringUtils::split(const string& str, const string& separators, const string& quotechars, 
+				  bool handleEscape, bool returnSeparators)
 {
   vector<string> result;
   string buf = "";
 
   for (int i=0; i<str.length(); i++)
     {
-      if ( handleEscape && (str[i] == '\\'))
+      if ( handleEscape && (str[i] == '\\')) // Found an escaped char
         {
 	  i++;
 	  if (i<str.length())
@@ -51,15 +52,23 @@ vector<string> StringUtils::split(const string& str, const string& separators, c
 		}
 	    }
         }
-      else if (separators.find(str[i], 0) != separators.npos)
+      else if (separators.find(str[i], 0) != separators.npos) // found a separator...
         {
 	  if (buf.length() > 0)
 	    {
 	      result.push_back(buf);
 	      buf = "";
 	    }
+	  
+	  if (returnSeparators)
+	    {
+	      buf += str[i];
+	      result.push_back(buf);
+	      buf = "";
+	    }
+	  
         }
-      else if (quotechars.find(str[i], 0) != separators.npos)
+      else if (quotechars.find(str[i], 0) != quotechars.npos) // Found a quote char...
         {
 	  if (buf.length() > 0)
 	    {
@@ -123,6 +132,13 @@ string StringUtils::toString(int val)
 {
     char buf[32];
     sprintf(buf, "%d", val);
+    return string(buf);
+}
+
+string StringUtils::toHexString(int val)
+{
+    char buf[32];
+    sprintf(buf, "%x", val);
     return string(buf);
 }
 
@@ -240,6 +256,16 @@ string StringUtils::requote(const string& str)
   return StringUtils::fixQuotes( StringUtils::replace(str, "\"", "") );
 }
 
+string StringUtils::requoteForCommandLine(const string& str)
+{
+  std::string res = StringUtils::replace(str, "\"", "");
+  if (res[res.size()-1] == '\\')
+    res += "\\";
+//     res = res.substr(0, res.size()-1);
+  return StringUtils::fixQuotes(res);
+}
+
+
 string StringUtils::replace(const string& str, const string& pattern, const string& replacement)
 {
     string result = str;
@@ -262,6 +288,40 @@ string StringUtils::fixQuotes(const string& str)
     return str;
 
   return "\"" + str + "\"";
+}
+
+std::string StringUtils::escape(const string& str)
+{
+  std::string result;
+  for (int i=0; i<str.size(); i++)
+    {
+      if (str[i] == '\\')
+	result += "\\\\";
+      else
+	result += str[i];
+    }
+  return result;
+}
+
+std::string StringUtils::unescape(const string& str)
+{
+  std::string result;
+  for (int i=0; i<str.size(); i++)
+    {
+      if (str[i] == '\\')
+	{
+	  if ((i+1<str.size()) && (str[i+1]=='\\'))
+	    {
+	      i++;
+	      result += "\\";
+	    }
+	  else
+	    result += "\\";
+	}
+      else
+	result += str[i];
+    }
+  return result;
 }
 
 string StringUtils::toLowerCase(const string& str)
@@ -299,4 +359,28 @@ std::string StringUtils::fixArgumentString(const std::string& arg)
       res += c;
     }
   return res;
+}
+
+
+std::string StringUtils::sizeToJavaString(int size)
+{
+  if (size > (1024*1024))
+    return StringUtils::toString(size / (1024*1024)) + "m";
+  else if (size > 1024)
+    return StringUtils::toString(size / 1024) + "k";
+  else
+    return StringUtils::toString(size);
+}
+
+std::string StringUtils::sizeToJavaString(std::string size)
+{
+  if ( (size.find('m') != string::npos)
+      || (size.find('M') != string::npos)
+      || (size.find('k') != string::npos)
+      || (size.find('K') != string::npos) )
+    {
+      return size;
+    }
+  else
+    return sizeToJavaString(StringUtils::parseInt(size));
 }
