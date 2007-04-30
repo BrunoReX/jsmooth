@@ -6,6 +6,7 @@
 <JVMSearchPath>jdkpath</JVMSearchPath>
 <JVMSearchPath>exepath</JVMSearchPath>
 <JVMSearchPath>jview</JVMSearchPath>
+<arguments>${EXECUTABLEPATH}</arguments>
 <embeddedJar>true</embeddedJar>
 <executableName>Sample.exe</executableName>
 <initialMemoryHeap>50331648</initialMemoryHeap>
@@ -37,19 +38,15 @@
 <mainClassName>JSmoothPropertiesDisplayer</mainClassName>
 <maximumMemoryHeap>67108864</maximumMemoryHeap>
 <maximumVersion></maximumVersion>
-<minimumVersion>1.1</minimumVersion>
-<skeletonName>Autodownload Wrapper</skeletonName>
+<minimumVersion>1.3</minimumVersion>
+<skeletonName>Console Wrapper</skeletonName>
 <skeletonProperties>
 <key>Message</key>
 <value>Java has not been found on your computer.
 Do you want to download it?</value>
 </skeletonProperties>
 <skeletonProperties>
-<key>DownloadURL</key>
-<value>http://java.sun.com/update/1.5.0/jinstall-1_5_0-windows-i586.cab</value>
-</skeletonProperties>
-<skeletonProperties>
-<key>SingleProcess</key>
+<key>PressKey</key>
 <value>0</value>
 </skeletonProperties>
 <skeletonProperties>
