@@ -67,13 +67,11 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 	 globalResMan->setUserArguments( args );
        }
 
-
     std::string dodebug = globalResMan->getProperty("skel_Debug");
     if ((StringUtils::parseInt(dodebug) != 0) && (DEBUGCONSOLE==0))
       {
 	DEBUGCONSOLE = new DebugConsole("JSmooth Debug");
       }
-
 
     if (DEBUGCONSOLE!=0)
       globalResMan->printDebug();

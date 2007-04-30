@@ -77,6 +77,9 @@ class SunJVMLauncher
    * be invalid, if the information is not known.
    */
   Version VmVersion;
+
+  SunJVMExe* m_exerunner;
+  SunJVMDLL* m_dllrunner;
                
   /**
    * Launches the JVM target of this object. The object is run using
@@ -111,6 +114,7 @@ class SunJVMLauncher
 
   virtual bool setupVM(ResourceManager& resource, JVMBase* vm);
   
+  SunJVMDLL* getDLL();
 
   std::string toString() const;
 
@@ -127,13 +131,13 @@ class SunJVMLauncher
   int destroyVM();
   JavaVM* getJavaVM();
 
-  jclass findClass(const std::string& clazz);
-  jmethodID findMethod(jclass& cls, const std::string& methodname, const std::string& signature, bool isStatic);
+//   jclass findClass(const std::string& clazz);
+//   jmethodID findMethod(jclass& cls, const std::string& methodname, const std::string& signature, bool isStatic);
 
-  void invokeVoidStatic(jclass clazz, jmethodID& methodid, jvalue arguments[]);
-  //  jvaluea invokeIntStatic(jclass clazz, jmethodID& methodid, jvalue arguments[]);
-  jint invokeIntStatic(jclass clazz, jmethodID& methodid, jvalue arguments[]);
-  jlong invokeLongStatic(jclass clazz, jmethodID& methodid, jvalue arguments[]);
+//   void invokeVoidStatic(jclass clazz, jmethodID& methodid, jvalue arguments[]);
+//   //  jvaluea invokeIntStatic(jclass clazz, jmethodID& methodid, jvalue arguments[]);
+//   jint invokeIntStatic(jclass clazz, jmethodID& methodid, jvalue arguments[]);
+//   jlong invokeLongStatic(jclass clazz, jmethodID& methodid, jvalue arguments[]);
 
  private:
      

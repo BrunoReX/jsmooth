@@ -107,35 +107,16 @@ bool SunJVMLauncher::run(ResourceManager& resource, const string& origin, bool j
 
     if (FileUtils::fileExists(this->RuntimeLibPath))
       {
-	SunJVMDLL runner(this->RuntimeLibPath, this->VmVersion);
+	m_dllrunner = new SunJVMDLL(this->RuntimeLibPath, this->VmVersion);
 	// set up the vm parameters...
-	setupVM(resource, &runner);
-	return runner.run(resource.getProperty(ResourceManager::KEY_MAINCLASSNAME));
-	// then call the main class...
+	setupVM(resource, m_dllrunner);
 
-
-// 	vector<string> args = StringUtils::split(resource.getProperty(ResourceManager::KEY_ARGUMENTS), " \t\n\r", "\"\'");
-// 	JClassProxy mainclass(&runner, resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME)) );
-// 	jstring empty = runner.newUTFString("");
-//  	jclass strclss = runner.findClass( resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME) ));
-// 	if (strclss)
-// 	  {
-// 	    jobjectArray jargumentsval = runner.newObjectArray(args.size(), strclss, empty);
-// 	    mainclass.invokeStatic( "void main(java.lang.String[]args)", JArgs(jargumentsval));
-// 	    return true;
-
-// 	  }
-// 	return false;
-
-// 	jclass strclss = runner.findClass( resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME) ));
-// 	JMethodCaller maincaller(resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME)),
-// 				 "void static main(String[]args)");
-// 	JArgs maa(jargumentsval);
-// 	jvalue* jarguments = maa.allocArray();
-// 	maincaller.invokeStatic(runner, jarguments);
-// 	delete jarguments;
+	if (justInstanciate)
+	  return m_dllrunner->instanciate();
+	else
+	  return m_dllrunner->run(resource.getProperty(ResourceManager::KEY_MAINCLASSNAME),
+				  true);
       }
-
 
     return false;
 }
@@ -212,6 +193,10 @@ bool SunJVMLauncher::setupVM(ResourceManager& resource, JVMBase* vm)
 
 }
 
+SunJVMDLL* SunJVMLauncher::getDLL()
+{
+  return m_dllrunner;
+}
 
 bool operator < (const SunJVMLauncher& v1, const SunJVMLauncher& v2)
 {

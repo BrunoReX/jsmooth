@@ -11,7 +11,7 @@ OBJ  = JVMBase.o SunJVMExe.o JArgs.o JClassProxy.o SunJVMDLL.o JavaMachineManage
 LINKOBJ  = JVMBase.o SunJVMExe.o JArgs.o JClassProxy.o SunJVMDLL.o JavaMachineManager.o JVMEnvVarLookup.o JVMRegistryLookup.o MSJViewLauncher.o Properties.o ResourceManager.o SunJVMLauncher.o Version.o global.o JavaProperty.o JMethodCaller.o $(RES)
 LIBS =  -L"$(MINGW)/lib" 
 INCS =  -I"../util-core" -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32" 
-CXXINCS =  -g -I"../util-core" -I"$(MINGW)/include/c++"  -I"$(MINGW)/include/c++/mingw32"  -I"$(MINGW)/include/c++/backward"  -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32" 
+CXXINCS = -Os -I"../util-core" -I"$(MINGW)/include/c++"  -I"$(MINGW)/include/c++/mingw32"  -I"$(MINGW)/include/c++/backward"  -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32" 
 BIN  = CommonJava.a
 CXXFLAGS = $(CUSTOMFLAGS) $(CXXINCS) -DJDK="$(JDK)"
 CFLAGS = $(INCS) 

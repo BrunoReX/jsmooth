@@ -11,7 +11,7 @@ FLTK-CXXFLAGS = $(shell fltk-config --cxxflags)
 RES  = 
 OBJ  = HttpClient.o URL.o downloadgui.o httpdownload.o $(RES)
 LIBS =  -L"$(MINGW)/lib"  -L"/lib" -lws2_32 $(FLTK-LDFLAGS)
-CXXINCS = -I"../util-core" -I"$(MINGW)/include/c++"  -I"$(MINGW)/include/c++/mingw32"  -I"$(MINGW)/include/c++/backward"  -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32"  $(FLTK-CXXFLAGS)
+CXXINCS = -Os -I"../util-core" -I"$(MINGW)/include/c++"  -I"$(MINGW)/include/c++/mingw32"  -I"$(MINGW)/include/c++/backward"  -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32"  $(FLTK-CXXFLAGS)
 BIN  = $(PROJECTNAME).a
 CXXFLAGS = $(CUSTOMFLAGS) $(CXXINCS) -DJDK="$(JDK)"
 

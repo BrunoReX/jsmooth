@@ -84,8 +84,9 @@ class SunJVMDLL : public JVMBase
       return env;
     }
 
-  bool run(const std::string& mainclass);
-  
+  bool run(const std::string& mainclass, bool waitDeath = true);
+  void join();
+
   jclass findClass(const std::string& clazz);
   jmethodID findMethod(jclass& cls, const std::string& methodname, const std::string& signature, bool isStatic);
   JavaVM* getJavaVM();

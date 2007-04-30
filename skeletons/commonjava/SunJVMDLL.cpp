@@ -39,7 +39,7 @@ SunJVMDLL::~SunJVMDLL()
     }
 }
 
-bool SunJVMDLL::run(const std::string& mainclass)
+bool SunJVMDLL::run(const std::string& mainclass, bool waitDeath)
 {
   if (m_statusCode == SunJVMDLL::JVM_NOT_STARTED)
     instanciate();
@@ -57,13 +57,21 @@ bool SunJVMDLL::run(const std::string& mainclass)
 	jvalue ma[1];
 	ma[0].l = mainargs;
 	disp.invokeStatic(std::string("void main(java.lang.String[] args)"), ma);
+	if (waitDeath == true)
+	  m_javavm->DestroyJavaVM();
 	return true;
-
     }
 
   return false;
 }
 
+void SunJVMDLL::join()
+{
+  if (m_statusCode == SunJVMDLL::JVM_LOADED)
+    {
+      m_javavm->DestroyJavaVM();
+    }
+}
 
 bool SunJVMDLL::instanciate()
 {
@@ -99,6 +107,7 @@ bool SunJVMDLL::instanciate()
       return true;
     }
 
+  m_statusCode = SunJVMDLL::JVM_CANT_USE_VM;
   return false;
 }
 

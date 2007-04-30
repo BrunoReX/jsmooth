@@ -24,11 +24,14 @@ public class AlertServer
 		InputStream is = m_sock.getInputStream();
 		InputStreamReader isr = new InputStreamReader(is);
 		BufferedReader br = new BufferedReader(isr);
+		OutputStream outs = m_sock.getOutputStream();
+		Writer out = new OutputStreamWriter(outs);
 
 		String line;
 		while ((line=br.readLine()) != null)
 		    {
 			FileWriter fw = new FileWriter("c:/alertserver.log", true);
+			out.write("PRINTING <" + line + ">");
 			System.out.println("Received: " + line);
 			fw.write(line + "\n");
 			if (line.startsWith("EXIT"))

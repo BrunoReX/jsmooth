@@ -10,7 +10,7 @@ RES  =
 OBJ  = Process.o Log.o Thread.o FileUtils.o StringUtils.o DebugConsole.o $(RES)
 LIBS =  -L"$(MINGW)/lib"  -L"/lib" -lws2_32
 INCS =  -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32" 
-CXXINCS =  -I"$(MINGW)/include/c++"  -I"$(MINGW)/include/c++/mingw32"  -I"$(MINGW)/include/c++/backward"  -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32" 
+CXXINCS = -Os  -I"$(MINGW)/include/c++"  -I"$(MINGW)/include/c++/mingw32"  -I"$(MINGW)/include/c++/backward"  -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32" 
 BIN  = $(PROJECTNAME).a
 CXXFLAGS = $(CUSTOMFLAGS) $(CXXINCS) -DJDK="$(JDK)"
 CFLAGS = $(INCS) 

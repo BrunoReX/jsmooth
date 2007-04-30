@@ -29,6 +29,8 @@
 #include "ResourceManager.h"
 #include "JVMRegistryLookup.h"
 #include "JavaMachineManager.h"
+#include "JClassProxy.h"
+#include "JArgs.h"
 
 WinService* winservice_ref;
 
@@ -82,7 +84,16 @@ WinService::WinService(const std::string& name, const std::string& filename)
 WinService::~WinService()
 {
   if (m_jvm != 0)
-    m_jvm->callDLLStaticMethodInt("java.lang.System", "exit", "(I)V", 0);
+    {
+      SunJVMDLL* runner = m_jvm->getDLL();
+      log("Calling java.lang.System.exit(0)...");
+
+      JClassProxy disp(runner, "java.lang.System");
+      disp.invokeStatic("void exit(int)", JArgs(0));
+      log("exit(0) returned successfully");
+
+      // m_jvm->callDLLStaticMethodInt("java.lang.System", "exit", "(I)V", 0);
+    }
 }
 
 void WinService::connect()
@@ -160,7 +171,33 @@ bool WinService::uninstall()
 bool WinService::setStatus(int currentState)
 {
   SERVICE_STATUS status;
-  log("set status " + StringUtils::toString(currentState));
+  std::string meaning = "";
+  switch(currentState)
+    {
+    case SERVICE_STOPPED:
+      meaning = "SERVICE_STOPPED";
+      break;
+    case SERVICE_START_PENDING:
+      meaning = "SERVICE_START_PENDING";
+      break;
+    case SERVICE_STOP_PENDING:
+      meaning = "SERVICE_STOP_PENDING";
+      break;
+    case SERVICE_RUNNING:
+      meaning = "SERVICE_RUNNING";
+      break;
+    case SERVICE_CONTINUE_PENDING:
+      meaning = "SERVICE_CONTINUE_PENDING";
+      break;
+    case SERVICE_PAUSE_PENDING:
+      meaning = "SERVICE_PAUSE_PENDING";
+      break;
+    case SERVICE_PAUSED:
+      meaning = "SERVICE_PAUSED";
+      break;
+    }
+
+  log("set status " + StringUtils::toString(currentState) + " (" + meaning + ")");
 
   status.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
   status.dwCurrentState = currentState;
@@ -249,19 +286,24 @@ void WinService::run()
     }
 
   JavaMachineManager man(*globalResMan);
+  setStatus(SERVICE_RUNNING);
   SunJVMLauncher* launcher = man.runDLLFromRegistry(true);
+
   if (launcher != 0)
     {
       m_jvm = launcher;
       log("JVM found and instanciated successfully (" + launcher->toString() + ")");
 
       setStatus(SERVICE_RUNNING);
-      if ( ! launcher->dllInstanciate(*globalResMan, "wsreg") )
+
+      SunJVMDLL* jdll = m_jvm->getDLL();
+      if (jdll != 0)
 	{
-	  log("Failed to launch the service: can't instanciate the JVM DLL");
+	  jdll->run( globalResMan->getProperty(ResourceManager::KEY_MAINCLASSNAME), false);
 	}
       else
-	log("Launched successfully the DLL (" + launcher->toString() + ")");
+	log("ERROR: JVM is launched, but can get a DLL... ?");
+
     }
   else
     {
@@ -273,7 +315,6 @@ void WinService::run()
     }
 
   setStatus(SERVICE_STOPPED);
-  log("stopped!");
   return;
 }
 

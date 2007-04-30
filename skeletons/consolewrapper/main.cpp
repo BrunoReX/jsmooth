@@ -45,48 +45,45 @@ void _debugWaitKey()
 
 int main(int argc, char *argv[])
 {    
-    ResourceManager* globalResMan = new ResourceManager("JAVA", PROPID, JARID);
+  ResourceManager* globalResMan = new ResourceManager("JAVA", PROPID, JARID);
 
-    for (int i=0; i<argc; i++)
-      {
-	DEBUG("ARGUMENT[" + StringUtils::toString(i) + "]=" + std::string(argv[i]));
-      }
+  //     for (int i=0; i<argc; i++)
+  //       {
+  // 	printf("CMD-ARGUMENTx[%d]=%s\n",i ,argv[i]);
+  //       }
     
-    // sets up the arguments
-    //
-    if (argc > 1)
-      globalResMan->setProperty(string(ResourceManager::KEY_ARGUMENTS), "");
-    for (int i=1; i<argc; i++)
-      globalResMan->addUserArgument(argv[i]);
+  // sets up the arguments
+  //
+  if (argc > 1)
+    globalResMan->setProperty(string(ResourceManager::KEY_ARGUMENTS), "");
+  for (int i=1; i<argc; i++)
+    globalResMan->addUserArgument(argv[i]);
 
-    //
-    // sets up the debug mode, if requested
-    std::string dodebug = globalResMan->getProperty("skel_Debug");
-    if (StringUtils::parseInt(dodebug) != 0)
-      {
-	enableDebug = true;
-	globalResMan->printDebug();
-      }
-
-    char curdir[256];
-    GetCurrentDirectory(256, curdir);
-
-    string newcurdir = globalResMan->getCurrentDirectory();
-    SetCurrentDirectory(newcurdir.c_str());
-
-    JavaMachineManager man(*globalResMan);
-    if (man.run(false, false) == false)
+  //
+  // sets up the debug mode, if requested
+  std::string dodebug = globalResMan->getProperty("skel_Debug");
+  if (StringUtils::parseInt(dodebug) != 0)
     {
-        std::string errmsg = globalResMan->getProperty("skel_Message");
-        cerr << errmsg.c_str();
-        cerr << "\r\n";
+      enableDebug = true;
+      globalResMan->printDebug();
+    }
+
+  string newcurdir = globalResMan->getCurrentDirectory();
+  SetCurrentDirectory(newcurdir.c_str());
+
+  JavaMachineManager man(*globalResMan);
+  if (man.run(false, false) == false)
+    {
+      std::string errmsg = globalResMan->getProperty("skel_Message");
+      cerr << errmsg.c_str();
+      cerr << "\r\n";
     }
 
   int waitkey = atoi(globalResMan->getProperty("skel_PressKey").c_str());
   if (waitkey != 0)
-  {
-    system("PAUSE");
-  }
+    {
+      system("PAUSE");
+    }
   
   delete globalResMan;  
   return 0;
