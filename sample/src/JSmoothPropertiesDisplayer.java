@@ -89,9 +89,10 @@ public class JSmoothPropertiesDisplayer extends java.awt.Frame
 	/**
 	 * @param args the command line arguments
 	 */
-	public static void main(String args[])
+	public static void main(String args[]) throws Exception
 	{
-		new JSmoothPropertiesDisplayer(args).setVisible(true);
+	    new JSmoothPropertiesDisplayer(args).setVisible(true);
+	    //	    Thread.currentThread().sleep(1000*60);
 	}
 
 	private void displayInformation()

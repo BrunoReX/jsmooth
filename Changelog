@@ -1,7 +1,11 @@
-0.9.9-5
+0.9.9-5 (2007-05-01)
 	- Adds new wrapper for windows services
 	- Refactored the Sun JVM launcher, now 3 specialized class are
 	available: JVMBase, SunJVMExe, SunJVMDLL
+	- Added latest 1.5.xx and 1.6.0 releases of the JRE for
+	autodownload, now defaulting to JRE 1.6.0 (should be better for
+	Vista end-users).
+	- Improved some inline help texts (english and french)
 
 0.9.9-4	(2007-04-07)
 	- Fixed bug #1694330: Working directory handled incorrectly.

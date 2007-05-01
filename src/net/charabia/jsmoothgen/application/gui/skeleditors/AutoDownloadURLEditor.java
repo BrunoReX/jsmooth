@@ -29,6 +29,14 @@ import java.awt.event.*;
 public class AutoDownloadURLEditor extends SkelPropEditor
 {
     protected String[] m_autourls = new String[] {
+	"JRE 1.6.0",  	"http://java.sun.com/update/1.6.0/jinstall-6-windows-i586.cab",
+	"JRE 1.5.0_11", 	"http://java.sun.com/update/1.5.0/jinstall-1_5_0_11-windows-i586.cab",
+	"JRE 1.5.0_10", 	"http://java.sun.com/update/1.5.0/jinstall-1_5_0_10-windows-i586.cab",
+	"JRE 1.5.0_07", 	"http://java.sun.com/update/1.5.0/jinstall-1_5_0_07-windows-i586.cab",
+	"JRE 1.5.0_06", 	"http://java.sun.com/update/1.5.0/jinstall-1_5_0_06-windows-i586.cab",
+	"JRE 1.5.0_03", 	"http://java.sun.com/update/1.5.0/jinstall-1_5_0_03-windows-i586.cab",
+	"JRE 1.5.0_02", 	"http://java.sun.com/update/1.5.0/jinstall-1_5_0_02-windows-i586.cab",
+	"JRE 1.5.0_01",  	"http://java.sun.com/update/1.5.0/jinstall-1_5_0_01-windows-i586.cab",
 	"JRE 1.5.0", "http://java.sun.com/update/1.5.0/jinstall-1_5_0-windows-i586.cab",
 	"JRE 1.4.2_03", "http://java.sun.com/update/1.4.2/jinstall-1_4_2_03-windows-i586.cab",
 	"JRE 1.4.2_02", "http://java.sun.com/update/1.4.2/jinstall-1_4_2_02-windows-i586.cab",

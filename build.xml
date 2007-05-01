@@ -351,6 +351,11 @@
       <param name="skelflags" value="${skelflags}"/>
       <param name="target" value="all"/>
     </antcall>
+    <antcall target="compileskel">
+      <param name="skelname" value="winservice"/>
+      <param name="skelflags" value="${skelflags}"/>
+      <param name="target" value="all"/>
+    </antcall>
    </target>
 
   <target name="clean">
@@ -389,6 +394,11 @@
     </antcall>
     <antcall target="compileskel">
       <param name="skelname" value="autodownload"/>
+      <param name="skelflags" value="${skelflags}"/>
+      <param name="target" value="clean"/>
+    </antcall>
+    <antcall target="compileskel">
+      <param name="skelname" value="winservice"/>
       <param name="skelflags" value="${skelflags}"/>
       <param name="target" value="clean"/>
     </antcall>
