@@ -43,6 +43,7 @@ class Process
   std::string         m_redirection;
   bool                m_redirectstderr;
   HANDLE              m_redirectHandle;
+  DWORD               m_exitCode;
 
  public:
   Process(const std::string& commandline, bool useconsole);
@@ -52,6 +53,7 @@ class Process
   bool run();
   void join();
 
+  int getExitCode();
 };
 
 

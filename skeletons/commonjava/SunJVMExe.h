@@ -40,6 +40,7 @@ class SunJVMExe : public JVMBase
  private:
   std::string m_jrehome;
   Version     m_version;
+  int         m_exitCode;
 
  public:
   SunJVMExe(const std::string& jrehome);
@@ -51,6 +52,8 @@ class SunJVMExe : public JVMBase
 
   std::string lookUpExecutable(bool useconsole);
   std::string getClassPath(bool full);
+
+  int getExitCode();
 
  private:
 };

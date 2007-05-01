@@ -77,12 +77,13 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
       globalResMan->setUserArguments( args );
     }
 
-  std::string dodebug = globalResMan->getProperty("skel_Debug");
-  if (StringUtils::parseInt(dodebug) != 0)
-  {
-    DEBUGCONSOLE = new DebugConsole("JSmooth Debug");
-    globalResMan->printDebug();
-  }
+  bool dodebug = globalResMan->getBooleanProperty("skel_Debug");
+
+  if (dodebug)
+    {
+      DEBUGCONSOLE = new DebugConsole("JSmooth Debug");
+      globalResMan->printDebug();
+    }
 
   DEBUG(string("Main class: ") + globalResMan->getMainName());
 
@@ -94,13 +95,15 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
   SetCurrentDirectory(newcurdir.c_str());
 
   JavaMachineManager man(*globalResMan);
-  std::string preferDLLstr = globalResMan->getProperty("skel_SingleProcess");
-
-  bool preferDLL = false;
-  if (StringUtils::parseInt(preferDLLstr) > 0)
-    preferDLL = true;
-
-  if (man.run(true, preferDLL) == false)
+  man.setAcceptExe(true);
+  man.setAcceptDLL(true);
+  if (dodebug)
+    man.setUseConsole(true);
+  else
+    man.setUseConsole(false);
+  man.setPreferDLL(globalResMan->getBooleanProperty("skel_SingleProcess"));
+  
+  if (man.run() == false)
     {
       DEBUG("Displaying error message to user...");
       std::string errmsg = globalResMan->getProperty("skel_Message");
@@ -109,7 +112,6 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
       DEBUG("URL=" + url);
       if ((url != "") && (MessageBox(NULL, errmsg.c_str(), "No Java?", MB_OKCANCEL|MB_ICONQUESTION|MB_APPLMODAL) == IDOK))
 	{
-	  // string file = httpDownload("http://java.sun.com/products/plugin/autodl/jinstall-1_3_0_05-win.cab");
 	  DEBUG("Now downloading " + url);
 	  string file = httpDownload(url);
 	  printf("GOT FILE[%s]\n", file.c_str());

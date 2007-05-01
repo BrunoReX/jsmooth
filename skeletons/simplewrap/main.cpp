@@ -67,11 +67,13 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 	 globalResMan->setUserArguments( args );
        }
 
-    std::string dodebug = globalResMan->getProperty("skel_Debug");
-    if ((StringUtils::parseInt(dodebug) != 0) && (DEBUGCONSOLE==0))
-      {
-	DEBUGCONSOLE = new DebugConsole("JSmooth Debug");
-      }
+
+  bool dodebug = globalResMan->getBooleanProperty("skel_Debug");
+
+  if (dodebug)
+    {
+      DEBUGCONSOLE = new DebugConsole("JSmooth Debug");
+    }
 
     if (DEBUGCONSOLE!=0)
       globalResMan->printDebug();
@@ -86,12 +88,15 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     SetCurrentDirectory(newcurdir.c_str());
 
     JavaMachineManager man(*globalResMan);
-    std::string preferDLLstr = globalResMan->getProperty("skel_SingleProcess");
+    man.setAcceptExe(true);
+    man.setAcceptDLL(true);
+    if (dodebug)
+      man.setUseConsole(true);
+    else
+      man.setUseConsole(false);
+    man.setPreferDLL(globalResMan->getBooleanProperty("skel_SingleProcess"));
 
-    bool preferDLL = false;
-    if (StringUtils::parseInt(preferDLLstr) > 0)
-        preferDLL = true;
-    if (man.run(true, preferDLL) == false)
+    if (man.run() == false)
     {
       DEBUG("Displaying error message to user...");
         std::string errmsg = globalResMan->getProperty("skel_Message");

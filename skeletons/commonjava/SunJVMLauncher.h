@@ -80,6 +80,8 @@ class SunJVMLauncher
 
   SunJVMExe* m_exerunner;
   SunJVMDLL* m_dllrunner;
+
+  int m_exitCode;
                
   /**
    * Launches the JVM target of this object. The object is run using
@@ -121,6 +123,10 @@ class SunJVMLauncher
   Version guessVersionByProcess(const string& exepath);
 
   friend bool operator < (const SunJVMLauncher& v1, const SunJVMLauncher& v2);
+
+  int getExitCode();
+
+
   
   bool runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource, bool noConsole, const std::string& version, const string& origin);
   bool dllInstanciate(ResourceManager& resource, const string& origin);

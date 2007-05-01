@@ -28,6 +28,11 @@ JavaMachineManager::JavaMachineManager(ResourceManager& resman): m_resman(resman
     m_javahomeVm = JVMEnvVarLookup::lookupJVM("JAVA_HOME");
     m_jrepathVm = JVMEnvVarLookup::lookupJVM("JRE_HOME");
     m_jdkpathVm = JVMEnvVarLookup::lookupJVM("JDK_HOME");
+    m_exitCode = -1;
+    m_useConsole = true;
+    m_acceptExe = true;
+    m_acceptDLL = true;
+    m_preferDLL = false;
 
     if (resman.getProperty("bundledvm").length() > 0)
     {
@@ -42,18 +47,21 @@ JavaMachineManager::JavaMachineManager(ResourceManager& resman): m_resman(resman
     DEBUG("Current directory is " + resman.getCurrentDirectory());
 }
 
-bool JavaMachineManager::run(bool dontUseConsole, bool preferSingleProcess)
+bool JavaMachineManager::run()
 {
   string vmorder = m_resman.getProperty(ResourceManager::KEY_JVMSEARCH);
 
   if (m_localVMenabled)
     {
-        DEBUG("Trying to use bundled VM " + m_localVM.JavaHome);        
-        if (m_localVM.runProc(m_resman, dontUseConsole, "bundled"))
-	        return true;
-        
-        if (m_localVM.run(m_resman, "bundled"))
-        	return true;
+      DEBUG("Trying to use bundled VM " + m_localVM.JavaHome);        
+      if (m_localVM.runProc(m_resman, m_useConsole, "bundled"))
+	{
+	  m_exitCode = m_localVM.getExitCode();
+	  return true;
+	}
+
+      if (m_localVM.run(m_resman, "bundled"))
+	return true;
     }
 
   if (vmorder == "")
@@ -87,56 +95,44 @@ bool JavaMachineManager::run(bool dontUseConsole, bool preferSingleProcess)
             {
 	      DEBUG("- Trying registry: " + m_registryVms[i].toString());
 
-	      if (internalRun(m_registryVms[i], dontUseConsole, preferSingleProcess, "registry") == true)
+	      if (internalRun(m_registryVms[i], "registry") == true)
 		return true;
+
 	      DEBUG("Couldn't use this VM, now trying something else");
             }
-        } else if (*i == "jview")
-	  {
-	    DEBUG("- Trying to launch the application with JVIEW");
-	    if (m_jviewVm.runProc(m_resman, dontUseConsole))
-	      {
-		return true;
-	      }
-
-	  } else if (*i == "javahome")
+        } 
+      else if ((*i == "jview") && m_acceptExe)
+	{
+	  DEBUG("- Trying to launch the application with JVIEW");
+	  if (m_jviewVm.runProc(m_resman, ! m_useConsole))
 	    {
-	      DEBUG("- Trying to use JAVAHOME");
-	      if (m_javahomeVm.size()>0)
-                {
-		  DEBUG("JAVAHOME exists..." + m_javahomeVm[0].toString());
-		  if (internalRun(m_javahomeVm[0], dontUseConsole, preferSingleProcess, "jrehome"))
-		    return true;
-                }
-	    } else if (*i == "jrepath")
-	      {
-                DEBUG("- Trying to use JRE_HOME");
-                if (m_jrepathVm.size()>0)
-		  {
-		    if (internalRun(m_jrepathVm[0], dontUseConsole, preferSingleProcess, "jrehome"))
-		      return true;
-		    }
-		} else if (*i == "exepath")
-		  {
-		    DEBUG("- Trying to use PATH");
+	      return true;
+	    }
 
-		    SunJVMLauncher launcher;
-		    return launcher.runProc(m_resman, ! dontUseConsole, "path");
-		    
-// 		    string exename = dontUseConsole?"javaw.exe":"java.exe";
-// 		    SunJVMLauncher launcher;
-// 		    launcher.VmVersion = launcher.guessVersionByProcess("java.exe");
+	} 
+      else if ((*i == "javahome") && (m_javahomeVm.size()>0))
+	{
+	  DEBUG("- Trying to use JAVAHOME");
+	  if (internalRun(m_javahomeVm[0], "jrehome"))
+	    return true;
+	} 
+      else if ((*i == "jrepath") && (m_jrepathVm.size()>0))
+	{
+	  DEBUG("- Trying to use JRE_HOME");
+	  if (internalRun(m_jrepathVm[0], "jrehome"))
+	    return true;
+	} 
+      else if (*i == "exepath")
+	{
+	  DEBUG("- Trying to use PATH");
 
-// 		    if (launcher.VmVersion.isValid()
-// 			&& (!min.isValid() || (min <= launcher.VmVersion))
-// 			&& (!max.isValid() || (launcher.VmVersion <= max)))
-// 		      {
-// 			DEBUG("Found valid java machine " + exename + " on PATH (" + launcher.VmVersion.toString() + ")");
-// 			Version v12("1.2.0");
-// 			if (launcher.runExe(exename, false, m_resman, dontUseConsole, (launcher.VmVersion<v12)?"1.1":"1.2", "path"))
-// 			  return true;
-// 		      }
-		  }
+	  SunJVMLauncher launcher;
+	  if (launcher.runProc(m_resman, m_useConsole, "path"))
+	    {
+	      m_exitCode = m_localVM.getExitCode();
+	      return true;
+	    }
+	}
     }
 
   DEBUG("Couldn't run any suitable JVM!");
@@ -144,43 +140,30 @@ bool JavaMachineManager::run(bool dontUseConsole, bool preferSingleProcess)
 }
 
 
-bool JavaMachineManager::internalRun(SunJVMLauncher& launcher, bool noConsole, bool preferSingleProcess, const string& org)
+bool JavaMachineManager::internalRun(SunJVMLauncher& launcher, const string& org)
 {
-  // Need a console, and spawning a process is OK ? Then exec
-  // [java/jre].exe.
-  if ((noConsole == false) && (preferSingleProcess==false))
+  if (m_acceptDLL && m_preferDLL)
     {
-      return launcher.runProc(m_resman, noConsole, org);
-    }
-
-  // No need for a console, and need a single process ? Use the DLL
-  // and create a JVM with it
-  if (noConsole && preferSingleProcess)
-    {
-      DEBUG("Trying to run the JVM as a DLL call (executing in this process)...");
-      if (launcher.run(m_resman, org) == true)
+      if (launcher.run(m_resman, org))
 	return true;
-
-      DEBUG("Couldn't use the DLL at " + launcher.RuntimeLibPath);      
     }
 
-  // If we have an embedded jar, always prefer the exec process
-  // launching, as it garantees that the temporary jar is cleaned up
-  // on exit (due to a bug in the JVM DLL that prevents it to
-  // terminate nicely).
-  if (m_resman.useEmbeddedJar())
+  if (m_acceptExe)
     {
-      if (launcher.runProc(m_resman, noConsole, org) == false)
-	return launcher.run(m_resman, org);
+      if (launcher.runProc(m_resman, m_useConsole, org))
+	{
+	  m_exitCode = m_localVM.getExitCode();
+	  return true;
+	}
     }
-  else // Otherwise, preferring the JVM DLL call first is better
-       // (it spares a new process)
+
+  if (m_acceptDLL && !m_preferDLL)
     {
-      if (launcher.run(m_resman, org) == false)
-	return launcher.runProc(m_resman, noConsole, org);
+      if (launcher.run(m_resman, org))
+	return true;      
     }
-  
-  return true;
+
+  return false;
 }
 
 
@@ -206,4 +189,29 @@ SunJVMLauncher* JavaMachineManager::runDLLFromRegistry(bool justInstanciate)
     }
 
   return NULL;
+}
+
+void JavaMachineManager::setUseConsole(bool useConsole)
+{
+  m_useConsole = useConsole;
+}
+
+void JavaMachineManager::setAcceptExe(bool acceptExe)
+{
+  m_acceptExe = acceptExe;
+}
+
+void JavaMachineManager::setAcceptDLL(bool acceptDLL)
+{
+  m_acceptDLL = acceptDLL;;
+}
+
+void JavaMachineManager::setPreferDLL(bool prefDLL)
+{
+  m_preferDLL = prefDLL;
+}
+
+int JavaMachineManager::getExitCode()
+{
+  return m_exitCode;
 }

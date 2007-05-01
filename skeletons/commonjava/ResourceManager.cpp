@@ -190,8 +190,12 @@ std::string ResourceManager::getProperty(const std::string& key, const std::stri
 
 bool ResourceManager::getBooleanProperty(const std::string& key) const
 {
-  std::string prop = getProperty(key);
+  std::string prop = getProperty(key, "0");
+
   if (StringUtils::parseInt(prop)==1)
+    return true;
+
+  if (StringUtils::toLowerCase(prop) == "true")
     return true;
 
   return false;

@@ -71,12 +71,22 @@ int main(int argc, char *argv[])
   string newcurdir = globalResMan->getCurrentDirectory();
   SetCurrentDirectory(newcurdir.c_str());
 
+  int retvalue = -1;
+
   JavaMachineManager man(*globalResMan);
-  if (man.run(false, false) == false)
+  man.setAcceptExe(true);
+  man.setAcceptDLL(false);
+  man.setUseConsole(true);
+
+  if (man.run() == false)
     {
       std::string errmsg = globalResMan->getProperty("skel_Message");
       cerr << errmsg.c_str();
       cerr << "\r\n";
+    }
+  else
+    {
+      retvalue = man.getExitCode();
     }
 
   int waitkey = atoi(globalResMan->getProperty("skel_PressKey").c_str());
@@ -86,6 +96,6 @@ int main(int argc, char *argv[])
     }
   
   delete globalResMan;  
-  return 0;
+  return retvalue;
 }
 

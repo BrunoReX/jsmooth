@@ -121,7 +121,7 @@ bool SunJVMLauncher::run(ResourceManager& resource, const string& origin, bool j
     return false;
 }
 
-bool SunJVMLauncher::runProc(ResourceManager& resource, bool noConsole, const string& origin)
+bool SunJVMLauncher::runProc(ResourceManager& resource, bool useConsole, const string& origin)
 {
   std::string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));  
 
@@ -150,7 +150,12 @@ bool SunJVMLauncher::runProc(ResourceManager& resource, bool noConsole, const st
 
   SunJVMExe exe(this->JavaHome, VmVersion);   
   setupVM(resource, &exe);
-  return exe.run(classname, !noConsole);
+  if (exe.run(classname, useConsole))
+    {
+      m_exitCode = exe.getExitCode();
+      return true;
+    }
+  return false;
 }
 
 bool SunJVMLauncher::setupVM(ResourceManager& resource, JVMBase* vm)
@@ -201,6 +206,11 @@ SunJVMDLL* SunJVMLauncher::getDLL()
 bool operator < (const SunJVMLauncher& v1, const SunJVMLauncher& v2)
 {
   return v1.VmVersion < v2.VmVersion;
+}
+
+int SunJVMLauncher::getExitCode()
+{
+  return m_exitCode;
 }
 
 

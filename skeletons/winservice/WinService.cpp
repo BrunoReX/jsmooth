@@ -286,6 +286,11 @@ void WinService::run()
     }
 
   JavaMachineManager man(*globalResMan);
+  man.setAcceptExe(false);
+  man.setAcceptDLL(true);
+  man.setUseConsole(false);
+  man.setPreferDLL(true);
+
   setStatus(SERVICE_RUNNING);
   SunJVMLauncher* launcher = man.runDLLFromRegistry(true);
 
@@ -299,7 +304,7 @@ void WinService::run()
       SunJVMDLL* jdll = m_jvm->getDLL();
       if (jdll != 0)
 	{
-	  jdll->run( globalResMan->getProperty(ResourceManager::KEY_MAINCLASSNAME), false);
+	  jdll->run( globalResMan->getProperty(ResourceManager::KEY_MAINCLASSNAME), true);
 	}
       else
 	log("ERROR: JVM is launched, but can get a DLL... ?");

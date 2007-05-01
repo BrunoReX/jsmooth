@@ -53,6 +53,13 @@ class JavaMachineManager
     
   ResourceManager& m_resman;
 
+  int                    m_exitCode;
+
+  bool                   m_useConsole;
+  bool                   m_acceptExe;
+  bool                   m_acceptDLL;
+  bool                   m_preferDLL;
+
  public:
   /**
    * This constructor builds a JavaMachineManager with a ResourceManager.
@@ -62,6 +69,10 @@ class JavaMachineManager
    */ 
   JavaMachineManager(ResourceManager& resman) ;
 
+  void setUseConsole(bool useConsole);
+  void setAcceptExe(bool acceptExe);
+  void setAcceptDLL(bool acceptDLL);
+  void setPreferDLL(bool prefDLL);
 
   /**
    * Start the Java application.  The java application started is
@@ -87,12 +98,14 @@ class JavaMachineManager
    * @param preferSingleProcess if true, the launcher first tries to launch the application in his own process.
    * @return true if the application is successfully started, false otherwise.
    */
-  bool run(bool noConsole, bool preferSingleProcess);
+  bool run();
 
   SunJVMLauncher* runDLLFromRegistry(bool justInstanciate=false);
 
+  int getExitCode();
+
  protected:
-  bool internalRun(SunJVMLauncher& launcher, bool noConsole, bool preferSingleProcess, const string& org);
+  bool internalRun(SunJVMLauncher& launcher, const string& org);
 
 };
 

@@ -82,7 +82,7 @@ bool Process::run()
   int res = CreateProcess(NULL, (char*)m_commandline.c_str(), 
 			  NULL, NULL, inheritsHandle, creationFlags, 
 			  NULL, NULL, &info, &m_procinfo);
-
+  
   if (res != 0)
     {
       m_started = true;
@@ -105,3 +105,11 @@ void Process::join()
     }
 
 }
+
+int Process::getExitCode()
+{
+  GetExitCodeProcess(m_procinfo.hProcess,
+		     &m_exitCode);
+  return (int)m_exitCode;
+}
+

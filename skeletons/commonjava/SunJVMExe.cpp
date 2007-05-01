@@ -93,6 +93,7 @@ bool SunJVMExe::run(const std::string& mainclass, bool useconsole)
     {
       DEBUG("Started successfully");
       proc.join();
+      m_exitCode = proc.getExitCode();
       return true;
     }
   else
@@ -208,4 +209,9 @@ std::string SunJVMExe::getClassPath(bool full)
     }
 
   return StringUtils::join(cp, ";");
+}
+
+int SunJVMExe::getExitCode()
+{
+  return m_exitCode;
 }
