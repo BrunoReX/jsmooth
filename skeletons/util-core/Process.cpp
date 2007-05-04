@@ -76,8 +76,11 @@ bool Process::run()
 	}
       info.hStdOutput = m_redirectHandle;
       info.hStdError = m_redirectHandle;
-      info.dwFlags = STARTF_USESTDHANDLES;
+      info.dwFlags = STARTF_USESHOWWINDOW|STARTF_USESTDHANDLES;
+      info.lpTitle = NULL;
+      info.wShowWindow = SW_HIDE; // OR SW_SHOWMINIMIZED? SW_SHOWMINNOACTIVE?
     }
+
   //  string exeline = StringUtils::fixQuotes(exepath) + " " + arguments;
   int res = CreateProcess(NULL, (char*)m_commandline.c_str(), 
 			  NULL, NULL, inheritsHandle, creationFlags, 

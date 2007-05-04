@@ -24,6 +24,7 @@
 #include "StringUtils.h"
 #include <winnls.h>
 #include "FileUtils.h"
+#include "Process.h"
 
 void _debugOutput(const std::string& text)
 {
@@ -36,23 +37,33 @@ void _debugWaitKey()
 
 int main(int argc, char *argv[])
 {
-  char buffer[256];
-  buffer[0] = 0;
-  int res = GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME,
-			  buffer, 255);
+//   char buffer[256];
+//   buffer[0] = 0;
+//   int res = GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME,
+// 			  buffer, 255);
 
-  if (res > 0)
-    printf("result: %s\n", buffer);
+//   if (res > 0)
+//     printf("result: %s\n", buffer);
 
+  std::string exeline = "C:\\Program Files\\Java\\jdk1.5.0_11\\bin\\java.exe -version";
+  string tmpfilename = FileUtils::createTempFileName(".tmp");
 
-  std::string cmdlinetest = " \"this is my\ test\\\" \"here and then\"";
-  cmdlinetest = " \"this is my\ test here\\\" \"and\" \"then\"";
-  printf("splitting line <%s>\n", cmdlinetest.c_str());
-  std::vector<std::string> args = StringUtils::split(cmdlinetest, " \t\n\r", "\"'", false, false);
-  for (int i=0; i<args.size(); i++)
-    {
-      printf("ARG[%d]=%s\n", i, args[i].c_str(), false, false);
-    }
+  Process proc(exeline, true);
+  proc.setRedirect(tmpfilename);
+  proc.run();
+  proc.join();
+
+  std::string voutput = FileUtils::readFile(tmpfilename);
+  //  printf("GOT: %s\n", voutput.c_str());
+
+//   std::string cmdlinetest = " \"this is my\ test\\\" \"here and then\"";
+//   cmdlinetest = " \"this is my\ test here\\\" \"and\" \"then\"";
+//   printf("splitting line <%s>\n", cmdlinetest.c_str());
+//   std::vector<std::string> args = StringUtils::split(cmdlinetest, " \t\n\r", "\"'", false, false);
+//   for (int i=0; i<args.size(); i++)
+//     {
+//       printf("ARG[%d]=%s\n", i, args[i].c_str(), false, false);
+//     }
 
   //   std::string fqmethod = "void mytest1(java.lang.String test[ ] ) ";
   //   std::vector<std::string> t1 = StringUtils::split(fqmethod, " \t(,);][", "", false, true);
