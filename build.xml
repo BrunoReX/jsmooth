@@ -29,7 +29,7 @@
 
  <!-- set here the properties specific to the release --> 
 
-  <property name="VERSION" value="0.9.9-5"/>
+  <property name="VERSION" value="0.9.9-6"/>
 
   <!-- You don't need to modify the properties below -->
 
