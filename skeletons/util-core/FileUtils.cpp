@@ -144,6 +144,9 @@ std::string FileUtils::getComputerName()
 
 std::string FileUtils::concFile(std::string path, std::string file)
 {
+  if (FileUtils::isAbsolute(file))
+    return file;
+
   if (path.length() > 0)
     {
       if (path[path.length()-1] != '\\')
