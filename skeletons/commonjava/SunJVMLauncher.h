@@ -120,22 +120,27 @@ class SunJVMLauncher
 
   std::string toString() const;
 
-  Version guessVersionByProcess(const string& exepath);
 
   friend bool operator < (const SunJVMLauncher& v1, const SunJVMLauncher& v2);
 
   int getExitCode();
 
 
+
+
+
+//   Version guessVersionByProcess(const string& exepath);
+
+
   
-  bool runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource, bool noConsole, const std::string& version, const string& origin);
-  bool dllInstanciate(ResourceManager& resource, const string& origin);
+//   bool runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource, bool noConsole, const std::string& version, const string& origin);
+//   bool dllInstanciate(ResourceManager& resource, const string& origin);
 
-  bool callDLLStaticMethod(const std::string& classname, const std::string& methodname, const std::string& signature);
-  bool callDLLStaticMethodInt(const std::string& classname, const std::string& methodname, const std::string& signature, int value);
+//   bool callDLLStaticMethod(const std::string& classname, const std::string& methodname, const std::string& signature);
+//   bool callDLLStaticMethodInt(const std::string& classname, const std::string& methodname, const std::string& signature, int value);
 
-  int destroyVM();
-  JavaVM* getJavaVM();
+//   int destroyVM();
+//   JavaVM* getJavaVM();
 
 //   jclass findClass(const std::string& clazz);
 //   jmethodID findMethod(jclass& cls, const std::string& methodname, const std::string& signature, bool isStatic);
@@ -147,13 +152,13 @@ class SunJVMLauncher
 
  private:
      
-  bool runVMDLL(ResourceManager& resource, const string& origin, bool justInstanciate=false);
+//   bool runVMDLL(ResourceManager& resource, const string& origin, bool justInstanciate=false);
 
-  bool setupVM12DLL(ResourceManager& resource, const string& origin);
-  bool setupVM11DLL(ResourceManager& resource, const string& origin);
+//   bool setupVM12DLL(ResourceManager& resource, const string& origin);
+//   bool setupVM11DLL(ResourceManager& resource, const string& origin);
 
-  bool runVM11proc(ResourceManager& resource, bool noConsole, const string& origin);
-  bool runVM12proc(ResourceManager& resource, bool noConsole, const string& origin);
+//   bool runVM11proc(ResourceManager& resource, bool noConsole, const string& origin);
+//   bool runVM12proc(ResourceManager& resource, bool noConsole, const string& origin);
 
 };
 

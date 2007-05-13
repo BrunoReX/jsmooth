@@ -95,12 +95,14 @@ bool SunJVMDLL::instanciate()
   m_javavm = new JavaVM();
   m_javaenv = new JNIEnv();
 
+  DEBUG("DLL Setup on " + m_version.toString());
   bool res;
   if ((m_version.getMajor() == 1)  && (m_version.getMinor() == 1))
     res = setupVM11DLL(CreateJavaVM, GetDefaultJavaVMInitArgs);
   else
     res = setupVM12DLL(CreateJavaVM, GetDefaultJavaVMInitArgs);
 
+  DEBUG("Result code on DLL: " + StringUtils::toString(res));
   if (res)
     {
       m_statusCode = SunJVMDLL::JVM_LOADED;

@@ -20,6 +20,7 @@
 
 #include "JavaMachineManager.h"
 
+
 JavaMachineManager::JavaMachineManager(ResourceManager& resman): m_resman(resman)
 {
   DEBUG("Now searching the JVM installed on the system...");
@@ -28,7 +29,7 @@ JavaMachineManager::JavaMachineManager(ResourceManager& resman): m_resman(resman
     m_javahomeVm = JVMEnvVarLookup::lookupJVM("JAVA_HOME");
     m_jrepathVm = JVMEnvVarLookup::lookupJVM("JRE_HOME");
     m_jdkpathVm = JVMEnvVarLookup::lookupJVM("JDK_HOME");
-    m_exitCode = -1;
+    m_exitCode = 0;
     m_useConsole = true;
     m_acceptExe = true;
     m_acceptDLL = true;
@@ -39,7 +40,8 @@ JavaMachineManager::JavaMachineManager(ResourceManager& resman): m_resman(resman
         string bjvm = resman.getProperty("bundledvm");
         DEBUG("Found a vm bundled with the application: (" + bjvm + ")");
         m_localVMenabled = true;
-        m_localVM.JavaHome = FileUtils::concFile(resman.getCurrentDirectory(), bjvm);
+	std::string home = FileUtils::concFile(resman.getCurrentDirectory(), bjvm);
+        m_localVM.JavaHome = home;
     } else
     {
         m_localVMenabled = false;
@@ -53,15 +55,19 @@ bool JavaMachineManager::run()
 
   if (m_localVMenabled)
     {
-      DEBUG("Trying to use bundled VM " + m_localVM.JavaHome);        
-      if (m_localVM.runProc(m_resman, m_useConsole, "bundled"))
+      if (internalRun(m_localVM, "bundled"))
 	{
-	  m_exitCode = m_localVM.getExitCode();
 	  return true;
 	}
 
-      if (m_localVM.run(m_resman, "bundled"))
-	return true;
+//       DEBUG("Trying to use bundled VM " + m_localVM.JavaHome);        
+//       if (m_localVM.runProc(m_resman, m_useConsole, "bundled"))
+// 	{
+// 	  m_exitCode = m_localVM.getExitCode();
+// 	  return true;
+// 	}
+//       if (m_localVM.run(m_resman, "bundled"))
+// 	return true;
     }
 
   if (vmorder == "")
@@ -152,7 +158,7 @@ bool JavaMachineManager::internalRun(SunJVMLauncher& launcher, const string& org
     {
       if (launcher.runProc(m_resman, m_useConsole, org))
 	{
-	  m_exitCode = m_localVM.getExitCode();
+	  m_exitCode = launcher.getExitCode();
 	  return true;
 	}
     }
