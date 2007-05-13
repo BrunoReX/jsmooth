@@ -161,6 +161,10 @@ public class PropertiesBuilder
      */
     static public String getRenormalizedPathIfNeeded(String value, File previousbasedir, File newbasedir)
     {
+// 	File f = new File(value);
+// 	if (f.isAbsolute())
+// 	    return value;
+
 	if (newbasedir == null)
 	    return value;
 

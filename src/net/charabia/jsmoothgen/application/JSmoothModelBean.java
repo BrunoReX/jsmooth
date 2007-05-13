@@ -381,6 +381,7 @@ public class JSmoothModelBean
 
     public String[] normalizePaths(java.io.File filebase, boolean toRelativePath)
     {
+	//	System.out.println("Normalize Path " + filebase + " / " + toRelativePath);
 	Vector result = new Vector();
 
 	m_iconLocation = checkRelativePath(filebase, m_iconLocation, result, "Icon location", toRelativePath);

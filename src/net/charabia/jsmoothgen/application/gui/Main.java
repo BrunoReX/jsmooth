@@ -66,7 +66,6 @@ public class Main extends JFrame
 		}
 	    });
 
-
 	setTitle("Untitled");
 	loadWindowSettings();
 	splash.dispose();
