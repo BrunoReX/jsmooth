@@ -61,13 +61,13 @@ int main(int argc, char *argv[])
 
   //
   // sets up the debug mode, if requested
-  std::string dodebug = globalResMan->getProperty("skel_Debug");
-  if (StringUtils::parseInt(dodebug) != 0)
+  
+  if (globalResMan->getBooleanProperty("skel_Debug"))
     {
       enableDebug = true;
       globalResMan->printDebug();
     }
-
+  
   string newcurdir = globalResMan->getCurrentDirectory();
   SetCurrentDirectory(newcurdir.c_str());
 
@@ -89,8 +89,7 @@ int main(int argc, char *argv[])
       retvalue = man.getExitCode();
     }
 
-  int waitkey = atoi(globalResMan->getProperty("skel_PressKey").c_str());
-  if (waitkey != 0)
+  if (globalResMan->getBooleanProperty("skel_PressKey"))
     {
       system("PAUSE");
     }
