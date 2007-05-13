@@ -95,6 +95,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     else
       man.setUseConsole(false);
     man.setPreferDLL(globalResMan->getBooleanProperty("skel_SingleProcess"));
+    int retvalue = 0;
 
     if (man.run() == false)
     {
@@ -106,11 +107,15 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
             ShellExecute(NULL, "open", url.c_str(), NULL, "", 0);
         }
     }
+    else
+      {
+	retvalue = man.getExitCode();
+      }
 
     DEBUG("NORMAL EXIT");
     DEBUGWAITKEY();
 
     /* The program return-value is 0 - The value that PostQuitMessage() gave */
-    return 0;
+    return retvalue;
 }
 
