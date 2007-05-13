@@ -1,3 +1,20 @@
+0.9.9-6
+	- Fixed a DOS console appearing for a fraction of second when
+	running a CreateProcess to guess the version of the JVM.
+	- Return code now correctly returned for the console wrapper.
+	- Now the jsmooth wrappers configured to work with a bundled VM
+	accept the SingleProcess argument correctly. If no java.exe is
+	available in the bin/ folder of the bundled VM, JSmooth runs the
+	DLL and uses the "minimum JVM version" defined in the project, or
+	assumes 1.2+ if no minimum version is defined.  NOTE: Some JRE do
+	not accept to be instanciated directly with their DLL when they
+	are not properly installed (which is often the case for a bundled
+	JRE). For instance, I've found that 1.3.1_02 works fine when
+	calling the java[w].exe, but crash when calling the jvm.dll. On
+	the other hand, the same test on a 1.5.0_11 works fine.
+	- Removed the doctype in the docbook doc file, so that it can
+	compile without an internet connection
+
 0.9.9-5 (2007-05-01)
 	- Adds new wrapper for windows services
 	- Refactored the Sun JVM launcher, now 3 specialized class are
