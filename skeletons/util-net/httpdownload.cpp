@@ -25,7 +25,7 @@
 #include <stdlib.h>
 
 Fl_Window *httpWindow ;
-HttpClient httpClient;
+WinHttpClient httpClient;
 char downloadLabel[256];
 unsigned long downloadThread;
 HttpUpdater updater;
@@ -40,6 +40,8 @@ void HttpUpdater::httpDownloadUpdate(int current, int total)
     sprintf(downloadLabel, "Downloading %d%%", (current*100)/total);
   else
     sprintf(downloadLabel, "Downloading...");
+
+  printf("%s\n", downloadLabel);
 
   hcg_progressbar->label(downloadLabel);
   hcg_progressbar->redraw();
@@ -89,6 +91,7 @@ void downloadHttpThread(void* param)
   httpWindow->hide();
   Fl::unlock();
 }
+
 
 //
 // Callback for the cancel button

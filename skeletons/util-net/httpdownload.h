@@ -35,11 +35,12 @@
 #include "URL.h"
 #include "downloadgui.h"
 #include "HttpClient.h"
+#include "WinHttpClient.h"
 
 //
 // The listener that keeps track of the download progress and update
 // the progress bar. 
-class HttpUpdater : public HttpClientListener
+class HttpUpdater : public WinHttpClientListener
 {
   void httpDownloadUpdate(int current, int total);
 };

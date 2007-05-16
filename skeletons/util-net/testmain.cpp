@@ -69,9 +69,13 @@ int main(int argc, char *argv[])
   //  string file = httpDownload("http://java.sun.com/update/1.5.0/jinstall-1_5_0-windows-i586.cab");
 
   //  string file = httpDownload("http://localhost/jinstall-1_4_2-windows-i586.cab");
+  //  string file = httpDownload("http://127.0.0.1/test.msi");
+  //  string file = httpDownload("http://travel.state.gov/passport/forms/forms_847.html");
   //  string file = httpDownload("http://java.sun.com/products/plugin/autodl/jinstall-1_3_0_05-win.cab");
 
-  string file= httpDownload("http://downloads.sourceforge.net/filezilla/FileZilla_2_2_31_setup.exe?use_mirror=osdn");
+  string file = httpDownload("ftp://ftp.free.fr/pub/freeplayer/Freeplayer-Win32-20050905.zip");
+
+  //string file= httpDownload("http://downloads.sourceforge.net/filezilla/FileZilla_2_2_31_setup.exe?use_mirror=osdn");
 
   printf("Downloaded: %s\n", file.c_str());
   exit(0);
