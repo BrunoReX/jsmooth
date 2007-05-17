@@ -50,6 +50,10 @@ int main(int argc, char *argv[])
   winservice_ref = 0;
   ResourceManager resman("JAVA", PROPID, JARID);
 
+  string newcurdir = resman.getCurrentDirectory();
+  if (newcurdir.length()>0)
+    SetCurrentDirectory(newcurdir.c_str());
+
   std::string rootdir = FileUtils::getExecutablePath();
   
   std::string serviceName = resman.getProperty("skel_ServiceName");

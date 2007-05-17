@@ -40,6 +40,10 @@ public class AlertServer
 				System.exit(0);
 				return;
 			    }
+			else if (line.startsWith("PATH"))
+			    {
+				line = System.getProperty("user.dir");
+			    }
 			fw.close();
 			JOptionPane.showMessageDialog(null, line, "alert", JOptionPane.ERROR_MESSAGE); 
 		    }
@@ -59,7 +63,7 @@ public class AlertServer
     public void setup()
     {
 	try {
-	    m_socket = new ServerSocket(2073);
+	    m_socket = new ServerSocket(2273);
 	} catch (Exception ex)
 	    {
 		ex.printStackTrace();
