@@ -1,3 +1,13 @@
+0.9.9-7
+	- Changed network code so that download now uses the IE proxy
+	configuration.
+	- Download of files by custom-download wrapper can now be done in
+	http, https, and ftp.
+	- Added a single instance option for the auto-download,
+	custom-download and windowed wrappers. When this option is
+	enabled, launching another instance of the application results in
+	bringing the window of the first one to front.
+
 0.9.9-6
 	- Fixed a DOS console appearing for a fraction of second when
 	running a CreateProcess to guess the version of the JVM.

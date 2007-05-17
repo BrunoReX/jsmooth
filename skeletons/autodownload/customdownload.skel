@@ -35,4 +35,11 @@
 <type>boolean</type>
 <value>0</value>
 </skeletonProperties>
+<skeletonProperties>
+<description>SKEL_GENERIC_SINGLEINSTANCE_DESCRIPTION</description>
+<idName>SingleInstance</idName>
+<label>SKEL_GENERIC_SINGLEINSTANCE</label>
+<type>boolean</type>
+<value>0</value>
+</skeletonProperties>
 </jsmoothskeleton>

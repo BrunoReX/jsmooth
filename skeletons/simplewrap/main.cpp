@@ -26,6 +26,7 @@
 #include "ResourceManager.h"
 #include "JVMRegistryLookup.h"
 #include "JavaMachineManager.h"
+#include "SingleInstanceManager.h"
 
 ResourceManager* globalResMan;
 DebugConsole *DEBUGCONSOLE = 0;
@@ -56,6 +57,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
                     int nFunsterStil)
 {
     atexit(lastExit);
+    SingleInstanceManager instanceman;
 
     globalResMan = new ResourceManager("JAVA", PROPID, JARID);
 
@@ -77,6 +79,21 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 
     if (DEBUGCONSOLE!=0)
       globalResMan->printDebug();
+
+
+  bool singleinstance = globalResMan->getBooleanProperty("skel_SingleInstance");
+  if (singleinstance)
+    {
+      if (instanceman.alreadyExists())
+	{
+	  instanceman.sendMessageInstanceShow();
+	  exit(0);
+	}
+      else
+	{
+	  instanceman.startMasterInstanceServer();
+	}
+    }
 
     DEBUG(string("Main class: ") + globalResMan->getMainName());
 

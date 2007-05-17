@@ -26,6 +26,8 @@
 #include "FileUtils.h"
 #include "Process.h"
 
+#include "SingleInstanceManager.h"
+
 void _debugOutput(const std::string& text)
 {
   printf("%s\n", text.c_str());
@@ -44,6 +46,15 @@ int main(int argc, char *argv[])
 
 //   if (res > 0)
 //     printf("result: %s\n", buffer);
+
+  SingleInstanceManager singinst;
+  if (singinst.alreadyExists())
+    {
+      printf("Already running...\n");
+      exit(0);
+    }
+  else
+    Sleep(50000);
 
   std::string exeline = "C:\\Program Files\\Java\\jdk1.5.0_11\\bin\\java.exe -version";
   string tmpfilename = FileUtils::createTempFileName(".tmp");
