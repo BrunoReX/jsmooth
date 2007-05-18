@@ -6,6 +6,7 @@
 <JVMSearchPath>exepath</JVMSearchPath>
 <JVMSearchPath>jview</JVMSearchPath>
 <JVMSearchPath>registry</JVMSearchPath>
+<arguments></arguments>
 <currentDirectory>..\classes</currentDirectory>
 <embeddedJar>true</embeddedJar>
 <executableName>Sample.exe</executableName>
@@ -47,6 +48,7 @@ Do you want to download it?</value>
 </skeletonProperties>
 <skeletonProperties>
 <key>URL</key>
+<value></value>
 </skeletonProperties>
 <skeletonProperties>
 <key>SingleProcess</key>

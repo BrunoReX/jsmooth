@@ -54,6 +54,7 @@ bool MSJViewLauncher::runProc(ResourceManager& resource, bool noConsole)
       string classpath = resource.saveJarInTempFile();
       string cpext = resource.getNormalizedClassPath();
       classpath += cpext;
+      classpath += ";" + resource.saveJnismoothInTempFile();
 
       string classname = resource.getProperty(string(ResourceManager::KEY_MAINCLASSNAME));
       string arguments = javaproperties + " /cp:p \"" + classpath + "\" " + classname;
