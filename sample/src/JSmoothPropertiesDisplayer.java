@@ -6,13 +6,13 @@
 
 import java.util.*;
 
-
 /**
  *
  * @author  Rodrigo
  */
 public class JSmoothPropertiesDisplayer extends java.awt.Frame
 {
+
     private String[] m_args;
 	/** Creates new form Frame */
 	public JSmoothPropertiesDisplayer(String[] args)
@@ -70,6 +70,43 @@ public class JSmoothPropertiesDisplayer extends java.awt.Frame
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(m_buttonClose, gridBagConstraints);
+
+	java.awt.Button reboot = new java.awt.Button("JNI Tests");
+        add(reboot, gridBagConstraints);
+        reboot.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+		try {
+		    java.io.File f = new java.io.File("Z:/test");
+		    System.out.println(f.getAbsoluteFile().toString());
+		    System.out.println(f.getAbsoluteFile().getCanonicalPath().toString());
+		    System.out.println("JNI Availability : " + jsmooth.Native.isAvailable());
+
+		    if (jsmooth.Native.isAvailable())
+			{
+
+			    jsmooth.DriveInfo di = jsmooth.Native.getDriveInfo(f);
+			    System.out.println("DriveInfo: " + di + " = " + di.toString());
+
+			    System.out.println("path: " + jsmooth.Native.getExecutablePath());
+			    System.out.println("filename: " + jsmooth.Native.getExecutableName());
+			    jsmooth.Native.shellExecute(jsmooth.Native.SHELLEXECUTE_OPEN, 
+							"service.log", 	null, null, 
+							jsmooth.Native.SW_SHOWNORMAL);
+			    jsmooth.Native.shellExecute(jsmooth.Native.SHELLEXECUTE_FIND, 
+							"c:\\TEMP", 	null, null, 
+							jsmooth.Native.SW_SHOWNORMAL);
+			    jsmooth.Native.shellExecute(jsmooth.Native.SHELLEXECUTE_EXPLORE, 
+							"z:\\", 	null, null, 
+							jsmooth.Native.SW_SHOWNORMAL);
+
+			    //			    System.out.println("RES: " + jsmooth.Native.exitWindows(jsmooth.Native.EXITWINDOWS_REBOOT | jsmooth.Native.EXITWINDOWS_FORCE ));
+			}
+		} catch (Exception e)
+		    {
+			e.printStackTrace();
+		    }
+            }
+        });
 
         pack();
     }//GEN-END:initComponents

@@ -29,7 +29,7 @@
 
  <!-- set here the properties specific to the release --> 
 
-  <property name="VERSION" value="0.9.9-6"/>
+  <property name="VERSION" value="0.9.9-7"/>
 
   <!-- You don't need to modify the properties below -->
 
@@ -255,8 +255,20 @@
     <copy tofile="${dist}/Changelog.txt" file="Changelog"/>
 
     <!-- Compile the wrappers -->
+    <ant antfile="build.xml" dir="skeletons/jnismooth/" target="dist"/>
     <ant antfile="build.xml" dir="skeletons/samplejar/" target="dist"/>
     <ant antfile="build.xml" dir="skeletons/consolewrapper/samplejar/" target="dist"/>
+    
+    <mkdir dir="${dist}/jni"/>
+    <copy todir="${dist}/jni" file="skeletons/jnismooth/jnismooth.jar"/>
+    <javadoc packagenames="jsmooth.*"
+	     sourcepath="skeletons/jnismooth/src"
+             destdir="${dist}/docs/jniapi"
+             author="true"
+             version="true"
+             use="true"
+             windowtitle="JSmooth JNI API" />
+
 
     <mkdir dir="${dist}/skeletons/windowed-wrapper"/>
     <mkdir dir="${dist}/skeletons/console-wrapper"/>

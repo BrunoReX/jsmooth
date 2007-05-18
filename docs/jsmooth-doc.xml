@@ -1043,6 +1043,30 @@ and install automatically a JVM.
  </sect2>
 </sect1>
 
+<sect1><title>Using the JSmooth JNI functions</title>
+
+   <para> Some of the jsmooth wrappers provides Windows-specific JNI
+   features that allow your application to optionnaly access native
+   information.
+   </para>
+
+   <para> In order to use those features, you must enable the JSmooth
+   JNI option, and add the <function>jsmooth.Native</function> calls
+   in your java code. You need to build your project using the
+   <function>jnismooth.jar</function> library, but don't need to
+   package it with your application, as it is embedded (as well as the
+   native functions implementation) in the wrappers.
+    </para>
+
+
+   <para>Before using any JNI feature from the
+    <function>jsmooth.Native</function>, you must check that the
+    native methods are correctly bound to their native implementation
+    by using the <function>jsmooth.Native.isAvailable()</function>
+    method. If this method returns false, you cannot use any of the
+    native method.</para>
+
+</sect1>
 
 <sect1><title>Frequently Asked Question</title>
 

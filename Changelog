@@ -7,6 +7,8 @@
 	custom-download and windowed wrappers. When this option is
 	enabled, launching another instance of the application results in
 	bringing the window of the first one to front.
+	- Added JNI functions available to the java application when
+	launched using the JVM DLL
 
 0.9.9-6
 	- Fixed a DOS console appearing for a fraction of second when

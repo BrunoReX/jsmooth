@@ -39,26 +39,29 @@
 <maximumMemoryHeap>67108864</maximumMemoryHeap>
 <maximumVersion></maximumVersion>
 <minimumVersion>1.3</minimumVersion>
-<skeletonName>Custom Web Download Wrapper</skeletonName>
+<skeletonName>Windowed Wrapper</skeletonName>
 <skeletonProperties>
 <key>Message</key>
 <value>Java has not been found on your computer.
 Do you want to download it?</value>
 </skeletonProperties>
 <skeletonProperties>
-<key>DownloadURL</key>
-<value></value>
+<key>URL</key>
 </skeletonProperties>
 <skeletonProperties>
 <key>SingleProcess</key>
 <value>1</value>
 </skeletonProperties>
 <skeletonProperties>
-<key>Debug</key>
-<value>0</value>
+<key>SingleInstance</key>
+<value>1</value>
 </skeletonProperties>
 <skeletonProperties>
-<key>SingleInstance</key>
-<value>0</value>
+<key>JniSmooth</key>
+<value>1</value>
+</skeletonProperties>
+<skeletonProperties>
+<key>Debug</key>
+<value>1</value>
 </skeletonProperties>
 </jsmoothproject>
