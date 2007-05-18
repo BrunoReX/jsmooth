@@ -189,6 +189,11 @@ bool SunJVMLauncher::setupVM(ResourceManager& resource, JVMBase* vm)
       std::string embj = resource.saveJarInTempFile();
       vm->addPathElement(embj);
     }
+  
+  std::string jnijar = resource.saveJnismoothInTempFile();
+  if (jnijar != "")
+    vm->addPathElement(jnijar);
+
   //
   // Define the classpath
   std::vector<std::string> classpath = resource.getNormalizedClassPathVector();

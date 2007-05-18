@@ -76,7 +76,10 @@ public class SampleApplication extends javax.swing.JFrame
 			if (iic != null)
 			    jLabel1.setIcon(iic);
 		    }
-		jLabel1.setText("Sample Application for JSmooth");
+
+		String toto = jsmooth.Native.getExecutablePath();
+		
+		jLabel1.setText("Sample Application for JSmooth " + toto);
 		jPanel1.add(jLabel1, java.awt.BorderLayout.CENTER);
 		
 		jButton1.setText("Exit");

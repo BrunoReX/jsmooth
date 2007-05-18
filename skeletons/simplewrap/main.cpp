@@ -59,7 +59,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     atexit(lastExit);
     SingleInstanceManager instanceman;
 
-    globalResMan = new ResourceManager("JAVA", PROPID, JARID);
+    globalResMan = new ResourceManager("JAVA", PROPID, JARID, JNISMOOTHID);
 
     // sets up the command line arguments
     // not sure if lpszArgument can be null on Windows...
@@ -71,6 +71,9 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 
 
   bool dodebug = globalResMan->getBooleanProperty("skel_Debug");
+
+  // TO REMOVE
+  dodebug = true;
 
   if (dodebug)
     {
@@ -111,7 +114,15 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
       man.setUseConsole(true);
     else
       man.setUseConsole(false);
-    man.setPreferDLL(globalResMan->getBooleanProperty("skel_SingleProcess"));
+
+    bool singleprocess = globalResMan->getBooleanProperty("skel_SingleProcess");
+    bool jnismooth = globalResMan->getBooleanProperty("skel_JniSmooth");
+
+    if (singleprocess || jnismooth)
+      man.setPreferDLL(true);
+    else
+      man.setPreferDLL(false);
+
     int retvalue = 0;
 
     if (man.run() == false)

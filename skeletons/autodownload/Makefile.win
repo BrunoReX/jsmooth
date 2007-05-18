@@ -29,7 +29,7 @@ CFLAGS = $(INCS)
 all: all-before $(BIN) all-after
 
 clean: 	clean-custom
-	$(RM) $(OBJ) $(BIN) 
+	$(RM) $(OBJ) $(BIN) JWrap_private.res
 
 $(BIN): $(LINKOBJ) $(LINKLIBS)
 	$(CPP) $(CXXFLAGS) $(LINKOBJ) $(LIBS) -o $(BIN)

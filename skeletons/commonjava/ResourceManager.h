@@ -59,6 +59,8 @@ class ResourceManager
   std::string m_lastError;    
   HGLOBAL m_jarHandler;
   int m_jarSize;
+  HGLOBAL m_jnismoothHandler;
+  int m_jnismoothSize;
 
   std::vector<std::string> m_arguments;
     
@@ -89,7 +91,7 @@ class ResourceManager
    * @param propsId the resource id, stored under the category type, for the property file
    * @param jarId the resource id, stored under the category type, for the jar file
    */ 
-  ResourceManager(std::string category, int propsId, int jarId);
+  ResourceManager(std::string category, int propsId, int jarId, int jniId = -1);
 
   /**
    * Default destructor.  The detructor tries to delete all the
@@ -110,6 +112,8 @@ class ResourceManager
    * @return the filename of the temp file where the Jar can be found.
    */
   std::string saveJarInTempFile();
+
+  std::string saveJnismoothInTempFile();
 
   /** Returns the name of the main class.  The main class is the
    *  class used to launch the java application. The static "public
@@ -175,7 +179,7 @@ class ResourceManager
   HGLOBAL getResource(int id);
 
  private:
-  void saveTemp(std::string tempname);
+  void saveTemp(std::string tempname, HGLOBAL data, int size);
 
   std::string idToResourceName(int id) const
     {

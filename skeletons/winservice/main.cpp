@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 { 
   global_debug = false;
   winservice_ref = 0;
-  ResourceManager resman("JAVA", PROPID, JARID);
+  ResourceManager resman("JAVA", PROPID, JARID, JNISMOOTHID);
 
   string newcurdir = resman.getCurrentDirectory();
   if (newcurdir.length()>0)

@@ -15,4 +15,5 @@ javaproperty_value_0=valeur1
 maxheap=98000000
 initialheap=48000000
 embedjar=true
-skel_Debug=0
+skel_Debug=1
+skel_SingleProcess=1

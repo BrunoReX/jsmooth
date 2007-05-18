@@ -1,7 +1,8 @@
 # Project: WinService Wrapper
 # Makefile created by Dev-C++ 4.9.8.0
 
-RM   = cmd /C DEL
+RM   = rm -f
+#cmd /C DEL
 CPP  = g++.exe
 CC   = gcc.exe
 WINDRES = windres.exe
@@ -20,7 +21,7 @@ CFLAGS = $(INCS)
 all: all-before winservice.exe all-after
 
 clean: clean-custom
-	$(RM) $(OBJ) $(BIN)
+	$(RM) $(OBJ) $(BIN) winservice_private.res
 
 $(BIN): $(LINKOBJ)  ../commonjava/CommonJava.a
 	$(CPP) $(LINKOBJ) -o "winservice.exe" $(LIBS)

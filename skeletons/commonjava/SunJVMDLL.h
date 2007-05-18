@@ -77,6 +77,9 @@ class SunJVMDLL : public JVMBase
   bool setupVM12DLL(CreateJavaVM_t CreateJavaVM, GetDefaultJavaVMInitArgs_t GetDefaultJavaVMInitArgs);
   bool setupVM11DLL(CreateJavaVM_t CreateJavaVM, GetDefaultJavaVMInitArgs_t GetDefaultJavaVMInitArgs);
 
+  bool registerMethod(const std::string& classname, const std::string& methodname, const std::string& signature, void* fn);
+  bool registerJniSmooth();
+
   JNIEnv* env()
     {
       JNIEnv* env;
@@ -90,6 +93,10 @@ class SunJVMDLL : public JVMBase
   jclass findClass(const std::string& clazz);
   jmethodID findMethod(jclass& cls, const std::string& methodname, const std::string& signature, bool isStatic);
   JavaVM* getJavaVM();
+
+  void setIntField(jclass cls, jobject obj, const std::string& fieldName, int value);
+  void setLongField(jclass cls, jobject obj, const std::string& fieldName, jlong value);
+  void setObjectField(jclass cls, jobject obj, const std::string& fieldName, const std::string& fieldclass, jobject value);
 
   jstring       newUTFString(const std::string& str);
   jobject       newObject(jclass clazz, jmethodID& methodid, jvalue arguments[]);

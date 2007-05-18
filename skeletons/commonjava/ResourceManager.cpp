@@ -32,7 +32,7 @@ char * const ResourceManager::KEY_BUNDLEDVM     = "bundledvm";
 char * const ResourceManager::KEY_CURRENTDIR    = "currentdir";
 char * const ResourceManager::KEY_EMBEDJAR      = "embedjar";
 
-ResourceManager::ResourceManager(std::string category, int propsId, int jarId)
+ResourceManager::ResourceManager(std::string category, int propsId, int jarId, int jniId)
 {
   m_resourceCategory = category;
   m_resourcePropsId = propsId;
@@ -81,6 +81,10 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId)
       return;
     }
 
+
+  m_jnismoothSize = this->getResourceSize(jniId);
+  m_jnismoothHandler = this->getResource(jniId);
+
   //
   // Extract the java properties from the Property
   //
@@ -109,28 +113,28 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId)
       DEBUG("Setting up java properties: " + name + "=" + value);
     }
 
-    std::string curdirmodifier = m_props.get(ResourceManager::KEY_CURRENTDIR);
-    if (curdirmodifier.length()>0)
-      {
-	int pos = string::npos;
-	if ( (pos=curdirmodifier.find("${EXECUTABLEPATH}")) != string::npos)
-	  {
-	    m_currentDirectory = FileUtils::concFile(exepath, curdirmodifier.substr(pos + string("${EXECUTABLEPATH}").size()));
-	    //	    m_currentDirectory = StringUtils::replace(curdirmodifier, "${EXECUTABLEPATH}", exepath);
-	  }
-	else
-	  {
-	    DEBUG(string("Currentdirectory =") + curdirmodifier);
-	    m_currentDirectory = curdirmodifier;
-	    //	    m_currentDirectory = FileUtils::concFile(FileUtils::getExecutablePath(), curdirmodifier);
-	    m_currentDirectory = StringUtils::replaceEnvironmentVariable(m_currentDirectory);
-	  }
-      }
-    else
-      {
-        m_currentDirectory = "";
-      }
-    //    printf("CURDIR SET TO: [%s]\n", m_currentDirectory.c_str());
+  std::string curdirmodifier = m_props.get(ResourceManager::KEY_CURRENTDIR);
+  if (curdirmodifier.length()>0)
+    {
+      int pos = string::npos;
+      if ( (pos=curdirmodifier.find("${EXECUTABLEPATH}")) != string::npos)
+	{
+	  m_currentDirectory = FileUtils::concFile(exepath, curdirmodifier.substr(pos + string("${EXECUTABLEPATH}").size()));
+	  //	    m_currentDirectory = StringUtils::replace(curdirmodifier, "${EXECUTABLEPATH}", exepath);
+	}
+      else
+	{
+	  DEBUG(string("Currentdirectory =") + curdirmodifier);
+	  m_currentDirectory = curdirmodifier;
+	  //	    m_currentDirectory = FileUtils::concFile(FileUtils::getExecutablePath(), curdirmodifier);
+	  m_currentDirectory = StringUtils::replaceEnvironmentVariable(m_currentDirectory);
+	}
+    }
+  else
+    {
+      m_currentDirectory = "";
+    }
+  //    printf("CURDIR SET TO: [%s]\n", m_currentDirectory.c_str());
 }
 
 ResourceManager::~ResourceManager()
@@ -146,8 +150,11 @@ void ResourceManager::setProperty(const std::string& key, const std::string& val
      m_props.set(key, value);
 }
 
-void ResourceManager::saveTemp(std::string tempname)
+void ResourceManager::saveTemp(std::string tempname, HGLOBAL data, int size)
 {
+  if ((data == 0) || (size == 0))
+    return;
+  
   HANDLE temp = CreateFile(tempname.c_str(),
 			   GENERIC_WRITE,
 			   FILE_SHARE_WRITE,
@@ -159,7 +166,7 @@ void ResourceManager::saveTemp(std::string tempname)
   if (temp != NULL)
     {    
       DWORD reallyWritten;
-      WriteFile(temp, m_jarHandler, m_jarSize, &reallyWritten, NULL);
+      WriteFile(temp, data, size, &reallyWritten, NULL);
         
       // TODO: check the reallyWritten value for errors
         
@@ -208,7 +215,7 @@ std::string ResourceManager::saveJarInTempFile()
 
   std::string tempfilename = FileUtils::createTempFileName(".jar");
   DEBUG("Created temporary filename to hold the jar (" + tempfilename + ")");
-  saveTemp(tempfilename);
+  saveTemp(tempfilename, m_jarHandler, m_jarSize);
   return tempfilename;
 }
 
@@ -328,10 +335,22 @@ HGLOBAL ResourceManager::getResource(int id)
   HRSRC resprop = FindResource(NULL, propid.c_str(), m_resourceCategory.c_str());
   if (resprop != NULL)
     {
-      int size = SizeofResource(NULL, resprop);
-      char buffer[size+1];
       return LoadResource(NULL, resprop);
     }
   else
     return 0;
+}
+
+
+std::string ResourceManager::saveJnismoothInTempFile()
+{
+  if (m_jnismoothHandler == 0)
+    return "";
+
+  std::string tempfilename = FileUtils::createTempFileName(".jar");
+  DEBUG("Saving jnismoothjar in " + tempfilename);
+
+  DEBUG("Created temporary filename to hold the jar (" + tempfilename + ")");
+  saveTemp(tempfilename, m_jnismoothHandler, m_jnismoothSize);
+  return tempfilename;  
 }

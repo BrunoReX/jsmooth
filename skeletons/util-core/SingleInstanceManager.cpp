@@ -149,13 +149,10 @@ BOOL CALLBACK displayWindowForProcess(HWND hwnd, LPARAM lParam )
   if (hid == myprocessid)
     {
       LONG style = GetWindowLong(hwnd, GWL_STYLE);
-      if ((style &  (WS_OVERLAPPEDWINDOW|WS_TILED|WS_VISIBLE)) != 0)
+      if ((style &  (WS_VISIBLE)) != 0)
 	{
-	  ShowWindow(hwnd, SW_HIDE);
-	  //ShowWindow(hwnd, SW_SHOW);
-	  ShowWindow(hwnd, SW_SHOWMINIMIZED);
-	  ShowWindow(hwnd, SW_RESTORE);
-	  return FALSE;
+	  SetForegroundWindow(hwnd);
+	  return false;
 	}
     }
   return true;

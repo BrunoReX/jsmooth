@@ -22,6 +22,7 @@
 #include "SunJVMDLL.h"
 
 #include "JClassProxy.h"
+#include "JniSmooth.h"
 
 SunJVMDLL::SunJVMDLL(const std::string& jvmdll, const Version& v)
 {
@@ -101,6 +102,8 @@ bool SunJVMDLL::instanciate()
     res = setupVM11DLL(CreateJavaVM, GetDefaultJavaVMInitArgs);
   else
     res = setupVM12DLL(CreateJavaVM, GetDefaultJavaVMInitArgs);
+
+  registerJniSmooth();
 
   DEBUG("Result code on DLL: " + StringUtils::toString(res));
   if (res)
@@ -225,11 +228,13 @@ jclass SunJVMDLL::findClass(const std::string& clazz)
 
 jmethodID SunJVMDLL::findMethod(jclass& cls, const std::string& methodname, const std::string& signature, bool isStatic)
 {
+  std::string sig = StringUtils::replace(signature, ".", "/");
+  
   jmethodID mid;
   if (isStatic)
-    mid = env()->GetStaticMethodID(cls, methodname.c_str(), signature.c_str());
+    mid = env()->GetStaticMethodID(cls, methodname.c_str(), sig.c_str());
   else
-    mid = env()->GetMethodID(cls, methodname.c_str(), signature.c_str());
+    mid = env()->GetMethodID(cls, methodname.c_str(), sig.c_str());
 
   return mid;
 }
@@ -237,6 +242,25 @@ jmethodID SunJVMDLL::findMethod(jclass& cls, const std::string& methodname, cons
 JavaVM* SunJVMDLL::getJavaVM()
 {
   return m_javavm;
+}
+
+void SunJVMDLL::setIntField(jclass cls, jobject obj, const std::string& fieldName, int value)
+{
+  jfieldID binding = env()->GetFieldID(cls, fieldName.c_str(), "I");
+  env()->SetIntField(obj, binding, (jint)value);
+}
+
+void SunJVMDLL::setLongField(jclass cls, jobject obj, const std::string& fieldName, jlong value)
+{
+  jfieldID binding = env()->GetFieldID(cls, fieldName.c_str(), "J");
+  env()->SetLongField(obj, binding, (jlong)value);
+}
+
+void SunJVMDLL::setObjectField(jclass cls, jobject obj, const std::string& fieldName, const std::string& fieldclass, jobject value)
+{
+  std::string fc = "L" + StringUtils::replace(fieldclass, "." , "/") + ";";
+  jfieldID binding = env()->GetFieldID(cls, fieldName.c_str(), fc.c_str());
+  env()->SetObjectField(obj, binding, value);
 }
 
 jstring   SunJVMDLL::newUTFString(const std::string& str)
@@ -367,4 +391,28 @@ jdouble SunJVMDLL::invokeDouble(jobject& obj, jmethodID& methodid, jvalue argume
 jobject SunJVMDLL::invokeObject(jobject& obj, jmethodID& methodid, jvalue arguments[])
 {
   return env()->CallObjectMethodA(obj, methodid, arguments);
+}
+
+bool SunJVMDLL::registerMethod(const std::string& classname, const std::string& methodname, const std::string& signature,
+		    void* fn)
+{
+  jclass cc = this->findClass(classname);
+  if (cc == 0)
+    return false;
+  JNINativeMethod jnm;
+  jnm.name = (char*)methodname.c_str();
+  jnm.signature = (char*)signature.c_str();
+  jnm.fnPtr = fn;
+  
+  int res = env()->RegisterNatives(cc, &jnm, 1);
+  if (res != 0)
+    return false;
+
+  return true;
+}
+
+bool SunJVMDLL::registerJniSmooth()
+{
+  registerNativeMethods(this);
+  return true;
 }

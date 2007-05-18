@@ -34,6 +34,7 @@ JMethodCaller::JMethodCaller(const std::string& method)
 jvalue JMethodCaller::invoke(SunJVMDLL& jvm, jobject& obj, jvalue args[])
 {
   jvalue res;
+  res.l = 0;
 
   DEBUG("invoking " + m_clazz + ": " + m_methodname + ", " + getJavaSignature());
 
@@ -44,7 +45,14 @@ jvalue JMethodCaller::invoke(SunJVMDLL& jvm, jobject& obj, jvalue args[])
       DEBUG("Can't find class " + m_clazz + " !!");
       return res;
     }
+
   jmethodID m = jvm.findMethod(cl, m_methodname, getJavaSignature(), false);
+  if (m == 0)
+    {
+      DEBUG("Can't find the method " + m_methodname + " / " + getJavaSignature());
+      return res;
+    }
+
   switch (m_returntype.TYPE)
     {
     case JVOID:
