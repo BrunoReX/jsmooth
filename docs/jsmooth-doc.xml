@@ -8,16 +8,24 @@
     <surname>Reyes</surname>
   </author>
 
-<revhistory>
+
+<revhistory role="revisiontab">
   <revision>
     <revnumber>1.0</revnumber>
     <date>10 Sep 2003</date>
     <authorinitials>RR</authorinitials>
     <revremark>First draft</revremark>
   </revision>
+  <revision>
+    <revnumber>2.0</revnumber>
+    <date>19 May 2007</date>
+    <authorinitials>RR</authorinitials>
+    <revremark>Update for release 0.9.9-7</revremark>
+    <revremark>Screenshots updated</revremark>
+  </revision>
 </revhistory>
 
-  <title>JSmooth @{VERSION}@ User Manual</title>
+  <title role="primarytitle">JSmooth @{VERSION}@ User Manual</title>
   <subtitle>@{RELEASEINFO}@</subtitle>
 </articleinfo>
 
@@ -25,37 +33,50 @@
 <title>Introduction</title>
 
   <sect2><title>What is JSmooth?</title>
-   <para>
 
-JSmooth is a Java Executable Wrapper. It builds standard Windows
-executable binaries (.exe) that contain all the information needed to
-launch your java application, i.e. the classpath, the jvm version
-required, the java properties, and so on. If Java is not installed,
-JSmooth can also properly redirect them to a web site or even download
-and install automatically a JVM.
+<para>
+JSmooth is a Java Executable Wrapper generator with advanced JRE
+detection features. It builds standard Windows executable binaries
+(.exe) that contain all the information needed to launch your java
+application, i.e. the classpath, the jvm version required, the java
+properties, and so on.
+</para>
 
-   </para>
+<para>
+It also offers full control on deployment
+issues such as missing, old, or broken JRE installed on the end-user
+computer. The JSmooth wrappers provide smooth solutions, such as
+automatic JRE download and installation, redirection to a web site, or
+simply a meaningful message to the users on what's going wrong.
+</para>
 
-   <para>Because JSmooth is 100% java, it can build a windows
-   executable from any environement running Java, including linux,
-   solaris, etc.  </para>
+<para>
+Because JSmooth is 100% java, it can build windows
+executables from any environement running Java, including linux,
+solaris, etc.  
+</para>
+  </sect2>
+
+
    
-   <sect3><title>Web Site</title>
+   <sect2><title>Web Support</title>
    <para>
     <itemizedlist>
 
      <listitem><para> The JSmooth web page is located at <ulink
-     url="http://jsmooth.sourceforge.net/">http://jsmooth.sourceforge.net/</ulink>
+     url="http://jsmooth.sourceforge.net/">http://jsmooth.sourceforge.net/</ulink>. Please visit it for the latest news.
        </para></listitem>
 
      <listitem><para> The JSmooth Project web page is hoster at <ulink
      url="http://sourceforge.net/projects/jsmooth">http://sourceforge.net/projects/jsmooth</ulink>.
        </para></listitem>
 
+     <listitem><para>Should you find any bug, please submit it to <ulink url="http://sourceforge.net/tracker/?group_id=86730">the jsmooth tracker</ulink>. For any question relative to JSmooth, please use <ulink url="http://sourceforge.net/forum/?group_id=86730">the forum</ulink> (hosted at sourceforge's).
+       </para></listitem>
+
    </itemizedlist>
 
    </para>
-  </sect3>
   </sect2>
 
   <sect2> <title>Features</title>
@@ -78,11 +99,11 @@ and install automatically a JVM.
                The JSmooth EXE are smart: They know how to swiftly
                search for all the JVM installed on a computer, and
                determine which best suits the requirements of your
-               application. If no VM is found, it's OK as well, your
-               end-users are in good hands with jsmooth: the wrappers
-               can redirect them to a web page, or even better, they
-               can propose the user to automatically download and
-               install a Java Environment.
+               application. If no VM is found, your end-users are in
+               good hands with jsmooth: the wrappers can redirect them
+               to a web page, or even better, they can propose the
+               user to automatically download and install a Java
+               Environment.
 
            </para>
         </listitem>
@@ -121,9 +142,9 @@ and install automatically a JVM.
 
         <listitem>
            <para>
-              Sometimes it's more convenient to bundle a JRE with your
-              application. JSmooth can deal with that too, you just
-              need to define in which folder the JRE is expected. It
+              Sometimes it's more convenient to bundle your own JRE with your
+              application. JSmooth can deal with that too: you just
+              need to define in which folder the JRE is packaged. It
               falls back nicely to a standard JVM search if the JRE is
               not where it should be.
            </para>
@@ -146,18 +167,16 @@ and install automatically a JVM.
 
         <listitem>
            <para>
-              A Swing-based project editor allows you to easily
-              configure the executable binary for your software. All
-              the parameters are configured with a GUI, just click and
-              compile the project.
-           </para>
-        </listitem>
+              A graphical project editor makes configuring and
+           customizing your exe wrapper a breeze. The inline help
+           balloons provide non-intrusive yet extensive information on
+           each parameter available.  </para> </listitem>
 
         <listitem>
            <para>
 	      Associate an icon to your executable, using a .ICO,
            .PNG, or .GIF file (automatic color reduction is done if
-           necessary). 
+           necessary).
            </para>
         </listitem>
     </itemizedlist>
@@ -177,20 +196,17 @@ and install automatically a JVM.
 
         <listitem>
            <para>
-              You can easely pass environment variables from the
-              system: just define the java properties to pass to your
-              application, and use the standard Windows %VARIABLE%
-              syntax.
-           </para>
-        </listitem>
+              Pass also environment variables from the system: just
+              define the java properties to pass to your application,
+              and use the standard Windows %VARIABLE% syntax.  </para>
+              </listitem>
 
         <listitem>
            <para>
-	      Pass special variables that are not available to Java
-	      program, such as the executable path and name, and even
-	      the Windows computer name.
-           </para>
-        </listitem>
+	      Some special variables that are normally not available
+	      to Java program, such as the executable path and name,
+	      and even the Windows computer name, can be passed as
+	      well! </para> </listitem>
 
         <listitem>
            <para>
@@ -201,11 +217,9 @@ and install automatically a JVM.
 
         <listitem>
            <para>
-
-              Want to modify the current directory used by your Java
-              application? The wrappers will handle this for you. 
-           </para>
-        </listitem>
+	      Need to modify the current directory used by your java
+	      application ? The wrappers will handle this for you.
+	      </para> </listitem>
 
     </itemizedlist>
    </sect3>
@@ -216,9 +230,9 @@ and install automatically a JVM.
 
         <listitem>
            <para>
-	     Provided with several exe wrappers skeletons, for GUI or for console-base application.
-           </para>
-        </listitem>
+	     Provided with several exe wrappers skeletons, for either
+           GUI, console-based application, or windows services !
+           </para> </listitem>
 
         <listitem>
            <para>
@@ -241,9 +255,8 @@ and install automatically a JVM.
 
     <para>
       The JSmoothGen application is the project editor. It provides a
-      graphical user interface for the configuration of all the
-      parameters available for building a .exe. 
-    </para>
+      (hopefully nice) graphical user interface for the configuration
+      of all the parameters available to the wrappers.  </para>
 
     <para>
       <mediaobject>
@@ -262,23 +275,25 @@ and install automatically a JVM.
  <sect2><title>Creating your first exe</title>
    <para>
 
-     JSmooth builds a binary exe that contains all the information
-     needed to launch your java application, such as the classpath, the
-     java properties, the jvm version required, and so on.
+    Building your own EXE wrapper for your java application just needs
+    a few simple steps: specify the name of the executable, define the
+    main java class, optionally a classpath if it needs more than its
+    own jar, and that's all.
+
 
    </para>
 
 
    <sect3><title>Quick Start</title>
    <para>
-     
 
      The minimum data you need to start the creation of the binary
-     executable for your application is to specify a classpath and a
-     fully-qualified class name. You can configure both in the <function>Java
-     Application</function> panel (add new jars or directories using the
-     funny icon with a yellow + sign, and type the class name in the
-     <label>Main Class</label> field.
+     executable for your application is to specify a classpath and the
+     fully-qualified name of your main class. You can configure both
+     in the <function>Application</function> panel (add new jars
+     or directories using the icon with a yellow <label>+</label>
+     sign, and type the class name in the <label>Main Class</label>
+     field.
 
   </para>
 
@@ -288,29 +303,26 @@ and install automatically a JVM.
      and type the name of the executable in the <label>Executable
      Name</label> field. Do not forget to add the <label>.exe</label>
      suffix, for your executable name. Something like
-     <function>my-app.exe</function> would be fine.
+     <function>my-app.exe</function> should be fine.
 
    </para>
 
    <para>
 
-    Of course, you could specify many more options for the java
-    launching, but above is all what's required. Now, you are nearly
-    done. Click on the save button (or in the
-    <guimenu>File+Save</guimenu> menu) and select a filename for the
-    project. This is an important step, because all the path stored in
-    the file, and displayed in the GUI are relative to this file.
-
-   </para>
+    Of course, you can specify many more options for the java wrapper,
+    but this is enough for a basic java application. Now, click on the
+    save button (or in the <guimenu>File+Save</guimenu> menu) and
+    select a filename for the project. This is an important step,
+    because all the path stored in the file, and displayed in the GUI
+    are relative to this project file. Selecting a location under the
+    root directory of your project is a good (and safe) choice.  </para>
 
  <para>
 
    Once your project is saved, it is just a matter of clicking on the
    <guimenu>Project+Create Exe</guimenu>. And that's it. You can use
    the <guimenu>Project+Run Exe</guimenu> to run the program, or
-   double-click the file name that was specified in <label>Windows
-   Executable</label> panel, which can be found in the same directory
-   than the project file.
+   use the windows explorer to run the executable.
 
  </para>
 
@@ -322,8 +334,7 @@ and install automatically a JVM.
  <itemizedlist>
 
    <listitem><para>All the files saved and displayed in the Graphical
-   User Interface are relative to the project file. </para>
-
+     User Interface are relative to the project file. </para>
    </listitem>
 
  </itemizedlist>
@@ -367,6 +378,31 @@ and install automatically a JVM.
 
        </listitem>
 
+       <listitem><para> The Autodownload wrapper is designed for standard
+        Windows applications, which do not use console. 
+	</para>
+
+	<para>
+	  If no JVM is found, the wrapper displays a customized
+	  message, and offers the end-user to automatically download
+	  and install a JRE. The version of the JRE to download is a
+	  configurable parameter of the wrapper, and uses the Sun's
+	  autodownload feature initially provided for Web Start.
+	</para>
+
+        </listitem>
+
+       <listitem><para> The Custom Web Download wrapper is a wrapper
+	for GUI-only applications (no console) </para>
+
+	<para>
+	  If no JVM is found, the wrapper displays a customized
+	  message, and offers the end-user to download a customized
+	  file from the internet. The URL is a configurable parameter
+	  of the wrapper, and accepts http, https, and ftp. The file
+	  download is automatically executed or displayed (according
+	  to the nature of the file).  </para> </listitem>
+
        <listitem><para> The Windowed Wrapper is designed for standard
         Windows applications, which do not use console. 
 	</para>
@@ -374,12 +410,22 @@ and install automatically a JVM.
 	<para>
 	  If no JVM is found, the skeleton displays a Windows
 	  OK/Cancel alert. If the user selects the OK button, the
-	  default web browser is launched on a default web page. Both
-	  the message of the alert and the URL of the web page are
-	  configurable in the <guilabel>Skeleton Properties panel</guilabel>.
-	</para>
+	  default web browser is launched on a web page. Both the
+	  message of the alert and the URL of the web page are
+	  configurable.  </para>
 
         </listitem>
+
+       <listitem><para> The Windows Service Wrapper provides a wrapper
+	for application designed to work as services.  </para>
+
+	<para>
+	  The wrapper can be installed, uninstalled, started, or
+	  stopped just like any other windows service. If no JVM is
+	  found, the service does not run, and a specific message is
+	  logged. </para>
+        </listitem>
+
        </itemizedlist>
 
     </para>
@@ -395,14 +441,18 @@ and install automatically a JVM.
       </mediaobject>
     </para>
 
+   <para>
+    Each skeleton has its own set of option, most of them are
+   optional. Be sure to check them all, as they can modify drastically
+   the behaviour of your wrapper. Please refer to the inline help for the details.  </para>
+
  </sect2>
 
  <sect2><title>The Windows Executable</title>
 
     <para>
       The windows executable created by the JSmooth wrapping system
-    can be configured in many ways. The executable itself can be
-    customized with the following parameters:
+    can be configured in many ways. 
      </para>
 
      <para>
@@ -457,9 +507,10 @@ and install automatically a JVM.
 	    You can do something equivalent with JSmooth without using
 	  an environment variable (which may be complicated to set
 	  under windows). Instead, define a Java Property, and set
-	  <systemitem>${EXECUTABLEPATH}</systemitem> as value. The effect of
-	  this is to pass to your application a java property that contains
-	  the directory where the executable is located. Just use
+	  <systemitem>${EXECUTABLEPATH}</systemitem> as its value. The
+	  effect of this is to pass to your application a java
+	  property that contains the directory where the executable is
+	  located. Just use
 	  <methodname>System.getProperty()</methodname> call to
 	  retrieve the value.  </para>
 
@@ -468,7 +519,8 @@ and install automatically a JVM.
 	   For GUI application, it's easier: just enable the option
 	  "Sets the executable folder as current directory of the
 	  application" and define a standard file association in
-	  Windows.  </para>
+	  Windows. Alternatively, you can also use the JNI features of
+	  jsmooth to retrieve the executable path.  </para>
 
         </warning>
 
@@ -543,31 +595,20 @@ and install automatically a JVM.
             <imagedata fileref="images/jsg-javaapplication.png" format="PNG"/>
         </imageobject>
         <caption>
-            <para>The Java Application configuration panel</para>
+            <para>The application-specific configuration panel</para>
         </caption>
       </mediaobject>
     </para>
 
     <para>
-    
+
        <itemizedlist>
-        <listitem>
-         <para>
-	   The <guilabel>Jar Location</guilabel> field specifies the
-	   main JAR file of the application. There may be additional
-	   jar specified in the <guilabel>Classpath</guilabel>
-	   interface, but this one is mandatory. It contains the main
-	   class of the application, and is added as a resource to the
-	   executable created by JSmooth.
-	 </para>
-        </listitem>
         <listitem>
          <para>
 
 	   Edit the <guilabel>Main Class</guilabel> field to specify
-	   the wrapper which class of the jar (see above) is to be
-	   considered the entry point of the program. This field is
-	   mandatory as well.
+	   the class used as entry point of the program. This field is
+	   mandatory.
 
 	 </para>
         </listitem>
@@ -584,19 +625,32 @@ and install automatically a JVM.
 	 <warning>
 	   <para>
 
-	     The <guilabel>Arguments</guilabel> may be overrided by
+	     The <guilabel>Arguments</guilabel> may be overriden by
 	     some wrappers. For instance, the <guilabel>Console
-	     Wrapper</guilabel> uses the arguments from the command
+	     Wrapper</guilabel> always uses the arguments from the command
 	     line instead.
-
 	   </para>
 	 </warning>
         </listitem>
 
+
+        <listitem>
+         <para>
+	   Using the <guilabel>Embedded Jar</guilabel> field, you can
+	   optionally specify a jar to be embedded (as a resource) in
+	   the EXE wrapper. This jar is extracted each time the
+	   application is launched, therefore you should keep it as
+	   small as possible.  </para>
+	 <para>
+	   This is specially useful for application packaged as a
+           single EXE file.
+         </para>
+       </listitem>
+
         <listitem>
          <para>
 
-	     The <guilabel>ClassPath</guilabel> list proposes you to
+	     The <guilabel>ClassPath</guilabel> list provides a mean to
 	     edit an ordered list of classpaths. To add a classpath,
 	     click on the <guiicon><inlinegraphic
 	     fileref="images/stock_insert-element.png"/></guiicon> and
@@ -665,7 +719,7 @@ and install automatically a JVM.
 
       </para>
       <para>
-        The values are all inclusive. For instance, if you specify 1.4
+        The values are inclusive. For instance, if you specify 1.4
         as a maximum means that the java wrapper accepts 1.4.0 JVM,
         but not 1.4.1. 
       </para>
@@ -728,8 +782,8 @@ and install automatically a JVM.
       </para>
 
      <para>
-        In this case, the generated myexe.exe will try to use first
-      the jre in the "jre" sub-dir. To deploy it, either simply zip
+        In this case, the generated myexe.exe tries to use 
+      the jre in the "jre" sub-dir as its first-choice JRE. To deploy it, either simply zip
       all the "myprog" directory, or tell your favorite installer to
       set-up the jre directory in the same configuration as in your
       original folder tree.  </para>
@@ -933,25 +987,6 @@ and install automatically a JVM.
     </sect3>
  </sect2>
 
- <sect2><title>Skeleton Properties</title>
-    <para> 
-
-         This panel is specific to the wrapper selected in the
-         <guilabel>Skeleton Selection</guilabel> panel.
-
-    </para>
-    <para>
-      <mediaobject>
-        <imageobject>
-            <imagedata fileref="images/jsg-skeletonproperties.png" format="PNG"/>
-        </imageobject>
-        <caption>
-            <para>The Skeleton-specifics properties panel</para>
-        </caption>
-      </mediaobject>
-    </para>
- </sect2>
-
 </sect1>
 
 <sect1><title>Command Line </title>
@@ -1058,13 +1093,128 @@ and install automatically a JVM.
    native functions implementation) in the wrappers.
     </para>
 
-
    <para>Before using any JNI feature from the
     <function>jsmooth.Native</function>, you must check that the
     native methods are correctly bound to their native implementation
     by using the <function>jsmooth.Native.isAvailable()</function>
     method. If this method returns false, you cannot use any of the
     native method.</para>
+
+   <sect2><title>Examples</title>
+
+        <sect3><title>Start the default application for a file</title>
+
+<para>
+Using the <function>shellExecute()</function>, you can start the
+default application associated by windows to a document and perform
+any of the action among <function>SHELLEXECUTE_OPEN</function> (opens
+the file for visualization), <function>SHELLEXECUTE_EDIT</function>
+(opens the file for editing), <function>SHELLEXECUTE_PRINT</function>
+(print the document), <function>SHELLEXECUTE_FIND</function> (launch
+the windows Find utility on a specific folder),
+<function>SHELLEXECUTE_EXPLORE</function> (launch the windows file
+Explorer tool on a specific folder).
+</para>
+
+<para>
+
+<programlisting>
+ if (jsmooth.Native.isAvailable())
+   {
+    jsmooth.Native.shellExecute(jsmooth.Native.SHELLEXECUTE_OPEN, 
+                                "c:\\myfile.pdf", 	null, null, 
+                                jsmooth.Native.SW_SHOWNORMAL);
+   }
+</programlisting>
+</para>
+
+     </sect3>
+
+        <sect3><title>Launching the default web browser</title>
+<para>
+
+There are some java libraries available around to launch the default
+browser on an URL, but using the <function>shellExecute()</function>
+is probably the best solution for the windows platform on this
+traditional problem.
+
+<programlisting>
+ URL target = "http://jsmooth.sourceforge.net/"; 
+ if (jsmooth.Native.isAvailable())
+   {
+     jsmooth.Native.shellExecute(jsmooth.Native.SHELLEXECUTE_OPEN, 
+                                 target.toString(),  
+                                 null, null, 
+                                 jsmooth.Native.SW_NORMAL);
+   }
+  else
+   {
+     // Use a traditionnal java-based guessing method 
+     // to find and launch the default browser
+   }
+</programlisting>
+</para>
+     </sect3>
+
+
+        <sect3><title>Reboot the computer</title>
+<para>
+
+It may be useful to reboot or log off the computer/session
+programmatically at a given time. You can use the jsmooth
+<function>exitWindows()</function> method to shutdown or reboot the
+computer, but also disconnect the session of the user.
+
+<programlisting>
+ // Log off the user session
+ if (jsmooth.Native.isAvailable())
+   {
+     jsmooth.Native.exitWindows(jsmooth.Native.EXITWINDOWS_LOGOFF);
+   }
+</programlisting>
+</para>
+     </sect3>
+
+        <sect3><title>Retrieve information on a disk drive</title>
+<para>
+
+There is no way to distinguish between a removeable media, a cdrom
+drive, or a fixed disk using the standard java API. It is however a
+good usability point to use different icons to display fixed,
+removeable medias, remote drives, or cdrom. It may also be useful to
+know if there are enough free space on disk before saving a file, or
+to be aware that the filesystem used for a media is FAT16, in order to
+alert the user of a possible loss of precision in the filenames.
+</para>
+
+<para>
+
+The <code>jsmooth.DriveInfo</code> object provides all this
+information for free, provided your application is launched with a
+jni-enabled jsmooth wrapper.
+
+<programlisting>
+  File f = new File("d:/my/file/somewhere");
+  jsmooth.DriveInfo di = jsmooth.Native.getDriveInfo(f);
+
+  if (di.getDriveType() == jsmooth.DriveInfo.DRIVE_REMOVABLE)
+  {
+     // This file is on a removeable drive !
+  }
+
+  if (di.getFreeSpaceForUser() &lt; (1024*1024*64))
+  {
+    // there are less than 64MB free for the
+    // user on this drive !
+  }
+
+</programlisting>
+</para>
+     </sect3>
+
+
+
+   </sect2>
 
 </sect1>
 
