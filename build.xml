@@ -24,7 +24,7 @@
   <property name="fltk-cxxflags" value="-IC:/msys/1.0/local/include -IC:/msys/1.0/local/include/FL/images -mwindows -DWIN32 -mno-cygwin"/>
 
   <!-- What's below is  optional (needed only if you build a dist) -->
-  <property name="FOP" value="c:/Programs/fop-0.20.5\fop.bat"/>
+  <property name="FOP" value="c:/Programs/fop-0.93\fop.bat"/>
   <property name="DOCBOOKBASE" value="c:\programs\docbook-xsl-1.72.0"/>
 
  <!-- set here the properties specific to the release --> 
@@ -53,7 +53,6 @@
     <pathelement path="lib/JimiProClasses.zip"/>
     <pathelement path="lib/jox116.jar"/>
     <pathelement path="lib/dtdparser113.jar"/>
-    <pathelement path="skeletons/jnismooth/jnismooth.jar"/>
   </path>
 
   <path id="anttask.class.path">
@@ -68,6 +67,9 @@
       <fileset dir="lib">
         <include name="**/*.jar"/>
       </fileset>
+      <fileset dir="skeletons/jnismooth">
+        <include name="*.jar"/>
+      </fileset>
   </path>
 
   <target name="init">
@@ -79,7 +81,6 @@
 
   <target depends="init" name="compile">
     <!-- Compile the java code from ${src} into ${classes} -->
-    <ant antfile="build.xml" dir="skeletons/jnismooth/" target="dist"/>
     <echo>Compiling the application from ${src}</echo>
     <javac target="1.4" source="1.4" deprecation="yes" destdir="${classes}" srcdir="${src}" debug="true">
        <classpath refid="jsmooth.class.path"/>
@@ -98,6 +99,7 @@
         <param name="section.autolabel" expression="1"/>
         <param name="section.label.includes.component.label" expression="1"/>
         <param name="chunk.section.depth" expression="2"/>
+        <param name="html.stylesheet" expression="jsmooth.css"/>
   
     </xslt>
 
@@ -197,6 +199,8 @@
       <include name="**/*.properties"/>
     </replace>
 
+    <ant antfile="build.xml" dir="skeletons/jnismooth/" target="dist"/>
+
     <antcall target="jar">
       <param name="src" value="${tmp}/src"/>
     </antcall>
@@ -245,6 +249,9 @@
       </fileset>
       <fileset dir="${tmp}/docs">
         <include name="**/*.html"/>
+      </fileset>
+      <fileset dir="${tmp}/docs">
+        <include name="**/*.css"/>
       </fileset>
     </copy>
     <copy todir="${dist}/docs/images">
