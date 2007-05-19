@@ -85,19 +85,29 @@ public class JSmoothPropertiesDisplayer extends java.awt.Frame
 			{
 
 			    jsmooth.DriveInfo di = jsmooth.Native.getDriveInfo(f);
+			    if (di.getDriveType() == jsmooth.DriveInfo.DRIVE_REMOVABLE)
+				{
+				    // This file is on a removeable drive !
+				}
+			    if (di.getFreeSpaceForUser() < (1024*1024*64))
+				{
+				    // there are less than 64MB free for the
+				    // user on this drive !
+				}
+
 			    System.out.println("DriveInfo: " + di + " = " + di.toString());
 
 			    System.out.println("path: " + jsmooth.Native.getExecutablePath());
 			    System.out.println("filename: " + jsmooth.Native.getExecutableName());
-			    jsmooth.Native.shellExecute(jsmooth.Native.SHELLEXECUTE_OPEN, 
-							"service.log", 	null, null, 
-							jsmooth.Native.SW_SHOWNORMAL);
-			    jsmooth.Native.shellExecute(jsmooth.Native.SHELLEXECUTE_FIND, 
-							"c:\\TEMP", 	null, null, 
-							jsmooth.Native.SW_SHOWNORMAL);
-			    jsmooth.Native.shellExecute(jsmooth.Native.SHELLEXECUTE_EXPLORE, 
-							"z:\\", 	null, null, 
-							jsmooth.Native.SW_SHOWNORMAL);
+// 			    jsmooth.Native.shellExecute(jsmooth.Native.SHELLEXECUTE_OPEN, 
+// 							"service.log", 	null, null, 
+// 							jsmooth.Native.SW_SHOWNORMAL);
+// 			    jsmooth.Native.shellExecute(jsmooth.Native.SHELLEXECUTE_FIND, 
+// 							"c:\\TEMP", 	null, null, 
+// 							jsmooth.Native.SW_SHOWNORMAL);
+// 			    jsmooth.Native.shellExecute(jsmooth.Native.SHELLEXECUTE_EXPLORE, 
+// 							"z:\\", 	null, null, 
+// 							jsmooth.Native.SW_SHOWNORMAL);
 
 			    //			    System.out.println("RES: " + jsmooth.Native.exitWindows(jsmooth.Native.EXITWINDOWS_REBOOT | jsmooth.Native.EXITWINDOWS_FORCE ));
 			}
