@@ -48,10 +48,8 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId, i
       int mainsize = 0;
       mainsize = SizeofResource(NULL, resprop);
       // char mainbuf[mainsize+1];
-
       HGLOBAL main = LoadResource(NULL, resprop);
       m_props.setData((const char*)main, mainsize);
-        
     }
   else
     {
@@ -63,7 +61,6 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId, i
   // Split the arguments
   //
   m_arguments = StringUtils::split(getProperty(KEY_ARGUMENTS, ""), " \t\n\r", "\"\'");
-  
 
   //
   // loads the jar information

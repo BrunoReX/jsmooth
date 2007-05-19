@@ -52,7 +52,6 @@ jvalue JClassProxy::invoke(jobject& obj, const std::string& fqmethod, JArgs args
   return res;
 }
 
-
 jvalue JClassProxy::invoke(jobject& obj, const std::string& fqmethod, jvalue arguments[])
 {
   DEBUG("INVOKING " + m_classname + " :: " + fqmethod);
