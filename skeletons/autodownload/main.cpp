@@ -68,7 +68,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
   atexit(lastExit);
   SingleInstanceManager instanceman;
 
-  globalResMan = new ResourceManager("JAVA", PROPID, JARID);
+  globalResMan = new ResourceManager("JAVA", PROPID, JARID, JNISMOOTHID);
 
   // sets up the command line arguments
   // not sure if lpszArgument can be null on Windows...

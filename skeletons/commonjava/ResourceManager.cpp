@@ -345,7 +345,10 @@ HGLOBAL ResourceManager::getResource(int id)
 std::string ResourceManager::saveJnismoothInTempFile()
 {
   if (m_jnismoothHandler == 0)
-    return "";
+    {
+      DEBUG("NO JNI SMOOTH ID !!");
+      return "";
+    }
 
   std::string tempfilename = FileUtils::createTempFileName(".jar");
   DEBUG("Saving jnismoothjar in " + tempfilename);
