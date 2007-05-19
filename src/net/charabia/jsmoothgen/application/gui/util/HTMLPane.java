@@ -57,7 +57,12 @@ public class HTMLPane extends JPanel
 			URL nurl = e.getURL();
 			if (nurl == null)
 			    nurl = new URL(m_baseurl, e.getDescription());
-			m_launcher.openURLinBrowser(nurl.toExternalForm());
+			if (jsmooth.Native.isAvailable())
+			    {
+				jsmooth.Native.shellExecute(jsmooth.Native.SHELLEXECUTE_OPEN, nurl.toString(), null, null, jsmooth.Native.SW_NORMAL);
+			    }
+			else
+			    m_launcher.openURLinBrowser(nurl.toExternalForm());
  		    } catch (Throwable t) {
 			t.printStackTrace();
 		    }
