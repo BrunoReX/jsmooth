@@ -274,7 +274,7 @@ void WinService::run()
   setStatus(SERVICE_START_PENDING);
   log("Run...");
 
-  ResourceManager* globalResMan = new ResourceManager("JAVA", PROPID, JARID);
+  ResourceManager* globalResMan = new ResourceManager("JAVA", PROPID, JARID, JNISMOOTHID);
 
   //
   // sets up the debug mode, if requested
@@ -307,7 +307,7 @@ void WinService::run()
 	  jdll->run( globalResMan->getProperty(ResourceManager::KEY_MAINCLASSNAME), true);
 	}
       else
-	log("ERROR: JVM is launched, but can get a DLL... ?");
+	log("ERROR: JVM is launched, but can't get a DLL... ?");
 
     }
   else
