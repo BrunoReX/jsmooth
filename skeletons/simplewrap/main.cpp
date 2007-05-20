@@ -72,9 +72,6 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 
   bool dodebug = globalResMan->getBooleanProperty("skel_Debug");
 
-  // TO REMOVE
-  dodebug = true;
-
   if (dodebug)
     {
       DEBUGCONSOLE = new DebugConsole("JSmooth Debug");
