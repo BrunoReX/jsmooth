@@ -37,6 +37,7 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId, i
   m_resourceCategory = category;
   m_resourcePropsId = propsId;
   m_resourceJarId = jarId;
+  m_resourceJniId = jniId;
 
   //
   // Load the Properties
@@ -48,8 +49,10 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId, i
       int mainsize = 0;
       mainsize = SizeofResource(NULL, resprop);
       // char mainbuf[mainsize+1];
+      DEBUG("Loading resource...");
       HGLOBAL main = LoadResource(NULL, resprop);
       m_props.setData((const char*)main, mainsize);
+      DEBUG("Loading resource... done");
     }
   else
     {
@@ -62,25 +65,8 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId, i
   //
   m_arguments = StringUtils::split(getProperty(KEY_ARGUMENTS, ""), " \t\n\r", "\"\'");
 
-  //
-  // loads the jar information
-  // 
-  std::string jaridstr = this->idToResourceName(jarId);
-  HRSRC resjar = FindResource(NULL, jaridstr.c_str(), category.c_str());
-  if (resjar != NULL)
-    {
-      m_jarSize = SizeofResource(NULL, resjar);
-      m_jarHandler =  LoadResource(NULL, resjar);
-    }
-  else
-    {
-      m_lastError = "Can't find JAR resource!";
-      return;
-    }
-
-
-  m_jnismoothSize = this->getResourceSize(jniId);
-  m_jnismoothHandler = this->getResource(jniId);
+  m_jnismoothSize = 0;
+  m_jnismoothHandler = 0;
 
   //
   // Extract the java properties from the Property
@@ -117,13 +103,11 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId, i
       if ( (pos=curdirmodifier.find("${EXECUTABLEPATH}")) != string::npos)
 	{
 	  m_currentDirectory = FileUtils::concFile(exepath, curdirmodifier.substr(pos + string("${EXECUTABLEPATH}").size()));
-	  //	    m_currentDirectory = StringUtils::replace(curdirmodifier, "${EXECUTABLEPATH}", exepath);
 	}
       else
 	{
-	  DEBUG(string("Currentdirectory =") + curdirmodifier);
+	  DEBUG(string("Currentdirectory: ") + curdirmodifier);
 	  m_currentDirectory = curdirmodifier;
-	  //	    m_currentDirectory = FileUtils::concFile(FileUtils::getExecutablePath(), curdirmodifier);
 	  m_currentDirectory = StringUtils::replaceEnvironmentVariable(m_currentDirectory);
 	}
     }
@@ -131,7 +115,6 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId, i
     {
       m_currentDirectory = "";
     }
-  //    printf("CURDIR SET TO: [%s]\n", m_currentDirectory.c_str());
 }
 
 ResourceManager::~ResourceManager()
@@ -209,6 +192,20 @@ std::string ResourceManager::saveJarInTempFile()
 {
   if (useEmbeddedJar() == false)
     return "";
+
+  //
+  std::string jaridstr = this->idToResourceName(m_resourceJarId);
+  HRSRC resjar = FindResource(NULL, jaridstr.c_str(), m_resourceCategory.c_str());
+  if (resjar != NULL)
+    {
+      m_jarSize = SizeofResource(NULL, resjar);
+      m_jarHandler =  LoadResource(NULL, resjar);
+    }
+  else
+    {
+      m_lastError = "Can't find JAR resource!";
+      return "";
+    }
 
   std::string tempfilename = FileUtils::createTempFileName(".jar");
   DEBUG("Created temporary filename to hold the jar (" + tempfilename + ")");
@@ -343,8 +340,14 @@ std::string ResourceManager::saveJnismoothInTempFile()
 {
   if (m_jnismoothHandler == 0)
     {
-      DEBUG("NO JNI SMOOTH ID !!");
-      return "";
+      m_jnismoothSize = this->getResourceSize( m_resourceJniId );
+      m_jnismoothHandler = this->getResource(  m_resourceJniId );
+      
+      if (m_jnismoothHandler == 0)
+	{
+	  DEBUG("NO JNI SMOOTH ID !!");
+	  return "";
+	}
     }
 
   std::string tempfilename = FileUtils::createTempFileName(".jar");

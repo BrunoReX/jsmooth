@@ -118,6 +118,8 @@ bool SunJVMLauncher::run(ResourceManager& resource, const string& origin, bool j
 	}
 
       m_dllrunner = new SunJVMDLL(this->RuntimeLibPath, v);
+      m_dllrunner->setJNI(m_jnireg);
+
       // set up the vm parameters...
       setupVM(resource, m_dllrunner);
 
@@ -139,6 +141,7 @@ bool SunJVMLauncher::runProc(ResourceManager& resource, bool useConsole, const s
     {
       DEBUG("No version identified for " + toString());
       SunJVMExe exe(this->JavaHome);
+
       VmVersion = exe.guessVersion();
       DEBUG("Version found: " + VmVersion.toString());
     }
@@ -159,6 +162,7 @@ bool SunJVMLauncher::runProc(ResourceManager& resource, bool useConsole, const s
   }  
 
   SunJVMExe exe(this->JavaHome, VmVersion);   
+
   setupVM(resource, &exe);
   if (exe.run(classname, useConsole))
     {
@@ -170,6 +174,9 @@ bool SunJVMLauncher::runProc(ResourceManager& resource, bool useConsole, const s
 
 bool SunJVMLauncher::setupVM(ResourceManager& resource, JVMBase* vm)
 {
+  for(int i=0; i<m_listeners.size(); i++)
+    vm->addListener(m_listeners[i]);
+
   //
   // create the properties array
   const vector<JavaProperty>& jprops = resource.getJavaProperties();
@@ -228,3 +235,7 @@ int SunJVMLauncher::getExitCode()
   return m_exitCode;
 }
 
+void SunJVMLauncher::setJNI(vector<JNIRegister*> reg)
+{
+  m_jnireg = reg;
+}

@@ -59,15 +59,6 @@ bool JavaMachineManager::run()
 	{
 	  return true;
 	}
-
-//       DEBUG("Trying to use bundled VM " + m_localVM.JavaHome);        
-//       if (m_localVM.runProc(m_resman, m_useConsole, "bundled"))
-// 	{
-// 	  m_exitCode = m_localVM.getExitCode();
-// 	  return true;
-// 	}
-//       if (m_localVM.run(m_resman, "bundled"))
-// 	return true;
     }
 
   if (vmorder == "")
@@ -133,6 +124,9 @@ bool JavaMachineManager::run()
 	  DEBUG("- Trying to use PATH");
 
 	  SunJVMLauncher launcher;
+	  for(int i=0; i<m_listeners.size(); i++)
+	    launcher.addListener(m_listeners[i]);
+
 	  if (launcher.runProc(m_resman, m_useConsole, "path"))
 	    {
 	      m_exitCode = m_localVM.getExitCode();
@@ -148,6 +142,12 @@ bool JavaMachineManager::run()
 
 bool JavaMachineManager::internalRun(SunJVMLauncher& launcher, const string& org)
 {
+  DEBUG("JavaMachineManager: setting " + StringUtils::toString(m_jnireg.size()) + " JNI libs");
+  launcher.setJNI(m_jnireg);
+
+  for(int i=0; i<m_listeners.size(); i++)
+    launcher.addListener(m_listeners[i]);
+
   if (m_acceptDLL && m_preferDLL)
     {
       if (launcher.run(m_resman, org))
@@ -188,6 +188,7 @@ SunJVMLauncher* JavaMachineManager::runDLLFromRegistry(bool justInstanciate)
     {
       DEBUG("- Trying registry: " + m_registryVms[i].toString());
 
+      m_registryVms[i].setJNI(m_jnireg);
       bool res = m_registryVms[i].run(m_resman, "registry", justInstanciate);
       
       if (res)
@@ -220,4 +221,9 @@ void JavaMachineManager::setPreferDLL(bool prefDLL)
 int JavaMachineManager::getExitCode()
 {
   return m_exitCode;
+}
+
+void JavaMachineManager::setJNI(vector<JNIRegister*> reg)
+{
+  m_jnireg = reg;
 }

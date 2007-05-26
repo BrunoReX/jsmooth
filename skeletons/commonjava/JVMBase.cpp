@@ -66,3 +66,16 @@ void JVMBase::setArguments(const std::string& args)
       this->addArgument(splitted[i]);
     }
 }
+
+void JVMBase::addListener(JVMSetUpListener* listener)
+{
+  m_listeners.push_back(listener);
+}
+
+void JVMBase::callListeners(int pid)
+{
+  for (int i=0; i<m_listeners.size(); i++)
+    {
+      m_listeners[i]->jvmHasPid(pid);
+    }
+}

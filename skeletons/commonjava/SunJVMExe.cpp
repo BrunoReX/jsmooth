@@ -91,6 +91,10 @@ bool SunJVMExe::run(const std::string& mainclass, bool useconsole)
   Process proc(execmd, useconsole);
   if (proc.run())
     {
+      //
+      // Call the JVM listeners
+      callListeners(proc.getProcessId());
+
       DEBUG("Started successfully");
       proc.join();
       m_exitCode = proc.getExitCode();

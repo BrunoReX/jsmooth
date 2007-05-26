@@ -22,7 +22,6 @@
 #define __SUNJVMBASE_H_
 
 #include <string>
-#include "jni.h"
 
 #include "Version.h"
 #include "StringUtils.h"
@@ -34,6 +33,12 @@
  * @author Rodrigo Reyes <reyes@charabia.net>
  */ 
 
+class JVMSetUpListener
+{
+ public:
+  virtual void jvmHasPid(int pid)=0;
+};
+
 class JVMBase
 {
  protected:
@@ -43,7 +48,8 @@ class JVMBase
   int                         m_maxHeap;
   int                         m_initialHeap;
   std::vector<std::string>    m_arguments;
-  
+  std::vector<JVMSetUpListener*> m_listeners;
+
  public:
   JVMBase();
 
@@ -53,6 +59,12 @@ class JVMBase
   void setInitialHeap(long size);
   void addArgument(const std::string& arg);
   void setArguments(const std::string& args);
+
+  void addListener(JVMSetUpListener* listener);
+
+ protected:
+  void callListeners(int pid);
+
 };
 
 

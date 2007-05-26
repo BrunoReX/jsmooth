@@ -30,6 +30,7 @@
 #include "JVMRegistryLookup.h"
 #include "JVMEnvVarLookup.h"
 #include "MSJViewLauncher.h"
+#include "JNIRegister.h"
 
 /** Manages the JVM available on the computer.  It builds the list of
  * all the JVM available on the computer, and provide a method to run
@@ -59,6 +60,8 @@ class JavaMachineManager
   bool                   m_acceptExe;
   bool                   m_acceptDLL;
   bool                   m_preferDLL;
+  vector<JNIRegister*>   m_jnireg;
+  std::vector<JVMSetUpListener*> m_listeners;
 
  public:
   /**
@@ -73,6 +76,13 @@ class JavaMachineManager
   void setAcceptExe(bool acceptExe);
   void setAcceptDLL(bool acceptDLL);
   void setPreferDLL(bool prefDLL);
+
+  void setJNI(vector<JNIRegister*> reg);
+
+  void addListener(JVMSetUpListener* listener)
+    {
+      m_listeners.push_back(listener);
+    }
 
   /**
    * Start the Java application.  The java application started is

@@ -30,6 +30,7 @@
 #include "ResourceManager.h"
 #include "JavaProperty.h"
 #include "JVMBase.h"
+#include "JNIRegister.h"
 
 typedef jint (JNICALL *CreateJavaVM_t)(JavaVM **pvm, JNIEnv **env, void *args);
 typedef jint (JNICALL *GetDefaultJavaVMInitArgs_t)(void *args);
@@ -63,6 +64,8 @@ class SunJVMDLL : public JVMBase
   HINSTANCE                   m_vmlib;
 
   StatusCode                  m_statusCode;
+
+  vector<JNIRegister*>        m_jnireg;
   
  protected:
   JavaVM *m_javavm;
@@ -78,7 +81,8 @@ class SunJVMDLL : public JVMBase
   bool setupVM11DLL(CreateJavaVM_t CreateJavaVM, GetDefaultJavaVMInitArgs_t GetDefaultJavaVMInitArgs);
 
   bool registerMethod(const std::string& classname, const std::string& methodname, const std::string& signature, void* fn);
-  bool registerJniSmooth();
+  //  bool registerJniSmooth();
+  void setJNI(vector<JNIRegister*> reg);
 
   JNIEnv* env()
     {
@@ -92,6 +96,7 @@ class SunJVMDLL : public JVMBase
 
   jclass findClass(const std::string& clazz);
   jmethodID findMethod(jclass& cls, const std::string& methodname, const std::string& signature, bool isStatic);
+  jmethodID findMethod(const std::string& clsname, const std::string& methodname, const std::string& signature, bool isStatic);
   JavaVM* getJavaVM();
 
   void setIntField(jclass cls, jobject obj, const std::string& fieldName, int value);

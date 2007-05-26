@@ -32,6 +32,7 @@
 
 #include "SunJVMDLL.h"
 #include "SunJVMExe.h"
+#include "JNIRegister.h"
 
 typedef jint (JNICALL *CreateJavaVM_t)(JavaVM **pvm, JNIEnv **env, void *args);
 typedef jint (JNICALL *GetDefaultJavaVMInitArgs_t)(void *args);
@@ -58,6 +59,7 @@ class SunJVMLauncher
   };
 
   int LaunchingStatus;
+  vector<JNIRegister*>   m_jnireg;
 
  protected:
   JavaVM *m_javavm;
@@ -111,7 +113,6 @@ class SunJVMLauncher
    * @return true if the java application was successfully launched,
    * false otherwise.
    */ 
-
   virtual bool runProc(ResourceManager& resource, bool noConsole, const string& origin);
 
   virtual bool setupVM(ResourceManager& resource, JVMBase* vm);
@@ -120,45 +121,18 @@ class SunJVMLauncher
 
   std::string toString() const;
 
+  void setJNI(vector<JNIRegister*> reg);
 
   friend bool operator < (const SunJVMLauncher& v1, const SunJVMLauncher& v2);
 
   int getExitCode();
 
+  std::vector<JVMSetUpListener*> m_listeners;
 
-
-
-
-//   Version guessVersionByProcess(const string& exepath);
-
-
-  
-//   bool runExe(const string& exepath, bool forceFullClasspath, ResourceManager& resource, bool noConsole, const std::string& version, const string& origin);
-//   bool dllInstanciate(ResourceManager& resource, const string& origin);
-
-//   bool callDLLStaticMethod(const std::string& classname, const std::string& methodname, const std::string& signature);
-//   bool callDLLStaticMethodInt(const std::string& classname, const std::string& methodname, const std::string& signature, int value);
-
-//   int destroyVM();
-//   JavaVM* getJavaVM();
-
-//   jclass findClass(const std::string& clazz);
-//   jmethodID findMethod(jclass& cls, const std::string& methodname, const std::string& signature, bool isStatic);
-
-//   void invokeVoidStatic(jclass clazz, jmethodID& methodid, jvalue arguments[]);
-//   //  jvaluea invokeIntStatic(jclass clazz, jmethodID& methodid, jvalue arguments[]);
-//   jint invokeIntStatic(jclass clazz, jmethodID& methodid, jvalue arguments[]);
-//   jlong invokeLongStatic(jclass clazz, jmethodID& methodid, jvalue arguments[]);
-
- private:
-     
-//   bool runVMDLL(ResourceManager& resource, const string& origin, bool justInstanciate=false);
-
-//   bool setupVM12DLL(ResourceManager& resource, const string& origin);
-//   bool setupVM11DLL(ResourceManager& resource, const string& origin);
-
-//   bool runVM11proc(ResourceManager& resource, bool noConsole, const string& origin);
-//   bool runVM12proc(ResourceManager& resource, bool noConsole, const string& origin);
+  void addListener(JVMSetUpListener* listener)
+    {
+      m_listeners.push_back(listener);
+    }
 
 };
 

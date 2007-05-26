@@ -56,6 +56,7 @@ class ResourceManager
 
   int m_resourcePropsId;
   int m_resourceJarId;
+  int m_resourceJniId;
   std::string m_lastError;    
   HGLOBAL m_jarHandler;
   int m_jarSize;

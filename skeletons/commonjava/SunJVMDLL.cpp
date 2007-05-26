@@ -22,7 +22,7 @@
 #include "SunJVMDLL.h"
 
 #include "JClassProxy.h"
-#include "JniSmooth.h"
+////#include "JniSmooth.h"
 
 SunJVMDLL::SunJVMDLL(const std::string& jvmdll, const Version& v)
 {
@@ -58,6 +58,13 @@ bool SunJVMDLL::run(const std::string& mainclass, bool waitDeath)
 	jvalue ma[1];
 	ma[0].l = mainargs;
 	disp.invokeStatic(std::string("void main(java.lang.String[] args)"), ma);
+	DEBUG("main class invoked");
+
+	if (env()->ExceptionOccurred())
+	  {
+	    env()->ExceptionDescribe();
+	  }
+
 	if (waitDeath == true)
 	  m_javavm->DestroyJavaVM();
 	return true;
@@ -103,11 +110,22 @@ bool SunJVMDLL::instanciate()
   else
     res = setupVM12DLL(CreateJavaVM, GetDefaultJavaVMInitArgs);
 
-  registerJniSmooth();
+  //
+  //  registerJniSmooth();
+  DEBUG("Registration of " + StringUtils::toString(m_jnireg.size()) + " JNI libraries");
+  for (int i=0; i<m_jnireg.size(); i++)
+    {
+      JNIRegister* reg = m_jnireg[i];
+      reg->registerJNI(this);
+    }
 
   DEBUG("Result code on DLL: " + StringUtils::toString(res));
   if (res)
     {
+      //
+      // Call the JVM listeners
+      callListeners(GetCurrentProcessId());
+
       m_statusCode = SunJVMDLL::JVM_LOADED;
       return true;
     }
@@ -228,6 +246,23 @@ jclass SunJVMDLL::findClass(const std::string& clazz)
 
 jmethodID SunJVMDLL::findMethod(jclass& cls, const std::string& methodname, const std::string& signature, bool isStatic)
 {
+  std::string sig = StringUtils::replace(signature, ".", "/");
+  
+  jmethodID mid;
+  if (isStatic)
+    mid = env()->GetStaticMethodID(cls, methodname.c_str(), sig.c_str());
+  else
+    mid = env()->GetMethodID(cls, methodname.c_str(), sig.c_str());
+
+  return mid;
+}
+
+jmethodID SunJVMDLL::findMethod(const std::string& clsname, const std::string& methodname, const std::string& signature, bool isStatic)
+{
+  jclass cls = findClass(clsname);
+  if (cls == 0)
+    return NULL;
+
   std::string sig = StringUtils::replace(signature, ".", "/");
   
   jmethodID mid;
@@ -396,9 +431,13 @@ jobject SunJVMDLL::invokeObject(jobject& obj, jmethodID& methodid, jvalue argume
 bool SunJVMDLL::registerMethod(const std::string& classname, const std::string& methodname, const std::string& signature,
 		    void* fn)
 {
+  DEBUG("Registering JNI " + classname + "::" + methodname + "::" + signature);
   jclass cc = this->findClass(classname);
   if (cc == 0)
-    return false;
+    {
+      DEBUG("Error registering JNI " + classname + "::" + methodname + ": class not found");
+      return false;
+    }
   JNINativeMethod jnm;
   jnm.name = (char*)methodname.c_str();
   jnm.signature = (char*)signature.c_str();
@@ -406,13 +445,23 @@ bool SunJVMDLL::registerMethod(const std::string& classname, const std::string& 
   
   int res = env()->RegisterNatives(cc, &jnm, 1);
   if (res != 0)
-    return false;
+    {
+      DEBUG("Error registering JNI " + classname + "::" + methodname + ": failed for some reason");
+      return false;
+    }
 
   return true;
 }
 
-bool SunJVMDLL::registerJniSmooth()
+// bool SunJVMDLL::registerJniSmooth()
+// {
+//   registerNativeMethods(this);
+//   return true;
+// }
+
+
+void SunJVMDLL::setJNI(vector<JNIRegister*> reg)
 {
-  registerNativeMethods(this);
-  return true;
+  m_jnireg = reg;
+  DEBUG("SunJVMDLL: Got " + StringUtils::toString(m_jnireg.size()) + " JNI libs");
 }
