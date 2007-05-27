@@ -7,10 +7,12 @@ CC   = gcc.exe
 WINDRES = windres.exe
 RES  = JWrap_private.res
 OBJ  = main.o $(RES)
+FLTK-LDFLAGS = $(shell fltk-config  --use-images --ldflags )
+FLTK-CXXFLAGS = $(shell fltk-config --use-images --cxxflags )
 LINKOBJ  = main.o $(RES)
-LIBS =  -L"/lib" -L"../commonjava"  -L"../util-core" -mwindows ../commonjava/CommonJava.a ../util-core/util-core.a
+LIBS =  -L"/lib" -L"../commonjava"  -L"../util-core" -mwindows ../commonjava/CommonJava.a ../util-core/util-core.a ../util-gui/util-gui.a $(FLTK-LDFLAGS)  -lfltk_images -lfltk_png -lfltk_z -lfltk_jpeg ../jnismooth/jnismooth.a
 INCS =  -I"/include"  -I"$(JDK)/include/win32"  -I"$(JDK)/include"  -I"../commonjava" -I"../util-core"
-CXXINCS = -g -I"/include/c++"  -I"/include/c++/mingw32"  -I"/include/c++/backward"  -I"/include"  -I"$(JDK)/include/win32"  -I"$(JDK)/include"  -I"../commonjava"  -I../util-core
+CXXINCS = -g -I"/include/c++"  -I"/include/c++/mingw32"  -I"/include/c++/backward"  -I"/include"  -I"$(JDK)/include/win32"  -I"$(JDK)/include"  -I"../commonjava"  -I../util-core  -I../util-gui -I../jnismooth 
 BIN  = JWrap.exe
 CXXFLAGS = $(CUSTOMFLAGS) $(CXXINCS) -DJDK="$(JDK)"
 CFLAGS = $(INCS) 

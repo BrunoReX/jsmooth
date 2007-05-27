@@ -30,11 +30,17 @@ void thread_support_fn(void* param)
       // 
     }
   _endthread();
+
+  if (t->isAutoDelete())
+    {
+      delete t;
+    }
 }
 
 Thread::Thread()
 {
   m_callback = 0;
+  m_autodelete = false;
 }
 
 void Thread::start()
@@ -97,3 +103,15 @@ void Thread::setStopRequested(bool stop)
 {
   m_stopRequested = stop;
 }
+
+void Thread::setAutoDelete(bool v)
+{
+  m_autodelete = v;
+}
+
+bool Thread::isAutoDelete()
+{
+  return m_autodelete;
+}
+
+

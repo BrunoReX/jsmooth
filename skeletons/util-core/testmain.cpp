@@ -27,6 +27,7 @@
 #include "Process.h"
 
 #include "SingleInstanceManager.h"
+#include "RegistryKey.h"
 
 void _debugOutput(const std::string& text)
 {
@@ -39,6 +40,16 @@ void _debugWaitKey()
 
 int main(int argc, char *argv[])
 {
+
+  RegistryKey k(RegistryKey::CURRENT_USER, "Software\\JSmooth");
+  RegistryKey k2(k, "Test");
+
+//   k.set("HAB", "ceci est un test");
+//   k.set("HAB2", 1234);
+
+  printf("HAB = %s\n", k.getString("HAB").c_str());
+  printf("HAB2 = %d\n", k.getInt("HAB2"));
+
 //   char buffer[256];
 //   buffer[0] = 0;
 //   int res = GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME,
@@ -47,24 +58,24 @@ int main(int argc, char *argv[])
 //   if (res > 0)
 //     printf("result: %s\n", buffer);
 
-  SingleInstanceManager singinst;
-  if (singinst.alreadyExists())
-    {
-      printf("Already running...\n");
-      exit(0);
-    }
-  else
-    Sleep(50000);
+//   SingleInstanceManager singinst;
+//   if (singinst.alreadyExists())
+//     {
+//       printf("Already running...\n");
+//       exit(0);
+//     }
+//   else
+//     Sleep(50000);
 
-  std::string exeline = "C:\\Program Files\\Java\\jdk1.5.0_11\\bin\\java.exe -version";
-  string tmpfilename = FileUtils::createTempFileName(".tmp");
+//   std::string exeline = "C:\\Program Files\\Java\\jdk1.5.0_11\\bin\\java.exe -version";
+//   string tmpfilename = FileUtils::createTempFileName(".tmp");
 
-  Process proc(exeline, true);
-  proc.setRedirect(tmpfilename);
-  proc.run();
-  proc.join();
+//   Process proc(exeline, true);
+//   proc.setRedirect(tmpfilename);
+//   proc.run();
+//   proc.join();
 
-  std::string voutput = FileUtils::readFile(tmpfilename);
+//   std::string voutput = FileUtils::readFile(tmpfilename);
   //  printf("GOT: %s\n", voutput.c_str());
 
 //   std::string cmdlinetest = " \"this is my\ test\\\" \"here and then\"";

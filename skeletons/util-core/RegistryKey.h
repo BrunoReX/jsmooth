@@ -18,45 +18,37 @@
   
 */
 
-#ifndef __JSMOOTHCOREPROCESS_H_
-#define __JSMOOTHCOREPROCESS_H_
-
-
-#include <process.h>
-#include <windows.h>
-#include <winbase.h>
+#ifndef __REGISTRYKEY_H_
+#define __REGISTRYKEY_H_
 
 #include <string>
-#include <stdio.h>
-/**
- * Provides basic string operations.
- * 
- * @author Rodrigo Reyes <reyes@charabia.net>
- */
+#include <vector>
+#include <windows.h>
 
-class Process
+class RegistryKey
 {
-  PROCESS_INFORMATION m_procinfo;
-  bool                m_useconsole;
-  std::string         m_commandline;
-  bool                m_started;
-  std::string         m_redirection;
-  bool                m_redirectstderr;
-  HANDLE              m_redirectHandle;
-  DWORD               m_exitCode;
+ private:
+  HKEY m_key;
 
  public:
-  Process(const std::string& commandline, bool useconsole);
+  enum KEYBASE { CURRENT_USER = 1,
+	 LOCAL_MACHINE = 2,
+	 USERS = 3
+  } ;
 
-  void setRedirect(const std::string& filename);
+  RegistryKey(KEYBASE parent, const std::string& subkey);
+  RegistryKey(const RegistryKey& parent, const std::string& subkey);
+  ~RegistryKey();
 
-  bool run();
-  void join();
+  void set(const std::string& name, const std::string& value);
+  void set(const std::string& name, DWORD value);
 
-  DWORD getProcessId();
+  std::string getString(const std::string& name);
+  DWORD getInt(const std::string& name);
+  
+ private:
+  void init(HKEY key, const std::string& subkey);
 
-  int getExitCode();
 };
-
 
 #endif

@@ -28,6 +28,10 @@
 #include "JavaMachineManager.h"
 #include "SingleInstanceManager.h"
 
+#include "JniSmoothRegister.h"
+#include "splashhelper.h"
+#include "JVMBase.h"
+
 ResourceManager* globalResMan;
 DebugConsole *DEBUGCONSOLE = 0;
 
@@ -43,6 +47,7 @@ void _debugOutput(const std::string& text)
 {
   if (DEBUGCONSOLE != NULL)
     DEBUGCONSOLE->writeline(text);
+  printf("%s\n",text.c_str()); fflush(stdout);
 }
 
 void _debugWaitKey()
@@ -50,24 +55,35 @@ void _debugWaitKey()
   if (DEBUGCONSOLE != NULL)
     DEBUGCONSOLE->waitKey();
 }
-                          
+
+class JVMListener : public  JVMSetUpListener
+{
+  virtual void jvmHasPid(int pid)
+  {
+    splashwindow_setProcessId(pid);
+  }
+};
+
 int WINAPI WinMain (HINSTANCE hThisInstance,
                     HINSTANCE hPrevInstance,
                     LPSTR lpszArgument,
                     int nFunsterStil)
 {
-    atexit(lastExit);
-    SingleInstanceManager instanceman;
+  atexit(lastExit);
+  SingleInstanceManager instanceman;
 
-    globalResMan = new ResourceManager("JAVA", PROPID, JARID, JNISMOOTHID);
+  vector<JNIRegister*> jnireg;
+  jnireg.push_back(new JniSmoothRegister());
 
-    // sets up the command line arguments
-    // not sure if lpszArgument can be null on Windows...
-     if ((lpszArgument!=NULL) && (strlen(lpszArgument)>0))
-       {
-	 std::vector<std::string> args = StringUtils::split(lpszArgument, " \t\n\r", "\"'", false);
-	 globalResMan->setUserArguments( args );
-       }
+  globalResMan = new ResourceManager("JAVA", PROPID, JARID, JNISMOOTHID);
+
+  // sets up the command line arguments
+  // not sure if lpszArgument can be null on Windows...
+  if ((lpszArgument!=NULL) && (strlen(lpszArgument)>0))
+    {
+      std::vector<std::string> args = StringUtils::split(lpszArgument, " \t\n\r", "\"'", false);
+      globalResMan->setUserArguments( args );
+    }
 
 
   bool dodebug = globalResMan->getBooleanProperty("skel_Debug");
@@ -77,9 +93,8 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
       DEBUGCONSOLE = new DebugConsole("JSmooth Debug");
     }
 
-    if (DEBUGCONSOLE!=0)
-      globalResMan->printDebug();
-
+  if (DEBUGCONSOLE!=0)
+    globalResMan->printDebug();
 
   bool singleinstance = globalResMan->getBooleanProperty("skel_SingleInstance");
   if (singleinstance)
@@ -95,52 +110,67 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 	}
     }
 
-    DEBUG(string("Main class: ") + globalResMan->getMainName());
+  std::string splashimg = globalResMan->getProperty("skel_SplashImg");
+  DEBUG("splash: " + splashimg);
+  if (splashimg.size() > 0)
+    {
+      splashwindow_start(splashimg);
+      //      Sleep(1000);
+    }
 
-    char curdir[256];
-    GetCurrentDirectory(256, curdir);
-    DEBUG(string("Currentdir: ") + curdir);
 
-    string newcurdir = globalResMan->getCurrentDirectory();
-    SetCurrentDirectory(newcurdir.c_str());
+  DEBUG(string("Main class: ") + globalResMan->getMainName());
 
-    JavaMachineManager man(*globalResMan);
-    man.setAcceptExe(true);
-    man.setAcceptDLL(true);
-    if (dodebug)
-      man.setUseConsole(true);
-    else
-      man.setUseConsole(false);
+  char curdir[256];
+  GetCurrentDirectory(256, curdir);
+  DEBUG(string("Currentdir: ") + curdir);
 
-    bool singleprocess = globalResMan->getBooleanProperty("skel_SingleProcess");
-    bool jnismooth = globalResMan->getBooleanProperty("skel_JniSmooth");
+  string newcurdir = globalResMan->getCurrentDirectory();
+  SetCurrentDirectory(newcurdir.c_str());
 
-    if (singleprocess || jnismooth)
-      man.setPreferDLL(true);
-    else
-      man.setPreferDLL(false);
+  JavaMachineManager man(*globalResMan);
+  man.setJNI(jnireg);
+  man.setAcceptExe(true);
+  man.setAcceptDLL(true);
+  if (dodebug)
+    man.setUseConsole(true);
+  else
+    man.setUseConsole(false);
 
-    int retvalue = 0;
+  bool singleprocess = globalResMan->getBooleanProperty("skel_SingleProcess");
+  bool jnismooth = globalResMan->getBooleanProperty("skel_JniSmooth");
 
-    if (man.run() == false)
+  if (singleprocess || jnismooth)
+    man.setPreferDLL(true);
+  else
+    man.setPreferDLL(false);
+
+  if (splashimg.size() > 0)
+    {
+      man.addListener(new JVMListener());
+    }
+
+  int retvalue = 0;
+
+  if (man.run() == false)
     {
       DEBUG("Displaying error message to user...");
-        std::string errmsg = globalResMan->getProperty("skel_Message");
-        std::string url = globalResMan->getProperty("skel_URL");
-        if (MessageBox(NULL, errmsg.c_str(), "No Java?", MB_OKCANCEL|MB_ICONQUESTION|MB_APPLMODAL) == IDOK)
+      std::string errmsg = globalResMan->getProperty("skel_Message");
+      std::string url = globalResMan->getProperty("skel_URL");
+      if (MessageBox(NULL, errmsg.c_str(), "No Java?", MB_OKCANCEL|MB_ICONQUESTION|MB_APPLMODAL) == IDOK)
         {
-            ShellExecute(NULL, "open", url.c_str(), NULL, "", 0);
+	  ShellExecute(NULL, "open", url.c_str(), NULL, "", 0);
         }
     }
-    else
-      {
-	retvalue = man.getExitCode();
-      }
+  else
+    {
+      retvalue = man.getExitCode();
+    }
 
-    DEBUG("NORMAL EXIT");
-    DEBUGWAITKEY();
+  DEBUG("NORMAL EXIT");
+  DEBUGWAITKEY();
 
-    /* The program return-value is 0 - The value that PostQuitMessage() gave */
-    return retvalue;
+  /* The program return-value is 0 - The value that PostQuitMessage() gave */
+  return retvalue;
 }
 

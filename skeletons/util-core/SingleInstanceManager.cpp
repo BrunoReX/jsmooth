@@ -23,18 +23,16 @@
 #include <windows.h>
 #include <winbase.h>
 
+
 void pipe_wait_callback(void* param)
 {
   SingleInstanceManager* sim = (SingleInstanceManager*)param;
   while (true)
     {
       std::string msg = sim->waitPipeMessage();
-      printf("Got MESSAGE: %s\n", msg.c_str());
       sim->processMessage(msg);
-      fflush(stdout);
     }
 }
-
 
 SingleInstanceManager::SingleInstanceManager()
 {
@@ -113,18 +111,11 @@ std::string SingleInstanceManager::waitPipeMessage()
   
   if (ConnectNamedPipe(m_pipe, NULL))
     {
-      printf("waitPipeMessage...\n");
-      fflush(stdout);
-
-      printf("connected to named pipe...\n");
-      fflush(stdout);
       char buffer[256];
       DWORD length;
       
       bool res = ReadFile(m_pipe, buffer, sizeof(buffer), &length, NULL); 
       buffer[length] = 0;
-      printf("read file %s\n", buffer);
-      fflush(stdout);
       
       if (res && (length>0))
 	{
@@ -145,7 +136,7 @@ BOOL CALLBACK displayWindowForProcess(HWND hwnd, LPARAM lParam )
   DWORD myprocessid = GetCurrentProcessId();
   DWORD hid;
   GetWindowThreadProcessId(hwnd, &hid);
-  printf("Checking %d, %d, %d\n", hwnd, hid, myprocessid); fflush(stdout);
+
   if (hid == myprocessid)
     {
       LONG style = GetWindowLong(hwnd, GWL_STYLE);
@@ -160,8 +151,6 @@ BOOL CALLBACK displayWindowForProcess(HWND hwnd, LPARAM lParam )
 
 void SingleInstanceManager::processMessage(const std::string& msg)
 {
-  printf("PROCESSING MESSAGE\n");
-  fflush(stdout);
   EnumWindows(displayWindowForProcess, 0);
 }
 

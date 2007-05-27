@@ -77,9 +77,13 @@ public class SampleApplication extends javax.swing.JFrame
 			    jLabel1.setIcon(iic);
 		    }
 
-		String toto = jsmooth.Native.getExecutablePath();
-		
-		jLabel1.setText("Sample Application for JSmooth " + toto);
+		String jnitest = "";
+		if (jsmooth.Native.isAvailable())
+		    {
+			jnitest = jsmooth.Native.getExecutablePath();
+		    }
+
+		jLabel1.setText("Sample Application for JSmooth " + jnitest);
 		jPanel1.add(jLabel1, java.awt.BorderLayout.CENTER);
 		
 		jButton1.setText("Exit");
@@ -121,9 +125,25 @@ public class SampleApplication extends javax.swing.JFrame
 	/**
 	 * @param args the command line arguments
 	 */
-	public static void main(String args[])
+	public static void main(String args[]) throws Exception
 	{
-		new SampleApplication().setVisible(true);
+	    jsmooth.SplashWindow spw = null;
+
+	    //	    throw new Exception("KO");
+
+ 	    if (jsmooth.Native.isAvailable())
+ 		{
+ 		    spw = jsmooth.Native.getSplashWindow();
+		}
+	    
+	    if (spw != null)
+		for (int i=0; i<=50; i+=2)
+		    {
+			spw.setProgress(i, 50);
+			Thread.currentThread().sleep(100);
+		    }
+
+	    new SampleApplication().setVisible(true);
 	}
 	
 	

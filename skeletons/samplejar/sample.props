@@ -17,3 +17,4 @@ initialheap=48000000
 embedjar=true
 skel_Debug=1
 skel_SingleProcess=1
+skel_SplashImg=splash.png

@@ -43,6 +43,13 @@
 <value>0</value>
 </skeletonProperties>
 <skeletonProperties>
+<description>SKEL_GENERIC_PROPERTY_SPLASH_DESCRIPTION</description>
+<idName>SplashImg</idName>
+<label>SKEL_GENERIC_PROPERTY_SPLASH</label>
+<type>imgselector</type>
+<value></value>
+</skeletonProperties>
+<skeletonProperties>
 <description>SKEL_GENERIC_PROPERTY_DEBUG_DESCRIPTION</description>
 <idName>Debug</idName>
 <label>SKEL_GENERIC_PROPERTY_DEBUG_LABEL</label>

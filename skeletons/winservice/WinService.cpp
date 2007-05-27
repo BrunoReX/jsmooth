@@ -24,6 +24,7 @@
 #include "StringUtils.h"
 
 #include "resource.h"
+#include <vector>
 
 #include "common.h"
 #include "ResourceManager.h"
@@ -31,6 +32,8 @@
 #include "JavaMachineManager.h"
 #include "JClassProxy.h"
 #include "JArgs.h"
+#include "JniSmoothRegister.h"
+#include "JNIRegister.h"
 
 WinService* winservice_ref;
 
@@ -285,7 +288,11 @@ void WinService::run()
       globalResMan->printDebug();
     }
 
+  vector<JNIRegister*> jnireg;
+  jnireg.push_back(new JniSmoothRegister());
+
   JavaMachineManager man(*globalResMan);
+  man.setJNI(jnireg);
   man.setAcceptExe(false);
   man.setAcceptDLL(true);
   man.setUseConsole(false);

@@ -116,3 +116,7 @@ int Process::getExitCode()
   return (int)m_exitCode;
 }
 
+DWORD Process::getProcessId()
+{
+  return m_procinfo.dwProcessId;
+}

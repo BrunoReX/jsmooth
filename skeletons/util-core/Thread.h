@@ -40,7 +40,8 @@ class Thread
   void (*m_callback)(void*);
   void* m_param;
   bool m_stopRequested;
-
+  bool m_autodelete;
+  
  public:
   Thread();
 
@@ -81,6 +82,9 @@ class Thread
 
   void setStopRequested(bool stop=true);
 
+  void setAutoDelete(bool v);
+  bool isAutoDelete();
+  
 };
 
 

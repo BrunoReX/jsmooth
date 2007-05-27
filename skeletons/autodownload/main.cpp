@@ -32,6 +32,13 @@
 #include "httpdownload.h"
 #include "execcab.h"
 
+#include <FL/Fl_Shared_Image.H>
+#include "Splash.h"
+
+#include "JniSmooth.h"
+#include "JniSmoothRegister.h"
+#include "splashhelper.h"
+#include "JVMBase.h"
 
 ResourceManager* globalResMan;
 DebugConsole *DEBUGCONSOLE = NULL;
@@ -58,7 +65,27 @@ void _debugWaitKey()
     DEBUGCONSOLE->waitKey();
 }
 
+void displaySplash(void *param)
+{
+}
 
+class JVMListener : public  JVMSetUpListener
+{
+  virtual void jvmHasPid(int pid)
+  {
+    splashwindow_setProcessId(pid);
+  }
+};
+
+// SplashWindow* sw;
+
+// void splashwindow_runnerthread(void* param)
+// {
+//   Fl::lock();
+//   sw->splashOn();
+//   Fl::run();
+//   Fl::unlock();
+// }
 
 int WINAPI WinMain (HINSTANCE hThisInstance,
                     HINSTANCE hPrevInstance,
@@ -68,6 +95,15 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
   atexit(lastExit);
   SingleInstanceManager instanceman;
 
+  vector<JNIRegister*> jnireg;
+  jnireg.push_back(new JniSmoothRegister());
+
+//   fl_register_images();
+//   sw = new SplashWindow("z:\\SOURCE\\RELEASE\\jsmooth\\skeletons\\autodownload\\splash.jpg");
+  
+//   Thread splashthread;
+//   splashthread.start(splashwindow_runnerthread, NULL);
+  
   globalResMan = new ResourceManager("JAVA", PROPID, JARID, JNISMOOTHID);
 
   // sets up the command line arguments
@@ -101,6 +137,14 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 	}
     }
 
+  std::string splashimg = globalResMan->getProperty("skel_SplashImg");
+  DEBUG("splash: " + splashimg);
+  if (splashimg.size() > 0)
+    {
+      splashwindow_start(splashimg);
+      //      Sleep(1000);
+    }
+
   DEBUG(string("Main class: ") + globalResMan->getMainName());
 
   char curdir[256];
@@ -111,6 +155,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
   SetCurrentDirectory(newcurdir.c_str());
 
   JavaMachineManager man(*globalResMan);
+  man.setJNI(jnireg);
   man.setAcceptExe(true);
   man.setAcceptDLL(true);
   if (dodebug)
@@ -119,6 +164,11 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     man.setUseConsole(false);
   man.setPreferDLL(globalResMan->getBooleanProperty("skel_SingleProcess"));
   
+  if (splashimg.size() > 0)
+    {
+      man.addListener(new JVMListener());
+    }
+
   if (man.run() == false)
     {
       DEBUG("Displaying error message to user...");

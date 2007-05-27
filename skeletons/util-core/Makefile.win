@@ -7,7 +7,7 @@ CC   = gcc.exe
 WINDRES = windres.exe
 MINGW =
 RES  = 
-OBJ  = SingleInstanceManager.o Process.o Log.o Thread.o FileUtils.o StringUtils.o DebugConsole.o $(RES)
+OBJ  = md5.o RegistryKey.o SingleInstanceManager.o Process.o Log.o Thread.o FileUtils.o StringUtils.o DebugConsole.o $(RES)
 LIBS =  -L"$(MINGW)/lib"  -L"/lib" -lws2_32
 INCS =  -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32" 
 CXXINCS = -Os  -I"$(MINGW)/include/c++"  -I"$(MINGW)/include/c++/mingw32"  -I"$(MINGW)/include/c++/backward"  -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32" 
@@ -26,7 +26,7 @@ clean: clean-custom
 $(BIN): $(OBJ)
 	ar r $(BIN) $(OBJ)
 	ranlib $(BIN)
-	$(CPP) $(OBJ) testmain.o -o test.exe $(LIBS) 
+	$(CPP) testmain.o -o test.exe $(BIN) 
 
 $(PROJECTNAME).a: $(OBJ) testmain.o
 
