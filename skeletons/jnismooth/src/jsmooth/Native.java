@@ -162,4 +162,6 @@ public class Native
      * @return an DriveInfo object
      */
     static public native DriveInfo getDriveInfo(java.io.File f);
+
+    static public native SplashWindow getSplashWindow();
 }
