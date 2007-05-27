@@ -139,7 +139,12 @@ public class FileSelectionTextField extends javax.swing.JPanel
 		    }
 	    }
     }
-	
+    
+    public void setFileFilter(javax.swing.filechooser.FileFilter filter)
+    {
+	m_fileChooser.setFileFilter(filter);
+    }
+
     public void setFile(java.io.File f)
     {
 	//	System.out.println("Setting File: " + f + " / " + m_basedir);
@@ -185,9 +190,11 @@ public class FileSelectionTextField extends javax.swing.JPanel
     {
 	m_fileChooser.setCurrentDirectory(root);
 	m_basedir = root;
+	if (getFile() != null)
+	    setFile(getFile());
     }
 	
-    public File getBaseDir()
+    public java.io.File getBaseDir()
     {
 	return m_basedir;
     }

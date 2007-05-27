@@ -73,6 +73,9 @@ public class ExecutableIcon extends Editor
 
     public void updateModel()
     {
+	if (m_model == null)
+	    return;
+	
 	File f = m_selector.getFile();
 	if (f != null)
 	    m_model.setIconLocation(m_selector.getFile().toString());

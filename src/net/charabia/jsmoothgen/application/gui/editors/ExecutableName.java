@@ -49,6 +49,7 @@ public class ExecutableName extends Editor
 	    m_selector.setFile(getAbsolutePath(new java.io.File(m_model.getExecutableName())));
 	else
 	    m_selector.setFile(null);
+
     }
 
     public void updateModel()

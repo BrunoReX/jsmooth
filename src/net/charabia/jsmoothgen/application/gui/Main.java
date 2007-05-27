@@ -46,18 +46,25 @@ public class Main extends JFrame
 
     private Main()
     {
-	Splash splash = new Splash(this, "/icons/splash.png", false);
-	splash.setVersion(VERSION);
-	splash.show();
+	setupSplash(this);
+
+	setSplashProgress(3, 100);
 
 	m_projectFileChooser.addChoosableFileFilter(new SimpleFileFilter("jsmooth", "JSmooth Project Files"));
 
+	setSplashProgress(6, 100);
+
 	getContentPane().setLayout(new BorderLayout());
 	m_panel = new MasterPanel();
+
+	setSplashProgress(90, 100);
+
 	getContentPane().add(BorderLayout.CENTER, m_panel);
 
 	setupMenus();
 	setupToolBar();
+
+	setSplashProgress(95, 100);
 
         addWindowListener(new java.awt.event.WindowAdapter() {
 		public void windowClosing(java.awt.event.WindowEvent evt)
@@ -68,7 +75,10 @@ public class Main extends JFrame
 
 	setTitle("Untitled");
 	loadWindowSettings();
-	splash.dispose();
+
+	setSplashProgress(100, 100);
+
+	closeSplash();
     }
 
     private void setupMenus()
@@ -136,6 +146,11 @@ public class Main extends JFrame
     }
 
 
+    public java.io.File getProjectFile()
+    {
+	return m_panel.getProjectFile();
+    }
+
     private final Icon ICON_NEW = new javax.swing.ImageIcon(getClass().getResource("/icons/stock_new.png"));
     public final Action NEW = new AbstractAction(local("NEW"), ICON_NEW) {
 	    public void actionPerformed(ActionEvent e)
@@ -160,8 +175,8 @@ public class Main extends JFrame
 				setTitle(f.getAbsolutePath());
 			    }
 
-// 			if (openDirect(m_projectFileChooser.getSelectedFile()))
-// 			    m_recentMenuManager.add(m_projectFileChooser.getSelectedFile().getAbsolutePath());
+			// 			if (openDirect(m_projectFileChooser.getSelectedFile()))
+			// 			    m_recentMenuManager.add(m_projectFileChooser.getSelectedFile().getAbsolutePath());
 		    }
 	    }
 	};
@@ -331,9 +346,49 @@ public class Main extends JFrame
 	    }
     }
 
+    static Splash s_splashWindow = null;
+
+    static private void setupSplash(Frame parent)
+    {
+	jsmooth.SplashWindow spw = null;
+	if (jsmooth.Native.isAvailable())
+	    spw = jsmooth.Native.getSplashWindow();
+
+	if (spw == null)
+	    {
+		s_splashWindow = new Splash(parent, "/icons/splash.png", false);
+		s_splashWindow.setVersion(VERSION);
+		s_splashWindow.show();
+	    }
+    }
+
+    static public Object setSplashProgress(int cur, int max)
+    {
+	if (s_splashWindow == null)
+	    {
+		System.out.println("setSplashProgress... " + cur + "/" + max);
+		jsmooth.SplashWindow spw = null;
+		if (jsmooth.Native.isAvailable())
+		    spw = jsmooth.Native.getSplashWindow();
+		
+		if (spw != null)
+		    {
+			spw.setProgress(cur, max);
+		    }
+	    }
+	return null;
+    }
+
+    static private void closeSplash()
+    {
+	if (s_splashWindow != null)
+	    s_splashWindow.dispose();
+    }
+
     public static void main(String args[])
     {
 	System.out.println("Running JSmooth...");
+
 	try {
 	    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 	} catch (Exception e) { e.printStackTrace(); }
@@ -354,6 +409,7 @@ public class Main extends JFrame
 		    }
 	    }
 	    
+	closeSplash();
 	Main.MAIN.setVisible(true);
     }
 }

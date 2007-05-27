@@ -127,6 +127,12 @@ public class PropertiesBuilder
 			if (prop.getKey() != null)
 			    {
 				String val = prop.getValue();
+				if (prop.isLocalFile)
+				    {
+					// TODO
+					val = getRenormalizedPathIfNeeded(val, basedir, curdir);
+				    }
+
 				if (val == null)
 				    val = "";
 				addPair("skel_" + prop.getKey(), val, out);

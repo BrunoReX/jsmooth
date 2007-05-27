@@ -34,9 +34,9 @@ import se.datadosen.component.RiverLayout;
 
 public class MasterPanel extends JPanel
 {
-    private JButtonBar m_leftBar = new JButtonBar(JButtonBar.VERTICAL);
-    private ButtonGroup m_leftGroup = new ButtonGroup();
-    private JPanel m_mainpanel = new JPanel();
+    private JButtonBar m_leftBar;
+    private ButtonGroup m_leftGroup;
+    private JPanel m_mainpanel;
     private JScrollBar m_mainpanelVBar;
     private JScrollPane m_scrollpane;
 
@@ -47,54 +47,126 @@ public class MasterPanel extends JPanel
     private JSmoothModelBean m_model = new JSmoothModelBean();
     private java.io.File m_modelLocation = null;
 
-    private EditorPool m_edPool = new EditorPool();
+    private EditorPool m_edPool; // = new EditorPool();
 
     private String m_currentPanelName = "";
 
-    private Object[] m_skelElements = { 
-	new net.charabia.jsmoothgen.application.gui.editors.SkeletonChooser(), 
-	new net.charabia.jsmoothgen.application.gui.editors.SkeletonPropertiesEditor() 
-	//	new net.charabia.jsmoothgen.application.gui.editors.SkeletonProperties()
-    };
+    private Object[] m_skelElements, m_execElements, m_appElements, m_jvmSelElements, m_jvmCfgElements, m_jsInfo;
 
-    private Object[] m_execElements = { 
-	"GUI_LABEL_EXECUTABLE_SETTINGS",
-	new net.charabia.jsmoothgen.application.gui.editors.ExecutableName() ,
-	new net.charabia.jsmoothgen.application.gui.editors.ExecutableIcon() ,
-	new net.charabia.jsmoothgen.application.gui.editors.CurrentDirectory()
-    };
+//     private Object[] m_skelElements = { 
+// 	new net.charabia.jsmoothgen.application.gui.editors.SkeletonChooser(), 
+// 	new net.charabia.jsmoothgen.application.gui.editors.SkeletonPropertiesEditor() 
+// 	//	new net.charabia.jsmoothgen.application.gui.editors.SkeletonProperties()
+//     };
 
-    private Object[] m_appElements = {
-	"GUI_LABEL_APPLICATION_SETTINGS",
-	new net.charabia.jsmoothgen.application.gui.editors.MainClass(),
-	new net.charabia.jsmoothgen.application.gui.editors.ApplicationArguments(),
-	"GUI_LABEL_EMBEDDEDJAR_SETTINGS",
-	new net.charabia.jsmoothgen.application.gui.editors.EmbeddedJar(),
-	new net.charabia.jsmoothgen.application.gui.editors.ClassPath()
-    };
+//     private Object[] m_execElements = { 
+// 	"GUI_LABEL_EXECUTABLE_SETTINGS",
+// 	new net.charabia.jsmoothgen.application.gui.editors.ExecutableName() ,
+// 	new net.charabia.jsmoothgen.application.gui.editors.ExecutableIcon() ,
+// 	new net.charabia.jsmoothgen.application.gui.editors.CurrentDirectory()
+//     };
 
-    private Object[] m_jvmSelElements = {
-	"GUI_LABEL_JAVA_VERSION",
-	new net.charabia.jsmoothgen.application.gui.editors.MinVersion(),
-	new net.charabia.jsmoothgen.application.gui.editors.MaxVersion(),
-	"GUI_LABEL_BUNDLEDJRE",
-	new net.charabia.jsmoothgen.application.gui.editors.JVMBundle(),
-	new net.charabia.jsmoothgen.application.gui.editors.JVMSearchSequence()
-    };
+//     private Object[] m_appElements = {
+// 	"GUI_LABEL_APPLICATION_SETTINGS",
+// 	new net.charabia.jsmoothgen.application.gui.editors.MainClass(),
+// 	new net.charabia.jsmoothgen.application.gui.editors.ApplicationArguments(),
+// 	"GUI_LABEL_EMBEDDEDJAR_SETTINGS",
+// 	new net.charabia.jsmoothgen.application.gui.editors.EmbeddedJar(),
+// 	new net.charabia.jsmoothgen.application.gui.editors.ClassPath()
+//     };
 
-    private Object[] m_jvmCfgElements = {
-	"GUI_LABEL_MEMORYSETTINGS",
-	new net.charabia.jsmoothgen.application.gui.editors.MaxMemoryHeap(),
-	new net.charabia.jsmoothgen.application.gui.editors.InitialMemoryHeap(),
-	new net.charabia.jsmoothgen.application.gui.editors.JavaProperties()
-    };
+//     private Object[] m_jvmSelElements = {
+// 	"GUI_LABEL_JAVA_VERSION",
+// 	new net.charabia.jsmoothgen.application.gui.editors.MinVersion(),
+// 	new net.charabia.jsmoothgen.application.gui.editors.MaxVersion(),
+// 	"GUI_LABEL_BUNDLEDJRE",
+// 	new net.charabia.jsmoothgen.application.gui.editors.JVMBundle(),
+// 	new net.charabia.jsmoothgen.application.gui.editors.JVMSearchSequence()
+//     };
 
-    private Object[] m_jsInfo = {
-	new net.charabia.jsmoothgen.application.gui.editors.JSmoothInfo()
-    };
+//     private Object[] m_jvmCfgElements = {
+// 	"GUI_LABEL_MEMORYSETTINGS",
+// 	new net.charabia.jsmoothgen.application.gui.editors.MaxMemoryHeap(),
+// 	new net.charabia.jsmoothgen.application.gui.editors.InitialMemoryHeap(),
+// 	new net.charabia.jsmoothgen.application.gui.editors.JavaProperties()
+//     };
+
+//     private Object[] m_jsInfo = {
+// 	new net.charabia.jsmoothgen.application.gui.editors.JSmoothInfo()
+//     };
 
     public MasterPanel()
     {
+	Main.setSplashProgress(10,100);
+
+	//	m_edPool = new EditorPool();
+	Main.setSplashProgress(12,100);
+	m_leftBar = new JButtonBar(JButtonBar.VERTICAL);
+	m_leftGroup = new ButtonGroup();
+	m_mainpanel = new JPanel();
+
+	Main.setSplashProgress(15,100);
+
+	m_skelElements = new Object[] { 
+	    new net.charabia.jsmoothgen.application.gui.editors.SkeletonChooser(), 
+	    Main.setSplashProgress(18,100),
+	    new net.charabia.jsmoothgen.application.gui.editors.SkeletonPropertiesEditor() 
+	    //	new net.charabia.jsmoothgen.application.gui.editors.SkeletonProperties()
+	};
+	Main.setSplashProgress(20,100);
+
+	m_execElements = new Object[] { 
+	    "GUI_LABEL_EXECUTABLE_SETTINGS",
+	    new net.charabia.jsmoothgen.application.gui.editors.ExecutableName() ,
+	    Main.setSplashProgress(25,100),
+	    new net.charabia.jsmoothgen.application.gui.editors.ExecutableIcon() ,
+	    Main.setSplashProgress(30,100),
+	    new net.charabia.jsmoothgen.application.gui.editors.CurrentDirectory()
+	};
+	Main.setSplashProgress(40,100);	
+
+	m_appElements = new Object[] {
+	    "GUI_LABEL_APPLICATION_SETTINGS",
+	    new net.charabia.jsmoothgen.application.gui.editors.MainClass(),
+	    Main.setSplashProgress(35,100),
+	    new net.charabia.jsmoothgen.application.gui.editors.ApplicationArguments(),
+	    Main.setSplashProgress(40,100),
+	    "GUI_LABEL_EMBEDDEDJAR_SETTINGS",
+	    new net.charabia.jsmoothgen.application.gui.editors.EmbeddedJar(),
+	    Main.setSplashProgress(45,100),
+	    new net.charabia.jsmoothgen.application.gui.editors.ClassPath()
+	};
+	Main.setSplashProgress(50,100);	
+
+	m_jvmSelElements = new Object[] {
+	    "GUI_LABEL_JAVA_VERSION",
+	    new net.charabia.jsmoothgen.application.gui.editors.MinVersion(),
+	    Main.setSplashProgress(55,100),
+	    new net.charabia.jsmoothgen.application.gui.editors.MaxVersion(),
+	    Main.setSplashProgress(60,100),
+	    "GUI_LABEL_BUNDLEDJRE",
+	    new net.charabia.jsmoothgen.application.gui.editors.JVMBundle(),
+	    Main.setSplashProgress(65,100),
+	    new net.charabia.jsmoothgen.application.gui.editors.JVMSearchSequence()
+	};
+	Main.setSplashProgress(70,100);	
+
+	m_jvmCfgElements = new Object[] {
+	    "GUI_LABEL_MEMORYSETTINGS",
+	    new net.charabia.jsmoothgen.application.gui.editors.MaxMemoryHeap(),
+	    Main.setSplashProgress(75,100),
+	    new net.charabia.jsmoothgen.application.gui.editors.InitialMemoryHeap(),
+	    Main.setSplashProgress(80,100),
+	    new net.charabia.jsmoothgen.application.gui.editors.JavaProperties()
+	};
+	Main.setSplashProgress(85,100);	
+
+	m_jsInfo = new Object[] {
+	    new net.charabia.jsmoothgen.application.gui.editors.JSmoothInfo()
+	};
+
+	Main.setSplashProgress(90,100);	
+
 	setLayout(new BorderLayout());
 	add(BorderLayout.WEST, m_scrollpane = new JScrollPane(m_leftBar));
  	JScrollPane scp = new JScrollPane(m_mainpanel);
@@ -104,13 +176,15 @@ public class MasterPanel extends JPanel
 	//	add(BorderLayout.CENTER, m_mainpanel);
 	m_mainpanel.setLayout(new RiverLayout());
 
+	Main.setSplashProgress(92,100);
 	addAction("Welcome", "/icons/stock_form-properties.png", m_jsInfo);
 	addAction("Skeleton", "/icons/stock_new-template.png", m_skelElements);
 	addAction("Executable", "/icons/stock_autopilot-24.png", m_execElements);
 	addAction("Application", "/icons/stock_form-image-control.png", m_appElements);
 	addAction("JVM Selection", "/icons/stock_search.png", m_jvmSelElements);
 	addAction("JVM Configuration", "/icons/stock_form-properties.png", m_jvmCfgElements);
-	
+	Main.setSplashProgress(94,100);
+
 	setupPanel(m_jsInfo);
     }
 
@@ -156,10 +230,16 @@ public class MasterPanel extends JPanel
 	    return;
 
 	JPanel pgroup = null;
-
+	Main.setSplashProgress(50,100);
 	for (int i=0; i<els.length; i++)
 	    {
-		if (els[i] instanceof Editor)
+		Main.setSplashProgress(55+(i*3),100);
+
+		if (els[i] == null)
+		    {
+			// to nothing...
+		    }
+		else if (els[i] instanceof Editor)
 		    {
 			//			Editor ed = m_edPool.getInstance(els[i]);
 			Editor ed = (Editor)els[i];
@@ -343,8 +423,8 @@ public class MasterPanel extends JPanel
 	    fireUpdateModel();
 	    m_model.normalizePaths(m_modelLocation.getParentFile(), true);
 	    JSmoothModelPersistency.save(m_modelLocation, m_model);
-	    //	    System.out.println("saving model " + m_model);
-	    //	    fireModelChanged();
+	    System.out.println("saving model " + m_model);
+	    fireModelChanged();
 	    return true;
 	} catch (java.io.IOException iox)
 	    {
@@ -422,7 +502,6 @@ public class MasterPanel extends JPanel
     {
 	m_modelLocation = prjfile;
     }
-    
 
     public JSmoothModelBean getModel()
     {

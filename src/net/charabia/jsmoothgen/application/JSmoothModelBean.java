@@ -61,7 +61,8 @@ public class JSmoothModelBean
     {
 	public String Key;
 	public String Value;
-		
+	public boolean isLocalFile = false;
+
 	public void setKey(String key)
 	{
 	    this.Key = key;

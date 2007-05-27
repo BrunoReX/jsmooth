@@ -20,46 +20,57 @@
 
 package net.charabia.jsmoothgen.application.gui.skeleditors;
 
-import net.charabia.jsmoothgen.skeleton.*;
-import net.charabia.jsmoothgen.application.*;
-import net.charabia.jsmoothgen.application.gui.*;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.text.*;
+import java.util.*;
+import java.awt.event.*;
 import net.charabia.jsmoothgen.application.gui.util.*;
+import java.io.*;
 
-import net.charabia.jsmoothgen.skeleton.*;
-
-abstract public class SkelPropEditor
+public class ImageSelectorEditor extends SkelPropEditor
 {
-    protected SkeletonProperty m_property;
-    
-    public void bind(SkeletonProperty prop)
+    protected FileSelectionTextField m_comp = new FileSelectionTextField();
+
+    public ImageSelectorEditor()
     {
-	m_property = prop;
+	GenericFileFilter gff = new GenericFileFilter("Image");
+	gff.addSuffix("gif");
+	gff.addSuffix("png");
+	gff.addSuffix("jpg");
+	gff.addSuffix("bmp");
+	m_comp.setFileFilter(gff);
+	
     }
 
-    public String getIdName()
+    public java.awt.Component getGUI()
     {
-	return m_property.getIdName();
+	return m_comp;
     }
-    
+
+    public void valueChanged(String val)
+    {
+	m_comp.setFile(new File(val));
+    }
+
     public boolean labelAtLeft()
     {
 	return true;
     }
 
-    public abstract java.awt.Component getGUI();
-    public abstract void valueChanged(String val);
+    public void set(String o) { m_comp.setFile(new File(o.toString())); }
 
-    public abstract void set(String o);
-    public abstract String get();
+    public String get() { if (m_comp.getFile()!=null) return m_comp.getFile().toString();  return "";}
 
     public void setBaseDir(java.io.File base)
     {
+	m_comp.setBaseDir(base);
     }
 
     public boolean isLocalFile()
     {
-	return false;
+	return true;
     }
 
-}
 
+}
