@@ -1088,17 +1088,20 @@ solaris, etc.
    <para> In order to use those features, you must enable the JSmooth
    JNI option, and add the <function>jsmooth.Native</function> calls
    in your java code. You need to build your project using the
-   <function>jnismooth.jar</function> library, but don't need to
-   package it with your application, as it is embedded (as well as the
-   native functions implementation) in the wrappers.
-    </para>
+   <function>jnismooth.jar</function> library, and include if possible
+   the jar in your application, to avoid a ClassNotFoundException that
+   could be raised. Using the library is always safe if you first
+   check that you can use it with the
+   <function>isAvailable()</function> method.</para>
 
-   <para>Before using any JNI feature from the
+   <warning>
+    <para>Before using any JNI feature from the
     <function>jsmooth.Native</function>, you must check that the
     native methods are correctly bound to their native implementation
     by using the <function>jsmooth.Native.isAvailable()</function>
     method. If this method returns false, you cannot use any of the
-    native method.</para>
+    native method (an exception shall be raised in this case)</para>
+  </warning>
 
    <sect2><title>Examples</title>
 
@@ -1212,6 +1215,52 @@ jni-enabled jsmooth wrapper.
 </para>
      </sect3>
 
+        <sect3><title>Interacting with the splash window</title>
+<para>
+When the splash window is enabled, the JSmooth wrapper displays an image
+at startup, until your application opens its first own window. 
+</para>
+
+<para>If your application takes some time loading its resources, it
+may be convenient to use the JSmooth progress bar feature of the
+splash window to provide an indication of completion to the user. 
+
+<programlisting>
+
+jsmooth.SplashWindow spw = null;
+
+//
+// First, we need to check if the JNI bridge is available...
+if (jsmooth.Native.isAvailable())
+{
+    //
+    // If the splash window exists, this method returns a 
+    // SplashWindow object that we can use. If there is no
+    // splash window displayed, this method returns null
+    spw = jsmooth.Native.getSplashWindow();
+}
+
+//
+// Let's say there are 50 resources to load...
+for (int i=0; i&lt;=50; i+=1)
+{
+  loadResource(i);
+
+  //
+  // Update the progress bar, if it exists
+  if (spw != null)
+     spw.setProgress(i, 50);    
+}
+
+</programlisting>
+</para>
+
+<para>
+ It is safe to assume that the splash window may not be available, for
+any reason. For instance if your application is not launched with
+JSmooth...  </para>
+
+     </sect3>
 
 
    </sect2>
@@ -1250,36 +1299,18 @@ jni-enabled jsmooth wrapper.
 	  </para>
 	</question>
 	<answer>
-	 <para>
-
-	  Whenever possible, the wrappers delete the file on
-	  exit. Note however that this is not always possible. For
-	  example, an instance of a JVM created using the JVM DLL does
-	  not unload cleanly. This behaviour (not to call it a bug) is
-	  documented by Sun, and there is no known work-around for it.
-
-	 </para>
 
 	 <para>
-
-	  Both Windowed and Console wrapper always prefer the JVM
-	  instanciation methods that allow them to delete the temp jar
-	  after the application exits. Note that embedding a jar in
-	  the exe is not required, it is always a safe choice to just
-	  leave it on the filesystem near the executable, either in
-	  the same directory, or in a sibling or parent directory.
-
-	 </para>
-
-	 <para>
-
-  	  Note also that deleting the files in the windows TEMP
-	  directory is not required for Windows applications, and most
-	  application just leave them, letting the operating system
-	  manage it. The standard behaviour of MS Windows is to
-	  propose the user to delete the temporary files when the
-	  disks are running low on available space.
-
+	  Whenever possible, the wrappers delete the file when the
+	  application exits. Note however that this is not always
+	  possible, as some versions of Sun's DLL do not return
+	  properly. In any case, all the temporary files used by
+	  JSmooth, including the extracted jar, are flagged to windows
+	  as "Delete On Reboot". Therefore, even if the wrapper does
+	  not get a chance to delete a temporary files, it is anyway
+	  always deleted automatically by windows during the next
+	  booting sequence, preventing the files to proliferate on the
+	  end-user's disk.
 	 </para>
 
 	</answer>
@@ -1299,7 +1330,7 @@ jni-enabled jsmooth wrapper.
 	 <para>
 	  
 	   No. While the jsmooth wrappers may use a jar to bootstrap
-	   the java application, you can reference other jar files in
+	   the java application, you can refer other jar files in
 	   a jsmooth project. Those jar files will be accessible to
 	   your executable binary, provided the path specified is
 	   found at runtime. 
@@ -1404,10 +1435,9 @@ jni-enabled jsmooth wrapper.
 	 <para>
 
 	  Wrapper-specific options can also be passed in order to
-	  override the defaults parameters set up at wrapper
-	  creation. Those options start with
-	  <function>-Jskel_</function> (names are case-sensitive as
-	  well).
+	  override the default parameters set up at wrapper
+	  creation time. Those options start with
+	  <function>-Jskel_</function> (names are also case-sensitive).
 
 	 <itemizedlist>
 
@@ -1450,27 +1480,28 @@ jni-enabled jsmooth wrapper.
 	  <para>
 
 	   I have a filetype associated to my program. However, when I
-	   launch a document, my application can't find its resources,
+	   open a document, my application can't find its resources,
 	   because the current directory is the directory of the
-	   document. How do I fix that ?
+	   document, not the directory of the executable. How do I fix
+	   that ?
 
 	  </para>
 	</question>
 	<answer>
 	 <para>
 	  
-	  You can force the wrappers to always force the current
-	  directory of your application to be the executable's instead
-	  of the document's by enabling the "Sets the executable
-	  folder as current directory of the application" option
-	  (located in the executable settings panel).
+	  You can force the wrappers to modify the current working
+	  directory at startup. In this case, you just need to enable
+	  the "Sets the executable folder as current directory of the
+	  application" option (located in the executable settings
+	  panel). 
 	   
 	 </para>
 
 	 <para>
 	  This works correctly because Windows always provides the
-	 document as an absolute path argument of the application.
-	 </para>
+	 document location as an absolute path to the default
+	 application.  </para>
 
 	</answer>
       </qandaentry>
@@ -1510,10 +1541,8 @@ jni-enabled jsmooth wrapper.
 	      calling the executable with the "start" or "stop"
 	      arguments (only the first argument of the command line
 	      is taken into account). If the "autostart" option is
-	      enabled, the service will be automatically when Windows
-	      is started.
-	      </para>
-	   </listitem>
+	      enabled, the service will be automatically started by
+	      Windows. </para> </listitem>
 
 	   <listitem>
 	      <para> To uninstall the service, simply run the
@@ -1581,7 +1610,7 @@ jni-enabled jsmooth wrapper.
 	<answer>
 
 	 <para>
-	 The first thing to do, is to run the wrapper with the
+	 The very first thing to do, is to run the wrapper with the
 	 additional argument <function>-JskelDebug=1</function> (the
 	 option is case-sensitive). This will start the wrapper in
 	 debug mode, displaying a console (or using the current one,
