@@ -33,5 +33,6 @@
 
   <target name="clean">
     <delete dir="${classes}"/>
+    <delete file="jnismooth.jar"/>
   </target>
 </project>

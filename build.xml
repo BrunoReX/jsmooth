@@ -3,13 +3,13 @@
   <!-- set here the properties specific to your computer      -->
   <!-- see the README.txt file for additional information     -->
   <!-- DO NOT SKIP THIS PART! REALLY! IT WON'T WORK OTHERWISE -->
-  <property name="JDKDIR" value="c:\Program Files\Java\jdk1.5.0_11"/>
+  <property name="JDKDIR" value="c:/Program Files/Java/jdk1.5.0_16"/>
   <property name="RM" value="CMD /C DEL"/>
 
   <!-- Values below should be standard, but check it anyway -->
   <!-- Also make sure that the bin folder of MINGW is in your PATH -->
-  <property name="mingw-make" value="mingw32-make.exe"/>
-  <property name="mingw-strip" value="strip.exe"/>
+  <property name="mingw-make" value="c:/MinGW/bin/mingw32-make.exe"/>
+  <property name="mingw-strip" value="c:/MinGW/bin/strip.exe"/>
 
   <!-- the autodownload skeleton needs the fltk lib to be available  -->
   <!-- Unfortunately, I couldn't find a way to call fltk-config      -->
@@ -24,8 +24,8 @@
   <property name="fltk-cxxflags" value="-IC:/msys/1.0/local/include -IC:/msys/1.0/local/include/FL/images -mwindows -DWIN32 -mno-cygwin"/>
 
   <!-- What's below is  optional (needed only if you build a dist) -->
-  <property name="FOP" value="c:/Programs/fop-0.93\fop.bat"/>
-  <property name="DOCBOOKBASE" value="c:\programs\docbook-xsl-1.72.0"/>
+  <property name="FOP" value="c:/opt/fop-0.95\fop.bat"/>
+  <property name="DOCBOOKBASE" value="C:\opt\docbook-xsl-1.74.0"/>
 
  <!-- set here the properties specific to the release --> 
 
@@ -341,6 +341,7 @@
    <target name="compileskels" depends="">
      <ant dir="skeletons/simplewrap/samplejar" /> 
      <ant dir="skeletons/consolewrapper/samplejar" /> 
+     <ant antfile="build.xml" dir="skeletons/winservice/sample" target="dist"/>
 
     <antcall target="compileskel">
       <param name="skelname" value="util-core"/>
@@ -349,6 +350,16 @@
     </antcall>
     <antcall target="compileskel">
       <param name="skelname" value="util-net"/>
+      <param name="skelflags" value="${skelflags}"/>
+      <param name="target" value="all"/>
+    </antcall>
+    <antcall target="compileskel">
+      <param name="skelname" value="util-gui"/>
+      <param name="skelflags" value="${skelflags}"/>
+      <param name="target" value="all"/>
+    </antcall>
+    <antcall target="compileskel">
+      <param name="skelname" value="jnismooth"/>
       <param name="skelflags" value="${skelflags}"/>
       <param name="target" value="all"/>
     </antcall>
@@ -387,6 +398,11 @@
     <delete file="${jsmoothjar-ant}"/>
 
     <ant antfile="build.xml" dir="sample" target="clean"/>
+    <ant antfile="build.xml" dir="skeletons/consolewrapper/samplejar" target="clean"/>
+    <ant antfile="build.xml" dir="skeletons/jnismooth" target="clean"/>
+    <ant antfile="build.xml" dir="skeletons/samplejar" target="clean"/>
+    <ant antfile="build.xml" dir="skeletons/simplewrap/samplejar" target="clean"/>
+    <ant antfile="build.xml" dir="skeletons/winservice/sample" target="clean"/>
 
     <antcall target="compileskel">
       <param name="skelname" value="util-core"/>
@@ -395,6 +411,16 @@
     </antcall>
     <antcall target="compileskel">
       <param name="skelname" value="util-net"/>
+      <param name="skelflags" value="${skelflags}"/>
+      <param name="target" value="clean"/>
+    </antcall>
+    <antcall target="compileskel">
+      <param name="skelname" value="util-gui"/>
+      <param name="skelflags" value="${skelflags}"/>
+      <param name="target" value="clean"/>
+    </antcall>
+    <antcall target="compileskel">
+      <param name="skelname" value="jnismooth"/>
       <param name="skelflags" value="${skelflags}"/>
       <param name="target" value="clean"/>
     </antcall>

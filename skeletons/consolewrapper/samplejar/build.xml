@@ -24,5 +24,6 @@
 
   <target name="clean">
     <delete dir="${classes}"/>
+    <delete file="sample.jar"/>
   </target>
 </project>

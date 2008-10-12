@@ -22,7 +22,7 @@ all: all-before CommonJava.a all-after
 
 
 clean: clean-custom
-	$(RM) $(OBJ) $(BIN)
+	$(RM) $(OBJ) $(BIN) test.exe
 
 $(BIN): $(LINKOBJ) test.cpp
 	ar r $(BIN) $(LINKOBJ)

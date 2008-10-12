@@ -23,7 +23,7 @@ CFLAGS = $(INCS)
 all: all-before winservice.exe all-after
 
 clean: clean-custom
-	$(RM) $(OBJ) $(BIN) winservice_private.res
+	$(RM) $(OBJ) $(BIN) winservice_private.res WinService.o
 
 $(BIN): $(LINKOBJ)  ../commonjava/CommonJava.a
 	$(CPP) $(LINKOBJ) -o "winservice.exe" $(LIBS)

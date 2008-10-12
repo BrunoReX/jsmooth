@@ -32,4 +32,4 @@ main.o: main.cpp
 	$(CPP) -c main.cpp -o main.o $(CXXFLAGS)
 
 JWrap_private.res: JWrap_private.rc mainres.rc 
-	$(WINDRES) -i JWrap_private.rc -I rc -o JWrap_private.res -O coff 
+	$(WINDRES) -i JWrap_private.rc -J rc -o JWrap_private.res -O coff 
