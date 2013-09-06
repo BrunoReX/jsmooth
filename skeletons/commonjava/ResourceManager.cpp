@@ -41,6 +41,7 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId, i
   //
   // Load the Properties
   //
+  DEBUG("Initialize properties...");
   std::string propsidstr = this->idToResourceName(propsId);
   HRSRC resprop = FindResource(NULL, propsidstr.c_str(), category.c_str());
   if (resprop != NULL)
@@ -92,6 +93,7 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId, i
   string computername = FileUtils::getComputerName();
     
   int jpropcount = StringUtils::parseInt(jpropcountstr);
+  DEBUG("Number of Java Parameters: "+jpropcountstr);
   for (int i=0; i<jpropcount; i++)
     {
       string namekey = string("javaproperty_name_") + StringUtils::toString(i);
@@ -99,15 +101,17 @@ ResourceManager::ResourceManager(std::string category, int propsId, int jarId, i
       string name = m_props.get(namekey);
       string value = m_props.get(valuekey);
 
+      DEBUG("Setting up java properties SOURCE: " + name + "=" + value + " : property if exist: " +getProperty(name,""));
+
       value = StringUtils::replaceEnvironmentVariable(value);
       value = StringUtils::replace(value, "${EXECUTABLEPATH}", exepath);
       value = StringUtils::replace(value, "${EXECUTABLENAME}", exename);
       value = StringUtils::replace(value, "${COMPUTERNAME}", computername);
-        
+      	        
       JavaProperty jprop(name, value);
       m_javaProperties.push_back(jprop);
 
-      DEBUG("Setting up java properties: " + name + "=" + value);
+      DEBUG("Setting up java properties DESTINATION: " + name + "=" + value);
     }
 
   std::string curdirmodifier = m_props.get(ResourceManager::KEY_CURRENTDIR);
@@ -225,10 +229,13 @@ std::vector<std::string> ResourceManager::getNormalizedClassPathVector() const
 {
   std::string basepath = FileUtils::getExecutablePath();
   std::string curdirmodifier = getCurrentDirectory(); //getProperty(string(ResourceManager::KEY_CURRENTDIR));
-  if (FileUtils::isAbsolute(curdirmodifier))
+  if (FileUtils::isAbsolute(curdirmodifier)){
     basepath = curdirmodifier;
-  else
+  	DEBUG("DEBUG: (absolut) Basepath is : " + basepath);
+  } else {
     basepath = FileUtils::concFile(basepath, curdirmodifier);
+  	DEBUG("DEBUG: (not absolut) Basepath is : " + basepath);
+  }
 
   std::string cp = getProperty(string(ResourceManager::KEY_CLASSPATH));
   vector<string>cps = StringUtils::split(cp, ";", "", false);
@@ -290,24 +297,37 @@ void ResourceManager::setUserArguments(std::vector<std::string> arguments)
 
 void ResourceManager::addUserArgument(std::string argument)
 {
-  if ((argument.size()>3) && (argument.substr(0,2) == "-J"))
+	bool keyFound = false;
+  if (argument.size()>3)
     {  
       int pos = argument.find("=");
       if (pos != std::string::npos)
-	{
-	  string key = argument.substr(2, pos-2);
-	  string value = argument.substr(pos+1);
-	  
-	  DEBUG("FOUND USER ARGUMENT for JSMOOTH: [" + key + "]=[" + value + "]");
-	  setProperty(key, value);
-	}
+			{
+	  		string key = argument.substr(2, pos-2);
+	  		string value = argument.substr(pos+1);
+				string argumentType = argument.substr(0,2);
+	  		if (argumentType == "-J")
+	  		{
+	  			DEBUG("FOUND USER ARGUMENT for JSMOOTH: [" + key + "]=[" + value + "]");
+	  			keyFound = true;
+	  			setProperty(key, value);
+	  		}
+	  		if (argumentType == "-D")
+	  		{
+	  			DEBUG("FOUND USER ARGUMENT for JAVA: [" + key + "]=[" + value + "]");
+	  			JavaProperty jprop(key, value);
+	  			keyFound = true;
+      		m_javaProperties.push_back(jprop);
+	  		}
+			}
     }
-  else
+  if (!keyFound)
     {
       m_arguments.push_back(argument);
 //       setProperty(KEY_ARGUMENTS, getProperty(KEY_ARGUMENTS) + " " + StringUtils::requoteForCommandLine(StringUtils::escape(argument)) );
     }
 }
+
 
 std::vector<std::string> ResourceManager::getArguments()
 {

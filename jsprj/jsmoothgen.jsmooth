@@ -22,6 +22,7 @@
 <maximumMemoryHeap>-1</maximumMemoryHeap>
 <maximumVersion></maximumVersion>
 <minimumVersion>1.4</minimumVersion>
+<uacRequireAdministrator>0</uacRequireAdministrator>
 <skeletonName>Autodownload Wrapper</skeletonName>
 <skeletonProperties>
 <key>Message</key>

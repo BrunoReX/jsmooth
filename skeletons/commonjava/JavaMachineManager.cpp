@@ -193,6 +193,15 @@ SunJVMLauncher* JavaMachineManager::runDLLFromRegistry(bool justInstanciate)
       if (res)
 	return &m_registryVms[i];
     }
+    
+  if (m_localVMenabled) {
+    if (m_localVM.run(m_resman, "bundled", justInstanciate)) {
+      return &m_localVM;
+    } else {
+      DEBUG("Bundled VM launch failed");
+    }
+  }
+
 
   return NULL;
 }

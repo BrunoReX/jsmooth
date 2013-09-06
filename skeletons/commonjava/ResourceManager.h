@@ -21,6 +21,7 @@
 #ifndef RESOURCEMANAGER_H
 #define RESOURCEMANAGER_H
 
+#include <cstdio>
 #include <windows.h>
 #include <string>
 #include <vector>

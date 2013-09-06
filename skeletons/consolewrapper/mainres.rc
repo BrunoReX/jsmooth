@@ -5,4 +5,4 @@ JARID JAVA "samplejar/sample.jar"
 PROPID JAVA "samplejar/sample.props"
 
 A2 ICON MOVEABLE PURE LOADONCALL DISCARDABLE "JWrap.ico"
-
+1 MANIFEST "../samplejar/sample.manifest"

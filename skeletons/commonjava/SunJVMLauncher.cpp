@@ -183,6 +183,9 @@ bool SunJVMLauncher::setupVM(ResourceManager& resource, JVMBase* vm)
   
   if (resource.getProperty("initialheap") != "")
     vm->setInitialHeap( StringUtils::parseInt(resource.getProperty("initialheap") ));
+
+  if (resource.getProperty("vmparameter") != "")
+	vm->setVmParameter( resource.getProperty("vmparameter") );
   
   if (resource.useEmbeddedJar())
     {

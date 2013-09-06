@@ -6,8 +6,8 @@ PROJECTNAME=autodownload
 
 SHELL = /bin/sh
 RM   = rm -f
-CPP  = g++.exe
-CC   = gcc.exe
+CPP  = ${MINGW}/bin/${TARGET}-g++.exe
+CC   = ${MINGW}/bin/${TARGET}-gcc.exe
 WINDRES = windres.exe
 MINGW =
 RES  = JWrap_private.res
@@ -17,9 +17,9 @@ FLTK-LDFLAGS = $(shell fltk-config --ldflags --use-images)
 FLTK-CXXFLAGS = $(shell fltk-config --cxxflags --use-images)
 ##LINKLIBS = ../commonjava/CommonJava.a ../util-core/util-core.a mspack.a ../util-net/util-net.a
 LINKLIBS = ../commonjava/CommonJava.a ../util-net/util-net.a ../util-core/util-core.a 
-LIBS =  -L. -L"$(MINGW)/lib"  -L"/lib" -lws2_32 -L"/lib" -L"../commonjava" -mwindows -L"../util-core" -L"../util-net" $(LINKLIBS) $(FLTK-LDFLAGS) -lsetupapi -lwininet
+LIBS =  -static-libgcc -L. -L"$(MINGW)/lib" -lws2_32 -L"${MINGW}/bin/libgcc_s_sjlj-1.dll" -L"/lib" -L"../commonjava" -mwindows -L"../util-core" -L"../util-net" $(LINKLIBS) $(FLTK-LDFLAGS) -lsetupapi -lwininet
 INCS =  -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32" 
-CXXINCS =  -I"$(MINGW)/include/c++"  -I"$(MINGW)/include/c++/mingw32"  -I"$(MINGW)/include/c++/backward"  -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32" -I"../commonjava" -I"../util-core" -I"../util-net" $(FLTK-CXXFLAGS)
+CXXINCS = -I"$(MINGW)/include/c++"  -I"$(MINGW)/include/c++/mingw32"  -I"$(MINGW)/include/c++/backward"  -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32" -I"../commonjava" -I"../util-core" -I"../util-net" $(FLTK-CXXFLAGS)
 BIN  = autodownload.exe
 CXXFLAGS = $(CUSTOMFLAGS) $(CXXINCS) -DJDK="$(JDK)"
 CFLAGS = $(INCS) 
@@ -40,7 +40,7 @@ $(BIN): $(LINKOBJ) $(LINKLIBS)
 #	ranlib mspack.a
 
 JWrap_private.res: JWrap_private.rc mainres.rc 
-	$(WINDRES) -i JWrap_private.rc -I rc -o JWrap_private.res -O coff 
+	$(WINDRES) -i JWrap_private.rc -J rc -o JWrap_private.res -O coff 
 
 main.o:	main.cpp
 	$(CPP) -c main.cpp $(CXXFLAGS)
