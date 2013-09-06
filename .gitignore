@@ -1,0 +1,8 @@
+classes
+*.jar
+!/lib/**/*.jar
+dist
+tmp
+*.class
+/skeletons/**/*.o
+/skeletons/**/*.a
