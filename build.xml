@@ -320,20 +320,16 @@
     <copy todir="${dist}/skeletons/autodownload-wrapper" file="skeletons/autodownload/autodownload.exe"/>
     <copy todir="${dist}/skeletons/winservice-wrapper" file="skeletons/winservice/description.skel"/>
     <copy todir="${dist}/skeletons/winservice-wrapper" file="skeletons/winservice/winservice.exe"/>
-    <exec executable="${mingw-strip}" dir="${dist}/skeletons/console-wrapper">
-        <env key="PATH" value="${MINGW32DIR}/bin"/>
+    <exec executable="${MINGW32DIR}/bin/${mingw-strip}" dir="${dist}/skeletons/console-wrapper">
         <arg value="consolewrapper.exe"/>
     </exec>
-    <exec executable="${mingw-strip}" dir="${dist}/skeletons/windowed-wrapper">
-        <env key="PATH" value="${MINGW32DIR}/bin"/>
+    <exec executable="${MINGW32DIR}/bin/${mingw-strip}" dir="${dist}/skeletons/windowed-wrapper">
         <arg value="jwrap.exe"/>
     </exec>
-    <exec executable="${mingw-strip}" dir="${dist}/skeletons/autodownload-wrapper">
-        <env key="PATH" value="${MINGW32DIR}/bin"/>
+    <exec executable="${MINGW32DIR}/bin/${mingw-strip}" dir="${dist}/skeletons/autodownload-wrapper">
         <arg value="autodownload.exe"/>
     </exec>
-    <exec executable="${mingw-strip}" dir="${dist}/skeletons/winservice-wrapper">
-        <env key="PATH" value="${MINGW32DIR}/bin"/>
+    <exec executable="${MINGW32DIR}/bin/${mingw-strip}" dir="${dist}/skeletons/winservice-wrapper">
         <arg value="winservice.exe"/>
     </exec>
     
@@ -359,22 +355,18 @@
 		-->
     <copy todir="${dist}/skeletons/winservice-wrapper64" file="skeletons/winservice/description64.skel"/>
     <copy todir="${dist}/skeletons/winservice-wrapper64" file="skeletons/winservice/winservice.exe"/>
-    <exec executable="${mingw-strip}" dir="${dist}/skeletons/console-wrapper64">
-      <env key="PATH" value="${MINGW64DIR}/bin"/>
+    <exec executable="${MINGW64DIR}/bin/${mingw-strip}" dir="${dist}/skeletons/console-wrapper64">
       <arg value="consolewrapper.exe"/>
     </exec>
-    <exec executable="${mingw-strip}" dir="${dist}/skeletons/windowed-wrapper64">
-      <env key="PATH" value="${MINGW64DIR}/bin"/>
+    <exec executable="${MINGW64DIR}/bin/${mingw-strip}" dir="${dist}/skeletons/windowed-wrapper64">
       <arg value="jwrap.exe"/>
     </exec>
     <!-- not available for x64
-    <exec executable="${mingw-strip}" dir="${dist}/skeletons/autodownload-wrapper64">
-      <env key="PATH" value="${MINGW64DIR}/bin"/>
+    <exec executable="${MINGW64DIR}/bin/${mingw-strip}" dir="${dist}/skeletons/autodownload-wrapper64">
       <arg value="autodownload.exe"/>
     </exec>
     -->
-    <exec executable="${mingw-strip}" dir="${dist}/skeletons/winservice-wrapper64">
-      <env key="PATH" value="${MINGW64DIR}/bin"/>
+    <exec executable="${MINGW64DIR}/bin/${mingw-strip}" dir="${dist}/skeletons/winservice-wrapper64">
       <arg value="winservice.exe"/>
     </exec>
 
@@ -399,7 +391,7 @@
 
    <target name="compileskel" depends="">
     <echo>Making ${skelname} ${target}</echo>
-     <exec executable="${mingw-make}" dir="skeletons/${skelname}">
+     <exec executable="${MINGW32DIR}/bin/${mingw-make}" dir="skeletons/${skelname}">
        <env key="PATH" value="${MINGW32DIR}/bin"/>
        <arg value="-f"/>
        <arg value="Makefile.win"/>
@@ -417,7 +409,7 @@
   
   <target name="compileskel64" depends="">
    <echo>Making ${skelname} ${target}</echo>
-    <exec executable="${mingw-make}" dir="skeletons/${skelname}">
+    <exec executable="${MINGW64DIR}/bin/${mingw-make}" dir="skeletons/${skelname}">
       <env key="PATH" value="${MINGW64DIR}/bin"/>
       <arg value="-f"/>
       <arg value="Makefile.win"/>
