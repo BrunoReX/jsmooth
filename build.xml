@@ -14,10 +14,10 @@
   <property name="GCC64INCLUDEDIR" value="lib/gcc/${MINGW64PREFIX}/${GCCVER}/include"/>
   <property name="RM" value="CMD /C DEL"/>
 
--  <!-- Values below should be standard, but check it anyway -->
--  <!-- Also make sure that the bin folder of MINGW is in your PATH -->
--  <property name="mingw-make" value="mingw32-make.exe"/>
--  <property name="mingw-strip" value="strip.exe"/>
+  <!-- Values below should be standard, but check it anyway -->
+  <!-- Also make sure that the bin folder of MINGW is in your PATH -->
+  <property name="mingw-make" value="mingw32-make.exe"/>
+  <property name="mingw-strip" value="strip.exe"/>
 
   <!-- the autodownload skeleton needs the fltk lib to be available  -->
   <!-- Unfortunately, I couldn't find a way to call fltk-config      -->
