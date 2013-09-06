@@ -25,7 +25,9 @@ import net.charabia.jsmoothgen.application.*;
 import net.charabia.jsmoothgen.application.gui.*;
 import net.charabia.jsmoothgen.application.gui.util.*;
 import javax.swing.*;
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.*;
 import java.io.*;
 import com.l2fprod.common.swing.*;
@@ -119,7 +121,14 @@ public class ExecutableIcon extends Editor
 	    }
 	else   // Otherwise try with the standard toolkit functions...
 	    {
-		icon = new javax.swing.ImageIcon(iconfile.getAbsolutePath(), "default icon");
+            BufferedImage bufferedImage;
+            try {
+                bufferedImage = ImageIO.read(iconfile);
+                icon = new javax.swing.ImageIcon(bufferedImage, "default icon");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
 	    }
 
 

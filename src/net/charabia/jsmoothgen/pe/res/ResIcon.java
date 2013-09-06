@@ -67,7 +67,8 @@ public class ResIcon
 	}
     }
 	
-    /** 
+    public ResIcon(){};
+    /**
      * Creates a new instance of ResIcon 
      * @see
      * @param in

@@ -1,21 +1,21 @@
 /*
   JSmooth: a VM wrapper toolkit for Windows
   Copyright (C) 2003 Rodrigo Reyes <reyes@charabia.net>
- 
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
- 
+
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
- 
+
   You should have received a copy of the GNU General Public License
   along with this program; if not, write to the Free Software
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- 
+
  */
 
 package net.charabia.util.codec;
@@ -42,13 +42,13 @@ public class IcoCodec
 	    idType = in.readUShortLE();
 	    idCount = in.readUShortLE();
 	}
-	
+
 	public String toString()
 	{
 	    return "{ idType=" + idType + ", " + idCount + " }";
 	}
     }
-    
+
     static public class IconEntry
     {
         short  bWidth;
@@ -103,7 +103,7 @@ public class IcoCodec
 	public long VertResolution;  /* Vertical resolution in pixels per meter LONG 28*/
 	public long ColorsUsed;      /* Number of colors in the image DWORD 32 */
 	public long ColorsImportant; /* Minimum number of important colors DWORD 36 */
-	
+
 	public IconHeader(BinaryInputStream in) throws IOException
 	{
 	    Size = in.readUIntLE();
@@ -138,7 +138,7 @@ public class IcoCodec
 	}
 
     }
-    
+
     static public BufferedImage[] loadImages(File f) throws IOException
     {
 	InputStream istream = new FileInputStream(f);
@@ -150,7 +150,7 @@ public class IcoCodec
 
 	    IconDir dir = new IconDir(in);
 	    //	    System.out.println("DIR = " + dir);
-	    
+
 	    IconEntry[] entries = new IconEntry[dir.idCount];
 	    BufferedImage[] images = new BufferedImage[dir.idCount];
 
@@ -176,18 +176,20 @@ public class IcoCodec
 			in.skip((int)toskip);
 
 		    //		    System.out.println("skipped data");
-		    
 		    BufferedImage image = new BufferedImage((int)header.Width, (int)header.Height/2,
 							    BufferedImage.TYPE_INT_ARGB);
-		    
+
 		    switch(header.BitsPerPixel)
 			{
 			case 4:
 			case 8:
 			    loadPalettedImage(in, entries[i], header, image);
 			    break;
-			    
-			default:
+            case 32:
+                load32bitsImage(in, entries[i], header, image);
+                break;
+
+            default:
 			    throw new Exception("Unsupported ICO color depth: " + header.BitsPerPixel);
 			}
 
@@ -207,10 +209,10 @@ public class IcoCodec
     static private void loadPalettedImage(BinaryInputStream in, IconEntry entry, IconHeader header, BufferedImage image) throws Exception
     {
 	//	System.out.println("Loading image...");
-	
+
 	//	System.out.println("Loading palette...");
 
-	// 
+	//
 	// First, load the palette
 	//
 	int cols = (int)header.ColorsUsed;
@@ -279,7 +281,7 @@ public class IcoCodec
 	    {
 		rowsize += 4 - (rowsize%4);
 	    }
-	
+
 	//	System.out.println("rowsize = " + rowsize);
 	int[] andbytes = new int[rowsize * height ];
 
@@ -321,10 +323,24 @@ public class IcoCodec
 	// 			    }
 	// 		    }
 	// 	    }
-	
+
 	//	System.out.println("AND data read (" + readbytes + " bytes total)");
     }
-    
+
+    static private void load32bitsImage(BinaryInputStream in, IconEntry entry, IconHeader header, BufferedImage image) throws Exception {
+        for (int y = (int) ((header.Height) / 2) - 1; y >= 0; y--) {
+            for (int x = 0; x < header.Width; x++) {
+                byte alpha = in.readByte();
+                byte red = in.readByte();
+                byte green = in.readByte();
+                byte blue = in.readByte();
+
+                int pix = (alpha &0xff) | (red &0xff) <<8 | (green &0xff) << 16 | (blue &0xff) << 24;
+                image.setRGB(x, y, pix);
+            }
+        }
+    }
+
     static public void main(String[]args) throws Exception
     {
 	File f = new File(args[0]);
@@ -337,5 +353,5 @@ public class IcoCodec
 	jf.pack();
 	jf.setVisible(true);
     }
-    
+
 }

@@ -32,6 +32,8 @@ import java.awt.image.*;
 import java.lang.reflect.*;
 import net.charabia.util.codec.*;
 
+import javax.imageio.ImageIO;
+
 public class ExeCompiler
 {
     private java.util.Vector m_errors = new java.util.Vector();
@@ -173,12 +175,12 @@ public class ExeCompiler
 			iconpath = new java.io.File(basedir, data.getIconLocation()).getAbsolutePath();
 
 		    Image img = getScaledImage(iconpath, 32, 32);
-		    Hashtable set = calculateColorCount(img);
+		    //Hashtable set = calculateColorCount(img);
 		    //		    System.out.println("COLORS TOTAL 4: " + set.size());
 
 		    if (img != null)
 			{
-			    net.charabia.jsmoothgen.pe.res.ResIcon resicon = new net.charabia.jsmoothgen.pe.res.ResIcon(img);
+			    net.charabia.jsmoothgen.pe.res.ResIcon32 resicon = new net.charabia.jsmoothgen.pe.res.ResIcon32(img);
 			    pe.replaceDefaultIcon(resicon);
 			}
 		}
@@ -219,14 +221,21 @@ public class ExeCompiler
 			exc.printStackTrace();
 		    }
 	    }
-	
+
 	// 
 	// defaults to the standard java loading process
 	//
-	javax.swing.ImageIcon icon = new javax.swing.ImageIcon(path, "default icon");
-	java.awt.Image[] imgs = new java.awt.Image[1];
-	imgs[0] = icon.getImage();
-	return imgs;
+        BufferedImage bufferedImage;
+        try {
+            bufferedImage = ImageIO.read(f);
+            javax.swing.ImageIcon icon = new javax.swing.ImageIcon(bufferedImage, "default icon");
+            java.awt.Image[] imgs = new java.awt.Image[1];
+            imgs[0] = icon.getImage();
+            return imgs;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;        
     }
 
     public void checkImageLoaded(Image img)
@@ -279,7 +288,11 @@ public class ExeCompiler
 
     public BufferedImage getQuantizedImage(Image img)
     {
-	int width = img.getWidth(null);
+        // 32 bit ico file already loaded as BufferedImage
+        if (img instanceof BufferedImage) {
+        return (BufferedImage) img;
+        } else {
+    int width = img.getWidth(null);
 	int height = img.getHeight(null);
 	int[][] data = new int[width][height];
 	
@@ -351,6 +364,7 @@ public class ExeCompiler
 
 
 	return result;
+        }
     }
 
     public Image checkImageSize(Image img, int width, int height)
