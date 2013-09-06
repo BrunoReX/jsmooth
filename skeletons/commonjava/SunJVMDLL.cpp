@@ -120,7 +120,11 @@ bool SunJVMDLL::setupVM12DLL(CreateJavaVM_t CreateJavaVM, GetDefaultJavaVMInitAr
 {
   vector<string> jpropstrv;
   for (int i=0; i<m_properties.size(); i++)
-    jpropstrv.push_back( "-D" + m_properties[i].getName() + "=" + m_properties[i].getValue());
+    if(m_properties[i].getName()[0]=='-') {
+        jpropstrv.push_back( StringUtils::requoteForCommandLine(m_properties[i].getName()));
+    } else {
+        jpropstrv.push_back( StringUtils::requoteForCommandLine("-D" + m_properties[i].getName()) + "=" + StringUtils::requoteForCommandLine(m_properties[i].getValue()));
+    }
       
 //   DEBUG("MAXHEAP: " + StringUtils::toString(m_maxHeap));
 //   DEBUG("INITIALHEAP: " + StringUtils::toString(m_initialHeap));

@@ -67,7 +67,11 @@ bool SunJVMExe::run(const std::string& mainclass, bool useconsole)
     }
 
   for (int i=0; i<m_properties.size(); i++)
-    execv.push_back( StringUtils::requoteForCommandLine("-D" + m_properties[i].getName()) + "=" + StringUtils::requoteForCommandLine(m_properties[i].getValue()));
+    if(m_properties[i].getName()[0]=='-') {
+        execv.push_back( StringUtils::requoteForCommandLine(m_properties[i].getName()));
+    } else {
+        execv.push_back( StringUtils::requoteForCommandLine("-D" + m_properties[i].getName()) + "=" + StringUtils::requoteForCommandLine(m_properties[i].getValue()));
+    }
 
   std::string classpath;
   if ((m_version.getMajor()==1)&&(m_version.getMinor()==1))
