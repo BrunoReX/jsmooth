@@ -97,6 +97,9 @@
   </target>
 
   <target depends="init" name="compile">
+    <!-- Compile the jnismooth jar file -->
+    <ant antfile="build.xml" dir="skeletons/jnismooth/" target="dist"/>
+
     <!-- Compile the java code from ${src} into ${classes} -->
     <echo>Compiling the application from ${src}</echo>
     <javac target="1.4" source="1.4" deprecation="yes" destdir="${classes}" srcdir="${src}" debug="true">

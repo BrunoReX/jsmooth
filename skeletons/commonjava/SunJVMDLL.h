@@ -75,7 +75,6 @@ class SunJVMDLL : public JVMBase
   bool instanciate();
 
   bool setupVM12DLL(CreateJavaVM_t CreateJavaVM, GetDefaultJavaVMInitArgs_t GetDefaultJavaVMInitArgs);
-  bool setupVM11DLL(CreateJavaVM_t CreateJavaVM, GetDefaultJavaVMInitArgs_t GetDefaultJavaVMInitArgs);
 
   bool registerMethod(const std::string& classname, const std::string& methodname, const std::string& signature, void* fn);
   bool registerJniSmooth();

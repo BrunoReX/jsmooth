@@ -97,11 +97,7 @@ bool SunJVMDLL::instanciate()
   m_javaenv = new JNIEnv();
 
   DEBUG("DLL Setup on " + m_version.toString());
-  bool res;
-  if ((m_version.getMajor() == 1)  && (m_version.getMinor() == 1))
-    res = setupVM11DLL(CreateJavaVM, GetDefaultJavaVMInitArgs);
-  else
-    res = setupVM12DLL(CreateJavaVM, GetDefaultJavaVMInitArgs);
+  bool res = setupVM12DLL(CreateJavaVM, GetDefaultJavaVMInitArgs);
 
   registerJniSmooth();
 
@@ -181,53 +177,6 @@ bool SunJVMDLL::setupVM12DLL(CreateJavaVM_t CreateJavaVM, GetDefaultJavaVMInitAr
   DEBUG("VM 1.2+ Created successfully !!");
   return true;
 }
-
-bool SunJVMDLL::setupVM11DLL(CreateJavaVM_t CreateJavaVM, GetDefaultJavaVMInitArgs_t GetDefaultJavaVMInitArgs)
-{
-  JDK1_1InitArgs vm_args;
-  vm_args.version = 0x00010001;
-  GetDefaultJavaVMInitArgs(&vm_args);
-
-  if (m_maxHeap > 0)
-    vm_args.maxHeapSize = m_maxHeap;
-  if (m_initialHeap > 0)
-    vm_args.minHeapSize = m_initialHeap;
-  
-  //
-  // create the properties array
-  //
-  char  const  * props[m_properties.size()+1];
-  vector<string> jpropstrv;
-
-  for (int i=0; i<m_properties.size(); i++)
-    jpropstrv[i] = m_properties[i].getName() + "=" + m_properties[i].getValue();
-
-  for (int i=0; i<m_properties.size(); i++)
-    props[i] = jpropstrv[i].c_str();
-  props[m_properties.size()] = NULL;
-  
-  vm_args.properties = (char**)props;
-
-  /* Append USER_CLASSPATH to the default system class path */
-
-  std::string classpath = vm_args.classpath;
-  classpath += StringUtils::join(m_pathElements, ";");
-
-  DEBUG("Classpath = " + classpath);
-  vm_args.classpath = (char*)classpath.c_str();
-
-  //
-  // Create the VM
-  if (CreateJavaVM( &m_javavm, &m_javaenv, &vm_args) != 0)
-    {
-      DEBUG("Can't create VM");
-      m_statusCode = SunJVMDLL::JVM_CANT_CREATE_VM;
-      return false;
-    }
-  DEBUG("VM 1.1 Created successfully !!");
-  return true;
-}
-
 
 jclass SunJVMDLL::findClass(const std::string& clazz)
 {
