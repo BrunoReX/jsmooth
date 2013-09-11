@@ -31,9 +31,9 @@
   <!-- Below are the default values when you ./configure, make and   -->
   <!-- make install fltk under an msys environement                  -->
   <property name="fltk-ldflags32" value="-mwindows ${FLTK32PREFIX}/lib/libfltk.a -lole32 -luuid -lcomctl32"/>
-  <property name="fltk-cxxflags32" value="-I${FLTK32PREFIX}/include -I${FLTK32PREFIX}/FL/images -mwindows -DWIN32 -DUSE_OPENGL32 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE"/>
+  <property name="fltk-cxxflags32" value="-I${FLTK32PREFIX}/include -I${FLTK32PREFIX}/include/FL/images -mwindows -DWIN32 -DUSE_OPENGL32 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE"/>
   <property name="fltk-ldflags64" value="-mwindows -Wl,--enable-auto-import -Wl,--enable-runtime-pseudo-reloc ${FLTK64PREFIX}/lib/libfltk.a -lole32 -luuid -lcomctl32"/>
-  <property name="fltk-cxxflags64" value="-I${FLTK64PREFIX}/include -I${FLTK64PREFIX}/FL/images  -mwindows -DWIN32 -DUSE_OPENGL32 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"/>
+  <property name="fltk-cxxflags64" value="-I${FLTK64PREFIX}/include -I${FLTK64PREFIX}/include/FL/images  -mwindows -DWIN32 -DUSE_OPENGL32 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"/>
   
   <!-- Edit the following parameters if needed                 -->
   <!-- Some GCC versions don't support/need "static-libstdc++" -->
