@@ -1,5 +1,6 @@
 classes
 *.jar
+!/lib/os/*.dll
 !/lib/**/*.jar
 !/lib/*.jar
 dist
