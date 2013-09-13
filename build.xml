@@ -3,8 +3,21 @@
   <!-- set here the properties specific to your computer      -->
   <!-- see the README.txt file for additional information     -->
   <!-- DO NOT SKIP THIS PART! REALLY! IT WON'T WORK OTHERWISE -->
-  <property name="JDKDIR" value="c:\Program Files\Java\jdk1.5.0_11"/>
+  <property name="JDKDIR" value="c:/Program Files (x86)/Java/jdk7"/>
+  <property name="MINGW32DIR" value="c:/mingw-w32"/>
+  <property name="MINGW64DIR" value="c:/mingw-w64"/>
+  <property name="MSYSDIR" value="c:/msys/1.0"/>
+  <property name="MINGW32PREFIX" value="i686-w64-mingw32"/>
+  <property name="MINGW64PREFIX" value="x86_64-w64-mingw32"/>
+  <property name="GCCVER" value="4.7.1"/>
+  <property name="GCC32INCLUDEDIR" value="lib/gcc/${MINGW32PREFIX}/${GCCVER}/include"/>
+  <property name="GCC64INCLUDEDIR" value="lib/gcc/${MINGW64PREFIX}/${GCCVER}/include"/>
   <property name="RM" value="CMD /C DEL"/>
+
+-  <!-- Values below should be standard, but check it anyway -->
+-  <!-- Also make sure that the bin folder of MINGW is in your PATH -->
+-  <property name="mingw-make" value="mingw32-make.exe"/>
+-  <property name="mingw-strip" value="strip.exe"/>
 
   <!-- the autodownload skeleton needs the fltk lib to be available  -->
   <!-- Unfortunately, I couldn't find a way to call fltk-config      -->
@@ -15,13 +28,16 @@
   <!-- Then, add the windows path so that the makefile gets it right -->
   <!-- Below are the default values when you ./configure, make and   -->
   <!-- make install fltk under an msys environement                  -->
-  <property name="fltk-ldflags" value="-LC:/msys/1.0/local/lib -mwindows -mno-cygwin -lfltk -lole32 -luuid -lcomctl32 -lwsock32"/>
-  <property name="fltk-cxxflags" value="-IC:/msys/1.0/local/include -IC:/msys/1.0/local/include/FL/images -mwindows -DWIN32 -mno-cygwin"/>
+  <property name="fltk-ldflags" value="-L${MSYSDIR}/local/lib -mwindows -lfltk -lole32 -luuid -lcomctl32"/>
+  <property name="fltk-cxxflags" value="-I${MSYSDIR}/local/include -I${MSYSDIR}/local/FL/images -mwindows -DWIN32 -DUSE_OPENGL32 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE"/>
 
   <!-- What's below is  optional (needed only if you build a dist) -->
-  <property name="FOP" value="c:/Programs/fop-0.93\fop.bat"/>
-  <property name="DOCBOOKBASE" value="c:\programs\docbook-xsl-1.72.0"/>
-
+  <property name="FOP" value="c:/programs/fop-1.1/fop.bat"/>
+  <property name="DOCBOOKBASE" value="c:/programs/docbook-xsl-1.78.1"/>
+  
+  <!-- What's below is optional (needed only if you want to test) -->
+  <property name="TESTFILE" value="c:/temp/test/testservice.jsmooth"/>  
+  
  <!-- set here the properties specific to the release --> 
 
   <property name="VERSION" value="0.9.9-7"/>
@@ -60,13 +76,19 @@
 
   <path id="jsmooth.class.path">
       <fileset dir="lib">
-        <include name="**/*.jar"/>
+        <include name="*.jar"/>
       </fileset>
       <fileset dir="skeletons/jnismooth">
         <include name="*.jar"/>
       </fileset>
   </path>
-
+  
+  <path id="docs.class.path">
+      <fileset dir="lib">
+        <include name="docs/*.jar"/>
+      </fileset>
+  </path>
+  
   <target name="init">
     <!-- Create the time stamp -->
     <tstamp/>
@@ -88,23 +110,27 @@
     <xslt basedir="${docs}" destdir="${docs}"
        in="${docs}/jsmooth-doc.xml"
        out="${docs}/jsmooth-doc.html"
-       style="${DOCBOOKBASE}/html/docbook.xsl" >
- 
+       style="${DOCBOOKBASE}/html/docbook.xsl"
+       processor="trax" >
+        <factory name="net.sf.saxon.TransformerFactoryImpl"/>
         <param name="admon.graphics" expression="1"/>
         <param name="section.autolabel" expression="1"/>
         <param name="section.label.includes.component.label" expression="1"/>
         <param name="chunk.section.depth" expression="2"/>
         <param name="html.stylesheet" expression="jsmooth.css"/>
-  
+        <classpath refid="docs.class.path"/>
     </xslt>
 
     <xslt basedir="${docs}" destdir="${docs}"
        in="${docs}/jsmooth-doc.xml"
        out="${docs}/jsmooth-doc.fo"
-       style="${DOCBOOKBASE}/fo/docbook.xsl" >
-          <param name="admon.graphics" expression="1"/>
-          <param name="section.autolabel" expression="1"/>
+       style="${DOCBOOKBASE}/fo/docbook.xsl"
+       processor="trax" >
+         <factory name="net.sf.saxon.TransformerFactoryImpl"/>
+         <param name="admon.graphics" expression="1"/>
+         <param name="section.autolabel" expression="1"/>
          <param name="section.label.includes.component.label" expression="1"/>
+         <classpath refid="docs.class.path"/>
     </xslt>
 
     <exec executable="${FOP}" dir="${docs}">
@@ -291,16 +317,20 @@
     <copy todir="${dist}/skeletons/autodownload-wrapper" file="skeletons/autodownload/autodownload.exe"/>
     <copy todir="${dist}/skeletons/winservice-wrapper" file="skeletons/winservice/description.skel"/>
     <copy todir="${dist}/skeletons/winservice-wrapper" file="skeletons/winservice/winservice.exe"/>
-    <exec executable="c:\mingw-w32\bin\strip.exe" dir="${dist}/skeletons/console-wrapper">
+    <exec executable="${mingw-strip}" dir="${dist}/skeletons/console-wrapper">
+        <env key="PATH" value="${MINGW32DIR}/bin"/>
         <arg value="consolewrapper.exe"/>
     </exec>
-    <exec executable="c:\mingw-w32\bin\strip.exe" dir="${dist}/skeletons/windowed-wrapper">
+    <exec executable="${mingw-strip}" dir="${dist}/skeletons/windowed-wrapper">
+        <env key="PATH" value="${MINGW32DIR}/bin"/>
         <arg value="jwrap.exe"/>
     </exec>
-    <exec executable="c:\mingw-w32\bin\strip.exe" dir="${dist}/skeletons/autodownload-wrapper">
+    <exec executable="${mingw-strip}" dir="${dist}/skeletons/autodownload-wrapper">
+        <env key="PATH" value="${MINGW32DIR}/bin"/>
         <arg value="autodownload.exe"/>
     </exec>
-    <exec executable="c:\mingw-w32\bin\strip.exe" dir="${dist}/skeletons/winservice-wrapper">
+    <exec executable="${mingw-strip}" dir="${dist}/skeletons/winservice-wrapper">
+        <env key="PATH" value="${MINGW32DIR}/bin"/>
         <arg value="winservice.exe"/>
     </exec>
     
@@ -326,18 +356,22 @@
 		-->
     <copy todir="${dist}/skeletons/winservice-wrapper64" file="skeletons/winservice/description64.skel"/>
     <copy todir="${dist}/skeletons/winservice-wrapper64" file="skeletons/winservice/winservice.exe"/>
-    <exec executable="c:\mingw-w64\bin\strip.exe" dir="${dist}/skeletons/console-wrapper64">
+    <exec executable="${mingw-strip}" dir="${dist}/skeletons/console-wrapper64">
+      <env key="PATH" value="${MINGW64DIR}/bin"/>
       <arg value="consolewrapper.exe"/>
     </exec>
-    <exec executable="c:\mingw-w64\bin\strip.exe" dir="${dist}/skeletons/windowed-wrapper64">
+    <exec executable="${mingw-strip}" dir="${dist}/skeletons/windowed-wrapper64">
+      <env key="PATH" value="${MINGW64DIR}/bin"/>
       <arg value="jwrap.exe"/>
     </exec>
     <!-- not available for x64
-    <exec executable="c:\mingw-w64\bin\strip.exe" dir="${dist}/skeletons/autodownload-wrapper64">
+    <exec executable="${mingw-strip}" dir="${dist}/skeletons/autodownload-wrapper64">
+      <env key="PATH" value="${MINGW64DIR}/bin"/>
       <arg value="autodownload.exe"/>
     </exec>
     -->
-    <exec executable="c:\mingw-w64\bin\strip.exe" dir="${dist}/skeletons/winservice-wrapper64">
+    <exec executable="${mingw-strip}" dir="${dist}/skeletons/winservice-wrapper64">
+      <env key="PATH" value="${MINGW64DIR}/bin"/>
       <arg value="winservice.exe"/>
     </exec>
 
@@ -362,14 +396,15 @@
 
    <target name="compileskel" depends="">
     <echo>Making ${skelname} ${target}</echo>
-     <exec executable="c:\mingw-w32\bin\make.exe" dir="skeletons/${skelname}">
-       <env key="PATH" value="C:\mingw-w32\bin"/>
+     <exec executable="${mingw-make}" dir="skeletons/${skelname}">
+       <env key="PATH" value="${MINGW32DIR}/bin"/>
        <arg value="-f"/>
        <arg value="Makefile.win"/>
        <arg value="${target}"/>
        <arg value='CUSTOMFLAGS=${skelflags}'/>
-       <arg value='"MINGW=c:/mingw-w32"'/>
-       <arg value='"TARGET=i686-w64-mingw32"'/>
+       <arg value='"MINGW=${MINGW32DIR}"'/>
+       <arg value='"INCLUDEDIR=${GCC32INCLUDEDIR}"'/>
+       <arg value='"TARGET=${MINGW32PREFIX}"'/>
        <arg value='"JDK=${JDKDIR}"'/>
        <arg value='"RM=${RM}"'/>
        <arg value='"FLTK-LDFLAGS=${fltk-ldflags}"'/>
@@ -379,14 +414,15 @@
   
   <target name="compileskel64" depends="">
    <echo>Making ${skelname} ${target}</echo>
-    <exec executable="c:\mingw-w64\bin\make.exe" dir="skeletons/${skelname}">
-      <env key="PATH" value="C:\mingw-w64\bin"/>
+    <exec executable="${mingw-make}" dir="skeletons/${skelname}">
+      <env key="PATH" value="${MINGW64DIR}/bin"/>
       <arg value="-f"/>
       <arg value="Makefile.win"/>
       <arg value="${target}"/>
       <arg value='CUSTOMFLAGS=${skelflags}'/>
-      <arg value='"MINGW=c:/mingw-w64"'/>
-      <arg value='"TARGET=x86_64-w64-mingw32"'/>
+      <arg value='"MINGW=${MINGW64DIR}"'/>
+      <arg value='"INCLUDEDIR=${GCC64INCLUDEDIR}"'/>
+      <arg value='"TARGET=${MINGW64PREFIX}"'/>
       <arg value='"JDK=${JDKDIR}"'/>
       <arg value='"RM=${RM}"'/>
       <arg value='"FLTK-LDFLAGS=${fltk-ldflags}"'/>
@@ -578,7 +614,7 @@
        <classpath>
           <pathelement path="${jsmoothjar}"/>
        </classpath>
-        <arg value="c:/temp/test/testservice.jsmooth"/>
+        <arg value="${TESTFILE}"/>
      </java>
   </target>
 
