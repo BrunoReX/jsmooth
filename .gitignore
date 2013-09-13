@@ -1,9 +1,13 @@
 classes
 *.jar
 !/lib/**/*.jar
+!/lib/*.jar
 dist
 tmp
 *.class
 /skeletons/**/*.o
 /skeletons/**/*.a
 /skeletons/**/*.res
+/docs/*.fo
+/docs/*.html
+/docs/*.pdf

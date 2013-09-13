@@ -7,8 +7,7 @@
 <JVMSearchPath>exepath</JVMSearchPath>
 <JVMSearchPath>jview</JVMSearchPath>
 <classPath>..\lib\jox116.jar</classPath>
-<classPath>..\lib\JimiProClasses.zip</classPath>
-<classPath>..\lib\dtdparser113.jar</classPath>
+<classPath>..\lib\dtdparser-1.21.jar</classPath>
 <classPath>..\lib\jsmoothgen.jar</classPath>
 <embeddedJar>false</embeddedJar>
 <executableName>..\jsmoothcmd64.exe</executableName>

@@ -7,12 +7,12 @@
 <JVMSearchPath>jdkpath</JVMSearchPath>
 <JVMSearchPath>jview</JVMSearchPath>
 <classPath>..\lib\jox116.jar</classPath>
-<classPath>..\lib\dtdparser113.jar</classPath>
+<classPath>..\lib\dtdparser-1.21.jar</classPath>
 <classPath>..\lib\jsmoothgen.jar</classPath>
-<classPath>..\lib\l2fprod-common-all.jar</classPath>
+<classPath>..\lib\l2fprod-common-all-7.3.jar</classPath>
 <classPath>..\jsmoothgen.jar</classPath>
 <classPath>..\lib\riverlayout.jar</classPath>
-<classPath>..\lib\BrowserLauncher2-10.jar</classPath>
+<classPath>..\lib\BrowserLauncher2-1_3.jar</classPath>
 <currentDirectory>${EXECUTABLEPATH}</currentDirectory>
 <embeddedJar>false</embeddedJar>
 <executableName>..\JSmoothGen.exe</executableName>

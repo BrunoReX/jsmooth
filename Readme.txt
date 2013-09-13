@@ -1,6 +1,7 @@
 JSmooth: a VM wrapper toolkit for Windows
 Copyright (C) 2003-2007 Rodrigo Reyes <reyes@charabia.net>
 Copyright (C) 2008-2011 Mickaël Guessant <mguessan@free.fr>
+Copyright (C) 2013 Bruno Barbieri <brunorex@gmail.com>
 
 JSmooth is a Java Executable Wrapper that builds standard Windows
 executable binaries (.exe) that launch java applications. Such binaries
