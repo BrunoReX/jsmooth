@@ -1,3 +1,17 @@
+0.9.9-8u
+	- DavMail SVN r135: 32bit icon jsmooth patch with alpha channel support
+	- DavMail SVN r137: Jsmooth patch : improve icon scaling
+		- Partially reverted to fix a bug that would make executables not
+		compile with certain stock icons (i.e. 24x24)
+	- DavMail SVN r845: Vista png icons support for JSmooth
+	- DavMail SVN r869: Jsmooth patch to allow -X jvm options
+	- DavMail SVN r1681: Update Jsmooth patch with 64bits exe support
+	- DavMail SVN r1697: Jsmooth patch with 64 bits skeletons
+	- Re-enable compilation of some skeletons for x64
+	- Updated Java libraries
+	- Removed code that made use of the no longer supported call
+	"JDK1_1InitArgs" since JDK6
+
 0.9.9-7
 	- Changed network code so that download now uses the IE proxy
 	configuration.

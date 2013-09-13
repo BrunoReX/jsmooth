@@ -51,7 +51,7 @@
   
  <!-- set here the properties specific to the release --> 
 
-  <property name="VERSION" value="0.9.9-7"/>
+  <property name="VERSION" value="0.9.9-8u"/>
 
   <!-- You don't need to modify the properties below -->
   <property environment="env"/>
@@ -281,7 +281,7 @@
     </replace>
 
     <antcall target="docs">
-      <param name="docs" value="${tmp.dir}/docs"/>
+      <param name="docs.dir" value="${tmp.dir}/docs"/>
     </antcall>
 
     <copy todir="${dist.dir}/docs">
