@@ -11,9 +11,10 @@
   <property name="FLTK64PREFIX" value="${MINGW64DIR}"/>
   <property name="MINGW32PREFIX" value="i686-w64-mingw32"/>
   <property name="MINGW64PREFIX" value="x86_64-w64-mingw32"/>
-  <property name="GCCVER" value="4.7.1"/>
-  <property name="GCC32INCLUDEDIR" value="lib/gcc/${MINGW32PREFIX}/${GCCVER}/include"/>
-  <property name="GCC64INCLUDEDIR" value="lib/gcc/${MINGW64PREFIX}/${GCCVER}/include"/>
+  <property name="GCC32VER" value="4.7.1"/>
+  <property name="GCC64VER" value="${GCC32VER}"/>
+  <property name="GCC32INCLUDEDIR" value="lib/gcc/${MINGW32PREFIX}/${GCC32VER}/include"/>
+  <property name="GCC64INCLUDEDIR" value="lib/gcc/${MINGW64PREFIX}/${GCC64VER}/include"/>
   <property name="RM" value="CMD /C DEL"/>
 
   <!-- Values below should be standard, but check it anyway -->
