@@ -10,7 +10,7 @@ FLTK-LDFLAGS = $(shell fltk-config --ldflags)
 FLTK-CXXFLAGS = $(shell fltk-config --cxxflags)
 RES  = 
 OBJ  = WinHttpClient.o HttpClient.o URL.o downloadgui.o httpdownload.o $(RES)
-LIBS =  -static-libgcc -L"$(MINGW)/lib" -lws2_32 -lwininet $(FLTK-LDFLAGS)
+LIBS =  $(CUSTOMLIBFLAGS) -static-libgcc -L"$(MINGW)/lib" -lws2_32 -lwininet $(FLTK-LDFLAGS)
 CXXINCS = -Os -I"../util-core" -I"$(MINGW)/include/c++"  -I"$(MINGW)/include/c++/mingw32"  -I"$(MINGW)/include/c++/backward"  -I"$(MINGW)/include"  -I"$(JDK)/include"  -I"$(JDK)/include/win32"  $(FLTK-CXXFLAGS)
 BIN  = $(PROJECTNAME).a
 CXXFLAGS = $(CUSTOMFLAGS) $(CXXINCS) -DJDK="$(JDK)"
