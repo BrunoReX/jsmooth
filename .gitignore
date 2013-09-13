@@ -6,3 +6,4 @@ tmp
 *.class
 /skeletons/**/*.o
 /skeletons/**/*.a
+/skeletons/**/*.res

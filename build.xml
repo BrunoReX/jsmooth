@@ -7,6 +7,8 @@
   <property name="MINGW32DIR" value="c:/mingw-w32"/>
   <property name="MINGW64DIR" value="c:/mingw-w64"/>
   <property name="MSYSDIR" value="c:/msys/1.0"/>
+  <property name="FLTK32PREFIX" value="${MSYSDIR}/local"/>
+  <property name="FLTK64PREFIX" value="${MSYSDIR}/local64"/>
   <property name="MINGW32PREFIX" value="i686-w64-mingw32"/>
   <property name="MINGW64PREFIX" value="x86_64-w64-mingw32"/>
   <property name="GCCVER" value="4.7.1"/>
@@ -28,8 +30,10 @@
   <!-- Then, add the windows path so that the makefile gets it right -->
   <!-- Below are the default values when you ./configure, make and   -->
   <!-- make install fltk under an msys environement                  -->
-  <property name="fltk-ldflags" value="-L${MSYSDIR}/local/lib -mwindows -lfltk -lole32 -luuid -lcomctl32"/>
-  <property name="fltk-cxxflags" value="-I${MSYSDIR}/local/include -I${MSYSDIR}/local/FL/images -mwindows -DWIN32 -DUSE_OPENGL32 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE"/>
+  <property name="fltk-ldflags32" value="-L${FLTK32PREFIX}/lib -mwindows -lfltk -lole32 -luuid -lcomctl32"/>
+  <property name="fltk-cxxflags32" value="-I${FLTK32PREFIX}/include -I${FLTK32PREFIX}/FL/images -mwindows -DWIN32 -DUSE_OPENGL32 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE"/>
+  <property name="fltk-ldflags64" value="-L${FLTK64PREFIX}/lib -mwindows -lfltk -lole32 -luuid -lcomctl32"/>
+  <property name="fltk-cxxflags64" value="-I${FLTK64PREFIX}/include -I${FLTK64PREFIX}/FL/images -mwindows -DWIN32 -DUSE_OPENGL32 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE"/>
 
   <!-- What's below is  optional (needed only if you build a dist) -->
   <property name="FOP" value="c:/programs/fop-1.1/fop.bat"/>
@@ -53,6 +57,7 @@
   <property name="classes" value="classes"/>
   <property name="jsmoothjar" value="jsmoothgen.jar"/>
   <property name="jsmoothjar-ant" value="jsmoothgen-ant.jar"/>
+  <property name="skeletons" value="skeletons"/>
   <property name="ant.jar" value="${env.ANT_HOME}/lib/ant.jar"/>
 
   <property name="distbase" value="dist"/>
@@ -78,7 +83,7 @@
       <fileset dir="lib">
         <include name="*.jar"/>
       </fileset>
-      <fileset dir="skeletons/jnismooth">
+      <fileset dir="${skeletons}/jnismooth">
         <include name="*.jar"/>
       </fileset>
   </path>
@@ -97,9 +102,6 @@
   </target>
 
   <target depends="init" name="compile">
-    <!-- Compile the jnismooth jar file -->
-    <ant antfile="build.xml" dir="skeletons/jnismooth/" target="dist"/>
-
     <!-- Compile the java code from ${src} into ${classes} -->
     <echo>Compiling the application from ${src}</echo>
     <javac target="1.4" source="1.4" deprecation="yes" destdir="${classes}" srcdir="${src}" debug="true">
@@ -223,8 +225,10 @@
       <include name="**/*.properties"/>
     </replace>
 
-    <ant antfile="build.xml" dir="skeletons/jnismooth/" target="dist"/>
-
+    <antcall target="compile_jnismooth">
+       <param name="target" value="dist"/>
+    </antcall>
+    
     <antcall target="jar">
       <param name="src" value="${tmp}/src"/>
     </antcall>
@@ -289,14 +293,14 @@
     <copy tofile="${dist}/Changelog.txt" file="Changelog"/>
 
     <!-- Compile the wrappers -->
-    <ant antfile="build.xml" dir="skeletons/jnismooth/" target="dist"/>
-    <ant antfile="build.xml" dir="skeletons/samplejar/" target="dist"/>
-    <ant antfile="build.xml" dir="skeletons/consolewrapper/samplejar/" target="dist"/>
+    <ant antfile="build.xml" dir="${skeletons}/jnismooth/" target="dist"/>
+    <ant antfile="build.xml" dir="${skeletons}/samplejar/" target="dist"/>
+    <ant antfile="build.xml" dir="${skeletons}/consolewrapper/samplejar/" target="dist"/>
     
     <mkdir dir="${dist}/jni"/>
-    <copy todir="${dist}/jni" file="skeletons/jnismooth/jnismooth.jar"/>
+    <copy todir="${dist}/jni" file="${skeletons}/jnismooth/jnismooth.jar"/>
     <javadoc packagenames="jsmooth.*"
-	     sourcepath="skeletons/jnismooth/src"
+	     sourcepath="${skeletons}/jnismooth/src"
              destdir="${dist}/docs/jniapi"
              author="true"
              version="true"
@@ -311,15 +315,15 @@
     <antcall target="compileskels">
       <param name="skelflags" value="-static-libgcc"/>
     </antcall>
-    <copy todir="${dist}/skeletons/windowed-wrapper" file="skeletons/simplewrap/jwrap.exe"/>
-    <copy todir="${dist}/skeletons/windowed-wrapper" file="skeletons/simplewrap/description.skel"/>
-    <copy todir="${dist}/skeletons/console-wrapper" file="skeletons/consolewrapper/consolewrapper.exe"/>
-    <copy todir="${dist}/skeletons/console-wrapper" file="skeletons/consolewrapper/description.skel"/>
-    <copy todir="${dist}/skeletons/autodownload-wrapper" file="skeletons/autodownload/autodownload.skel"/>
-    <copy todir="${dist}/skeletons/autodownload-wrapper" file="skeletons/autodownload/customdownload.skel"/>
-    <copy todir="${dist}/skeletons/autodownload-wrapper" file="skeletons/autodownload/autodownload.exe"/>
-    <copy todir="${dist}/skeletons/winservice-wrapper" file="skeletons/winservice/description.skel"/>
-    <copy todir="${dist}/skeletons/winservice-wrapper" file="skeletons/winservice/winservice.exe"/>
+    <copy todir="${dist}/skeletons/windowed-wrapper" file="${skeletons}/simplewrap/jwrap.exe"/>
+    <copy todir="${dist}/skeletons/windowed-wrapper" file="${skeletons}/simplewrap/description.skel"/>
+    <copy todir="${dist}/skeletons/console-wrapper" file="${skeletons}/consolewrapper/consolewrapper.exe"/>
+    <copy todir="${dist}/skeletons/console-wrapper" file="${skeletons}/consolewrapper/description.skel"/>
+    <copy todir="${dist}/skeletons/autodownload-wrapper" file="${skeletons}/autodownload/autodownload.skel"/>
+    <copy todir="${dist}/skeletons/autodownload-wrapper" file="${skeletons}/autodownload/customdownload.skel"/>
+    <copy todir="${dist}/skeletons/autodownload-wrapper" file="${skeletons}/autodownload/autodownload.exe"/>
+    <copy todir="${dist}/skeletons/winservice-wrapper" file="${skeletons}/winservice/description.skel"/>
+    <copy todir="${dist}/skeletons/winservice-wrapper" file="${skeletons}/winservice/winservice.exe"/>
     <exec executable="${MINGW32DIR}/bin/${mingw-strip}" dir="${dist}/skeletons/console-wrapper">
         <arg value="consolewrapper.exe"/>
     </exec>
@@ -337,35 +341,29 @@
     <antcall target="clean64"/>
     <mkdir dir="${dist}/skeletons/windowed-wrapper64"/>
     <mkdir dir="${dist}/skeletons/console-wrapper64"/>
-    <!-- not available for x64
     <mkdir dir="${dist}/skeletons/autodownload-wrapper64"/>
-		-->
     <mkdir dir="${dist}/skeletons/winservice-wrapper64"/>
     <antcall target="compileskels64">
       <param name="skelflags" value="-static-libgcc"/>
     </antcall>
-    <copy todir="${dist}/skeletons/windowed-wrapper64" file="skeletons/simplewrap/jwrap.exe"/>
-    <copy todir="${dist}/skeletons/windowed-wrapper64" file="skeletons/simplewrap/description64.skel"/>
-    <copy todir="${dist}/skeletons/console-wrapper64" file="skeletons/consolewrapper/consolewrapper.exe"/>
-    <copy todir="${dist}/skeletons/console-wrapper64" file="skeletons/consolewrapper/description64.skel"/>
-    <!-- not available for x64
+    <copy todir="${dist}/skeletons/windowed-wrapper64" file="${skeletons}/simplewrap/jwrap.exe"/>
+    <copy todir="${dist}/skeletons/windowed-wrapper64" file="${skeletons}/simplewrap/description64.skel"/>
+    <copy todir="${dist}/skeletons/console-wrapper64" file="${skeletons}/consolewrapper/consolewrapper.exe"/>
+    <copy todir="${dist}/skeletons/console-wrapper64" file="${skeletons}/consolewrapper/description64.skel"/>
     <copy todir="${dist}/skeletons/autodownload-wrapper64" file="skeletons/autodownload/autodownload64.skel"/>
     <copy todir="${dist}/skeletons/autodownload-wrapper64" file="skeletons/autodownload/customdownload64.skel"/>
     <copy todir="${dist}/skeletons/autodownload-wrapper64" file="skeletons/autodownload/autodownload.exe"/>
-		-->
-    <copy todir="${dist}/skeletons/winservice-wrapper64" file="skeletons/winservice/description64.skel"/>
-    <copy todir="${dist}/skeletons/winservice-wrapper64" file="skeletons/winservice/winservice.exe"/>
+    <copy todir="${dist}/skeletons/winservice-wrapper64" file="${skeletons}/winservice/description64.skel"/>
+    <copy todir="${dist}/skeletons/winservice-wrapper64" file="${skeletons}/winservice/winservice.exe"/>
     <exec executable="${MINGW64DIR}/bin/${mingw-strip}" dir="${dist}/skeletons/console-wrapper64">
       <arg value="consolewrapper.exe"/>
     </exec>
     <exec executable="${MINGW64DIR}/bin/${mingw-strip}" dir="${dist}/skeletons/windowed-wrapper64">
       <arg value="jwrap.exe"/>
     </exec>
-    <!-- not available for x64
     <exec executable="${MINGW64DIR}/bin/${mingw-strip}" dir="${dist}/skeletons/autodownload-wrapper64">
       <arg value="autodownload.exe"/>
     </exec>
-    -->
     <exec executable="${MINGW64DIR}/bin/${mingw-strip}" dir="${dist}/skeletons/winservice-wrapper64">
       <arg value="winservice.exe"/>
     </exec>
@@ -386,12 +384,40 @@
     <copy todir="${dist}/sample">
       <fileset dir="sample"/>
     </copy>
-
   </target>
+  
+     <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+     <classpath>
+       <pathelement location="lib/ant/ant-contrib-1.0b3.jar"/>
+     </classpath>
+   </taskdef>
+   
+   <target name="compile_jnismooth" depends="">
+      <echo>Making jnismooth ${target}</echo>
+      <property name="target2" value="${target}" />
+      
+      <if>
+         <or>
+           <equals arg1="${target}" arg2="all" />
+           <equals arg1="${target}" arg2="" />
+         </or>
+         <then>
+            <var name="target2" unset="true"/>
+            <property name="target2" value="dist" />
+         </then>
+      </if>
+   
+    <!-- Compile the jnismooth jar file -->
+    <ant antfile="build.xml" dir="${skeletons}/jnismooth/" target="${target2}"/>
+   </target>
 
    <target name="compileskel" depends="">
     <echo>Making ${skelname} ${target}</echo>
-     <exec executable="${MINGW32DIR}/bin/${mingw-make}" dir="skeletons/${skelname}">
+    <antcall target="compile_jnismooth">
+       <param name="target" value="${target}"/>
+    </antcall>
+    
+     <exec executable="${MINGW32DIR}/bin/${mingw-make}" dir="${skeletons}/${skelname}">
        <env key="PATH" value="${MINGW32DIR}/bin"/>
        <arg value="-f"/>
        <arg value="Makefile.win"/>
@@ -402,14 +428,18 @@
        <arg value='"TARGET=${MINGW32PREFIX}"'/>
        <arg value='"JDK=${JDKDIR}"'/>
        <arg value='"RM=${RM}"'/>
-       <arg value='"FLTK-LDFLAGS=${fltk-ldflags}"'/>
-       <arg value='"FLTK-CXXFLAGS=${fltk-cxxflags}"'/>
+       <arg value='"FLTK-LDFLAGS=${fltk-ldflags32}"'/>
+       <arg value='"FLTK-CXXFLAGS=${fltk-cxxflags32}"'/>
      </exec>
    </target>
   
   <target name="compileskel64" depends="">
    <echo>Making ${skelname} ${target}</echo>
-    <exec executable="${MINGW64DIR}/bin/${mingw-make}" dir="skeletons/${skelname}">
+    <antcall target="compile_jnismooth">
+       <param name="target" value="${target}"/>
+    </antcall>
+   
+    <exec executable="${MINGW64DIR}/bin/${mingw-make}" dir="${skeletons}/${skelname}">
       <env key="PATH" value="${MINGW64DIR}/bin"/>
       <arg value="-f"/>
       <arg value="Makefile.win"/>
@@ -420,14 +450,19 @@
       <arg value='"TARGET=${MINGW64PREFIX}"'/>
       <arg value='"JDK=${JDKDIR}"'/>
       <arg value='"RM=${RM}"'/>
-      <arg value='"FLTK-LDFLAGS=${fltk-ldflags}"'/>
-      <arg value='"FLTK-CXXFLAGS=${fltk-cxxflags}"'/>
+      <arg value='"FLTK-LDFLAGS=${fltk-ldflags64}"'/>
+      <arg value='"FLTK-CXXFLAGS=${fltk-cxxflags64}"'/>
     </exec>
   </target>
 
    <target name="compileskels" depends="">
-     <ant dir="skeletons/simplewrap/samplejar" /> 
-     <ant dir="skeletons/consolewrapper/samplejar" /> 
+      <antcall target="compile_jnismooth">
+         <param name="target" value="dist"/>
+      </antcall>
+   
+     <ant dir="${skeletons}/samplejar" /> 
+     <ant dir="${skeletons}/simplewrap/samplejar" /> 
+     <ant dir="${skeletons}/consolewrapper/samplejar" /> 
 
     <antcall target="compileskel">
       <param name="skelname" value="util-core"/>
@@ -470,9 +505,23 @@
     <delete dir="${classes}"/>
     <delete dir="${distbase}"/>
     <delete dir="${tmp}"/>
+    <delete dir="${skeletons}/consolewrapper/samplejar/classes"/>
+    <delete dir="${skeletons}/jnismooth/classes"/>
+    <delete dir="${skeletons}/samplejar/classes"/>
+    <delete>
+      <fileset dir="${skeletons}/simplewrap/samplejar/classes" includes="*.class"/>
+      <fileset dir="${skeletons}" includes="*.a"/>
+      <fileset dir="${skeletons}" includes="*.o"/>
+      <fileset dir="${skeletons}" includes="*.res"/>
+    </delete>
+    <delete file="${skeletons}/jnismooth/jnismooth.jar"/>
+    <delete file="${skeletons}/consolewrapper/samplejar/sample.jar"/>
+    <delete file="${skeletons}/samplejar/sample.jar"/>
+    <delete file="${skeletons}/simplewrap/samplejar/sample.jar"/>
+    <delete file="${skeletons}/commonjava/test.exe"/>
     <delete file="${jsmoothjar}"/>
     <delete file="${jsmoothjar-ant}"/>
-
+    
     <ant antfile="build.xml" dir="sample" target="clean"/>
 
     <antcall target="compileskel">
@@ -517,21 +566,24 @@
   </target>
 
     <target name="compileskels64" depends="">
-      <ant dir="skeletons/simplewrap/samplejar" /> 
-      <ant dir="skeletons/consolewrapper/samplejar" /> 
+      <antcall target="compile_jnismooth">
+         <param name="target" value="dist"/>
+      </antcall>
+    
+      <ant dir="${skeletons}/samplejar" /> 
+      <ant dir="${skeletons}/simplewrap/samplejar" /> 
+      <ant dir="${skeletons}/consolewrapper/samplejar" /> 
 
      <antcall target="compileskel64">
        <param name="skelname" value="util-core"/>
        <param name="skelflags" value="${skelflags}"/>
        <param name="target" value="all"/>
      </antcall>
-      <!-- not available for x64
      <antcall target="compileskel64">
        <param name="skelname" value="util-net"/>
        <param name="skelflags" value="${skelflags}"/>
        <param name="target" value="all"/>
      </antcall>
-		-->
      <antcall target="compileskel64">
        <param name="skelname" value="commonjava"/>
        <param name="skelflags" value="${skelflags}"/>
@@ -547,13 +599,11 @@
        <param name="skelflags" value="${skelflags}"/>
        <param name="target" value="all"/>
      </antcall>
-      <!-- not available for x64
      <antcall target="compileskel64">
        <param name="skelname" value="autodownload"/>
        <param name="skelflags" value="${skelflags}"/>
        <param name="target" value="all"/>
      </antcall>
-		-->
      <antcall target="compileskel64">
        <param name="skelname" value="winservice"/>
        <param name="skelflags" value="${skelflags}"/>
